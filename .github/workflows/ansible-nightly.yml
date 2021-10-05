@@ -12,7 +12,8 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - run: 'echo "$ANSIBLE_PK" > id_rsa'
+      - name: create ssh key
+        run: 'echo "$ANSIBLE_PK" > id_rsa'
         shell: bash
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
