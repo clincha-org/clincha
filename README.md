@@ -24,7 +24,36 @@ turing: **NOT WORKING**
 
 ## Improvements
 
-### Ansible Playbook
+### VPN
+- Point to point connection
+
+### Traefik
+- Applications
+- Internal resources
+- SSL
+
+### ELK
+- Get the ELK stack working and available
+- Monitor
+  - Kubernetes health
+  - Server health
+  - Application health
+- Logs
+
+### Hardware
+
+- Get idrac working on all the servers
+- Server room
+
+### Kubernetes
+
+- Run the Kubernetes config against the servers nightly
+- Make a new node pipeline to configure a new node and add it to the cluster
+    - Cloud node
+    - Raspberry Pi node
+    - Ubuntu node
+
+### Ansible
 
 - Turning SWAP off runs a change even when SWAP is already disabled. Can we make this not run a change if the command
   has already been run?
