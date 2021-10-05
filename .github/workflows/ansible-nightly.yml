@@ -12,18 +12,16 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - name: Create kubeconfig file
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: Ansible/id_rsa
-          contents: ${{ secrets.ANSIBLE_PK }}
-          write-mode: overwrite
+      - run: 'echo "$ANSIBLE_PK" > id_rsa'
+        shell: bash
+        env:
+          ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: restrict ssh key
-        run: chmod 600 Ansible/id_rsa
+        run: chmod 600 id_rsa
 
       - name: configure hosts files
-        run: ansible-playbook -i Ansible/inventory.yml --key-file Ansible/id_rsa Ansible/Basics/Hosts.yml
+        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/Hosts.yml
 
       - name: update and reboot if needed
-        run: ansible-playbook -i Ansible/inventory.yml --key-file Ansible/id_rsa Ansible/Basics/Updates.yml
+        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/Updates.yml
