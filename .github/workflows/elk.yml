@@ -1,0 +1,26 @@
+name: elk
+
+on:
+  push:
+  schedule:
+    - cron: '0 4 * * *'
+
+jobs:
+  ansible-nightly:
+    runs-on: self-hosted
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: Create kubeconfig file
+        uses: DamianReeves/write-file-action@v1.0
+        with:
+          path: ./kubeconfig
+          contents: ${{ secrets.KUBECONFIG }}
+          write-mode: overwrite
+
+      - name: deploy elk stack
+        run: kubectl apply -f Kubernetes/Manifests/ELK --kubeconfig ./kubeconfig
+
+      - name: deploy metricbeat
+        run: kubectl apply -f Kubernetes/Manifests/metricbeat-kubernetes.yaml --kubeconfig ./kubeconfig
