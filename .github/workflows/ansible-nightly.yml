@@ -2,6 +2,8 @@ name: Apply Ansible config to clinch-home server estate
 
 on:
   push:
+    branches:
+      - master
   schedule:
     - cron: '0 0 * * *'
 

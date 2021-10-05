@@ -2,6 +2,8 @@ name: elk
 
 on:
   push:
+    branches:
+      - master
   schedule:
     - cron: '0 4 * * *'
 
