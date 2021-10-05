@@ -1,0 +1,20 @@
+---
+- hosts: kubernetes_slaves
+  become: yes
+  tasks:
+    - name: Check to see if slave is joined to cluser
+      stat:
+        path: /etc/kubernetes/kubelet.conf
+      register: slave_joined
+
+    # WARNING: These values may need to change depending on the TTL on the server
+    # WARNING: Do not use hostname, use ip address instead
+
+    # kubeadm create token
+    # openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+    - name: Register slave with master
+      shell: |
+        kubeadm join 192.168.1.14:6443 \
+          --token ysloz1.y68igqvhkp56f1s5     \
+          --discovery-token-ca-cert-hash sha256:c5d48ce7a0b6c6cf36a9239cad53d2159c5f3890f01ac8d787177cb019bfa939
+      when: not slave_joined.stat.exists

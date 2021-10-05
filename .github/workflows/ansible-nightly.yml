@@ -1,0 +1,29 @@
+name: Apply Ansible config to clinch-home server estate
+
+on:
+  push:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  ansible-nightly:
+    runs-on: self-hosted
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: Create kubeconfig file
+        uses: DamianReeves/write-file-action@v1.0
+        with:
+          path: ./Ansible/id_rsa
+          contents: ${{ secrets.ANSIBLE_PK }}
+          write-mode: overwrite
+
+      - name: restrict ssh key
+        run: chmod 600 ./Ansible/id_rsa
+
+      - name: configure hosts files
+        run: ansible-playbook -i ./Ansible/inventory.yml --key-file ./Ansible/id_rsa ./Ansible/Basics/Hosts.yml
+
+      - name: update and reboot if needed
+        run: ansible-playbook -i ./Ansible/inventory.yml --key-file ./Ansible/id_rsa ./Ansible/Basics/Updates.yml

@@ -1,0 +1,11 @@
+---
+- hosts: ubuntu
+  become: yes
+  tasks:
+    - name: Disable firewall
+      ufw:
+        state: disabled
+
+#    - name: Enable firewall
+#      ufw:
+#        state: enabled

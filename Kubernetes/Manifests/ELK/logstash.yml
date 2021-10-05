@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: logstash
+  name: logstash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash
+  strategy: { }
+  template:
+    metadata:
+      labels:
+        app: logstash
+    spec:
+      volumes:
+        - name: laptop-log-pipeline
+          configMap:
+            name: laptop-log-pipeline
+            items:
+              - key: laptop-packetbeat.conf
+                path: laptop-packetbeat.conf
+      containers:
+        - image: logstash:7.14.0
+          name: logstash
+          resources: { }
+          volumeMounts:
+            - name: laptop-log-pipeline
+              mountPath: /usr/share/logstash/pipeline/
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash-service
+spec:
+  type: NodePort
+  selector:
+    app: logstash
+  ports:
+    - protocol: TCP
+      port: 5044
+      targetPort: 5044

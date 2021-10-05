@@ -1,0 +1,124 @@
+---
+- hosts: kubernetes
+  become: yes
+  tasks:
+    - name: Disable SWAP
+      shell: |
+        swapoff -a
+
+    - name: Disable SWAP on startup
+      replace:
+        path: /etc/fstab
+        regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+        replace: '# \1'
+
+    - name: Load container.d modules into the Kernal
+      modprobe:
+        name: "{{ item }}"
+      loop:
+        - overlay
+        - br_netfilter
+
+    # Documentation: https://www.freedesktop.org/software/systemd/man/modules-load.d.html
+    - name: Load container.d modules into the Kernal on startup
+      lineinfile:
+        path: /etc/modules-load/containerd.conf
+        create: yes
+        line: "{{ item }}"
+      loop:
+        - overlay
+        - br_netfilter
+
+    - name: Load sysctl parameters at startup
+      lineinfile:
+        path: /etc/sysctl.d/99-kubernetes-cri.conf
+        create: yes
+        line: "{{ item }}"
+      loop:
+        - "net.bridge.bridge-nf-call-iptables  = 1"
+        - "net.ipv4.ip_forward                 = 1"
+        - "net.bridge.bridge-nf-call-ip6tables = 1"
+
+    # Documentation: https://man7.org/linux/man-pages/man8/sysctl.8.html
+    - name: Reload sysctl parameters from config files
+      shell: |
+        sysctl --system
+
+    - name: Install container.d
+      apt:
+        name: containerd
+        update_cache: yes
+
+    - name: Check container.d config file exists
+      stat:
+        path: /etc/containerd/config.toml
+      register: containerd_config
+
+    - name: Create container.d config directory
+      file:
+        path: /etc/containerd
+        state: directory
+
+    - name: Create container.d config file
+      file:
+        path: /etc/containerd/config.toml
+        state: touch
+
+    - name: Populate container.d config file
+      shell: |
+        containerd config default | tee /etc/containerd/config.toml
+      when: not containerd_config.stat.exists
+
+      # Documentation: https://github.com/containerd/cri/blob/master/docs/config.md
+      # Documentation: https://github.com/containerd/containerd/blob/master/docs/ops.md
+      # WARNING: White space in line is IMPORTANT
+    - name: Set the cgroup driver for containerd to systemd which is required for the kubelet.
+      lineinfile:
+        path: /etc/containerd/config.toml
+        regexp: '            SystemdCgroup = '
+        line: '            SystemdCgroup = true'
+      register: containerd_config_changed
+
+    - name: Restart container.d service
+      service:
+        name: containerd
+        state: restarted
+      when: containerd_config_changed.changed
+
+    - name: Add the Google apt key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+    - name: Add the Kubernetes apt repository
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        codename: kubernetes-xenial
+
+    - name: Install required components for Kuberenets using apt
+      apt:
+        name: "{{ item }}"
+        update_cache: yes
+
+      loop:
+        - kubelet=1.22.0-00
+        - kubeadm=1.22.0-00
+        - kubectl=1.22.0-00
+        - nfs-common
+
+    - name: Hold Kubernetes component versions
+      dpkg_selections:
+        name: "{{ item }}"
+        selection: hold
+      loop:
+        - containerd
+        - kubelet
+        - kubeadm
+        - kubectl
+
+    - name: Ensure Kubelet and Container.d are set to start on boot
+      service:
+        name: "{{ item }}"
+        enabled: yes
+      loop:
+        - containerd
+        - kubelet
