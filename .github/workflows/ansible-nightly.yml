@@ -1,4 +1,4 @@
-name: Apply Ansible config to clinch-home server estate
+name: clinch-home ansible nightly
 
 on:
   push:

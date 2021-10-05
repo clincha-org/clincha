@@ -1,6 +1,0 @@
----
-- hosts: ubuntu
-  become: yes
-  tasks:
-    - name: Unconditionally shut down the machine with all defaults
-      command: /sbin/shutdown -h now
