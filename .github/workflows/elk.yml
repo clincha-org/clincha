@@ -21,6 +21,9 @@ jobs:
           contents: ${{ secrets.KUBECONFIG }}
           write-mode: overwrite
 
+      - name: install ansible dependencies
+        run: ansible-galaxy install elastic.beats,v7.15.0
+
       - name: deploy elk stack
         run: kubectl apply -f Kubernetes/Manifests/ELK --kubeconfig ./kubeconfig
 
