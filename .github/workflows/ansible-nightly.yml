@@ -26,5 +26,8 @@ jobs:
       - name: configure hosts files
         run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/Hosts.yml
 
+      - name: install and configure metricbeat
+        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/elastic-stack/metricbeat.yml
+
       - name: update and reboot if needed
         run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/Updates.yml
