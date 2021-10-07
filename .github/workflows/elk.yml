@@ -24,5 +24,8 @@ jobs:
       - name: deploy elk stack
         run: kubectl apply -f Kubernetes/Manifests/ELK --kubeconfig ./kubeconfig
 
-      - name: deploy metricbeat
+      - name: deploy metricbeat (Kubernetes)
         run: kubectl apply -f Kubernetes/Manifests/metricbeat-kubernetes.yaml --kubeconfig ./kubeconfig
+
+      - name: deploy metricbeat (Physical)
+        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/elastic-stack/metricbeat.yml
