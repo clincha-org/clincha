@@ -1,0 +1,28 @@
+name: wireguard
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 4 * * *'
+
+jobs:
+  ansible-nightly:
+    runs-on: self-hosted
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: Create kubeconfig file
+        uses: DamianReeves/write-file-action@v1.0
+        with:
+          path: ./kubeconfig
+          contents: ${{ secrets.KUBECONFIG }}
+          write-mode: overwrite
+
+      - name: install ansible dependencies
+        run: ansible-galaxy install elastic.beats,v7.15.0
+
+      - name: deploy wireguard
+        run: kubectl apply -f Kubernetes/Manifests/wireguard.yaml --kubeconfig ./kubeconfig
