@@ -42,8 +42,8 @@ jobs:
       - name: install ansible dependencies
         run: ansible-galaxy install elastic.beats,v7.15.0
 
-      - name: delete nginx-proxy
-        run: kubectl delete -f Kubernetes/Manifests/nginx-proxy.yaml --kubeconfig ./kubeconfig
+      - name: delete nginx-proxy deployment
+        run: kubectl delete deployment nginx-proxy --kubeconfig ./kubeconfig
 
       - name: deploy nginx-proxy
         run: kubectl apply -f Kubernetes/Manifests/nginx-proxy.yaml --kubeconfig ./kubeconfig
