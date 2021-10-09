@@ -17,8 +17,8 @@ spec:
         app: nginx
     spec:
       containers:
-        - image: nginx
-          name: nginx
+        - image: clincha/nginx
+          name: nginx-proxy
           resources: { }
 
 ---

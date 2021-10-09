@@ -1,4 +1,4 @@
-name: nginx
+name: nginx-proxy
 
 on:
   push:
@@ -8,7 +8,21 @@ on:
     - cron: '0 4 * * *'
 
 jobs:
-  ansible-nightly:
+  build-image:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Docker Build, Tag & Push
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: clincha/nginx-proxy
+          tags: latest, v1.0
+          registry: docker.io
+          dockerfile: images/nginx-proxy/Dockerfile
+          directory: images/nginx-proxy
+          username: clincha
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+  deploy-proxy-clinch-home:
     runs-on: self-hosted
     steps:
       - name: checkout
@@ -24,5 +38,5 @@ jobs:
       - name: install ansible dependencies
         run: ansible-galaxy install elastic.beats,v7.15.0
 
-      - name: deploy nginx
-        run: kubectl apply -f Kubernetes/Manifests/nginx.yaml --kubeconfig ./kubeconfig
+      - name: deploy nginx-proxy
+        run: kubectl apply -f Kubernetes/Manifests/nginx-proxy.yaml --kubeconfig ./kubeconfig
