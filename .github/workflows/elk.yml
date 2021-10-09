@@ -8,7 +8,7 @@ on:
     - cron: '0 4 * * *'
 
 jobs:
-  ansible-nightly:
+  deploy-ELK:
     runs-on: self-hosted
     steps:
       - name: checkout
@@ -20,6 +20,12 @@ jobs:
           path: ./kubeconfig
           contents: ${{ secrets.KUBECONFIG }}
           write-mode: overwrite
+
+      - name: create ssh key
+        run: 'echo "$ANSIBLE_PK" > id_rsa'
+        shell: bash
+        env:
+          ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: install ansible dependencies
         run: ansible-galaxy install elastic.beats,v7.15.0

@@ -17,13 +17,14 @@ jobs:
           image: clincha/nginx-proxy
           tags: latest, v1.0
           registry: docker.io
-          dockerfile: images/nginx-proxy/Dockerfile
-          directory: images/nginx-proxy
+          dockerfile: clinch-home/images/nginx-proxy/Dockerfile
+          directory: clinch-home/images/nginx-proxy
           username: clincha
           password: ${{ secrets.DOCKER_PASSWORD }}
 
   deploy-proxy-clinch-home:
     runs-on: self-hosted
+    needs: build-image
     steps:
       - name: checkout
         uses: actions/checkout@v2
