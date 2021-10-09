@@ -4,6 +4,7 @@
 
 [![clinch-home ansible nightly](https://github.com/clincha/clinch-home/actions/workflows/ansible-nightly.yml/badge.svg)](https://github.com/clincha/clinch-home/actions/workflows/ansible-nightly.yml)
 [![elk](https://github.com/clincha/clinch-home/actions/workflows/elk.yml/badge.svg)](https://github.com/clincha/clinch-home/actions/workflows/elk.yml)
+[![nginx-proxy](https://github.com/clincha/clinch-home/actions/workflows/nginx.yml/badge.svg)](https://github.com/clincha/clinch-home/actions/workflows/nginx.yml)
 
 ## Overview
 
