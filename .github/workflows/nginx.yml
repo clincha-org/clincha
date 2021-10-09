@@ -1,4 +1,4 @@
-name: wireguard
+name: nginx
 
 on:
   push:
@@ -24,5 +24,5 @@ jobs:
       - name: install ansible dependencies
         run: ansible-galaxy install elastic.beats,v7.15.0
 
-      - name: deploy wireguard
-        run: kubectl apply -f Kubernetes/Manifests/wireguard.yaml --kubeconfig ./kubeconfig
+      - name: deploy nginx
+        run: kubectl apply -f Kubernetes/Manifests/nginx.yaml --kubeconfig ./kubeconfig
