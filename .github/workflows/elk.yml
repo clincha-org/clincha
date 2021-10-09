@@ -27,6 +27,9 @@ jobs:
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
+      - name: restrict ssh key
+        run: chmod 600 id_rsa
+
       - name: install ansible dependencies
         run: ansible-galaxy install elastic.beats,v7.15.0
 
