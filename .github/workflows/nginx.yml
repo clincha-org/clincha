@@ -11,14 +11,17 @@ jobs:
   build-image:
     runs-on: ubuntu-20.04
     steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
       - name: Docker Build, Tag & Push
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
           image: clincha/nginx-proxy
           tags: latest, v1.0
           registry: docker.io
-          dockerfile: clinch-home/images/nginx-proxy/Dockerfile
-          directory: clinch-home/images/nginx-proxy
+          dockerfile: images/nginx-proxy/Dockerfile
+          directory: images/nginx-proxy
           username: clincha
           password: ${{ secrets.DOCKER_PASSWORD }}
 
