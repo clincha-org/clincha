@@ -22,7 +22,7 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: create kubeconfig
-        run: 'echo "$KUBECONFIG" > kubeconfg'
+        run: 'echo "$KUBECONFIG" > Ansible/Basics/files/kubeconfg'
         shell: bash
         env:
           ANSIBLE_PK: ${{ secrets.KUBECONFIG }}
