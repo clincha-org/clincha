@@ -1,5 +1,5 @@
 ---
-- hosts: ubuntu
+- hosts: linux
   become: yes
   tasks:
     - name: Update and upgrade apt packages
