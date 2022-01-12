@@ -1,12 +1,13 @@
 all:
-  linux:
-    hosts:
-      darling:
-        ansible_host: 192.168.1.12
-      mandela:
-        ansible_host: 192.168.1.13
-      turing:
-        ansible_host: 192.168.1.14
-    vars:
-      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-      ansible_user: clincha
+  children:
+    linux:
+      hosts:
+        darling:
+          ansible_host: 192.168.1.12
+        mandela:
+          ansible_host: 192.168.1.13
+        turing:
+          ansible_host: 192.168.1.14
+      vars:
+        ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+        ansible_user: clincha
