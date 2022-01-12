@@ -31,4 +31,4 @@ jobs:
         run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/Updates.yml
 
       - name: Install and configure Kubectl
-        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/Updates.yml
+        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/install-kubernetes.yml

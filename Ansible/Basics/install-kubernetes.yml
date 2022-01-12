@@ -1,0 +1,31 @@
+---
+- hosts: linux
+  become: true
+  tasks:
+    - name: Install required packages
+      apt:
+        name: {{ item }}
+        state: present
+        update_cache: yes
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+
+    - name: Add Google Cloud public signing key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Add specified repository into sources list
+      apt_repository:
+        repo: deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+
+    - name: Install kubectl
+      apt:
+        name: { { item } }
+        state: present
+        update_cache: yes
+      with_items:
+        - kubectl
