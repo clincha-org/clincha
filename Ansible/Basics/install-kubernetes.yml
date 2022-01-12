@@ -29,3 +29,11 @@
         update_cache: yes
       with_items:
         - kubectl
+
+    - name: Configure kubectl
+      copy:
+        src: ./kubeconfig
+        dest: /home/clincha/.kube/config
+        owner: root
+        group: root
+        mode: 644
