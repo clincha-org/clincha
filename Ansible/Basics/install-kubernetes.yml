@@ -4,7 +4,7 @@
   tasks:
     - name: Install required packages
       apt:
-        name: {{ item }}
+        name: "{{ item }}"
         state: present
         update_cache: yes
       with_items:
@@ -24,7 +24,7 @@
 
     - name: Install kubectl
       apt:
-        name: { { item } }
+        name: "{{ item }}"
         state: present
         update_cache: yes
       with_items:
