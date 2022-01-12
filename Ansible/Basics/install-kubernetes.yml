@@ -17,9 +17,9 @@
         url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
         state: present
 
-    - name: Add specified repository into sources list
+    - name: Add Google Cloud repository into sources list
       apt_repository:
-        repo: deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
         state: present
 
     - name: Install kubectl
