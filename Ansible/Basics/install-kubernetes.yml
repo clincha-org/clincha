@@ -30,6 +30,14 @@
       with_items:
         - kubectl
 
+    - name: Ensure .kube directory exists
+      file:
+        path: /home/clincha/.kube/
+        state: directory
+        owner: root
+        group: root
+        mode: 755
+
     - name: Configure kubectl
       copy:
         src: ./kubeconfig
