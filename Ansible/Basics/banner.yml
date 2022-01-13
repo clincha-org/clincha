@@ -1,0 +1,18 @@
+---
+- hosts: linux
+  become: true
+  tasks:
+    - name: Set banner in sshd_config
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        line: "Banner /etc/ssh/login_banner"
+
+    - name: Copy over banner file
+      copy:
+        src: login_banner
+        dest: /etc/ssh/login_banner
+
+    - name: Copy over login banner file
+      copy:
+        src: issue.net
+        dest: /etc/issue.net

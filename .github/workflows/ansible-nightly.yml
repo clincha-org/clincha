@@ -39,3 +39,6 @@ jobs:
 
       - name: Install and configure Kubectl
         run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/install-kubernetes.yml
+
+      - name: Change login login_banner
+        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/install-kubernetes.yml

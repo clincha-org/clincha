@@ -4,5 +4,5 @@
 Rear: 4C531001550107107043
 Front: 04014917111921145404
 
-### Replacement
+### Replacements
 13/01/2022 - Front USB is dead, replacing 4C530799950604102192 with 04014917111921145404
