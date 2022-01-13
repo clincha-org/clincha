@@ -31,6 +31,9 @@ jobs:
       - name: restrict ssh key
         run: chmod 600 id_rsa
 
+      - name: Change login login_banner
+        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/banner.yml
+
       - name: configure hosts files
         run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/Hosts.yml
 
@@ -40,5 +43,3 @@ jobs:
       - name: Install and configure Kubectl
         run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/install-kubernetes.yml
 
-      - name: Change login login_banner
-        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/install-kubernetes.yml
