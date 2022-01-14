@@ -8,11 +8,19 @@
         line: "Banner /etc/ssh/login_banner"
 
     - name: Copy over banner file
-      copy:
-        src: login_banner
-        dest: /etc/ssh/login_banner
+      file:
+        path: /etc/ssh/login_banner
+        state: absent
 
     - name: Copy over login banner file
       copy:
         src: issue.net
         dest: /etc/issue.net
+
+    - name: Copy over MOTD script
+      copy:
+        src: 00-clinch-banner.sh
+        dest: /etc/update-motd.d/00-clinch-banner.sh
+        owner: root
+        group: root
+        mode: 755
