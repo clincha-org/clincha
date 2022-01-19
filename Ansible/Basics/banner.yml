@@ -28,6 +28,7 @@
 
   handlers:
     - name: sshd restart
-      service:
-        - name: sshd
-          state: restarted
+      tasks:
+        service:
+          - name: sshd
+            state: restarted
