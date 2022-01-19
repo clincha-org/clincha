@@ -53,9 +53,3 @@
         owner: clincha
         group: clincha
         mode: 600
-      notify: Bash alias refresh
-
-  handlers:
-    - name: Bash alias refresh
-      bash: |
-        source /home/clincha/.bash_aliases
