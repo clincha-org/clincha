@@ -32,10 +32,10 @@ jobs:
         run: ansible-galaxy install elastic.beats,v7.15.0
 
       - name: ELK stack
-        run: kubectl apply -f Kubernetes/Manifests/ELK
+        run: kubectl apply -f Kubernetes/Manifests/ELK  --kubeconfig ./kubeconfig
 
       - name: Metricbeat (Kubernetes)
-        run: kubectl apply -f Kubernetes/Manifests/metricbeat-kubernetes.yaml
+        run: kubectl apply -f Kubernetes/Manifests/metricbeat-kubernetes.yaml  --kubeconfig ./kubeconfig
 
       - name: Metricbeat (Physical)
         run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/elastic-stack/metricbeat.yml
