@@ -30,7 +30,7 @@ jobs:
     runs-on: self-hosted
     needs: build-image
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
 
       - name: Create kubeconfig file
@@ -40,11 +40,8 @@ jobs:
           contents: ${{ secrets.KUBECONFIG }}
           write-mode: overwrite
 
-      - name: install ansible dependencies
+      - name: Ansible dependencies
         run: ansible-galaxy install elastic.beats,v7.15.0
 
-      - name: delete nginx-proxy deployment
-        run: kubectl delete deployment nginx-proxy --kubeconfig ./kubeconfig
-
-      - name: deploy nginx-proxy
+      - name: NGINX proxy
         run: kubectl apply -f Kubernetes/Manifests/nginx-proxy.yaml --kubeconfig ./kubeconfig

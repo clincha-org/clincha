@@ -19,3 +19,17 @@
         state: absent
       loop:
         - "192.168.1.10 freenas"
+
+    - name: Bash profile
+      copy:
+        src: ./.bashrc
+        dest: /home/clincha/.bashrc
+        owner: clincha
+        group: clincha
+        mode: 0600
+
+    - name: Bash aliases
+      copy:
+        src: ./.bash_aliases
+        dest: /home/clincha/.bash_aliases
+        state: absent

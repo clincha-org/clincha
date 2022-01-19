@@ -12,8 +12,14 @@ jobs:
   deploy-ELK:
     runs-on: self-hosted
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Create SSH key
+        run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa'
+        shell: bash
+        env:
+          ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: Create kubeconfig file
         uses: DamianReeves/write-file-action@v1.0
@@ -22,23 +28,14 @@ jobs:
           contents: ${{ secrets.KUBECONFIG }}
           write-mode: overwrite
 
-      - name: create ssh key
-        run: 'echo "$ANSIBLE_PK" > id_rsa'
-        shell: bash
-        env:
-          ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
-
-      - name: restrict ssh key
-        run: chmod 600 id_rsa
-
-      - name: install ansible dependencies
+      - name: Ansible dependencies
         run: ansible-galaxy install elastic.beats,v7.15.0
 
-      - name: deploy elk stack
-        run: kubectl apply -f Kubernetes/Manifests/ELK --kubeconfig ./kubeconfig
+      - name: ELK stack
+        run: kubectl apply -f Kubernetes/Manifests/ELK
 
-      - name: deploy metricbeat (Kubernetes)
-        run: kubectl apply -f Kubernetes/Manifests/metricbeat-kubernetes.yaml --kubeconfig ./kubeconfig
+      - name: Metricbeat (Kubernetes)
+        run: kubectl apply -f Kubernetes/Manifests/metricbeat-kubernetes.yaml
 
-      - name: deploy metricbeat (Physical)
+      - name: Metricbeat (Physical)
         run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/elastic-stack/metricbeat.yml

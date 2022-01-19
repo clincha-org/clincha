@@ -12,11 +12,11 @@ jobs:
   ansible-nightly:
     runs-on: self-hosted
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
 
-      - name: create ssh key
-        run: 'echo "$ANSIBLE_PK" > id_rsa'
+      - name: Create SSH key
+        run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa'
         shell: bash
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
@@ -28,18 +28,15 @@ jobs:
           contents: ${{ secrets.KUBECONFIG }}
           write-mode: overwrite
 
-      - name: restrict ssh key
-        run: chmod 600 id_rsa
-
-      - name: Change login login_banner
+      - name: Login banners
         run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/banner.yml
 
-      - name: configure hosts files
-        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/Hosts.yml
+      - name: Bash profile
+        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/bash.yml
 
-      - name: update and reboot if needed
-        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/Updates.yml
+      - name: Update
+        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/updates.yml
 
-      - name: Install and configure Kubectl
-        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/install-kubernetes.yml
+      - name: Kubernetes
+        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/kubernetes.yml
 
