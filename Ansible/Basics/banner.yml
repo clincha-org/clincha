@@ -16,6 +16,7 @@
       copy:
         src: issue.net
         dest: /etc/issue.net
+      notify: sshd restart
 
     - name: Copy over MOTD script
       copy:
@@ -23,4 +24,10 @@
         dest: /etc/update-motd.d/00-clinch-banner.sh
         owner: root
         group: root
-        mode: 755
+        mode: 0755
+
+  handlers:
+    - name: sshd restart
+      service:
+        - name: sshd
+          state: restarted
