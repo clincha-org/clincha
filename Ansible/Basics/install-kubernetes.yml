@@ -11,6 +11,7 @@
         - apt-transport-https
         - ca-certificates
         - curl
+        - bash_completion
 
     - name: Add Google Cloud public signing key
       apt_key:
@@ -50,6 +51,14 @@
       copy:
         src: ./.bash_aliases
         dest: /home/clincha/.bash_aliases
+        owner: clincha
+        group: clincha
+        mode: 0600
+
+    - name: Configure bash autocomplete
+      copy:
+        src: ./.bashrc
+        dest: /home/clincha/.bashrc
         owner: clincha
         group: clincha
         mode: 0600
