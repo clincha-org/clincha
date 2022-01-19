@@ -45,3 +45,17 @@
         owner: root
         group: root
         mode: 644
+
+    - name: Create bash alias for "k"
+      copy:
+        src: ./bash_aliases
+        dest: /home/clincha/.bash_aliases
+        owner: clincha
+        group: clincha
+        mode: 600
+      notify: Bash alias refresh
+
+  handlers:
+    - name: Bash alias refresh
+      bash: |
+        source /home/clincha/.bash_aliases
