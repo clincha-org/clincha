@@ -29,7 +29,6 @@
         mode: 0600
 
     - name: Bash aliases
-      copy:
-        src: ./.bash_aliases
-        dest: /home/clincha/.bash_aliases
+      file:
+        path: /home/clincha/.bash_aliases
         state: absent
