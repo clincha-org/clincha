@@ -1,6 +1,6 @@
 all:
   children:
-    linux:
+    bristol:
       hosts:
         darling:
           ansible_host: 192.168.1.12
@@ -11,3 +11,15 @@ all:
       vars:
         ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
         ansible_user: clincha
+    edinburgh:
+      hosts:
+        geddes-01:
+          server_hostname: geddes-01
+          ansible_host: 192.168.1.202
+          ansible_user: clincha
+          ansible_password: "Zxj2Q$JyNh7P5@Ne"
+        geddes-02:
+          server_hostname: geddes-02
+          ansible_host: 192.168.1.180
+          ansible_user: clincha
+          ansible_password: "Zxj2Q$JyNh7P5@Ne"

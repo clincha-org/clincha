@@ -1,0 +1,16 @@
+---
+# tasks file for base
+- name: run profile tasks
+  import_tasks: updates.yml
+
+- name: run profile tasks
+  import_tasks: bash.yml
+
+- name: run profile tasks
+  import_tasks: banner.yml
+
+#- name: run profile tasks
+#  import_tasks: kubernetes.yml
+
+- name: run profile tasks
+  import_tasks: profile.yml

@@ -1,0 +1,33 @@
+---
+- name: "Build hosts file (bristol)"
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+  loop:
+    - "192.168.1.10 truenas"
+    - "192.168.1.12	darling"
+    - "192.168.1.13	mandela"
+    - "192.168.1.14	turing"
+  when: "'bristol' in group_names"
+
+- name: "Build hosts file (edinburgh)"
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+  loop:
+    - "192.168.1.202 geddes-01"
+    - "192.168.1.180 geddes-02"
+  when: "'edinburgh' in group_names"
+
+- name: Bash profile
+  copy:
+    src: ./.bashrc
+    dest: /home/clincha/.bashrc
+    owner: clincha
+    group: clincha
+    mode: 0600
+
+- name: Bash aliases
+  file:
+    path: /home/clincha/.bash_aliases
+    state: absent

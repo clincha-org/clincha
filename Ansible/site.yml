@@ -1,0 +1,15 @@
+- name: Apply base roll
+  hosts: edinburgh
+  gather_facts: true
+  become: true
+  roles:
+    - role: base
+    - role: adriagalin.motd
+      vars:
+        ag_motd_remove_default_config: false
+        ag_motd_restore_default_config: false
+        ag_motd_add_footer: false
+        ag_motd_sysadmins_signature: clincha
+        ag_motd_sysadmins_email: "angus.clinch@gmail.com"
+        ag_motd_info: additional information to show in message
+        ag_motd_add_update: true
