@@ -14,3 +14,9 @@
 
 - name: run profile tasks
   import_tasks: profile.yml
+
+- name: run ssh tasks
+  import_tasks: ssh.yml
+
+- name: run network tasks
+  import_tasks: network.yml

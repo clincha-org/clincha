@@ -1,0 +1,5 @@
+---
+- name: Install network utilities
+  package:
+    name: net-tools
+    state: present

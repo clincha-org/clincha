@@ -1,0 +1,9 @@
+---
+- name: Copy over sshd config file
+  copy:
+    src: sshd_config
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: 644
+  notify: sshd restart
