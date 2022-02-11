@@ -4,7 +4,7 @@
   - name: Locate default banner files
     find:
       paths: /etc/update-motd.d/
-      patterns: "\d{2}-.*"
+      patterns: "\\d{2}-.*"
       use_regex: true
     register: files_to_delete
 
@@ -18,3 +18,6 @@
   template:
     src: 1-info.j2
     dest: /etc/update-motd.d/1-info
+    mode: 755
+    owner: root
+    group: root
