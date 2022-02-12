@@ -3,10 +3,13 @@ all:
     bristol:
       hosts:
         darling:
+          server_hostname: darling
           ansible_host: 192.168.1.12
         mandela:
+          server_hostname: mandela
           ansible_host: 192.168.1.13
         turing:
+          server_hostname: turing
           ansible_host: 192.168.1.14
     edinburgh:
       hosts:
