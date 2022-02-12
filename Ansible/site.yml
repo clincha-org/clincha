@@ -1,5 +1,5 @@
 - name: Apply base roll
-  hosts: edinburgh
+  hosts: all
   gather_facts: true
   strategy: free
   become: true
