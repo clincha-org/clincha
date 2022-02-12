@@ -5,3 +5,12 @@
   become: true
   roles:
     - role: base
+
+- name: Setup Edinburgh Kubernetes cluster
+  hosts: edinburgh
+  gather_facts: true
+  strategy: free
+  become: true
+  roles:
+    - geerlingguy.docker
+    - geerlingguy.kubernetes
