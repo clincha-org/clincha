@@ -19,5 +19,5 @@ cat << EOF
       Free Swap: `free -m | tail -n 1 | awk {'print $4'}`M
       Free Disk: `df -h / | awk '{ a = $2 } END { print a }'`
 
-      IP Address: `ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'`
+      IP Address: `ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'`
 EOF
