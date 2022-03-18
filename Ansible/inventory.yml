@@ -13,11 +13,17 @@ all:
           ansible_host: 192.168.1.14
     edinburgh:
       hosts:
-        geddes-01:
-          server_hostname: geddes-01
-          ansible_host: 192.168.1.202
+#        geddes-01:
+#          server_hostname: geddes-01
+#          ansible_host: 192.168.1.202
+#          kubernetes_role: master
+#        geddes-02:
+#          server_hostname: geddes-02
+#          ansible_host: 192.168.1.180
+#          kubernetes_role: node
+        edi-s-01:
+          server_hostname: edi-s-01
+          ansible_host: 192.168.1.174
           kubernetes_role: master
-        geddes-02:
-          server_hostname: geddes-02
-          ansible_host: 192.168.1.180
-          kubernetes_role: node
+          ansible_user: root
+          ansible_password: "Zxj2Q$JyNh7P5@Ne"
