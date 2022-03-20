@@ -1,9 +1,14 @@
 ---
+- name: create group clincha
+  group:
+    name: clincha
+    state: present
+
 - name: create user clincha
   user:
     name: clincha
-    groups: sudo
-    append: yes
+    group: clincha
+    create_home: true
     shell: /bin/bash
 
 - name: create clincha ssh directory

@@ -1,22 +1,23 @@
 ---
 # tasks file for base
-- name: run profile tasks
-  import_tasks: updates.yml
+#- name: update
+#  import_tasks: updates.yml
 
-- name: run profile tasks
+- name: profile
+  import_tasks: profile.yml
+
+- name: bash
   import_tasks: bash.yml
 
-- name: run profile tasks
-  import_tasks: banner.yml
+#- name: banner
+#  import_tasks: banner.yml
 
 #- name: run profile tasks
 #  import_tasks: kubernetes.yml
 
-- name: run profile tasks
-  import_tasks: profile.yml
 
-- name: run ssh tasks
-  import_tasks: ssh.yml
+#- name: ssh
+#  import_tasks: ssh.yml
 
-- name: run network tasks
+- name: network
   import_tasks: network.yml

@@ -26,4 +26,4 @@ all:
           ansible_host: 192.168.1.174
           kubernetes_role: master
           ansible_user: root
-          ansible_password: ""
+          ansible_password: "DAO20R^wso!"
