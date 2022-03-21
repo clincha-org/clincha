@@ -1,5 +1,3 @@
-[[Toc]]
-
 # Server Refresh 2022
 
 I want a
