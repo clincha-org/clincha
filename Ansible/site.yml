@@ -7,7 +7,7 @@
 #    - role: base
 
 - name: Setup Edinburgh Kubernetes cluster
-  hosts: edinburgh
+  hosts: all
   gather_facts: true
   strategy: free
   become: true

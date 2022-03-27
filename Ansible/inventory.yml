@@ -21,9 +21,3 @@ all:
 #          server_hostname: geddes-02
 #          ansible_host: 192.168.1.180
 #          kubernetes_role: node
-        edi-s-01:
-          server_hostname: edi-s-01
-          ansible_host: 192.168.1.174
-          kubernetes_role: master
-          ansible_user: root
-          ansible_password: "DAO20R^wso!"

@@ -8,4 +8,4 @@ PrintMotd no
 PrintLastLog no
 AcceptEnv LANG LC_*
 Subsystem sftp	/usr/lib/openssh/sftp-server
-AllowGroups root clincha
+AllowUsers root clincha ansible

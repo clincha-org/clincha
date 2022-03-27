@@ -11,13 +11,13 @@ on:
 
 jobs:
   ansible-nightly:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Create SSH key
-        run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa'
+        run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa && ssh-agent bash && ssh-add ~/.ssh/id_rsa'
         shell: bash
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
@@ -31,4 +31,7 @@ jobs:
 
       - name: Login banners
         run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/site.yml
+        env:
+          ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
+          CLINCHA_PASSWORD: ${{ secrets.CLINCHA_PASSWORD }}
 

@@ -146,10 +146,8 @@ Bristol awaited.
 
 Check that the hosts can reach one another over the internet.
 
-- SSH into the server from the other side
 - Create the ansible user
-- Creat the SSH keys
-- Create the authorised_keys file
+- Create the authorised_keys file with permissions
 
 #### Troubleshooting
 
@@ -162,6 +160,12 @@ Which locked me out when the ssh key didn't work. Needed to get dad to login and
 - Login as root
 - vi etc/ssh/sshd_config
 - add root to the AllowUsers array
+
+
+    ssh-agent bash
+    ssh-add ~/.ssh/id_rsa
+
+- [need to add the user to the sudoers role](https://developers.redhat.com/blog/2018/08/15/how-to-enable-sudo-on-rhel)
 
 #### Network
 
