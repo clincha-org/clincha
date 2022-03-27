@@ -145,13 +145,23 @@ Bristol awaited.
 ### Configure Ansible
 
 Check that the hosts can reach one another over the internet.
+
 - SSH into the server from the other side
 - Create the ansible user
 - Creat the SSH keys
+- Create the authorised_keys file
 
-##### Commands
-      
-    useradd ansible
+#### Troubleshooting
+
+I changed the sshd file to have the line
+
+    AllowUsers ansible
+
+Which locked me out when the ssh key didn't work. Needed to get dad to login and do this:
+
+- Login as root
+- vi etc/ssh/sshd_config
+- add root to the AllowUsers array
 
 #### Disks
 
