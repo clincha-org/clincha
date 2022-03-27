@@ -1,7 +1,7 @@
 ---
 - name: Copy over login banner file
   template:
-    src: motd.j2
+    src: motd
     dest: /etc/motd
     mode: 0644
     owner: root

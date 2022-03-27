@@ -9,8 +9,8 @@
 #- name: bash
 #  import_tasks: bash.yml
 
-#- name: banner
-#  import_tasks: banner.yml
+- name: banner
+  import_tasks: banner.yml
 
 #- name: run profile tasks
 #  import_tasks: kubernetes.yml
