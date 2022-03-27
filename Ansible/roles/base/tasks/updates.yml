@@ -1,8 +1,7 @@
 ---
 - name: "Update and upgrade apt packages"
   dnf:
-    upgrade: dist
-    update_cache: yes
+    update_only: yes
 
 - name: "Check if reboot required"
   stat:
