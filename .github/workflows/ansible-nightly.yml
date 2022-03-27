@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Create SSH key
-        run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa && eval `ssh-agent -s` && ssh-agent bash'
+        run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa'
         shell: bash
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
@@ -30,7 +30,7 @@ jobs:
           write-mode: overwrite
 
       - name: Site
-        run: ansible-playbook -i Ansible/inverntory-2022.yml Ansible/site.yml
+        run: ansible-playbook -i Ansible/inverntory-2022.yml Ansible/site.yml --key-file id_rsa
         env:
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
           CLINCHA_PASSWORD: ${{ secrets.CLINCHA_PASSWORD }}
