@@ -10,6 +10,6 @@ all:
         EDI-S-01:
     storage:
       hosts:
-        BRI-S-01:
+#        BRI-S-01:
         BRI-S-02:
 #        EDI-S-01:

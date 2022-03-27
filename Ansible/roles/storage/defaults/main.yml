@@ -1,0 +1,10 @@
+---
+# defaults file for storage
+raid_array_name: 'md1'
+raid_devices:
+  - '/dev/sda'
+  - '/dev/sdb'
+  - '/dev/sdc'
+raid_filesystem: 'xfs'
+raid_level: '5'
+raid_mountpoint: '/mnt/storage'

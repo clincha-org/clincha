@@ -1,0 +1,33 @@
+---
+- name: "Check if Array exists"
+  shell: "cat /proc/mdstat | grep {{ raid_array_name }}"
+  register: "array_check"
+  changed_when: false
+  failed_when: false
+  check_mode: no
+
+- name: "Setup the disks"
+  shell: "yes | mdadm --create /dev/{{ raid_array_name }} --level={{ raid_level }} --raid-devices={{ raid_devices|count }} {{ raid_devices| join(' ') }}"
+  when: "'active' not in array_check.stdout"
+
+- name: "Create a filesystem"
+  filesystem:
+    fstype: xfs
+    dev: /dev/md1
+    force: true
+    resizefs: true
+
+- name: "Create directory to mount"
+  file:
+    path: /mnt/storage
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+
+- name: "Mount the filesystem"
+  mount:
+    state: present
+    path: /mnt/storage
+    src: /dev/md1
+    fstype: xfs
