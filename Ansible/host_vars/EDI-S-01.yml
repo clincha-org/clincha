@@ -1,0 +1,6 @@
+ansible_host: 192.168.1.174
+ansible_user: ansible
+
+server_hostname: EDI-S-01
+
+kubernetes_role: master

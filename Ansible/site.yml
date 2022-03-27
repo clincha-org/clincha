@@ -12,5 +12,5 @@
   become: true
   roles:
     - base
-#    - geerlingguy.docker
-#    - geerlingguy.kubernetes
+    - geerlingguy.docker
+    - geerlingguy.kubernetes
