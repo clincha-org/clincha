@@ -1,15 +1,15 @@
 ---
 - name: Copy over login banner file
-  copy:
-    src: motd
-    dest: /etc/motd
+  template:
+    src: motd.j2
+    dest: /etc/motd.j2
     mode: 0644
     owner: root
     group: root
 
 - name: Copy warning file
   copy:
-    src: motd
+    src: login.warn
     dest: /etc/login.warn
     mode: 0644
     owner: root
