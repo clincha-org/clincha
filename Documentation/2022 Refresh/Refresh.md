@@ -163,6 +163,10 @@ Which locked me out when the ssh key didn't work. Needed to get dad to login and
 - vi etc/ssh/sshd_config
 - add root to the AllowUsers array
 
+#### Network
+
+[//]: # (TODO: Create LAN to LAN VPN with Roger Morato)
+
 #### Disks
 
 https://www.digitalocean.com/community/tutorials/how-to-partition-and-format-storage-devices-in-linux
