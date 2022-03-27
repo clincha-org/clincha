@@ -23,7 +23,7 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: Install Ansible galaxy dependencies
-        run: 'ansible-galaxy install geerlingguy.docker geerlingguy.kubernetes ahharu.mdadm'
+        run: 'ansible-galaxy install geerlingguy.docker geerlingguy.kubernetes mrlesmithjr.mdadm'
         shell: bash
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}

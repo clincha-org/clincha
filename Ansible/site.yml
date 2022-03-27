@@ -11,7 +11,7 @@
   strategy: free
   become: true
   roles:
-    - role: ahharu.mdadm
+    - role: mrlesmithjr.mdadm
 
 #- name: Kubernetes
 #  hosts: hawkfield
