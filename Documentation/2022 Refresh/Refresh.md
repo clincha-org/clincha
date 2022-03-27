@@ -11,6 +11,23 @@ network of computers.
 
 ## Objectives
 
+The objective of this refresh is to create a globally resilient network of servers to act as a platform for
+containerized applications.
+
+Goals
+
+- Physical server infrastructure globally distributed
+- Kubernetes clusters that can run workloads despite site failures
+- Secure storage option with 3 separate copies of data
+- Project to demonstrate my abilities
+    - Infrastructure
+    - Application development
+    - Cloud based technologies
+
+Requirements
+
+- Servers must be quiet enough to operate relativity close to sleeping people
+
 ### Quiet
 
 The servers in Bristol have been keeping mum awake when she gets up. We can either improve the server closet or quieten
