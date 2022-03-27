@@ -1,18 +1,24 @@
-#- name: Apply base roll
-#  hosts: bristol
-#  gather_facts: true
-#  strategy: free
-#  become: true
-#  roles:
-#    - role: base
-
-- name: Setup Edinburgh Kubernetes cluster
+- name: Apply base roll
   hosts: all
+  gather_facts: true
   strategy: free
   become: true
   roles:
-    - base
+    - role: base
+
+- name: Setup storage arrays
+  hosts: storage
+  strategy: free
+  become: true
+  roles:
+    - storage
+
+#- name: Kubernetes
+#  hosts: hawkfield
+#  strategy: free
+#  become: true
+#  roles:
 #    - geerlingguy.docker
 #    - geerlingguy.kubernetes
-  vars:
-    kubernetes_allow_pods_on_master: true
+#  vars:
+#    kubernetes_allow_pods_on_master: true
