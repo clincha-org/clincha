@@ -1,7 +1,7 @@
 ---
 # tasks file for base
-#- name: update
-#  import_tasks: updates.yml
+- name: update
+  import_tasks: updates.yml
 
 - name: profile
   import_tasks: profile.yml
