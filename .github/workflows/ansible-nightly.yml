@@ -29,8 +29,8 @@ jobs:
           contents: ${{ secrets.KUBECONFIG }}
           write-mode: overwrite
 
-      - name: Login banners
-        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/site.yml
+      - name: Site
+        run: ansible-playbook -i Ansible/inverntory-2022.yml Ansible/site.yml
         env:
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
           CLINCHA_PASSWORD: ${{ secrets.CLINCHA_PASSWORD }}
