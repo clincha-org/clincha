@@ -22,7 +22,7 @@ jobs:
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
-      - name: Create SSH key
+      - name: Install Ansible galaxy dependencies
         run: 'ansible-galaxy install geerlingguy.docker geerlingguy.kubernetes'
         shell: bash
         env:
