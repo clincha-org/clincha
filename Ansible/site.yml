@@ -8,7 +8,6 @@
 
 - name: Setup Edinburgh Kubernetes cluster
   hosts: all
-  gather_facts: true
   strategy: free
   become: true
   roles:
