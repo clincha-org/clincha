@@ -138,6 +138,11 @@ logging in as root and setting the ssh_config back to default. I then uninstalle
 and booted. I managed a quick test that night and then packed the bits I needed for Bristol before getting to bed.
 Bristol awaited.
 
+##### Trouble
+
+One of the drives is not registering on the OS. Will need to investigate and remove. Working drives are:
+
+
 #### Bristol stage
 
 [//]: # (TODO: Bristol stage)

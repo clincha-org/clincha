@@ -1,0 +1,10 @@
+mdadm_arrays:
+  - name: 'md0'
+    devices:
+      - '/dev/sda'
+      - '/dev/sdb'
+      - '/dev/sdc'
+    filesystem: 'xfs'
+    level: '5'
+    mountpoint: '/mnt/storage'
+    state: 'present'
