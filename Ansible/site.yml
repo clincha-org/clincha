@@ -14,3 +14,5 @@
     - base
     - geerlingguy.docker
     - geerlingguy.kubernetes
+  vars:
+    kubernetes_allow_pods_on_master: true

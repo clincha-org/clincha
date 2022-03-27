@@ -22,6 +22,12 @@ jobs:
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
+      - name: Create SSH key
+        run: 'ansible-galaxy install geerlingguy.docker geerlingguy.kubernetes'
+        shell: bash
+        env:
+          ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
+
       - name: Create kubeconfig file
         uses: DamianReeves/write-file-action@v1.0
         with:
