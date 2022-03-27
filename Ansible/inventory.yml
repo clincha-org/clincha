@@ -3,6 +3,8 @@ all:
     hawkfield:
       hosts:
         mandela:
+        BRI-S-01:
+        BRI-S-02:
     geddes:
       hosts:
         EDI-S-01:
