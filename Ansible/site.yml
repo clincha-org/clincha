@@ -1,0 +1,17 @@
+#- name: Apply base roll
+#  hosts: bristol
+#  gather_facts: true
+#  strategy: free
+#  become: true
+#  roles:
+#    - role: base
+
+- name: Setup Edinburgh Kubernetes cluster
+  hosts: all
+  gather_facts: true
+  strategy: free
+  become: true
+  roles:
+    - base
+#    - geerlingguy.docker
+#    - geerlingguy.kubernetes

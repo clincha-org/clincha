@@ -4,13 +4,14 @@ on:
   push:
     branches:
       - master
+      - edinburgh
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
   ansible-nightly:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -28,15 +29,9 @@ jobs:
           contents: ${{ secrets.KUBECONFIG }}
           write-mode: overwrite
 
-      - name: Login banners
-        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/banner.yml
-
-      - name: Bash profile
-        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/bash.yml
-
-      - name: Update
-        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/updates.yml
-
-      - name: Kubernetes
-        run: ansible-playbook -i Ansible/inventory.yml --key-file id_rsa Ansible/Basics/kubernetes.yml
+      - name: Site
+        run: ansible-playbook -i Ansible/inverntory-2022.yml Ansible/site.yml --key-file id_rsa
+        env:
+          ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
+          CLINCHA_PASSWORD: ${{ secrets.CLINCHA_PASSWORD }}
 

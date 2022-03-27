@@ -1,0 +1,48 @@
+---
+- hosts: linux
+  become: true
+  tasks:
+    - name: Install required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - bash-completion
+
+    - name: Add Google Cloud public signing key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Add Google Cloud repository into sources list
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+
+    - name: Install kubectl
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items:
+        - kubectl
+
+    - name: Ensure .kube directory exists
+      file:
+        path: /home/clincha/.kube/
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Configure kubectl
+      copy:
+        src: ./kubeconfig
+        dest: /home/clincha/.kube/config
+        owner: root
+        group: root
+        mode: 0644

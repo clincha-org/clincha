@@ -1,13 +1,23 @@
 all:
   children:
-    linux:
+    bristol:
       hosts:
         darling:
+          server_hostname: darling
           ansible_host: 192.168.1.12
         mandela:
+          server_hostname: mandela
           ansible_host: 192.168.1.13
         turing:
+          server_hostname: turing
           ansible_host: 192.168.1.14
-      vars:
-        ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-        ansible_user: clincha
+    edinburgh:
+      hosts:
+#        geddes-01:
+#          server_hostname: geddes-01
+#          ansible_host: 192.168.1.202
+#          kubernetes_role: master
+#        geddes-02:
+#          server_hostname: geddes-02
+#          ansible_host: 192.168.1.180
+#          kubernetes_role: node
