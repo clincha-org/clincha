@@ -127,6 +127,15 @@ Bristol awaited.
 
 ### Configure Ansible
 
+Check that the hosts can reach one another over the internet.
+- SSH into the server from the other side
+- Create the ansible user
+- Creat the SSH keys
+
+##### Commands
+      
+    useradd ansible
+
 #### Disks
 
 https://www.digitalocean.com/community/tutorials/how-to-partition-and-format-storage-devices-in-linux
