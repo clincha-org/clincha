@@ -33,23 +33,17 @@
     validate: 'visudo -cf %s'
     mode: 0440
 
-#- name: change password for clincha
-#  user:
-#    name: clincha
-#    update_password: always
-#    password: "{{ root_password | password_hash('sha512') }}"
-#
-#- name: change password for root
-#  user:
-#    name: clincha
-#    update_password: always
-#    password: "{{ root_password | password_hash('sha512') }}"
-#
-#- name: change password for ansible
-#  user:
-#    name: clincha
-#    update_password: always
-#    password: "{{ root_password | password_hash('sha512') }}"
+- name: change password for clincha
+  user:
+    name: clincha
+    update_password: always
+    password: "{{ lookup('env', 'CLINCHA_PASSWORD') | password_hash('sha512') }}"
+
+- name: change password for ansible
+  user:
+    name: clincha
+    update_password: always
+    password: "{{ lookup('env', 'ANSIBLE_PASSWORD') | password_hash('sha512') }}"
 
 - name: never expire clincha
   user:
