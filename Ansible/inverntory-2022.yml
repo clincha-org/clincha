@@ -7,10 +7,11 @@ all:
           ansible_port: 2222
           ansible_user: ansible
           server_hostname: BRI-C-01
-    geddes:
-      hosts:
-        edi-s-01:
-          ansible_host: 192.168.1.174
-          kubernetes_role: master
-          ansible_user: ansible
-          server_hostname: EDI-S-01
+          ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+#    geddes:
+#      hosts:
+#        edi-s-01:
+#          ansible_host: 192.168.1.174
+#          kubernetes_role: master
+#          ansible_user: ansible
+#          server_hostname: EDI-S-01
