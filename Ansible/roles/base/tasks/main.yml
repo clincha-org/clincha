@@ -17,6 +17,3 @@
 
 - name: ssh
   import_tasks: ssh.yml
-
-#- name: network
-#  import_tasks: network.yml

@@ -1,25 +1,8 @@
 ---
-- name: Locate and delete default banner files
-  block:
-  - name: Locate default banner files
-    find:
-      paths: /etc/update-motd.d/
-      patterns: "\\d{2}-.*"
-      use_regex: true
-      file_type: any
-    register: files_to_delete
-
-  - name: Delete default banner files
-    file:
-      path: "{{ item.path }}"
-      state: absent
-      force: true
-    with_items: "{{ files_to_delete.files }}"
-
 - name: Copy over login banner file
   template:
-    src: 1-info.j2
-    dest: /etc/update-motd.d/1-info
-    mode: 0755
+    src: motd.j2
+    dest: /etc/motd
+    mode: 0644
     owner: root
     group: root
