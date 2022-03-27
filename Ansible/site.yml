@@ -1,10 +1,10 @@
-- name: Apply base roll
-  hosts: all
-  gather_facts: true
-  strategy: free
-  become: true
-  roles:
-    - role: base
+#- name: Apply base roll
+#  hosts: all
+#  gather_facts: true
+#  strategy: free
+#  become: true
+#  roles:
+#    - role: base
 
 - name: Setup storage arrays
   hosts: storage
