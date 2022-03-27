@@ -6,3 +6,11 @@
     mode: 0644
     owner: root
     group: root
+
+- name: Copy warning file
+  copy:
+    src: motd
+    dest: /etc/login.warn
+    mode: 0644
+    owner: root
+    group: root
