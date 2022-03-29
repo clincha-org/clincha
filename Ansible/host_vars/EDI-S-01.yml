@@ -1,4 +1,4 @@
-ansible_host: 192.168.1.174
+ansible_host: 88.98.250.18K
 ansible_user: ansible
 
 server_hostname: EDI-S-01
