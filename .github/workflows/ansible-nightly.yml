@@ -36,7 +36,7 @@ jobs:
           write-mode: overwrite
 
       - name: Site
-        run: ssh-keygen -R 88.98.250.18 && ansible-playbook -i Ansible/inventory.yml Ansible/site.yml --key-file id_rsa
+        run: ansible-playbook -i Ansible/inventory.yml Ansible/site.yml --key-file id_rsa
         env:
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
           CLINCHA_PASSWORD: ${{ secrets.CLINCHA_PASSWORD }}
