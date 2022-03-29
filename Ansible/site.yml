@@ -1,28 +1,28 @@
-#- name: Apply base roll
-#  hosts: all
-#  gather_facts: true
-#  strategy: free
-#  become: true
-#  roles:
-#    - role: base
-
-- name: Setup storage arrays
-  hosts: storage
+- name: Apply base roll
+  hosts: all
+  gather_facts: true
   strategy: free
-  gather_facts: false
   become: true
   roles:
-    - role: rhel-system-roles.storage
-  vars:
-    storage_safe_mode: rhel-system-roles.storage
-    storage_volumes:
-      - name: data
-        type: raid
-        disks: [ sdd, sde, sdf, sdg ]
-        raid_level: raid0
-        raid_chunk_size: 32 KiB
-        mount_point: /mnt/data
-        state: present
+    - role: base
+
+#- name: Setup storage arrays
+#  hosts: storage
+#  strategy: free
+#  gather_facts: false
+#  become: true
+#  roles:
+#    - role: rhel-system-roles.storage
+#  vars:
+#    storage_safe_mode: rhel-system-roles.storage
+#    storage_volumes:
+#      - name: data
+#        type: raid
+#        disks: [ sdd, sde, sdf, sdg ]
+#        raid_level: raid0
+#        raid_chunk_size: 32 KiB
+#        mount_point: /mnt/data
+#        state: present
 
 #- name: Kubernetes
 #  hosts: hawkfield
