@@ -8,6 +8,7 @@ all:
     geddes:
       hosts:
         EDI-S-01:
+          ansible_host: 88.98.250.18
     storage:
       hosts:
 #        BRI-S-01:
