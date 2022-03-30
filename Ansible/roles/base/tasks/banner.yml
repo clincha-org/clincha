@@ -16,14 +16,6 @@
     group: root
 
 - name: Copy warning file
-  copy:
-    src: motd.sh
-    dest: /etc/profile.d/motd.sh
-    mode: 0755
-    owner: root
-    group: root
-
-#- name: remove old
-#  file:
-#    path: /etc/profile.d/motd.sh
-#    state: absent
+  file:
+    path: /etc/profile.d/motd.sh
+    state: absent
