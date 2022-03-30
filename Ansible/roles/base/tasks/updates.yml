@@ -12,6 +12,7 @@
 - name: "Check if reboot required"
   command:
     cmd: "needs-restarting -r"
+  changed_when: false
   register: reboot_required
 
 - name: Reboot if required

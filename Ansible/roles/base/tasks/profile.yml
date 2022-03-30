@@ -38,6 +38,7 @@
     name: clincha
     update_password: always
     password: "{{ lookup('env', 'CLINCHA_PASSWORD') | password_hash('sha512') }}"
+  changed_when: false
 
 - name: change password for ansible
   user:
