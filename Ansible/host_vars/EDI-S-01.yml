@@ -1,4 +1,4 @@
-ansible_host: 88.98.250.18
+ansible_host: clincha.co.uk
 ansible_user: ansible
 
 server_hostname: EDI-S-01
