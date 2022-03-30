@@ -19,6 +19,6 @@
   copy:
     src: motd.sh
     dest: /etc/profile.d/motd.sh
-    mode: 0644
+    mode: 0755
     owner: root
     group: root
