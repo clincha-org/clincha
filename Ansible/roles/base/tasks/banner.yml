@@ -1,13 +1,5 @@
 ---
-- name: Copy over login banner file
-  template:
-    src: motd.j2
-    dest: /etc/motd
-    mode: 0644
-    owner: root
-    group: root
-
-- name: Copy warning file
+- name: "Copy warning file (pre-login)"
   copy:
     src: login.warn
     dest: /etc/login.warn
@@ -15,7 +7,15 @@
     owner: root
     group: root
 
-- name: Copy warning file
+- name: "Copy over login banner file (post-login)"
+  template:
+    src: motd.j2
+    dest: /etc/motd
+    mode: 0644
+    owner: root
+    group: root
+
+- name: "Remove other MOTD files"
   file:
     path: /etc/profile.d/motd.sh
     state: absent

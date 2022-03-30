@@ -15,7 +15,7 @@
   changed_when: false
   register: reboot_required
 
-- name: Reboot if required
+- name: "Reboot if required"
   reboot:
     msg: "Ansible is rebooting this host for patching"
   when: "reboot_required.rc == 1"

@@ -1,12 +1,12 @@
 ---
-- name: update
+- name: "update"
   import_tasks: updates.yml
 
-- name: profile
+- name: "profile"
   import_tasks: profile.yml
 
-- name: banner
+- name: "banner"
   import_tasks: banner.yml
 
-- name: ssh
+- name: "ssh"
   import_tasks: ssh.yml
