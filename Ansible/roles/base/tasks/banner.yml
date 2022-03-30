@@ -22,3 +22,8 @@
     mode: 0755
     owner: root
     group: root
+
+- name: remove old
+  file:
+    path: /etc/profile.d/motd.sh
+    state: absent
