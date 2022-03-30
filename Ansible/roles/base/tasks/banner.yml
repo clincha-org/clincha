@@ -23,7 +23,7 @@
     owner: root
     group: root
 
-- name: remove old
-  file:
-    path: /etc/profile.d/motd.sh
-    state: absent
+#- name: remove old
+#  file:
+#    path: /etc/profile.d/motd.sh
+#    state: absent
