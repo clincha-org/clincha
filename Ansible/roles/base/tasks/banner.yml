@@ -14,3 +14,11 @@
     mode: 0644
     owner: root
     group: root
+
+- name: Copy warning file
+  copy:
+    src: motd.sh
+    dest: /etc/profile.d/motd.sh
+    mode: 0644
+    owner: root
+    group: root

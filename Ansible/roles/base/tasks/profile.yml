@@ -51,6 +51,11 @@
     name: clincha
     expires: -1
 
+- name: never expire ansible
+  user:
+    name: ansible
+    expires: -1
+
 - name: change the hostname for the server
   hostname:
     name: "{{ server_hostname }}"
