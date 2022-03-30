@@ -27,7 +27,7 @@
 
 - name: "Mount the filesystem"
   mount:
-    state: present
+    state: mounted
     path: /mnt/storage
     src: /dev/md1
     fstype: xfs
