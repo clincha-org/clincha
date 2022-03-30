@@ -8,8 +8,5 @@
 - name: banner
   import_tasks: banner.yml
 
-#- name: run profile tasks
-#  import_tasks: kubernetes.yml
-
 - name: ssh
   import_tasks: ssh.yml
