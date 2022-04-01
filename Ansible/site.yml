@@ -14,12 +14,12 @@
   roles:
     - role: storage
 
-#- name: Kubernetes
-#  hosts: hawkfield
-#  strategy: free
-#  become: true
-#  roles:
-#    - geerlingguy.docker
-#    - geerlingguy.kubernetes
-#  vars:
-#    kubernetes_allow_pods_on_master: true
+- name: Kubernetes
+  hosts: hawkfield
+  strategy: free
+  become: true
+  roles:
+    - geerlingguy.docker
+    - geerlingguy.kubernetes
+  vars:
+    kubernetes_allow_pods_on_master: true
