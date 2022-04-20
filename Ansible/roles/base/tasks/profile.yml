@@ -22,7 +22,7 @@
   copy:
     src: authorized_keys
     dest: /home/clincha/.ssh/authorized_keys
-    mode: 777
+    mode: 0777
     owner: clincha
     group: clincha
 
@@ -42,9 +42,15 @@
 
 - name: "change password for ansible"
   user:
-    name: clincha
+    name: ansible
     update_password: always
     password: "{{ lookup('env', 'ANSIBLE_PASSWORD') | password_hash('sha512') }}"
+
+- name: "change password for root"
+  user:
+    name: root
+    update_password: always
+    password: "{{ lookup('env', 'ROOT_PASSWORD') | password_hash('sha512') }}"
 
 - name: "never expire clincha"
   user:

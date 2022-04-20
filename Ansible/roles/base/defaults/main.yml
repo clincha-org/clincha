@@ -1,3 +1,8 @@
 ---
 # defaults file for base
 root_password: 'Zxj2Q$JyNh7P5@Ne'
+versionlocks:
+  - "kubeadm-1.23.5-0"
+  - "kubelet-1.23.5-0"
+  - "kubectl-1.23.5-0"
+  - "kubernetes-cni-0.8.7-0"
