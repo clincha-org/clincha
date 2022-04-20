@@ -1,4 +1,9 @@
 ---
+- name: "Install requirements"
+  dnf:
+    name: mdadm
+    state: latest
+
 - name: "Check if Array exists"
   shell: "cat /proc/mdstat | grep {{ raid_array_name }}"
   register: "array_check"

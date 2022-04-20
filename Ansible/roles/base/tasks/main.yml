@@ -10,3 +10,6 @@
 
 - name: "ssh"
   import_tasks: ssh.yml
+
+- name: "kubernetes requirements"
+  import_tasks: kubernetes-requirements.yml
