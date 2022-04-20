@@ -1,12 +1,12 @@
 ---
 - name: "Install version lock"
   dnf:
-    name: yum-versionlock
+    name: python3-dnf-plugin-versionlock
     state: latest
 
 - name: "Lock Kubernetes versions"
   command: |
-    yum versionlock {{ item }}
+    dnf versionlock {{ item }}
   with_items: versionlocks
 
 - name: "Upgrade all packages"
