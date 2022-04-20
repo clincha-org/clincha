@@ -1,5 +1,12 @@
 ---
-- name: "Upgrade all packages"
-  mount:
-    state: absent
-    fstype: swap
+- name: Disable SWAP
+  shell: |
+    swapoff -a
+  when: kubernetes_installed is changed
+
+- name: Disable SWAP in fstab
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
+  when: kubernetes_installed is changed
