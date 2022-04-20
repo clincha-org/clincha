@@ -7,7 +7,7 @@
 - name: "Lock Kubernetes versions"
   command: |
     dnf versionlock {{ item }}
-  with_items: versionlocks
+  with_items: "{{ versionlocks }}"
 
 - name: "Upgrade all packages"
   dnf:
