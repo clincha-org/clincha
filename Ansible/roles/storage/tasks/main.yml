@@ -26,9 +26,9 @@
   file:
     path: /mnt/storage
     state: directory
-    owner: root
-    group: root
-    mode: 0700
+    owner: clincha
+    group: clincha
+    mode: 0770
 
 - name: "Mount the filesystem"
   mount:
