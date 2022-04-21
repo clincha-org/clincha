@@ -36,3 +36,6 @@
     path: /mnt/storage
     src: /dev/md1
     fstype: xfs
+
+- name: "Create storage directories"
+  include_tasks: storage_directories.yml
