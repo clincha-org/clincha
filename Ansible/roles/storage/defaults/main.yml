@@ -10,5 +10,5 @@ raid_level: '5'
 raid_mountpoint: '/mnt/storage'
 
 storage_filesystem:
-  - { path: /mnt/storage/movies, group: clincha, owner: clincha, mode: 0770 }
-  - { path: /mnt/storage/series, group: clincha, owner: clincha, mode: 0770 }
+  - { path: /mnt/storage/movies, group: clincha, owner: clincha, mode: 0755 }
+  - { path: /mnt/storage/series, group: clincha, owner: clincha, mode: 0755 }
