@@ -13,3 +13,6 @@
 
 - name: "kubernetes requirements"
   import_tasks: kubernetes-requirements.yml
+
+- name: "general packages"
+  import_tasks: packages.yml

@@ -1,0 +1,5 @@
+- name: "Install"
+  dnf:
+    name: screen
+    state: latest
+
