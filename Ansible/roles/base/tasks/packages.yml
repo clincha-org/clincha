@@ -1,5 +1,5 @@
 - name: "Install"
   dnf:
-    name: screen
+    name: tmux
     state: latest
 
