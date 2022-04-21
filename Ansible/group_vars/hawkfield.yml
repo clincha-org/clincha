@@ -1,0 +1,3 @@
+kubernetes_pod_network:
+  cni: 'calico'
+  cidr: '10.100.0.0/16'

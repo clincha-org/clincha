@@ -17,6 +17,7 @@
 - name: Kubernetes
   hosts: hawkfield
   strategy: free
+  gather_facts: true
   become: true
   roles:
     - geerlingguy.docker

@@ -22,7 +22,7 @@
   copy:
     src: authorized_keys
     dest: /home/clincha/.ssh/authorized_keys
-    mode: 0777
+    mode: 0600
     owner: clincha
     group: clincha
 
