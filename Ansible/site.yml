@@ -1,22 +1,17 @@
 - name: Apply base roll
   hosts: all
-  gather_facts: true
-  strategy: free
   become: true
   roles:
     - role: base
 
 - name: Setup storage arrays
   hosts: storage
-  strategy: free
-  gather_facts: false
   become: true
   roles:
     - role: storage
 
 - name: Kubernetes
   hosts: hawkfield
-  gather_facts: true
   become: true
   roles:
     - geerlingguy.docker
