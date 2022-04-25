@@ -1,5 +1,2 @@
 kubernetes_allow_pods_on_master: true
 kubernetes_version_rhel_package: '1.23.5'
-kubernetes_pod_network:
-  cni: 'calico'
-  cidr: '10.100.0.0/16'
