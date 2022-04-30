@@ -24,6 +24,7 @@
     cmd: "needs-restarting -r"
   changed_when: false
   register: reboot_required
+  failed_when: reboot_required.rc != 0 or reboot_required != 1
 
 - name: "Reboot if required"
   reboot:
