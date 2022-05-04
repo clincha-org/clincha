@@ -3,17 +3,18 @@
 ## Work trouble
 
 I got in trouble at work because I was using my work email address (angus.clinch@bailliegifford.com) to make commits on
-my personal repository. While this is fine I was committing sensitive files that referenced secrets and the CSOC team
-were getting alerts. This needs to be resolved.
+my personal repository. While this is fine normally, I was committing files that referenced my GitHub secrets
+and the CSOC team were getting alerts. This needs to be resolved so that I don't waste peoples times when I'm using my
+work laptop to commit personal work. The current system is that I need to select a checkbox everytime I make a commit
+and then write my personal email (angus.clinch@gmail.com) in a box.
+
+![old-system.png](Images/Git/old-system.png)
 
 ## Fix it
 
-Setting my username for this repository should override the global config and make it less error-prone than the
-current system. The current system is that I need to select a checkbox everytime I make a commit and then write my
-personal email (angus.clinch@gmail.com). I
+Setting my username for this repository should override the global configuration on my work device. I
 followed [this guide](https://docs.github.com/en/get-started/getting-started-with-git/setting-your-username-in-git)
-which recommends I use the following commands in the
-directory of the repository.
+which recommends I use the following commands in the directory of the repository.
 
     git config user.name clincha
     git config user.email angus.clinch@gmail.com
@@ -25,16 +26,15 @@ First I'll check what the current setting is:
     PS C:\Users\angus306\source\personal\clinch-home> git config user.name 
     Angus Clinch
 
-This is after I changed it:
+Then I'll change it (using the above commands) and inspect the result again:
 
     PS C:\Users\angus306\source\personal\clinch-home> git config user.email
     angus.clinch@gmail.com
     PS C:\Users\angus306\source\personal\clinch-home> git config user.name
     clincha
 
-I was also expecting to see a .git directory added to the repository, but I can't see that anywhere. Not sure where the
-Git user and email information
-is stored for repository based systems.
+Looks like it's worked locally. I was expecting to see a .git directory added to the repository, but I can't see that
+anywhere. Not sure where the Git user and email information is stored for repository based configuration.
 
 ## Result
 

@@ -82,7 +82,7 @@ the hard drives. These will be salvaged from the servers that these replace. The
 | BRI-S-02 | 618.29  |
 | Total    | 2054.48 |
 
-The plan is to recoup some of these costs by selling the existing servers. However, these servers are now old and I do
+The plan is to recoup some of these costs by selling the existing servers. However, these servers are now old, and I do
 not expect to get much back from them.
 
 ### Build
