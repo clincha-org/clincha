@@ -30,3 +30,7 @@ This is after I changed it:
 
 I was also expecting to see a .git directory added to the repo but I can't see that anywhere. Not sure where that info
 is stored.
+
+Yay! It worked
+
+![it worked.png](Images/Git/it worked.png)
