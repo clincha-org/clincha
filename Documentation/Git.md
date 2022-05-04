@@ -33,4 +33,4 @@ is stored.
 
 Yay! It worked
 
-![it worked.png](Images/Git/it worked.png)
+![it worked.png](Images/Git/it-worked.png)
