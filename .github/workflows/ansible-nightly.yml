@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - edinburgh
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
@@ -22,11 +21,12 @@ jobs:
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
-      - name: Install Ansible galaxy dependencies
-        run: 'ansible-galaxy install geerlingguy.docker geerlingguy.kubernetes'
-        shell: bash
-        env:
-          ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
+      # No galaxy dependencies needed at the moment but leaving it in to make any later easier
+      #      - name: Install Ansible galaxy dependencies
+      #        run: 'ansible-galaxy install geerlingguy.docker geerlingguy.kubernetes'
+      #        shell: bash
+      #        env:
+      #          ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: Create kubeconfig file
         uses: DamianReeves/write-file-action@v1.0
