@@ -13,6 +13,5 @@
 - name: Kubernetes
   hosts: hawkfield
   become: true
-  roles:
-    - geerlingguy.docker
-    - geerlingguy.kubernetes
+  role:
+    - kubernetes

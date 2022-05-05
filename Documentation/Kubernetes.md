@@ -72,8 +72,8 @@ which provides a firewall service on Linux.
 - https://linuxconfig.org/how-to-turn-on-off-ip-forwarding-in-linux
 - https://www.howtogeek.com/177621/the-beginners-guide-to-iptables-the-linux-firewall/
 
-Ansible ansible.posix.sysctl module can set these. Using the Ansible module ensures that these are set to start on boot
-and that they are set for the running system too.
+Ansible sysctl (ansible.posix.sysctl) module can set these. Using the Ansible module ensures that these are set to start
+on boot and that they are set for the running system too.
 
     net.bridge.bridge-nf-call-iptables  = 1
     net.bridge.bridge-nf-call-ip6tables = 1

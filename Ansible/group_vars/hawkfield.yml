@@ -1,2 +1,2 @@
 kubernetes_allow_pods_on_master: true
-kubernetes_version_rhel_package: '1.23.5'
+kubernetes_version: '1.23.5'

@@ -1,0 +1,8 @@
+---
+containerd_modprobe_modules:
+  - "overlay"
+  - "br_netfilter"
+containerd_sysctl_parameters:
+  - {name: "net.bridge.bridge-nf-call-iptables", state: "present"}
+  - {name: "net.bridge.bridge-nf-call-ip6tables", state: "present"}
+  - {name: "net.ipv4.ip_forward", state: "present"}
