@@ -9,7 +9,7 @@
 
 - name: "Run modprobe commands"
   command: modprobe -v {{ item }}
-  with_items: containerd_modprobe_modules
+  with_items: "{{ containerd_modprobe_modules }}"
   register: modprobe_output
   changed_when: "'insmod' in modprobe_output.stdout"
 
@@ -17,7 +17,7 @@
   sysctl:
     name: "{{ item.name }}"
     state: "{{ item.state }}"
-  with_items: containerd_sysctl_parameters
+  with_items: "{{ containerd_sysctl_parameters }}"
 
 
 
