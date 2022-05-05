@@ -20,7 +20,28 @@
     state: "{{ item.state }}"
   with_items: "{{ containerd_sysctl_parameters }}"
 
+- name: "Install the dnf plugin manager"
+  dnf:
+    name: dnf-plugins-core
+    state: latest
+    update_cache: yes
 
+- name: "Add the docker dnf repository"
+  dnf:
+    enablerepo: "https://download.docker.com/linux/fedora/docker-ce.repo"
 
+- name: "Install docker and containerd"
+  dnf:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-compose-plugin
 
-
+- name: "Start docker"
+  systemd:
+    name: docker
+    state: started

@@ -78,3 +78,18 @@ on boot and that they are set for the running system too.
     net.bridge.bridge-nf-call-iptables  = 1
     net.bridge.bridge-nf-call-ip6tables = 1
     net.ipv4.ip_forward                 = 1
+
+### Install containerd
+
+To install containerd I'm using [this guide](https://github.com/containerd/containerd/blob/main/docs/getting-started.md)
+. I could install it from the GitHub page but that seems like a faff. Docker packages it up for dnf so I'll try and
+install it that way. Instructions passed me over to [this page](https://docs.docker.com/engine/install/debian/) to get
+dnf ready to install it.
+
+I'm a bit confused because I'm getting containerd from the Docker wiki now and I thought I was installing containerd not
+Docker. I
+read [this guide](https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/Whats-the-difference-between-containerd-and-Docker#:~:text=Docker%20is%20a%20broad%20set,uses%20containerd%20as%20its%20runtime.)
+and it cleared that up. Docker is a set of technologies that is used to run containers. Containerd is a runtime that
+Docker uses.
+
+The guides are quite good, so I won't repeat much here.
