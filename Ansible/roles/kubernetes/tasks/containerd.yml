@@ -16,6 +16,7 @@
 - name: "Add sysctl parameters"
   sysctl:
     name: "{{ item.name }}"
+    value: "{{ item.value}} "
     state: "{{ item.state }}"
   with_items: "{{ containerd_sysctl_parameters }}"
 
