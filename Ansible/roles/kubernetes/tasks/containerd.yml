@@ -42,6 +42,15 @@
     - docker-compose-plugin
     - iproute-tc
 
+- name: "Configure docker to use systemd as cgroup driver"
+  copy:
+    dest: /etc/docker/daemon.json
+    src: daemon.json
+    owner: root
+    group: root
+    mode: 0660
+  notify: restart docker
+
 - name: "Start docker"
   systemd:
     name: docker
