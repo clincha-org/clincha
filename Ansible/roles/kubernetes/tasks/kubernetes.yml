@@ -11,7 +11,7 @@
 
 - name: "Ensure yum repository is setup"
   copy:
-    dest: etc/yum.repos.d/kubernetes.repo
+    dest: /etc/yum.repos.d/kubernetes.repo
     src: kubernetes.repo
     owner: root
     group: root
