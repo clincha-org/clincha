@@ -1,0 +1,7 @@
+- name: "Open firewall ports needed to communicate with the master server"
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+  with_items:
+    - "10250/tcp"
