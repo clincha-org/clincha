@@ -6,3 +6,4 @@ containerd_sysctl_parameters:
   - {name: "net.bridge.bridge-nf-call-iptables", value: 1, state: "present"}
   - {name: "net.bridge.bridge-nf-call-ip6tables", value: 1, state: "present"}
   - {name: "net.ipv4.ip_forward", value: 1, state: "present"}
+kubeadm_bootstrap_token: "{{ lookup('env', BOOTSTRAP_TOKEN) }}"
