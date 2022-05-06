@@ -14,4 +14,3 @@
 - name: "Debug - kubeadm_init_output"
   debug:
     var: kubeadm_init_output
-

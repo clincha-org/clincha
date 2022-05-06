@@ -57,8 +57,21 @@
     name: docker
     state: restarted
 
-- name: "Start docker"
-  systemd:
-    name: docker
-    state: started
-    enabled: yes
+- name: "Block - Start docker"
+  block:
+    - name: "Start docker"
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+  rescue:
+    - name: "Wait for docker to be ready to start"
+      wait_for:
+        timeout: 30
+      delegate_to: localhost
+
+    - name: "Start docker again"
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
