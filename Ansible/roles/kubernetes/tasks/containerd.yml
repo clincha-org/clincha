@@ -40,8 +40,10 @@
     - docker-ce-cli
     - containerd.io
     - docker-compose-plugin
+    - iproute-tc
 
 - name: "Start docker"
   systemd:
     name: docker
     state: started
+    enabled: yes

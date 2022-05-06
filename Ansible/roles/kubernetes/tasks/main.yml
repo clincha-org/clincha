@@ -3,5 +3,5 @@
   include_tasks: containerd.yml
 
 - name: "Initialise cluster on master node"
-  when: kubernetes_role is 'master'
+  when: kubernetes_role == 'master'
   include_tasks: initialise_master.yml
