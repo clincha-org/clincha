@@ -4,6 +4,6 @@
     permanent: yes
     state: enabled
   with_items:
-    - "6443"
-    - "10250"
+    - "6443/tcp"
+    - "10250/tcp"
 
