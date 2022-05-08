@@ -75,3 +75,11 @@
         name: docker
         state: started
         enabled: yes
+
+- name: "Use containerd as the container runtime"
+  copy:
+    dest: /etc/crictl.yaml
+    src: crictl.yaml
+    owner: root
+    group: root
+    mode: 0660
