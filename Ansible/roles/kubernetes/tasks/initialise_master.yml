@@ -7,6 +7,14 @@
     - "6443/tcp"
     - "10250/tcp"
 
+- name: "Set kubeadm to use containerd"
+  copy:
+    dest: /var/lib/kubelet/kubeadm-flags.env
+    src: kubeadm-flags.env
+    owner: root
+    group: root
+    mode: 0660
+
 - name: "Initialise the cluster"
   command: kubeadm init --pod-network-cidr=10.100.0.0/16 --v=5
   register: kubeadm_init_output
