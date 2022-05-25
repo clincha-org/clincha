@@ -25,17 +25,17 @@ source "proxmox" "rhel8-template" {
   insecure_skip_tls_verify = true
 
   node       = "edi-s-01"
-  vm_id      = "500"
   vm_name    = "rhel8"
   qemu_agent = true
 
-  iso_file    = "local:iso/rhel-8.5-x86_64-dvd.iso"
-  unmount_iso = true
+  iso_file = "local:iso/rhel-8.5-x86_64-dvd.iso"
 
-  ssh_username = "root"
-  ssh_password = "${var.vm_root_password}"
-  ssh_timeout  = "60m"
-  disable_kvm  = true
+  ssh_username         = "ansible"
+  #  ssh_password = "${var.vm_root_password}"
+  ssh_private_key_file = "./files/ansible"
+  ssh_port             = 22
+  ssh_timeout          = "120m"
+  disable_kvm          = true
 
   cloud_init              = true
   cloud_init_storage_pool = "local-lvm"
@@ -43,15 +43,15 @@ source "proxmox" "rhel8-template" {
   boot_command = [
     "<up><wait><tab><wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait5>"
   ]
-  boot_wait = "1s"
+  boot_wait = "3s"
 
   http_directory    = "http"
-  http_bind_address = "192.168.1.15"
+  http_bind_address = "192.168.2.12"
   http_port_min     = 8802
   http_port_max     = 8802
 
   cores  = "8"
-  memory = "12288"
+  memory = "8192"
 
   scsi_controller = "virtio-scsi-pci"
 
@@ -74,26 +74,11 @@ build {
   name    = "rhel8-template-instance"
   sources = ["source.proxmox.rhel8-template"]
 
-  # Provisioning the VM Template for Cloud-Init Integration in Proxmox #1
   provisioner "shell" {
     inline = [
-      "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done",
       "sudo rm /etc/ssh/ssh_host_*",
       "sudo truncate -s 0 /etc/machine-id",
-      "sudo cloud-init clean",
-      "sudo rm -f /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg",
-      "sudo sync"
+      "sudo sync",
     ]
-  }
-
-  # Provisioning the VM Template for Cloud-Init Integration in Proxmox #2
-  provisioner "file" {
-    source      = "files/99-pve.cfg"
-    destination = "/tmp/99-pve.cfg"
-  }
-
-  # Provisioning the VM Template for Cloud-Init Integration in Proxmox #3
-  provisioner "shell" {
-    inline = ["sudo cp /tmp/99-pve.cfg /etc/cloud/cloud.cfg.d/99-pve.cfg"]
   }
 }

@@ -135,17 +135,25 @@ I tried to be clever at this stage and use Ansible to configure the OS but hit i
 compatible with RHEL. Once I finally managed to make it work it ran the SSH playbook, changed the ssh_config file and
 locked me out! This meant, getting the server back down from its final location, installing the graphics card again,
 logging in as root and setting the ssh_config back to default. I then uninstalled the GPU, put it back in its cupboard
-and booted. I managed a quick test that night and then packed the bits I needed for Bristol before getting to bed.
+and booted. I managed a quick test that night and then packed the bits I needed before getting to bed.
 Bristol awaited.
 
 ##### Trouble
 
-One of the drives is not registering on the OS. Will need to investigate and remove. Working drives are:
+One of the drives is not registering on the OS. Will need to investigate and remove.
 
+[This issue](https://github.com/clincha/clinch-home/issues/6) was raised and dealt with
 
 #### Bristol stage
 
 [//]: # (TODO: Bristol stage)
+
+##### Out with the old
+
+##### In with the new
+
+Arriving in Bristol I waited. The server components were delayed, I was having a pleasant holiday. Once the parts
+finally arrived I got to work.
 
 ### Configure Ansible
 
