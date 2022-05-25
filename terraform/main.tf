@@ -11,12 +11,29 @@ provider "proxmox" {
 }
 
 resource "proxmox_vm_qemu" "rhel8-instance" {
-  name        = "rhel8-instance"
+  name        = "kube-worker-0"
   target_node = "edi-s-01"
-  clone       = "rhel8"
+  clone       = "template-rhel8"
+  full_clone  = false
   agent       = 1
 
   sockets = 2
   cores   = 2
+  memory  = 4096
+
+  os_type   = "cloud-init"
+  ipconfig0 = "ip=192.168.2.160/24,gw=192.168.2.1"
+
+  provisioner "remote-exec" {
+    connection {
+      host        = "192.168.2.160"
+      type        = "ssh"
+      user        = "ansible"
+      private_key = file("./ansible")
+      port        = 22
+    }
+
+    inline = ["sudo hostnamectl set-hostname worker1"]
+  }
 
 }

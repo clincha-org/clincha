@@ -1,2 +1,4 @@
 /packer/credentials.auto.pkrvars.hcl
 /packer/files/ansible
+/terraform/main.tf
+/terraform/ansible
