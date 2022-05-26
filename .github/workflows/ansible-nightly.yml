@@ -22,7 +22,7 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: Site
-        run: cd Ansible && ansible-playbook -i Ansible/inventory.proxmox.yml Ansible/site.yml --key-file id_rsa -vv
+        run: cd Ansible && ansible-playbook -i inventory.proxmox.yml site.yml --key-file id_rsa -vv
         env:
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
 
