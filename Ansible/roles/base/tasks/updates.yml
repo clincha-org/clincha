@@ -1,6 +1,6 @@
 ---
 - name: Register as user and auto-subscribe to available content.
-  community.general.redhat_subscription:
+  redhat_subscription:
     state: present
     username: clincha
     password: "{{ lookup('env', REDHAT_PASSWORD) }}"
