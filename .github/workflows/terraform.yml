@@ -20,7 +20,7 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: terraform apply
-        run: terraform apply -auto-approve
+        run: terraform init && terraform apply -auto-approve
         working-directory: terraform
         env:
           PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}
