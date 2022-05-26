@@ -22,7 +22,7 @@ source "proxmox" "rhel8-template" {
   boot_command = [
     "<up><wait><tab><wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait5>"
   ]
-  boot_wait = "3s"
+  boot_wait = "10s"
 
   http_directory    = "http"
   http_bind_address = "192.168.2.12"
