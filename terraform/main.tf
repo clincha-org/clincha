@@ -31,7 +31,7 @@ resource "proxmox_vm_qemu" "rhel8-worker" {
   os_type   = "cloud-init"
   ipconfig0 = "ip=192.168.2.16${each.value}/24,gw=192.168.2.1"
 
-  tags = "base,kubernetes-worker"
+  tags = "base,github-runner"
 
   provisioner "remote-exec" {
     connection {

@@ -2,27 +2,17 @@
 - name: "Only execute on tasks that have the correct tag"
   when: "'kubernetes-worker' in hostvars[inventory_hostname].proxmox_tags_parsed"
   block:
-    - name: "Debug (proxmox_tags_parsed)"
-      debug:
-        var: "'kubernetes-worker' in hostvars[inventory_hostname].proxmox_tags_parsed"
-        verbosity: 0
-
-    - name: "Debug (ansible_facts)"
-      debug:
-        var: ansible_facts['proxmox_tags_parsed]
-        verbosity: 0
-
     - name: "update"
-      import_tasks: updates.yml
+      include_tasks: updates.yml
 
     - name: "profile"
-      import_tasks: profile.yml
+      include_tasks: profile.yml
 
     - name: "banner"
-      import_tasks: banner.yml
+      include_tasks: banner.yml
 
     - name: "ssh"
-      import_tasks: ssh.yml
+      include_tasks: ssh.yml
 
     - name: "general packages"
-      import_tasks: packages.yml
+      include_tasks: packages.yml
