@@ -1,6 +1,6 @@
 plugin: "community.general.proxmox"
 url: "https://192.168.2.174:8006"
 user: "root@pam"
-password: "fake1234"
+password: "{{ ansible_password }}"
 validate_certs: false
 want_facts: true
