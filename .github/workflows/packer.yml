@@ -24,4 +24,4 @@ jobs:
         working-directory: packer
         env:
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
-          PROXMOX_TOKEN_SECRET: ${{ secrets.PROXMOX_TOKEN_SECRET }}
+          PROXMOX_TOKEN_SECRET: ${{ secrets.PACKER_PROXMOX_TOKEN_SECRET }}
