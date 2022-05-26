@@ -3,7 +3,7 @@
   redhat_subscription:
     state: present
     username: clincha
-    password: "{{ lookup('env', REDHAT_PASSWORD) }}"
+    password: "{{ lookup('env', 'REDHAT_PASSWORD') }}"
     auto_attach: true
 
 - name: "Install version lock"
