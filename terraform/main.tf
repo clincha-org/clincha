@@ -7,7 +7,8 @@ terraform {
 }
 
 provider "proxmox" {
-  pm_api_url = "https://192.168.2.174:8006/api2/json"
+  pm_api_url  = "https://192.168.2.174:8006/api2/json"
+  pm_token_id = "terraform@pam!terraform"
 }
 
 resource "proxmox_vm_qemu" "rhel8-worker" {
@@ -38,7 +39,7 @@ resource "proxmox_vm_qemu" "rhel8-worker" {
       host        = "192.168.2.16${each.value}"
       type        = "ssh"
       user        = "ansible"
-      private_key = file("./ansible")
+      private_key = file("../id_rsa")
       port        = 22
     }
 
