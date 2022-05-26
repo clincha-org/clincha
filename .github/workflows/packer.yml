@@ -20,7 +20,7 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: Site
-        run: packer build -var "ansible_ssh_password=$ANSIBLE_PASSWORD" -var "proxmox_api_token_secret=$PROXMOX_TOKEN_SECRET" ./packer
+        run: packer build -var "ansible_ssh_password=$ANSIBLE_PASSWORD" -var "proxmox_api_token_secret=$PROXMOX_TOKEN_SECRET" .
         working-directory: packer
         env:
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
