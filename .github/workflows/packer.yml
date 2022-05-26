@@ -1,9 +1,6 @@
 name: packer
 
 on:
-  push:
-    branches:
-      - '*'
   workflow_dispatch:
 
 jobs:
