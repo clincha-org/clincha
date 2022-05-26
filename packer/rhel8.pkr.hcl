@@ -25,7 +25,7 @@ source "proxmox" "rhel8-template" {
   boot_wait = "10s"
 
   http_directory    = "http"
-  http_bind_address = "192.168.2.12"
+  http_bind_address = "192.168.2.164"
   http_port_min     = 8802
   http_port_max     = 8802
 
