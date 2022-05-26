@@ -22,7 +22,7 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: Site
-        run: cd Ansible && ansible-inventory -vv -i inventory.proxmox.yml -e ansible_password='{{ lookup("env", "ANSIBLE_PASSWORD") }}'
+        run: cd Ansible && ansible-inventory -vv -i inventory.proxmox.yml
         env:
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
 
