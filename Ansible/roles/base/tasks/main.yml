@@ -2,7 +2,7 @@
 - name: Display all variables/facts known for a host
   debug:
     var: hostvars[inventory_hostname]
-    verbosity: 4
+    verbosity: 0
 
 - name: "update"
   import_tasks: updates.yml
