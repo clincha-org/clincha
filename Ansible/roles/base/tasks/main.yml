@@ -4,7 +4,7 @@
   block:
     - name: "Debug (proxmox_tags_parsed)"
       debug:
-        var: hostvars[inventory_hostname].proxmox_tags_parsed
+        var: "'kubernetes-worker' in hostvars[inventory_hostname].proxmox_tags_parsed"
         verbosity: 0
 
     - name: "Debug (ansible_facts)"
