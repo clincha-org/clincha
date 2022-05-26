@@ -1,4 +1,4 @@
-name: clinch-home ansible nightly
+name: ansible
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  ansible-nightly:
+  ansible:
     runs-on: self-hosted
     steps:
       - name: Checkout
