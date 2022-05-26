@@ -31,7 +31,7 @@ source "proxmox" "rhel8-template" {
   iso_file = "local:iso/rhel-8.5-x86_64-dvd.iso"
 
   ssh_username = "ansible"
-  ssh_password = "${var.vm_root_password}"
+  ssh_password = "${var.ansible_ssh_password}"
   ssh_port     = 22
   ssh_timeout  = "10m"
 
