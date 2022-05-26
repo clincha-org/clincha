@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Create SSH key
-        run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa'
+        run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa && dos2unix id_rsa'
         shell: bash
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
