@@ -26,4 +26,5 @@ jobs:
         env:
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
           PROXMOX_TOKEN_SECRET: ${{ secrets.PROXMOX_TOKEN_SECRET }}
+          REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
 
