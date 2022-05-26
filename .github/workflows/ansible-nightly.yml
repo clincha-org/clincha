@@ -25,5 +25,5 @@ jobs:
         run: cd Ansible && ansible-playbook -vv -i inventory.proxmox.yml site.yml --key-file id_rsa
         env:
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
-          TOKEN_SECRET: ${{ secrets.PROXMOX_TOKEN_SECRET }}
+          PROXMOX_TOKEN_SECRET: ${{ secrets.PROXMOX_TOKEN_SECRET }}
 
