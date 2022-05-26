@@ -1,5 +1,6 @@
 - name: Apply base roll
   hosts: proxmox_all_running
+  when: 'kubernetes-worker' in hostvars[inventory_hostname].proxmox_tags_parsed
   become: true
   roles:
     - role: base
