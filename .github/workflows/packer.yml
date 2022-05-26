@@ -20,5 +20,5 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: Site
-        run: packer build .
+        run: cd packer && packer build .
         working-directory: packer
