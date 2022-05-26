@@ -1,4 +1,11 @@
 ---
+- name: Register as user and auto-subscribe to available content.
+  community.general.redhat_subscription:
+    state: present
+    username: clincha
+    password: "{{ lookup('env', REDHAT_PASSWORD) }}"
+    auto_attach: true
+
 - name: "Install version lock"
   dnf:
     name: python3-dnf-plugin-versionlock

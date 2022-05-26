@@ -1,17 +1,17 @@
-#- name: Apply base roll
-#  hosts: all
-#  become: true
-#  roles:
-#    - role: base
+- name: Apply base roll
+  hosts: proxmox_all_running
+  become: true
+  roles:
+    - role: base
 #
 #- name: Setup storage arrays
 #  hosts: storage
 #  become: true
 #  roles:
 #    - role: storage
-
-- name: Kubernetes
-  hosts: hawkfield
-  become: true
-  roles:
-    - role: kubernetes
+#
+#- name: Kubernetes
+#  hosts: hawkfield
+#  become: true
+#  roles:
+#    - role: kubernetes

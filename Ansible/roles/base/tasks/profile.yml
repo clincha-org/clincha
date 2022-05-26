@@ -62,10 +62,6 @@
     name: ansible
     expires: -1
 
-- name: "change the hostname for the server"
-  hostname:
-    name: "{{ server_hostname }}"
-
 - name: "disable root user"
   user:
     name: root
