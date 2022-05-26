@@ -1,22 +1,3 @@
-# Variable Definitions
-variable "proxmox_api_url" {
-  type = string
-}
-
-variable "proxmox_api_token_id" {
-  type = string
-}
-
-variable "proxmox_api_token_secret" {
-  type      = string
-  sensitive = true
-}
-
-variable "vm_root_password" {
-  type      = string
-  sensitive = true
-}
-
 source "proxmox" "rhel8-template" {
 
   proxmox_url              = "${var.proxmox_api_url}"
