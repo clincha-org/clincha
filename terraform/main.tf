@@ -7,8 +7,8 @@ terraform {
 }
 
 provider "proxmox" {
-  pm_api_url  = "https://192.168.2.174:8006/api2/json"
-  pm_token_id = "terraform@pam!terraform"
+  pm_api_url      = "https://192.168.2.174:8006/api2/json"
+  pm_api_token_id = "terraform@pam!terraform"
 }
 
 resource "proxmox_vm_qemu" "rhel8-worker" {
