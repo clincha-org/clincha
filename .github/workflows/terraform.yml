@@ -1,10 +1,10 @@
-name: packer
+name: terraform
 
 on:
   workflow_dispatch:
 
 jobs:
-  packer:
+  terraform:
     runs-on: self-hosted
     steps:
       - name: Checkout
@@ -16,7 +16,7 @@ jobs:
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
-      - name: Site
+      - name: terraform apply
         run: terraform apply -auto-approve
         working-directory: terraform
         env:
