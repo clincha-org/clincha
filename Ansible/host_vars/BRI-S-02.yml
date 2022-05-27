@@ -1,8 +1,0 @@
-ansible_host: clinch-home.com
-ansible_port: 2224
-ansible_user: ansible
-ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
-
-server_hostname: BRI-S-02
-
-kubernetes_role: slave

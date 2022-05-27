@@ -1,3 +1,7 @@
+variable "http_bind_address" {
+  type = string
+}
+
 variable "proxmox_api_url" {
   type = string
 }
