@@ -6,8 +6,16 @@ terraform {
   }
 }
 
+variable "proxmox_api_url" {
+  default = "clincha.co.uk:8006"
+}
+
+variable "ansible_id_rsa" {
+  default = ""
+}
+
 provider "proxmox" {
-  pm_api_url      = "https://192.168.2.174:8006/api2/json"
+  pm_api_url      = var.proxmox_api_url
   pm_api_token_id = "terraform@pam!terraform"
 }
 
@@ -39,7 +47,7 @@ resource "proxmox_vm_qemu" "rhel8-worker" {
       host        = "192.168.2.16${each.value}"
       type        = "ssh"
       user        = "ansible"
-      private_key = file("../id_rsa")
+      private_key = var.ansible_id_rsa
       port        = 22
     }
 

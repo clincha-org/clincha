@@ -2,3 +2,4 @@
 /packer/files/ansible
 /terraform/main.tf
 /id_rsa
+/terraform/credentials.auto.tfvars.hcl
