@@ -14,6 +14,10 @@ variable "ansible_id_rsa" {
   default = ""
 }
 
+variable "proxmox_token_secret" {
+  default = ""
+}
+
 provider "proxmox" {
   pm_api_url      = var.proxmox_api_url
   pm_api_token_id = "terraform@pam!terraform"
