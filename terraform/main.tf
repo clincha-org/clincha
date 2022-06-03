@@ -19,8 +19,9 @@ variable "proxmox_token_secret" {
 }
 
 provider "proxmox" {
-  pm_api_url      = var.proxmox_api_url
-  pm_api_token_id = "terraform@pam!terraform"
+  pm_api_url          = var.proxmox_api_url
+  pm_api_token_id     = "terraform@pam!terraform"
+  pm_api_token_secret = var.proxmox_token_secret
 }
 
 resource "proxmox_vm_qemu" "rhel8-worker" {
