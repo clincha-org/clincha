@@ -8,7 +8,7 @@ terraform {
 }
 
 variable "proxmox_api_url" {
-  default = "clincha.co.uk:8006"
+  default = "https://clincha.co.uk:8006"
 }
 
 variable "ansible_id_rsa" {
