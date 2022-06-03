@@ -22,9 +22,9 @@ provider "proxmox" {
 resource "proxmox_vm_qemu" "rhel8-worker" {
   for_each = {
     edi-kubeworker-1 = "1"
-    edi-kubeworker-2 = "2"
-    edi-kubeworker-3 = "3"
-    edi-runner-1     = "4"
+    #    edi-kubeworker-2 = "2"
+    #    edi-kubeworker-3 = "3"
+    #    edi-runner-1     = "4"
   }
 
   name        = each.key
