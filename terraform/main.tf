@@ -51,7 +51,7 @@ resource "proxmox_vm_qemu" "rhel8-worker" {
       host        = "192.168.2.16${each.value}"
       type        = "ssh"
       user        = "ansible"
-      private_key = file("../id_rsa")
+      private_key = var.ansible_id_rsa
       port        = 22
     }
 
