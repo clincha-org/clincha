@@ -33,8 +33,8 @@ resource "proxmox_vm_qemu" "rhel8-worker" {
 
   name        = each.key
   target_node = "edi-s-01"
-  clone       = 100
-  full_clone  = false
+  clone       = "template-rhel8"
+  full_clone  = true
   agent       = 1
 
   sockets = 2
