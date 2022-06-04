@@ -1,15 +1,26 @@
 terraform {
   required_providers {
     proxmox = {
-      source  = "Telmate/proxmox"
+      source = "Telmate/proxmox"
     }
   }
 }
 
+variable "ansible_id_rsa" {
+  default   = ""
+  sensitive = true
+}
+
+variable "proxmox_token_secret" {
+  default   = ""
+  sensitive = true
+}
+
 provider "proxmox" {
-  pm_api_url      = "https://88.98.250.18:8006/api2/json"
-  pm_api_token_id = "terraform@pam!terraform"
-  pm_tls_insecure = true
+  pm_api_url          = "https://88.98.250.18:8006/api2/json"
+  pm_api_token_id     = "terraform@pam!terraform"
+  pm_api_token_secret = var.proxmox_token_secret
+  pm_tls_insecure     = true
 }
 
 resource "proxmox_vm_qemu" "rhel8-worker" {
