@@ -48,11 +48,11 @@ resource "proxmox_vm_qemu" "rhel8-worker" {
 
   provisioner "remote-exec" {
     connection {
-      # Horrible solution. I need a manual firewall change for every new host
       host        = "clincha.co.uk"
       type        = "ssh"
       user        = "ansible"
       private_key = var.ansible_id_rsa
+      # Horrible solution. I need a manual firewall change for every new host
       port        = "1600${each.value}"
     }
 
