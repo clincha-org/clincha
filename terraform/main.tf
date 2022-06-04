@@ -11,27 +11,18 @@ variable "proxmox_api_url" {
   default = "https://clincha.co.uk:8006"
 }
 
-variable "ansible_id_rsa" {
-  default = ""
-}
-
-variable "proxmox_token_secret" {
-  default = ""
-}
-
 provider "proxmox" {
-  pm_api_url          = var.proxmox_api_url
-  pm_api_token_id     = "terraform@pam!terraform"
-  pm_api_token_secret = var.proxmox_token_secret
-  pm_tls_insecure     = true
+  pm_api_url      = var.proxmox_api_url
+  pm_api_token_id = "terraform@pam!terraform"
+  pm_tls_insecure = true
 }
 
 resource "proxmox_vm_qemu" "rhel8-worker" {
   for_each = {
     edi-kubeworker-1 = "1"
-    #    edi-kubeworker-2 = "2"
-    #    edi-kubeworker-3 = "3"
-    #    edi-runner-1     = "4"
+    edi-kubeworker-2 = "2"
+    edi-kubeworker-3 = "3"
+    edi-runner-1     = "4"
   }
 
   name        = each.key
@@ -54,7 +45,7 @@ resource "proxmox_vm_qemu" "rhel8-worker" {
       host        = "192.168.2.16${each.value}"
       type        = "ssh"
       user        = "ansible"
-      private_key = var.ansible_id_rsa
+      private_key = file("../id_rsa")
       port        = 22
     }
 
