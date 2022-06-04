@@ -7,12 +7,8 @@ terraform {
   }
 }
 
-variable "proxmox_api_url" {
-  default = "https://88.98.250.18:8006/api2/json"
-}
-
 provider "proxmox" {
-  pm_api_url      = var.proxmox_api_url
+  pm_api_url      = "https://88.98.250.18:8006/api2/json"
   pm_api_token_id = "terraform@pam!terraform"
   pm_tls_insecure = true
 }
