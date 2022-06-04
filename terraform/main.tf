@@ -49,11 +49,11 @@ resource "proxmox_vm_qemu" "rhel8-worker" {
   provisioner "remote-exec" {
     connection {
       # Horrible solution. I need a manual firewall change for every new host
-      host        = "clincha.co.uk:1600${each.value}"
+      host        = "clincha.co.uk"
       type        = "ssh"
       user        = "ansible"
       private_key = var.ansible_id_rsa
-      port        = 22
+      port        = "1600${each.value}"
     }
 
     inline = ["sudo hostnamectl set-hostname ${each.key}"]
