@@ -8,7 +8,7 @@ terraform {
 }
 
 variable "proxmox_api_url" {
-  default = "https://clincha.co.uk:8006"
+  default = "https://clincha.co.uk:8006/api2/json"
 }
 
 provider "proxmox" {
