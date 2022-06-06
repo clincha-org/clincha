@@ -1,4 +1,9 @@
 ---
+- name: "Install basic tools"
+  dnf:
+    name:
+      - dos2unix
+
 - name: "Enable Ansible repository"
   rhsm_repository:
     name: ansible-2.9-for-rhel-8-x86_64-rpms
