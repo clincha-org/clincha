@@ -1,6 +1,5 @@
 ---
 - name: "Only execute on tasks that have the correct tag"
-  when: "'base' in hostvars[inventory_hostname].proxmox_tags_parsed"
   block:
     - name: "update"
       include_tasks: updates.yml
