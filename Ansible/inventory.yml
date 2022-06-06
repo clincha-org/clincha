@@ -1,6 +1,8 @@
 all:
   children:
-    edi-runner:
-      ansible_host: clincha.co.uk
-      ansible_port: 16004
-      ansible_user: ansible
+    edinburgh:
+      hosts:
+        edi-runner:
+          ansible_host: clincha.co.uk
+          ansible_port: 16004
+          ansible_user: ansible
