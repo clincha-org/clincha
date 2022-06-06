@@ -21,6 +21,11 @@ jobs:
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
+      - name: Install and run dos2unix
+        run: 'apt-get install dos2unix -y && dos2unix inventory.yml && dos2unix ../id_rsa'
+        working-directory: Ansible
+        shell: bash
+
       - name: ansible-playbook
         run: ansible-playbook -i inventory.yml site.yml --key-file ../id_rsa
         working-directory: Ansible
