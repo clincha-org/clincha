@@ -1,8 +1,8 @@
 ---
 - name: "Add package repositories"
   yum_repository:
-    name:
-      - ansible-2.9-for-rhel-8-x86_64-rpms
+    baseurl:
+      - https://cdn.redhat.com/content/dist/layered/rhel8/x86_64/ansible/2.9/os
       - https://rpm.releases.hashicorp.com/$release/hashicorp.repo
     state: present
 
