@@ -1,11 +1,25 @@
 ---
-- name: "Enable dependencies"
+- name: "Enable Ansible repository"
   rhsm_repository:
     name: ansible-2.9-for-rhel-8-x86_64-rpms
     state: enabled
 
-- name: "Install required packages"
+- name: "Install Ansible"
   dnf:
     name:
       - python36
       - ansible
+
+- name: "Enable Terraform repository"
+  yum_repository:
+    name: "hashicorp"
+    baseurl: "https://rpm.releases.hashicorp.com/RHEL/$releasever/$basearch/stable"
+    enabled: true
+    gpgcheck: true
+    gpgcakey: "https://rpm.releases.hashicorp.com/gpg"
+
+- name: "Install Hashicorp tools"
+  dnf:
+    name:
+      - terraform
+      - packer
