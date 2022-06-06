@@ -1,5 +1,5 @@
 - name: Apply base roll
-  hosts: all
+  hosts: edinburgh,proxmox_all_running
   become: true
   roles:
     - role: base
