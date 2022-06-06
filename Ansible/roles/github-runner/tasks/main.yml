@@ -1,0 +1,15 @@
+---
+- name: "Add package repositories"
+  yum_repository:
+    name:
+      - ansible-2.9-for-rhel-8-x86_64-rpms
+      - https://rpm.releases.hashicorp.com/$release/hashicorp.repo
+    state: present
+
+- name: "Install required packages"
+  dnf:
+    name:
+      - dos2unix
+      - ansible
+      - terraform
+      - packer
