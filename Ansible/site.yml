@@ -1,5 +1,5 @@
 - name: Apply base roll
-  hosts: proxmox_all_running
+  hosts: all
   become: true
   roles:
     - role: base
