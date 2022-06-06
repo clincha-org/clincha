@@ -1,11 +1,16 @@
 ---
-- name: "Add package repositories"
+- name: "Add Ansible repositories"
   yum_repository:
-    name: automation
-    description: "Automation tools' repositories"
-    baseurl:
-      - https://cdn.redhat.com/content/dist/layered/rhel8/x86_64/ansible/2.9/os
-      - https://rpm.releases.hashicorp.com/$release/hashicorp.repo
+    name: "ansible"
+    description: "Ansible repositories"
+    baseurl: "https://cdn.redhat.com/content/dist/layered/rhel8/x86_64/ansible/2.9/os"
+    state: present
+
+- name: "Add Hashicorp repositories"
+  yum_repository:
+    name: "hashicorp"
+    description: "Hashicorp repositories"
+    baseurl: "https://rpm.releases.hashicorp.com/$release/hashicorp.repo"
     state: present
 
 - name: "Install required packages"
