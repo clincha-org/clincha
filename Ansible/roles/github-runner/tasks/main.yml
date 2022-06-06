@@ -22,7 +22,7 @@
     baseurl: "https://rpm.releases.hashicorp.com/RHEL/$releasever/$basearch/stable"
     enabled: true
     gpgcheck: true
-    gpgcakey: "https://rpm.releases.hashicorp.com/gpg"
+    gpgkey: "https://rpm.releases.hashicorp.com/gpg"
 
 - name: "Install Hashicorp tools"
   dnf:
