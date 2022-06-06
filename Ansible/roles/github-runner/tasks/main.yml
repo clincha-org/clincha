@@ -18,6 +18,7 @@
 - name: "Enable Terraform repository"
   yum_repository:
     name: "hashicorp"
+    description: "Hashicorp repository"
     baseurl: "https://rpm.releases.hashicorp.com/RHEL/$releasever/$basearch/stable"
     enabled: true
     gpgcheck: true
