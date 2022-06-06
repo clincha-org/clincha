@@ -1,26 +1,11 @@
 ---
-- name: "Add Ansible repositories"
-  yum_repository:
-    name: "ansible"
-    description: "Ansible repositories"
-    baseurl: "https://cdn.redhat.com/content/dist/layered/rhel8/x86_64/ansible/2.9/debug"
-    sslverify: true
-    sslcacert: /etc/rhsm/ca/redhat-uep.pem
-    sslclientkey: /etc/pki/entitlement/1888304477052586397-key.pem
-    sslclientcert: etc/pki/entitlement/1888304477052586397.pem
-    state: present
-
-- name: "Add Hashicorp repositories"
-  yum_repository:
-    name: "hashicorp"
-    description: "Hashicorp repositories"
-    baseurl: "https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo"
-    state: present
+- name: "Enable dependencies"
+  rhsm_repository:
+    name: ansible-2.9-for-rhel-8-x86_64-rpms
+    state: enabled
 
 - name: "Install required packages"
   dnf:
     name:
-      - dos2unix
+      - python36
       - ansible
-      - terraform
-      - packer
