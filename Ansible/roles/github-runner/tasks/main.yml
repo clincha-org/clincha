@@ -3,7 +3,11 @@
   yum_repository:
     name: "ansible"
     description: "Ansible repositories"
-    baseurl: "https://cdn.redhat.com/content/dist/layered/rhel8/x86_64/ansible/2.9/os"
+    baseurl: "https://cdn.redhat.com/content/dist/layered/rhel8/x86_64/ansible/2.9/debug"
+    sslverify: true
+    sslcacert: /etc/rhsm/ca/redhat-uep.pem
+    sslclientkey: /etc/pki/entitlement/1888304477052586397-key.pem
+    sslclientcert: etc/pki/entitlement/1888304477052586397.pem
     state: present
 
 - name: "Add Hashicorp repositories"
