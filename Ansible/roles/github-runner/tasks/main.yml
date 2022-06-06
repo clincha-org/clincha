@@ -14,7 +14,7 @@
   yum_repository:
     name: "hashicorp"
     description: "Hashicorp repositories"
-    baseurl: "https://rpm.releases.hashicorp.com/$release/hashicorp.repo"
+    baseurl: "https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo"
     state: present
 
 - name: "Install required packages"
