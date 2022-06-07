@@ -3,7 +3,7 @@
   block:
     - name: "What's going on?"
       debug:
-        var: default(proxmox_net0.ip)
+        var: ipaddr('address')
 
     - name: "update"
       include_tasks: updates.yml
