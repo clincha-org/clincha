@@ -21,7 +21,7 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: ansible-galaxy
-        run: "ansible-galaxy collection install community.general.proxmox"
+        run: "ansible-galaxy collection install community.general"
 
       - name: ansible-playbook
         run: "ansible-playbook -i inventory.proxmox.yml site.yml --key-file ../id_rsa"
