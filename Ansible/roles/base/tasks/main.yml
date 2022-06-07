@@ -1,10 +1,6 @@
 ---
 - name: "Only execute on tasks that have the correct tag"
   block:
-    - name: "What's going on?"
-      debug:
-        var: proxmox_ipconfig0
-
     - name: "update"
       include_tasks: updates.yml
 
