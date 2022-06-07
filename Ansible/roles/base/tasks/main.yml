@@ -3,7 +3,7 @@
   block:
     - name: "What's going on?"
       debug:
-        var: ansible_facts
+        var: proxmox_ipconfig0.ip
 
     - name: "update"
       include_tasks: updates.yml
