@@ -1,4 +1,4 @@
-name: ansible static
+name: ansible github
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: Install and run dos2unix
-        run: 'sudo apt-get install dos2unix -y && dos2unix inventory.yml && dos2unix ../id_rsa'
+        run: 'sudo apt-get update && sudo apt-get install dos2unix -y && dos2unix inventory.yml && dos2unix ../id_rsa'
         working-directory: Ansible
         shell: bash
 

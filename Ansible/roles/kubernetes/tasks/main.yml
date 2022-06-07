@@ -1,4 +1,9 @@
 ---
+- name: "Lock Kubernetes versions"
+  command: |
+    dnf versionlock {{ item }}
+  with_items: "{{ versionlocks }}"
+
 - name: "Install container runtime"
   include_tasks: containerd.yml
 

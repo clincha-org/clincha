@@ -1,6 +1,10 @@
 ---
 - name: "Only execute on tasks that have the correct tag"
   block:
+    - name: "What's going on?"
+      debug:
+        var: ansible_facts
+
     - name: "update"
       include_tasks: updates.yml
 
