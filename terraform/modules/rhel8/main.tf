@@ -1,4 +1,6 @@
 resource "proxmox_vm_qemu" "rhel8-worker" {
+  provider = "Telmate/proxmox"
+
   name        = var.name
   target_node = var.target_node
   clone       = var.source_vm
