@@ -1,14 +1,9 @@
 - name: Apply base roll
-  hosts: edinburgh,proxmox_all_running
+  hosts: proxmox_all_running
   become: true
   roles:
     - role: base
 
-- name: Setup github runner
-  hosts: edinburgh
-  become: true
-  roles:
-    - role: github-runner
 #
 #- name: Setup storage arrays
 #  hosts: storage

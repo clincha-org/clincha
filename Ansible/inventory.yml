@@ -1,6 +1,6 @@
 all:
   children:
-    edinburgh:
+    runners:
       hosts:
         edi-runner:
           ansible_host: clincha.co.uk
