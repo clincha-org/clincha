@@ -1,18 +1,18 @@
 - name: Apply base roll
   hosts: proxmox_all_running
+  when: "base in proxmox_tags"
   become: true
   roles:
     - role: base
 
-#
-#- name: Setup storage arrays
-#  hosts: storage
-#  become: true
-#  roles:
-#    - role: storage
-#
-#- name: Kubernetes
-#  hosts: hawkfield
-#  become: true
-#  roles:
-#    - role: kubernetes
+- name: Setup storage arrays
+  hosts: storage
+  become: true
+  roles:
+    - role: storage
+
+- name: Kubernetes
+  hosts: hawkfield
+  become: true
+  roles:
+    - role: kubernetes

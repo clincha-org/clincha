@@ -1,5 +1,5 @@
 /packer/credentials.auto.pkrvars.hcl
 /packer/files/ansible
-/terraform/main.tf
+/terraform/modules/rhel8/main.tf
 /id_rsa
 /terraform/credentials.auto.tfvars.hcl
