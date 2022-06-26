@@ -3,9 +3,11 @@ I need to sort out the documentation in the repository and write up some things 
 
 ## Possible sections
 ### Tidbits
-Bits and pieces
+Bits and pieces that I've done that deserve their own writeups. They don't really fit in any one section.
+My little cloud
+Content that 
 
-## Content that sti
+## Content that still needs writing
 ### What's happened?
 - Landlordin
 	- Documentation on what needed done to get from a flat to ready for Airbnb
@@ -27,5 +29,5 @@ Bits and pieces
 - Creating the Finance application
 - Section for ideas that I've had
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3MjcxMDEwOTRdfQ==
+eyJoaXN0b3J5IjpbLTE4MDYwNDUyMF19
 -->
