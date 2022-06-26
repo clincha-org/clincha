@@ -1,11 +1,5 @@
 # Writeups
-I need to sort out the documentation in the repository and write up some things that have happened. 
-
-## Possible sections
-### Tidbits
-Bits and pieces that I've done that deserve their own writeups. They don't really fit in any one section.
-My little cloud
-Content that 
+I need to sort out the documentation in the repository and write up some things that have happened. Possible sections could be tidbits, my little cloud, 
 
 ## Content that still needs writing
 ### What's happened?
@@ -29,5 +23,5 @@ Content that
 - Creating the Finance application
 - Section for ideas that I've had
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4MDYwNDUyMF19
+eyJoaXN0b3J5IjpbMjAyNTMwOTQzMV19
 -->
