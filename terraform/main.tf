@@ -1,8 +1,5 @@
 # Github runners
 module "edi-runner-1" {
-  providers = {
-    proxmox = proxmox.clincha
-  }
   name      = "edi-runner-01"
   source    = "./modules/rhel8"
   tags      = "base,github_runner"
@@ -12,9 +9,6 @@ module "edi-runner-1" {
 
 # Kubernetes workers
 module "edi-kubeworker-3" {
-  providers = {
-    proxmox = proxmox.clincha
-  }
   name      = "edi-kubeworker-3"
   source    = "./modules/rhel8"
   tags      = "base,kubernetes_worker"
@@ -22,9 +16,6 @@ module "edi-kubeworker-3" {
   port      = "16003"
 }
 module "edi-kubeworker-2" {
-  providers = {
-    proxmox = proxmox.clincha
-  }
   name      = "edi-kubeworker-2"
   source    = "./modules/rhel8"
   tags      = "base,kubernetes_worker"
@@ -32,9 +23,6 @@ module "edi-kubeworker-2" {
   port      = "16002"
 }
 module "edi-kubeworker-1" {
-  providers = {
-    proxmox = proxmox.clincha
-  }
   name      = "edi-kubeworker-1"
   source    = "./modules/rhel8"
   tags      = "base,kubernetes_worker"
