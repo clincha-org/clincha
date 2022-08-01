@@ -16,11 +16,10 @@ variable "name" {
 }
 
 variable "port" {
-  default = ""
+  default = 22
   type    = number
 }
 
-# Optional
 variable "target_node" {
   default = "edi-s-01"
   type    = string
