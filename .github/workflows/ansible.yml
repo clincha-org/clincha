@@ -20,6 +20,9 @@ jobs:
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
+      - name: Install dependencies
+        run: "pip install requests"
+
       - name: ansible-galaxy
         run: "ansible-galaxy collection install community.general"
 
