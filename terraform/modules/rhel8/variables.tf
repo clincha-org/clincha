@@ -24,7 +24,7 @@ variable "full_clone" {
 }
 
 variable "agent" {
-  default = true
+  default = 1
 }
 
 variable "sockets" {
