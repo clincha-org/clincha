@@ -1,16 +1,26 @@
+# Required
 variable "ansible_id_rsa" {
   default   = ""
   sensitive = true
+  type = string
 }
 
 variable "hostname" {
   default = ""
+  type = string
 }
 
 variable "name" {
   default = ""
+  type = string
 }
 
+variable "port" {
+  default = ""
+  type = number
+}
+
+# Optional
 variable "target_node" {
   default = "edi-s-01"
 }
@@ -46,8 +56,4 @@ variable "ip_subnet" {
 
 variable "tags" {
   default = "base"
-}
-
-variable "port" {
-  default = ""
 }

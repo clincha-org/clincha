@@ -17,14 +17,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Create SSH key
-        run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa'
-        shell: bash
-        env:
-          ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
-
       - name: terraform apply
         run: terraform init
+        working-directory: terraform
+        env:
+          PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}
+
+      - name: terraform plan
+        run: terraform plan
         working-directory: terraform
         env:
           PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}

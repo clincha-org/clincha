@@ -1,20 +1,10 @@
-# Github runners
-module "edi-runner-1" {
-  name           = "edi-runner-01"
-  source         = "./modules/rhel8"
-  tags           = "base,github_runner"
-  ip_subnet      = "192.168.2.164/24"
-  port           = "16004"
-  ansible_id_rsa = var.ansible_id_rsa
-}
-
 # Kubernetes workers
-module "edi-kubeworker-3" {
-  name           = "edi-kubeworker-3"
+module "edi-kubeworker-1" {
+  name           = "edi-kubeworker-1"
   source         = "./modules/rhel8"
   tags           = "base,kubernetes_worker"
-  ip_subnet      = "192.168.2.163/24"
-  port           = "16003"
+  ip_subnet      = "192.168.2.161/24"
+  port           = 16001
   ansible_id_rsa = var.ansible_id_rsa
 }
 module "edi-kubeworker-2" {
@@ -22,14 +12,24 @@ module "edi-kubeworker-2" {
   source         = "./modules/rhel8"
   tags           = "base,kubernetes_worker"
   ip_subnet      = "192.168.2.162/24"
-  port           = "16002"
+  port           = 16002
   ansible_id_rsa = var.ansible_id_rsa
 }
-module "edi-kubeworker-1" {
-  name           = "edi-kubeworker-1"
+module "edi-kubeworker-3" {
+  name           = "edi-kubeworker-3"
   source         = "./modules/rhel8"
   tags           = "base,kubernetes_worker"
-  ip_subnet      = "192.168.2.161/24"
-  port           = "16001"
+  ip_subnet      = "192.168.2.163/24"
+  port           = 16003
+  ansible_id_rsa = var.ansible_id_rsa
+}
+
+# Github runners
+module "edi-runner-1" {
+  name           = "edi-runner-01"
+  source         = "./modules/rhel8"
+  tags           = "base,github_runner"
+  ip_subnet      = "192.168.2.164/24"
+  port           = 16004
   ansible_id_rsa = var.ansible_id_rsa
 }
