@@ -23,12 +23,6 @@ jobs:
         env:
           PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}
 
-      - name: terraform plan
-        run: terraform plan
-        working-directory: terraform
-        env:
-          PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}
-
       - name: terraform apply
         run: terraform apply -auto-approve
         working-directory: terraform
