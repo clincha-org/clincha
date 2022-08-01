@@ -3,7 +3,7 @@ terraform {
     organization = "clinch-home"
 
     workspaces {
-      name = "github"
+      name = "clinch-home"
     }
   }
 }
