@@ -12,7 +12,7 @@ resource "proxmox_vm_qemu" "rhel8-worker" {
   os_type   = "cloud-init"
   ipconfig0 = "ip=${var.ip_subnet},gw=192.168.2.1"
 
-  tags = var.tags
+  tags = join(",", var.tags)
 
   provisioner "remote-exec" {
     connection {
