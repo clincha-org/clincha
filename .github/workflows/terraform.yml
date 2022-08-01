@@ -10,6 +10,10 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     steps:
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -20,7 +24,13 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: terraform apply
-        run: terraform init && terraform apply -auto-approve
+        run: terraform init
+        working-directory: terraform
+        env:
+          PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}
+
+      - name: terraform apply
+        run: terraform apply -auto-approve
         working-directory: terraform
         env:
           PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}
