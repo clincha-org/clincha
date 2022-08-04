@@ -21,13 +21,13 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: Install dependencies
-        run: "pip3 install ansible-runner"
+        run: "pip3 install requests"
 
       - name: ansible-galaxy
         run: "ansible-galaxy collection install community.general"
 
       - name: ansible-playbook
-        run: "ansible-runner run -i inventory.proxmox.yml -p site.yml --key-file ../id_rsa"
+        run: "ansible-playbook site.yml --inventory inventory.proxmox.yml --key-file ../id_rsa"
         working-directory: Ansible
         env:
           ANSIBLE_CONFIG: Ansible/ansible.cfg
