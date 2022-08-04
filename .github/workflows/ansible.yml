@@ -34,7 +34,7 @@ jobs:
           key: ${{ secrets.ANSIBLE_PK }}
 #          requirements: galaxy-requirements.yml
           options: |
-            --inventory inventory.proxmox.yml
+            --inventory inventory.yml
             --verbose
         env:
 #          ANSIBLE_CONFIG: Ansible/ansible.cfg
