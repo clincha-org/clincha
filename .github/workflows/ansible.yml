@@ -30,7 +30,6 @@ jobs:
         run: "ansible-playbook -vvvv -i inventory.proxmox.yml site.yml --key-file ../id_rsa"
         working-directory: Ansible
         env:
-#          ANSIBLE_CONFIG: Ansible/ansible.cfg
           PROXMOX_TOKEN_SECRET: ${{ secrets.ANSIBLE_PROXMOX_TOKEN_SECRET }}
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
           REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
