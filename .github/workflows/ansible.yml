@@ -21,7 +21,7 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: Install dependencies
-        run: "ll /usr/bin | grep pip"
+        run: "ls -la /usr/bin | grep pip"
 
       - name: ansible-galaxy
         run: "ansible-galaxy collection install community.general"
