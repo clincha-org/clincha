@@ -4,7 +4,7 @@ all:
       hosts:
         edi-runner:
           ansible_port: 16004
-    kubernetes-workers:
+    kubernetes:
       hosts:
         kubeworker-1:
           ansible_port: 16001
