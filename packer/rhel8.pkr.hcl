@@ -36,7 +36,7 @@ source "proxmox" "rhel8-template" {
 
   disks {
     disk_size         = "32G"
-    format            = "qcow2"
+    format            = "scsi"
     storage_pool      = "local-lvm"
     storage_pool_type = "lvm-thin"
     type              = "virtio"
