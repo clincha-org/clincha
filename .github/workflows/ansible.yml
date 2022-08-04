@@ -21,20 +21,16 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: Install dependencies
-        run: "python3 -m pip install requests"
+        run: "which ansible-playbook"
 
-      - name: ansible-galaxy
-        run: "ansible-galaxy collection install community.general"
+#      - name: ansible-galaxy
+#        run: "ansible-galaxy collection install community.general"
 
       - name: ansible-playbook
-        uses: dawidd6/action-ansible-playbook@v2
-        with:
-          playbook: site.yml
-          directory: Ansible
-          key: ../id_rsa
-          options: |
-            --inventory inventory.proxmox.yml
+        run: "ansible-playbook -vvvv site.yml --inventory inventory.proxmox.yml --key-file ../id_rsa"
+        working-directory: Ansible
         env:
+          ANSIBLE_CONFIG: Ansible/ansible.cfg
           PROXMOX_TOKEN_SECRET: ${{ secrets.ANSIBLE_PROXMOX_TOKEN_SECRET }}
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
           REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
