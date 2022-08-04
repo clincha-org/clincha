@@ -36,10 +36,10 @@ source "proxmox" "rhel8-template" {
 
   disks {
     disk_size         = "32G"
-    format            = "scsi"
+    format            = "raw"
     storage_pool      = "local-lvm"
     storage_pool_type = "lvm-thin"
-    type              = "virtio"
+    type              = "scsi"
   }
 
   network_adapters {
