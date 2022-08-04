@@ -1,20 +1,20 @@
 - name: Apply base roll
   hosts: all
   become: true
-  stratergy: free
+  strategy: free
   roles:
     - role: base
 
 - name: Setup storage arrays
   hosts: runner
   become: true
-  stratergy: free
+  strategy: free
   roles:
     - role: github-runner
 
 - name: Kubernetes
   hosts: kubernetes
   become: true
-  stratergy: free
+  strategy: free
   roles:
     - role: kubernetes
