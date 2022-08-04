@@ -1,6 +1,5 @@
 - name: Apply base roll
   hosts: proxmox_all_running
-  when: "base in proxmox_tags"
   become: true
   roles:
     - role: base
