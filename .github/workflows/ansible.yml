@@ -27,7 +27,7 @@ jobs:
         run: "ansible-galaxy collection install community.general"
 
       - name: ansible-playbook
-        run: "ansible-playbook -i inventory.proxmox.yml site.yml --key-file ../id_rsa"
+        run: "ansible-playbook -vvvv -i inventory.proxmox.yml site.yml --key-file ../id_rsa"
         working-directory: Ansible
         env:
           ANSIBLE_CONFIG: Ansible/ansible.cfg
