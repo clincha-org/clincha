@@ -21,7 +21,7 @@ jobs:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
       - name: Install dependencies
-        run: "apt-get install python3-requests"
+        run: "sudo apt-get install -y python3-requests"
 
       - name: ansible-galaxy
         run: "ansible-galaxy collection install community.general"
