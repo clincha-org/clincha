@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: terraform apply
+      - name: terraform initialise
         run: terraform init
         working-directory: terraform
         env:
