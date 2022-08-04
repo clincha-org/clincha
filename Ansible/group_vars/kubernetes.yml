@@ -1,0 +1,7 @@
+kubernetes_allow_pods_on_master: true
+kubernetes_version: '1.23.5'
+versionlocks:
+  - "kubeadm-1.23.5"
+  - "kubelet-1.23.5"
+  - "kubectl-1.23.5"
+  - "kubernetes-cni-0.8.7"

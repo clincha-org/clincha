@@ -12,7 +12,6 @@
 - name: "Install Ansible"
   dnf:
     name:
-      - python36
       - ansible
 
 - name: "Enable Terraform repository"
