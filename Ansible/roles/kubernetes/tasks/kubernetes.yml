@@ -1,14 +1,4 @@
 ---
-- name: Disable SWAP
-  shell: |
-    swapoff -a
-
-- name: Disable SWAP in fstab
-  replace:
-    path: /etc/fstab
-    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
-    replace: '# \1'
-
 - name: "Ensure yum repository is setup"
   copy:
     dest: /etc/yum.repos.d/kubernetes.repo

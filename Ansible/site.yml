@@ -5,16 +5,16 @@
   roles:
     - role: base
 
-- name: Setup storage arrays
+- name: Setup github runners
   hosts: runners
   become: true
   strategy: free
   roles:
     - role: github-runner
 
-- name: Kubernetes
-  hosts: kubernetes
-  become: true
-  strategy: free
-  roles:
-    - role: kubernetes
+#- name: Kubernetes
+#  hosts: kubernetes
+#  become: true
+#  strategy: free
+#  roles:
+#    - role: kubernetes

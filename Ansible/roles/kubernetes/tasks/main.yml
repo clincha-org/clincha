@@ -1,8 +1,14 @@
 ---
-- name: "Lock Kubernetes versions"
-  command: |
-    dnf versionlock {{ item }}
-  with_items: "{{ versionlocks }}"
+- name: "Disable SWAP"
+  include_tasks: disable-swap.yml
+
+- name: "Disable SELinux"
+  include_tasks: disable-selinux.yml
+
+#- name: "Lock Kubernetes versions"
+#  command: |
+#    dnf versionlock {{ item }}
+#  with_items: "{{ versionlocks }}"
 
 - name: "Install container runtime"
   include_tasks: containerd.yml
