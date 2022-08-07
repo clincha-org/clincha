@@ -10,12 +10,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Create SSH key
-        run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa'
-        shell: bash
-        env:
-          ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
-
       - name: ansible teardown
         uses: dawidd6/action-ansible-playbook@v2
         with:
@@ -27,6 +21,10 @@ jobs:
             --verbose
         env:
           REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: terraform initialise
         run: terraform init
