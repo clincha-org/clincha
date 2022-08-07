@@ -16,6 +16,18 @@ jobs:
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
+      - name: ansible teardown
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: teardown.yml
+          directory: Ansible
+          key: ${{ secrets.ANSIBLE_PK }}
+          options: |
+            --inventory inventory.yml
+            --verbose
+        env:
+          REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
+
       - name: terraform apply
         run: terraform init && terraform destroy -auto-approve
         working-directory: terraform

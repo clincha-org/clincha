@@ -1,9 +1,9 @@
 name: ansible
 
 on:
-  push:
-    branches:
-      - '*'
+#  push:
+#    branches:
+#      - '*'
   #  schedule:
   #    - cron: '*/10 * * * *'
   workflow_dispatch:
@@ -15,29 +15,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-#      - name: Create SSH key
-#        run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa'
-#        env:
-#          ANSIBLE_PK:
-
-#      - name: Install dependencies
-#        run: "/opt/pipx_bin/python38 -m pip install requests"
-
-#      - name: ansible-galaxy
-#        run: "ansible-galaxy collection install community.general"
-
       - name: ansible-playbook
         uses: dawidd6/action-ansible-playbook@v2
         with:
           playbook: site.yml
           directory: Ansible
           key: ${{ secrets.ANSIBLE_PK }}
-#          requirements: galaxy-requirements.yml
           options: |
             --inventory inventory.yml
             --verbose
         env:
-#          ANSIBLE_CONFIG: Ansible/ansible.cfg
           PROXMOX_TOKEN_SECRET: ${{ secrets.ANSIBLE_PROXMOX_TOKEN_SECRET }}
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
           REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
