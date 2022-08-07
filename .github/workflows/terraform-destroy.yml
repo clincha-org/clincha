@@ -28,8 +28,14 @@ jobs:
         env:
           REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
 
-      - name: terraform apply
-        run: terraform init && terraform destroy -auto-approve
+      - name: terraform initialise
+        run: terraform init
+        working-directory: terraform
+        env:
+          PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}
+
+      - name: terraform destroy
+        run: terraform destroy -auto-approve
         working-directory: terraform
         env:
           PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}
