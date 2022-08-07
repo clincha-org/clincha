@@ -1,0 +1,6 @@
+- name: Apply teardown role
+  hosts: all
+  become: true
+  strategy: free
+  roles:
+    - role: teardown

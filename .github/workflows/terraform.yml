@@ -1,9 +1,9 @@
 name: terraform
 
 on:
-  push:
-    branches:
-      - '*'
+#  push:
+#    branches:
+#      - '*'
   workflow_dispatch:
 
 jobs:
@@ -28,3 +28,4 @@ jobs:
         working-directory: terraform
         env:
           PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}
+

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  terraform:
+  destroy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -16,8 +16,26 @@ jobs:
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
-      - name: terraform apply
-        run: terraform init && terraform destroy -auto-approve
+      - name: ansible teardown
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: teardown.yml
+          directory: Ansible
+          key: ${{ secrets.ANSIBLE_PK }}
+          options: |
+            --inventory inventory.yml
+            --verbose
+        env:
+          REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
+
+      - name: terraform initialise
+        run: terraform init
+        working-directory: terraform
+        env:
+          PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}
+
+      - name: terraform destroy
+        run: terraform destroy -auto-approve
         working-directory: terraform
         env:
           PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}

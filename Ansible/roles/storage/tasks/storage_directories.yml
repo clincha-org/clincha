@@ -1,8 +1,0 @@
-- name: "Create directories for storage"
-  file:
-    path: "{{ item.path }}"
-    group: "{{ item.group }}"
-    owner: "{{ item.owner }}"
-    mode: "{{ item.mode }}"
-    state: directory
-  with_items: "{{ storage_filesystem }}"
