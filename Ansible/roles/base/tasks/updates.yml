@@ -6,11 +6,6 @@
     password: "{{ lookup('env', 'REDHAT_PASSWORD') }}"
     auto_attach: true
 
-- name: "Install version lock"
-  dnf:
-    name: python3-dnf-plugin-versionlock
-    state: latest
-
 - name: "Upgrade all packages"
   dnf:
     name: "*"
