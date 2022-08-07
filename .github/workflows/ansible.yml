@@ -1,11 +1,6 @@
 name: ansible
 
 on:
-#  push:
-#    branches:
-#      - '*'
-  #  schedule:
-  #    - cron: '*/10 * * * *'
   workflow_dispatch:
 
 jobs:
