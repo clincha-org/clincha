@@ -5,3 +5,6 @@
     name: docker
     state: restarted
     enabled: yes
+
+- name: restart-host
+  reboot:

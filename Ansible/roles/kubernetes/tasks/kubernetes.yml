@@ -1,18 +1,31 @@
 ---
-- name: "Ensure yum repository is setup"
-  copy:
-    dest: /etc/yum.repos.d/kubernetes.repo
-    src: kubernetes.repo
-    owner: root
-    group: root
-    mode: 0644
+- name: "Add kubernetes repositories"
+  yum_repository:
+    name: "kubernetes"
+    file: "kubernetes.repo"
+    description: "Kubernetes"
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    gpgcheck: true
+    repo_gpgcheck: true
+    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    enabled: true
+    exclude:
+      - kubelet
+      - kubeadm
+      - kubectl
 
 - name: "Install kubernetes packages"
   dnf:
     name: "{{ item }}"
-    state: latest
-    update_cache: yes
+    state: present
+    disable_excludes: kubernetes
   with_items:
     - "kubeadm"
     - "kubelet"
     - "kubectl"
+
+- name: "Start and enable the kubelet"
+  systemd:
+    name: kubelet
+    state: started
+    enabled: true

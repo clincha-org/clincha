@@ -12,9 +12,9 @@
   roles:
     - role: github-runner
 
-#- name: Kubernetes
-#  hosts: kubernetes
-#  become: true
-#  strategy: free
-#  roles:
-#    - role: kubernetes
+- name: Kubernetes
+  hosts: kubernetes
+  become: true
+  strategy: free
+  roles:
+    - role: kubernetes
