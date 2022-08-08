@@ -5,8 +5,13 @@
 - name: "Disable SELinux"
   include_tasks: disable-selinux.yml
 
+- name: "Install iproute"
+  dnf:
+    name: iproute-tc
+    state: present
+
 - name: "Install container runtime"
-  include_tasks: containerd.yml
+  include_tasks: crio.yml
 
 - name: "kubernetes requirements"
   import_tasks: kubernetes.yml
