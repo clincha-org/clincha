@@ -1,9 +1,9 @@
-- name: Disable SWAP
-  shell: |
-    swapoff -a
-
-- name: Disable SWAP in fstab
-  replace:
-    path: /etc/fstab
-    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
-    replace: '# \1'
+- name: file
+  copy:
+    src: selinux.conf
+    dest: /etc/selinux/config
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    restart-host
