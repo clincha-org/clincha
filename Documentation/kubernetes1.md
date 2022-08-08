@@ -59,3 +59,23 @@ It works! Now it's time to [write those steps into Ansible](https://github.com/c
 workflow [encompassing Terraform and Ansible](https://github.com/clincha/clinch-home/issues/14) and then iterate.
 
 ## Automate it
+
+[This issue](https://github.com/clincha/clinch-home/issues/13) documents what code changes needed to happen. The first time I wrote this code (for physical servers) I wrote with containerd as my container runtime. Looking through some tutorials for Kubernetes on RHEL8 this time, I learned that cri-o is written by RedHat for RHEL/CentOS. Containerd needed to go, cri-o was the chosen one. I'd written the code with modularity in mind last time, so it was a targeted change to get cri-o working instead. I had loads of existing code to keep docker alive which should have been a sign I was doing something wrong. 
+
+I'm able to iterate rapidly with this new environment. Having the ability to recreate everything quickly (15 minutes) means I can have a blank slate, frequently. Most of the time I don't _need_ a blank slate, the infrastructure is already in place and the runs only take 5 minutes to check everything. There are a couple of issues that need sorting:
+
+- Terraform changes lots of disk and network config for the VM every run. This is slowing down the terraform pipeline.
+- It's a manual process to create a master and slave nodes
+- Modularise the GitHub workflows. Reuse code
+
+## Onwards
+
+Time to get started with the applications. I've got a solid environment, now time to write some code. I'll be jumping into Kubernetes and running an Elastic Stack. Alongside that I can look at writing code (Python, Java, Go?, Kotlin?) for the application layer to work with an API and pass data into Elastic.
+
+- Create a Logstash instance (might not be needed)
+- Create the Elastic instance
+- Create a Kibana instance
+
+- Write application interacting with API
+- Create containerised package for the application
+- Deploy the application on the cluster
