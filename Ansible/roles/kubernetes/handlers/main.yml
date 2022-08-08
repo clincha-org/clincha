@@ -1,7 +1,3 @@
 ---
-# handlers file for kubernetes
-- name: "restart docker"
-  systemd:
-    name: docker
-    state: restarted
-    enabled: yes
+- name: restart-host
+  reboot:
