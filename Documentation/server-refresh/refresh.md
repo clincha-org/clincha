@@ -95,7 +95,7 @@ which would take place when I traveled back to Bristol.
 
 I ordered all the parts needed for EDI-S-01, and they arrived the next day.
 
-![server-parts.png](images/server-parts.png)
+![server-parts.png](img/server-parts.png)
 
 It was exciting building a computer again for the first time since I built my PC for home back in 2016. The two servers
 that I had before had come built already and just needed hard drives installed. The CPU and motherboard were already
@@ -104,18 +104,18 @@ the motherboard. Luckily the fancy Noctua fans that I purchased came with a few 
 which let me utilise all 4 fans. The other was a low noise adaptor which I installed as well to try to meet the goal of
 a quiet server room.
 
-![server-built.png](images/server-built.png)
+![server-built.png](img/server-built.png)
 
 Once the server was built I had less than 12 hours to get it in a working state before I needed to be on a plane heading
 down to Bristol.
 
-![test-bench.png](images/test-bench.png)
+![test-bench.png](img/test-bench.png)
 
 Getting the server started was fairly trivial. It POSTed with no issues but I never got anything on the display. After
 reading the SCAN website (where I purchased the motherboard/CPU bundle) I noticed that the bundle needed an external GPU
 for the display to work, so I plugged in an old one I had lying around and got display.
 
-![test-GPU.png](images/test-GPU.png)
+![test-GPU.png](img/test-GPU.png)
 
 I was pleased to see that the 450 watt power supply could handle the load of 3 HDDs, 2 SSDs, and a GPU during boot, but
 I never had any issues related to power.

@@ -1,5 +1,5 @@
 # Writeups
-I need to sort out the documentation in the repository and write up some things that have happened. Possible sections could be: bits, my little cloud, applications, being a landlord 
+I need to sort out the documentation in the repository and write up some things that have happened. Possible sections could be: bits, my little cloud, applications, being a landlord. These also need to be in a bunch of different repos. No point putting them all in here 
 
 ## Content that still needs writing
 ### What's happened?
@@ -22,6 +22,3 @@ I need to sort out the documentation in the repository and write up some things 
 - Kubernetes cluster
 - Creating the Finance application
 - Section for ideas that I've had
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbMTY3NzU2Mjg5MV19
--->
