@@ -24,14 +24,14 @@ Go to the [Unifi portal](https://unifi.ui.com/dashboard) and select the Geddes n
 
 ![clinch-home-unifi-dashboard.png](img/clinch-home-unifi-dashboard.png)
 
-On the left click "Settings" > "Firewall & Security" and scroll down to the "Port Forwarding" section. Using the "Create New Forwarding Rule" or by editing an existing rule make sure this rule exists:
+On the left click "Settings" > "Firewall & Security" and scroll down to the "Port Forwarding" section. Using the "Create New Forwarding Rule" or by editing an existing rule make sure these rules exist:
 
 ```text
-Name: GitHub Runner SSH
+Name: GitHub Runner SSH / Kubernetes Worker (1,2,3) SSH
 Enable Forward Rule: Enable
 From: Any
-Port: 16001
-Forward IP: 192.168.2.161
+Port: 1600(1,2,3,4)
+Forward IP: 192.168.2.16(1,2,3,4)
 Forward Port: 22
 Protocol: Both
 Logging: Enable
@@ -54,3 +54,32 @@ Finally, instead of running the run script, start a service instead by running t
 `sudo ./svc.sh start`
 
 ### Configuring Kubernetes
+
+SSH into kubeworker-1 and run the following command to initialise the cluster:
+
+`sudo kubeadm init`
+
+Copy the last line of the output and run it on the other two nodes. It should look something like this:
+
+```text
+sudo kubeadm join 192.168.2.161:6443 --token <SOME_TOKEN> \
+        --discovery-token-ca-cert-hash <SOME_HASH>>
+```
+
+Once that's done go back to the master node and run these commands
+
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+kubectl get nodes
+```
+
+You should see something similar to this:
+
+```text
+NAME               STATUS   ROLES           AGE     VERSION
+edi-kubeworker-1   Ready    control-plane   3m10s   v1.24.3
+edi-kubeworker-2   Ready    <none>          79s     v1.24.3
+edi-kubeworker-3   Ready    <none>          74s     v1.24.3
+```
