@@ -130,7 +130,7 @@ user created.
 I moved the server to its final location in my flat and was happy to hear... almost nothing! The quiet fans and consumer
 hardware were doing their job.
 
-[//]: # (TODO: add picture of server in cupboard)
+![server-cupboard.jpg](img/server-cupboard.jpg)
 
 I tried to be clever at this stage and use Ansible to configure the OS but hit issues with playbooks not being
 compatible with RHEL. Once I finally managed to make it work it ran the SSH playbook, changed the ssh_config file and
@@ -147,14 +147,31 @@ One of the drives is not registering on the OS. Will need to investigate and rem
 
 #### Bristol stage
 
-[//]: # (TODO: Bristol stage)
-
 ##### Out with the old
+
+I removed the old servers from the server room, and hit them with compressed air to get all the dust out.
+
+![dusting.jpg](img/dusting.jpg)
+
+Some of them were pretty dusty...
+
+![dust.jpg](img/dust.jpg)
+
+Then I went into the server room, gave it a good clean and tidied all the computer bits up. I disconnected the internet briefly when I tidied up the cables but nobody noticed.
+
+![server-room-before.jpf](img/server-room-before.jpg)
+
+I'm going to try and sell these old machines. I don't expect to get much for them but at least they'll be gone.
 
 ##### In with the new
 
-Arriving in Bristol I waited. The server components were delayed, I was having a pleasant holiday. Once the parts
-finally arrived I got to work.
+Arriving in Bristol I waited. The server components were delayed, I was having a pleasant holiday. Once the parts finally arrived I got to work. I put both servers together without much issue. I hadn't built a computer in ages, so it was nice to get back to how it all began. Although this time there were more disks.
+
+![disks.jpg](img/disks.jpg)
+
+I put down two sheets of rubber matting to help with vibrations and wheeled the server rack in. The servers went in nicely and I even found an old monitor and keyboard to use as a KVM. I needed to disable 'wait for F1 if no keyboard detected' in the BIOS but after that they were good to go. I was rushed to complete on time, so I only had enough time to make sure they showed up on the network. However, I think in the end I did a good job.
+
+![server-room-after.jpg](img/server-room-after.jpg)
 
 ### Configure Ansible
 
@@ -183,7 +200,23 @@ Which locked me out when the ssh key didn't work. Needed to get dad to login and
 
 #### Network
 
-[//]: # (TODO: Create LAN to LAN VPN with Roger Morato)
+This was quite painful to set up, but I think only because I wasn't being very clever with the way that I was working on things. I needed to be careful with the IP addresses. In the end I had a static public IP address configured at both locations and removed the issue of double NAT. I mostly used the Ubiquity GUI to set everything up.
+
+![ubnt-HL-Geddes.png](img/ubnt-HL-Geddes.png)
+
+![ubnt-Geddes-HL.png](img/ubnt-Geddes-HL.png)
+
+I needed to log in to the CLI at some stage just to see what I was doing wrong. The commands to inspect things on the routers were centred around an application called ipsec. It was really important to look into the logs at BOTH sides. The issue only became clear once I was looking at the second node.
+
+```text
+# ipsec status
+Security Associations (1 up, 0 connecting):
+a4f5_632b_30fd_9dda[19]: ESTABLISHED 7 hours ago, 185.23.254.226[185.23.254.226]...137.220.119.74[137.220.119.74]
+a4f5_632b_30fd_9dda{90}:  REKEYED, TUNNEL, reqid 2, expires in 11 minutes
+a4f5_632b_30fd_9dda{90}:   0.0.0.0/0 === 0.0.0.0/0
+a4f5_632b_30fd_9dda{91}:  INSTALLED, TUNNEL, reqid 2, ESP SPIs: c851547e_i c1425eb3_o
+a4f5_632b_30fd_9dda{91}:   0.0.0.0/0 === 0.0.0.0/0
+```
 
 #### Disks
 
