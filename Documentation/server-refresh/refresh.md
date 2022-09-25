@@ -67,6 +67,7 @@ The storage class of servers will have the following configuration.
 | 120GB Gigabyte SSD                  | 19.49  | 2        | SSD         |
 | Seagate BarraCuda 4TB 3.5" SATA HDD | 73.79  | 3        | HDD         | 
 | SATA III Cable, Male to Male        | 0.98   | 5        | Cable       |
+| Lycom PE-120 PCIe HBA               | 51.98  | 1        | PCIe HBA    |
 | 450W Cooler Master 450 Bronze PSU   | 29.99  | 1        | PSU         |
 | 120mm Noctua NF-S12B-REDUX-1200     | 13.99  | 2        | Case fan    |
 | 80mm Noctua NF-A8                   | 15.98  | 2        | Case fan    | 
