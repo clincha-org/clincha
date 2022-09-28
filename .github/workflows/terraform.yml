@@ -18,14 +18,12 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: terraform initialise
-        run: terraform init
         working-directory: terraform
-        env:
-          PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}
+        run: terraform init
 
       - name: terraform apply
-        run: terraform apply -auto-approve
         working-directory: terraform
-        env:
-          PM_API_TOKEN_SECRET: ${{ secrets.TERRAFORM_PROXMOX_TOKEN_SECRET }}
+        run: terraform apply -auto-approve \
+             -var=edinburgh_proxmox_token_secret=${{ secrets.TERRAFORM_EDINBURGH_PROXMOX_TOKEN_SECRET }} \
+             -var=bristol_proxmox_token_secret=${{ secrets.TERRAFORM_BRISTOL_PROXMOX_TOKEN_SECRET }}
 

@@ -6,6 +6,9 @@ module "edi-kubeworker-1" {
   ip_subnet      = "192.168.2.161/24"
   port           = 16001
   ansible_id_rsa = var.ansible_id_rsa
+  providers      = {
+    proxmox = proxmox.edinburgh
+  }
 }
 module "edi-kubeworker-2" {
   name           = "edi-kubeworker-2"
@@ -14,6 +17,9 @@ module "edi-kubeworker-2" {
   ip_subnet      = "192.168.2.162/24"
   port           = 16002
   ansible_id_rsa = var.ansible_id_rsa
+  providers      = {
+    proxmox = proxmox.edinburgh
+  }
 }
 module "edi-kubeworker-3" {
   name           = "edi-kubeworker-3"
@@ -22,6 +28,9 @@ module "edi-kubeworker-3" {
   ip_subnet      = "192.168.2.163/24"
   port           = 16003
   ansible_id_rsa = var.ansible_id_rsa
+  providers      = {
+    proxmox = proxmox.edinburgh
+  }
 }
 
 # Github runners
@@ -32,4 +41,7 @@ module "edi-runner-1" {
   ip_subnet      = "192.168.2.164/24"
   port           = 16004
   ansible_id_rsa = var.ansible_id_rsa
+  providers      = {
+    proxmox = proxmox.edinburgh
+  }
 }
