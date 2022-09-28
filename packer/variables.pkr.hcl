@@ -24,3 +24,7 @@ variable "http_bind_address" {
 variable "node" {
   type = string
 }
+
+variable "iso" {
+  type = string
+}
