@@ -4,8 +4,15 @@ variable "ansible_id_rsa" {
   type = string
 }
 
-variable "proxmox_token_secret" {
+variable "edinburgh_proxmox_token_secret" {
   default   = ""
+  sensitive = true
+  type = string
+}
+
+
+variable "bristol_proxmox_token_secret" {
+  default = ""
   sensitive = true
   type = string
 }

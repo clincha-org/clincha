@@ -1,4 +1,3 @@
-# Required
 variable "ansible_id_rsa" {
   default   = ""
   sensitive = true
@@ -55,13 +54,27 @@ variable "memory" {
   type    = number
 }
 
-variable "ip_subnet" {
-  # e.g. 192.168.1.2/24
-  default = ""
-  type    = string
-}
-
 variable "tags" {
   default = ["base"]
   type    = list(string)
+}
+
+variable "ip" {
+  default = ""
+  type = string
+}
+
+variable "subnet_mask" {
+  default = "24"
+  type = string
+}
+
+variable "gateway" {
+  default = ""
+  type = string
+}
+
+variable "connection_user" {
+  default = "ansible"
+  type = string
 }

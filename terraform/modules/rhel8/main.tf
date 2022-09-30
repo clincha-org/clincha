@@ -10,20 +10,20 @@ resource "proxmox_vm_qemu" "rhel8-worker" {
   memory  = var.memory
 
   os_type   = "cloud-init"
-  ipconfig0 = "ip=${var.ip_subnet},gw=192.168.2.1"
+  ipconfig0 = "ip=${ var.ip }/${ var.subnet_mask },gw=${ var.gateway }"
 
   tags = join(",", var.tags)
 
   provisioner "remote-exec" {
     connection {
-      host        = "clincha.co.uk"
+      host        = var.ip
       type        = "ssh"
-      user        = "ansible"
+      user        = var.connection_user
       private_key = var.ansible_id_rsa
       port        = var.port
     }
 
-    inline = ["sudo hostnamectl set-hostname ${var.name}"]
+    inline = ["sudo hostnamectl set-hostname ${ var.name }"]
   }
 
 }

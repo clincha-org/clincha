@@ -1,9 +1,9 @@
 name: create
 
 on:
-  push:
-    branches:
-      - '*'
+#  push:
+#    branches:
+#      - '*'
 #  schedule:
 #    - cron: '*/60 * * * *'
   workflow_dispatch:

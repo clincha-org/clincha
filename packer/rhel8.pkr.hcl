@@ -1,15 +1,14 @@
 source "proxmox" "rhel8-template" {
-
   proxmox_url              = "${var.proxmox_api_url}"
   username                 = "${var.proxmox_api_token_id}"
   token                    = "${var.proxmox_api_token_secret}"
   insecure_skip_tls_verify = true
 
-  node       = "edi-s-01"
+  node       = "${ var.node }"
   vm_name    = "template-rhel8"
   qemu_agent = true
 
-  iso_file = "local:iso/rhel-8.5-x86_64-dvd.iso"
+  iso_file = "${ var.iso }"
 
   ssh_username = "ansible"
   ssh_password = "${var.ansible_ssh_password}"
@@ -26,8 +25,8 @@ source "proxmox" "rhel8-template" {
 
   http_directory    = "http"
   http_bind_address = "${var.http_bind_address}"
-  http_port_min     = 8802
-  http_port_max     = 8802
+#  http_port_min     = 8802
+#  http_port_max     = 8802
 
   cores  = "8"
   memory = "8192"
