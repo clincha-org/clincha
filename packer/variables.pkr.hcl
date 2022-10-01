@@ -121,6 +121,11 @@ variable "disk_storage_pool_type" {
   default     = "lvm-thin"
   description = "The type of the pool defined by disk_storage_pool"
 }
+variable "disk_format" {
+  type        = string
+  default     = "scsi"
+  description = "The format of the disk to be created"
+}
 variable "network_model" {
   type        = string
   default     = "virtio"
