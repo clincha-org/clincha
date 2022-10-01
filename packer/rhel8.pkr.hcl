@@ -6,11 +6,12 @@ source "proxmox" "rhel8-template" {
 
   node       = "${ var.node }"
   vm_name    = "template-rhel8"
+  vm_id      = 100
   qemu_agent = true
 
   iso_file = "${ var.iso }"
 
-  ssh_username = "ansible"
+  ssh_username = "${var.ssh_username}"
   ssh_password = "${var.ansible_ssh_password}"
   ssh_port     = 22
   ssh_timeout  = "10m"
@@ -23,10 +24,8 @@ source "proxmox" "rhel8-template" {
   ]
   boot_wait = "10s"
 
-  http_directory    = "http"
+  http_directory    = "${var.http_directory}"
   http_bind_address = "${var.http_bind_address}"
-#  http_port_min     = 8802
-#  http_port_max     = 8802
 
   cores  = "8"
   memory = "8192"
