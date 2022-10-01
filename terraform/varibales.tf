@@ -10,7 +10,6 @@ variable "edinburgh_proxmox_token_secret" {
   type = string
 }
 
-
 variable "bristol_proxmox_token_secret" {
   default = ""
   sensitive = true

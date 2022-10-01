@@ -72,7 +72,7 @@ variable "cloud_init_storage_pool" {
 variable "boot_command" {
   type    = list(string)
   default = [
-    "<up><wait><tab><wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait5>"
+    "<up><wait><tab><wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rhel8.ks<enter><wait5>"
   ]
   description = "Command to send to the template as it starts up"
 }
