@@ -37,8 +37,8 @@ source "proxmox" "rhel8-template" {
   }
 
   network_adapters {
-    model    = var.network_model
-    bridge   = var.network_bridge
+    model  = var.network_model
+    bridge = var.network_bridge
   }
 }
 build {

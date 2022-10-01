@@ -70,8 +70,10 @@ variable "cloud_init_storage_pool" {
   description = "Name of the Proxmox storage pool to store the cloud-init CDROM on"
 }
 variable "boot_command" {
-  type        = string
-  default     = "<up><wait><tab><wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait5>"
+  type    = list(string)
+  default = [
+    "<up><wait><tab><wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait5>"
+  ]
   description = "Command to send to the template as it starts up"
 }
 variable "boot_wait" {
