@@ -34,7 +34,7 @@ source "proxmox" "rhel8-template" {
     disk_size         = var.disk_size
     storage_pool      = var.disk_storage_pool
     storage_pool_type = var.disk_storage_pool_type
-    type              = var.disk_format
+    type              = var.disk_type
   }
 
   network_adapters {
