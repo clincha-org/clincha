@@ -29,7 +29,7 @@ variable "vm_name" {
   description = "The name of the VM that will become the template"
 }
 variable "qemu_agent" {
-  type        = boolean
+  type        = bool
   default     = true
   description = "Uses the QEMU agent to query the VM properties"
 }
@@ -60,7 +60,7 @@ variable "ssh_timeout" {
   description = "The time to wait for an SSH connection to become available before failing the build"
 }
 variable "cloud_init" {
-  type        = boolean
+  type        = bool
   default     = true
   description = "Flag to check if cloud-init is installed on the VM"
 }
