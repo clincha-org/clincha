@@ -56,7 +56,7 @@ variable "ssh_port" {
 }
 variable "ssh_timeout" {
   type        = string
-  default     = "10s"
+  default     = "10m"
   description = "The time to wait for an SSH connection to become available before failing the build"
 }
 variable "cloud_init" {
