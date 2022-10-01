@@ -1,54 +1,49 @@
 source "proxmox" "rhel8-template" {
-  proxmox_url              = "${var.proxmox_api_url}"
-  username                 = "${var.proxmox_api_token_id}"
-  token                    = "${var.proxmox_api_token_secret}"
-  insecure_skip_tls_verify = true
+  proxmox_url              = var.proxmox_api_url
+  username                 = var.proxmox_api_token_id
+  token                    = var.proxmox_api_token_secret
+  insecure_skip_tls_verify = var.insecure_skip_tls_verify
 
-  node       = "${ var.node }"
-  vm_name    = "template-rhel8"
-  vm_id      = 100
-  qemu_agent = true
+  node       = var.node
+  vm_name    = var.vm_name
+  qemu_agent = var.qemu_agent
 
-  iso_file = "${ var.iso }"
 
-  ssh_username = "${var.ssh_username}"
-  ssh_password = "${var.ansible_ssh_password}"
-  ssh_port     = 22
-  ssh_timeout  = "10m"
+  iso_file = var.iso
 
-  cloud_init              = true
-  cloud_init_storage_pool = "local-lvm"
+  ssh_username = var.ssh_username
+  ssh_password = var.ansible_ssh_password
+  ssh_port     = var.ssh_port
+  ssh_timeout  = var.ssh_timeout
 
-  boot_command = [
-    "<up><wait><tab><wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait5>"
-  ]
-  boot_wait = "10s"
+  cloud_init              = var.cloud_init
+  cloud_init_storage_pool = var.cloud_init_storage_pool
 
-  http_directory    = "${var.http_directory}"
-  http_bind_address = "${var.http_bind_address}"
+  boot_command = var.boot_command
+  boot_wait    = var.boot_wait
 
-  cores  = "8"
-  memory = "8192"
+  http_directory    = var.http_directory
+  http_bind_address = var.http_bind_address
 
-  scsi_controller = "virtio-scsi-pci"
+  cores  = var.cores
+  memory = var.memory
+
+  scsi_controller = var.scsi_controller
 
   disks {
-    disk_size         = "32G"
-    format            = "raw"
-    storage_pool      = "local-lvm"
-    storage_pool_type = "lvm-thin"
-    type              = "scsi"
+    disk_size         = var.disk_size
+    storage_pool      = var.disk_storage_pool
+    storage_pool_type = var.disk_storage_pool_type
   }
 
   network_adapters {
-    model    = "virtio"
-    bridge   = "vmbr0"
-    firewall = "false"
+    model    = var.network_model
+    bridge   = var.network_bridge
   }
 }
 build {
 
-  name    = "rhel8-template-instance"
+  name    = var.build_name
   sources = ["source.proxmox.rhel8-template"]
 
   provisioner "shell" {
