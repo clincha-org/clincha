@@ -16,20 +16,29 @@ jobs:
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
-      - name: packer build (bristol)
+      - name: packer build (bri-s-01)
         working-directory: packer
         run: |
           /usr/bin/packer build \
           -var "ansible_ssh_password=${{ secrets.ANSIBLE_PASSWORD }}" \
           -var "proxmox_api_token_secret=${{ secrets.PACKER_BRISTOL_PROXMOX_TOKEN_SECRET }}" \
-          -var-file="bristol.pkrvars.hcl" \
+          -var-file="bri-s-01.pkrvars.hcl" \
           .
 
-      - name: packer build (edinburgh)
+      - name: packer build (bri-s-02)
+        working-directory: packer
+        run: |
+          /usr/bin/packer build \
+          -var "ansible_ssh_password=${{ secrets.ANSIBLE_PASSWORD }}" \
+          -var "proxmox_api_token_secret=${{ secrets.PACKER_BRISTOL_PROXMOX_TOKEN_SECRET }}" \
+          -var-file="bri-s-02.pkrvars.hcl" \
+          .
+
+      - name: packer build (edi-s-01)
         working-directory: packer
         run: |
           /usr/bin/packer build \
           -var "ansible_ssh_password=${{ secrets.ANSIBLE_PASSWORD }}" \
           -var "proxmox_api_token_secret=${{ secrets.PACKER_EDINBURGH_PROXMOX_TOKEN_SECRET }}" \
-          -var-file="edinburgh.pkrvars.hcl" \
+          -var-file="edi-s-01.pkrvars.hcl" \
           .

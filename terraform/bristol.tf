@@ -67,7 +67,7 @@ module "bri-runner-1" {
   target_node = "bri-s-01"
 }
 module "bri-runner-2" {
-  name           = "bri-runner-01"
+  name           = "bri-runner-02"
   source         = "./modules/rhel8"
   tags           = ["base", "github_runner"]
   ip             = "192.168.1.32"
@@ -77,5 +77,5 @@ module "bri-runner-2" {
   providers      = {
     proxmox = proxmox.bristol
   }
-  target_node = "bri-s-01"
+  target_node = "bri-s-02"
 }
