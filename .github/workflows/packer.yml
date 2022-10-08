@@ -19,7 +19,7 @@ jobs:
       - name: packer build (bristol)
         working-directory: packer
         run: |
-          packer build . \
+          /usr/bin/packer build . \
           -var "ansible_ssh_password=${{ secrets.ANSIBLE_PASSWORD }}" \
           -var "proxmox_api_token_secret=${{ secrets.PACKER_BRISTOL_PROXMOX_TOKEN_SECRET }}" \
           -var-file="bristol.pkrvars.hcl" 
@@ -27,7 +27,7 @@ jobs:
       - name: packer build (edinburgh)
         working-directory: packer
         run: |
-          packer build . \
+          /usr/bin/packer build . \
           -var "ansible_ssh_password=${{ secrets.ANSIBLE_PASSWORD }}" \
           -var "proxmox_api_token_secret=${{ secrets.PACKER_EDINBURGH_PROXMOX_TOKEN_SECRET }}" \
           -var-file="edinburgh.pkrvars.hcl"
