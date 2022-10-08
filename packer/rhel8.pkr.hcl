@@ -8,7 +8,6 @@ source "proxmox" "rhel8-template" {
   vm_name    = var.vm_name
   qemu_agent = var.qemu_agent
 
-
   iso_file = var.iso
 
   ssh_username = var.ssh_username
@@ -51,11 +50,6 @@ build {
     inline = [
       "sudo rm /etc/ssh/ssh_host_*",
       "sudo truncate -s 0 /etc/machine-id",
-      "mkdir -m0700 -p /home/ansible/.ssh/",
-      "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDVf+T1KyqUBN5Iaa5BspqvMXvCkoez16n+Dq4LI1LvWbCcfBPvCxJIUQxp86Uyr0Yz8wPrMLyXwbE0LhaeX8RvST/AB/+DleLxMpz1QSaDcIcPqu3GICxhrp6Rrdqm4A6h6dG8TEiAcWylsIxzbaoA9bMQ3X9eeVYYKRcvEDTchPdjodaXtz0mY+YHOHLE2eZ+C/YDVctIh5uJr0yTguIZwFmqVVZWAqsEZsa+Xk4Fe4PyunDiL0cKB26NuIAnHWG54uIPFlREgwCQfJWQdziFL60mo++8RxqwVODFsNOQdGEWSTnKRK0alWHAq5Go7rdu5nPTPlSV3hAYUApmv7uO0wXvQhMWvqXntZlyOKoXD7JfQ042/k6cZPwpbBB0LhP3LNKCRA46o9ZvrxCJWvTx55ZLbla+b5hoI/pYvfwSNn9ympSzddRif9Sbmfu1eXX2nuyQ5gHJv2fbX0uytouSYhZxSdji1dcKBMC6ltC3odEo2q05maGqRSzfGth97ok= angus.clinch@gmail.com' > /home/ansible/.ssh/authorized_keys",
-      "chmod 0600 /home/ansible/.ssh/authorized_keys",
-      "chown -R ansible:ansible /home/ansible/",
-      "sudo service sshd restart",
       "sudo sync"
     ]
   }
