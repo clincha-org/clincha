@@ -11,6 +11,7 @@ module "edi-kubeworker-1" {
     proxmox = proxmox.edi-s-01
   }
   target_node = "edi-s-01"
+  source_vm   = "edi-s-01-template"
 }
 module "edi-kubeworker-2" {
   name           = "edi-kubeworker-2"
@@ -24,6 +25,7 @@ module "edi-kubeworker-2" {
     proxmox = proxmox.edi-s-01
   }
   target_node = "edi-s-01"
+  source_vm   = "edi-s-01-template"
 }
 module "edi-kubeworker-3" {
   name           = "edi-kubeworker-3"
@@ -37,6 +39,7 @@ module "edi-kubeworker-3" {
     proxmox = proxmox.edi-s-01
   }
   target_node = "edi-s-01"
+  source_vm   = "edi-s-01-template"
 }
 
 # Github runners
@@ -52,4 +55,5 @@ module "edi-runner-1" {
     proxmox = proxmox.edi-s-01
   }
   target_node = "edi-s-01"
+  source_vm   = "edi-s-01-template"
 }

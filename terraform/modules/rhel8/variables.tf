@@ -24,7 +24,6 @@ variable "target_node" {
 }
 
 variable "source_vm" {
-  default = "template-rhel8"
   type    = string
 }
 
