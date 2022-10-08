@@ -8,7 +8,7 @@ module "bri-kubeworker-1" {
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
-    proxmox = proxmox.bristol
+    proxmox = proxmox.bri-s-01
   }
   target_node = "bri-s-01"
 }
@@ -21,7 +21,7 @@ module "bri-kubeworker-2" {
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
-    proxmox = proxmox.bristol
+    proxmox = proxmox.bri-s-02
   }
   target_node = "bri-s-02"
 }
@@ -34,9 +34,9 @@ module "bri-kubeworker-3" {
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
-    proxmox = proxmox.bristol
+    proxmox = proxmox.bri-s-01
   }
-  target_node = "bri-s-02"
+  target_node = "bri-s-01"
 }
 module "bri-kubeworker-4" {
   name           = "bri-kubeworker-4"
@@ -47,7 +47,7 @@ module "bri-kubeworker-4" {
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
-    proxmox = proxmox.bristol
+    proxmox = proxmox.bri-s-02
   }
   target_node = "bri-s-02"
 }
@@ -62,7 +62,7 @@ module "bri-runner-1" {
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
-    proxmox = proxmox.bristol
+    proxmox = proxmox.bri-s-01
   }
   target_node = "bri-s-01"
 }
@@ -75,7 +75,7 @@ module "bri-runner-2" {
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
-    proxmox = proxmox.bristol
+    proxmox = proxmox.bri-s-02
   }
   target_node = "bri-s-02"
 }

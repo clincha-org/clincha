@@ -8,7 +8,7 @@ module "edi-kubeworker-1" {
   gateway        = "192.168.2.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
-    proxmox = proxmox.edinburgh
+    proxmox = proxmox.edi-s-01
   }
   target_node = "edi-s-01"
 }
@@ -21,7 +21,7 @@ module "edi-kubeworker-2" {
   gateway        = "192.168.2.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
-    proxmox = proxmox.edinburgh
+    proxmox = proxmox.edi-s-01
   }
   target_node = "edi-s-01"
 }
@@ -34,7 +34,7 @@ module "edi-kubeworker-3" {
   gateway        = "192.168.2.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
-    proxmox = proxmox.edinburgh
+    proxmox = proxmox.edi-s-01
   }
   target_node = "edi-s-01"
 }
@@ -49,7 +49,7 @@ module "edi-runner-1" {
   gateway        = "192.168.2.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
-    proxmox = proxmox.edinburgh
+    proxmox = proxmox.edi-s-01
   }
   target_node = "edi-s-01"
 }
