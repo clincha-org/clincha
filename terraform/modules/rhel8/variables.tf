@@ -20,7 +20,6 @@ variable "port" {
 }
 
 variable "target_node" {
-  default = "edi-s-01"
   type    = string
 }
 

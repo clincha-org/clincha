@@ -23,7 +23,7 @@ module "bri-kubeworker-2" {
   providers      = {
     proxmox = proxmox.bristol
   }
-  target_node = "bri-s-01"
+  target_node = "bri-s-02"
 }
 module "bri-kubeworker-3" {
   name           = "bri-kubeworker-3"
@@ -36,7 +36,20 @@ module "bri-kubeworker-3" {
   providers      = {
     proxmox = proxmox.bristol
   }
-  target_node = "bri-s-01"
+  target_node = "bri-s-02"
+}
+module "bri-kubeworker-4" {
+  name           = "bri-kubeworker-4"
+  source         = "./modules/rhel8"
+  tags           = ["base", "kubernetes_worker"]
+  ip             = "192.168.1.164"
+  subnet_mask    = "24"
+  gateway        = "192.168.1.1"
+  ansible_id_rsa = var.ansible_id_rsa
+  providers      = {
+    proxmox = proxmox.bristol
+  }
+  target_node = "bri-s-02"
 }
 
 # Github runners

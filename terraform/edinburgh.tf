@@ -10,6 +10,7 @@ module "edi-kubeworker-1" {
   providers      = {
     proxmox = proxmox.edinburgh
   }
+  target_node = "edi-s-01"
 }
 module "edi-kubeworker-2" {
   name           = "edi-kubeworker-2"
@@ -22,6 +23,7 @@ module "edi-kubeworker-2" {
   providers      = {
     proxmox = proxmox.edinburgh
   }
+  target_node = "edi-s-01"
 }
 module "edi-kubeworker-3" {
   name           = "edi-kubeworker-3"
@@ -34,6 +36,7 @@ module "edi-kubeworker-3" {
   providers      = {
     proxmox = proxmox.edinburgh
   }
+  target_node = "edi-s-01"
 }
 
 # Github runners
@@ -48,4 +51,5 @@ module "edi-runner-1" {
   providers      = {
     proxmox = proxmox.edinburgh
   }
+  target_node = "edi-s-01"
 }
