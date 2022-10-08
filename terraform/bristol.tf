@@ -3,7 +3,7 @@ module "bri-kubeworker-1" {
   name           = "bri-kubeworker-1"
   source         = "./modules/rhel8"
   tags           = ["base", "kubernetes_worker"]
-  ip             = "192.168.1.161"
+  ip             = "192.168.1.21"
   subnet_mask    = "24"
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
@@ -16,7 +16,7 @@ module "bri-kubeworker-2" {
   name           = "bri-kubeworker-2"
   source         = "./modules/rhel8"
   tags           = ["base", "kubernetes_worker"]
-  ip             = "192.168.1.162"
+  ip             = "192.168.1.22"
   subnet_mask    = "24"
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
@@ -29,7 +29,7 @@ module "bri-kubeworker-3" {
   name           = "bri-kubeworker-3"
   source         = "./modules/rhel8"
   tags           = ["base", "kubernetes_worker"]
-  ip             = "192.168.1.163"
+  ip             = "192.168.1.23"
   subnet_mask    = "24"
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
@@ -42,7 +42,7 @@ module "bri-kubeworker-4" {
   name           = "bri-kubeworker-4"
   source         = "./modules/rhel8"
   tags           = ["base", "kubernetes_worker"]
-  ip             = "192.168.1.164"
+  ip             = "192.168.1.24"
   subnet_mask    = "24"
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
@@ -57,7 +57,20 @@ module "bri-runner-1" {
   name           = "bri-runner-01"
   source         = "./modules/rhel8"
   tags           = ["base", "github_runner"]
-  ip             = "192.168.1.164"
+  ip             = "192.168.1.31"
+  subnet_mask    = "24"
+  gateway        = "192.168.1.1"
+  ansible_id_rsa = var.ansible_id_rsa
+  providers      = {
+    proxmox = proxmox.bristol
+  }
+  target_node = "bri-s-01"
+}
+module "bri-runner-2" {
+  name           = "bri-runner-01"
+  source         = "./modules/rhel8"
+  tags           = ["base", "github_runner"]
+  ip             = "192.168.1.32"
   subnet_mask    = "24"
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
