@@ -2,8 +2,9 @@ all:
   children:
     runners:
       hosts:
-        edi-runner:
-          ansible_port: 16004
+        bri-runner:
+#        edi-runner:
+#          ansible_port: 16004
 #    kubernetes:
 #      hosts:
 #        kubeworker-1:

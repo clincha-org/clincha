@@ -10,6 +10,7 @@ module "bri-kubeworker-1" {
   providers      = {
     proxmox = proxmox.bristol
   }
+  target_node = "bri-s-01"
 }
 module "bri-kubeworker-2" {
   name           = "bri-kubeworker-2"
@@ -22,6 +23,7 @@ module "bri-kubeworker-2" {
   providers      = {
     proxmox = proxmox.bristol
   }
+  target_node = "bri-s-01"
 }
 module "bri-kubeworker-3" {
   name           = "bri-kubeworker-3"
@@ -34,6 +36,7 @@ module "bri-kubeworker-3" {
   providers      = {
     proxmox = proxmox.bristol
   }
+  target_node = "bri-s-01"
 }
 
 # Github runners
@@ -48,4 +51,5 @@ module "bri-runner-1" {
   providers      = {
     proxmox = proxmox.bristol
   }
+  target_node = "bri-s-01"
 }
