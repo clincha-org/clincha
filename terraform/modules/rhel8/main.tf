@@ -14,6 +14,19 @@ resource "proxmox_vm_qemu" "rhel8-worker" {
 
   tags = join(",", var.tags)
 
+  disk {
+    size    = var.disk_size
+    storage = var.disk_storage
+    type    = var.disk_type
+  }
+
+  network {
+    bridge    = var.network_brige
+    firewall  = var.network_firewall
+    link_down = var.network_link_down
+    model     = var.network_model
+  }
+
   provisioner "remote-exec" {
     connection {
       host        = var.ip
