@@ -1,17 +1,10 @@
 variable "ansible_id_rsa" {
-  default   = ""
   sensitive = true
   type      = string
 }
 
-variable "hostname" {
-  default = ""
-  type    = string
-}
-
 variable "name" {
-  default = ""
-  type    = string
+  type = string
 }
 
 variable "port" {
@@ -20,11 +13,11 @@ variable "port" {
 }
 
 variable "target_node" {
-  type    = string
+  type = string
 }
 
 variable "source_vm" {
-  type    = string
+  type = string
 }
 
 variable "full_clone" {
@@ -58,21 +51,19 @@ variable "tags" {
 }
 
 variable "ip" {
-  default = ""
   type = string
 }
 
 variable "subnet_mask" {
   default = "24"
-  type = string
+  type    = string
 }
 
 variable "gateway" {
-  default = ""
   type = string
 }
 
 variable "connection_user" {
   default = "ansible"
-  type = string
+  type    = string
 }

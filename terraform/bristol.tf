@@ -25,7 +25,7 @@ module "bri-kubeworker-2" {
     proxmox = proxmox.bri-s-02
   }
   target_node = "bri-s-02"
-  source_vm   = "bri-s-01-template"
+  source_vm   = "bri-s-02-template"
 }
 module "bri-kubeworker-3" {
   name           = "bri-kubeworker-3"
@@ -53,7 +53,7 @@ module "bri-kubeworker-4" {
     proxmox = proxmox.bri-s-02
   }
   target_node = "bri-s-02"
-  source_vm   = "bri-s-01-template"
+  source_vm   = "bri-s-02-template"
 }
 
 # Github runners
@@ -83,5 +83,5 @@ module "bri-runner-2" {
     proxmox = proxmox.bri-s-02
   }
   target_node = "bri-s-02"
-  source_vm   = "bri-s-01-template"
+  source_vm   = "bri-s-02-template"
 }
