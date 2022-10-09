@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  ansible:
-    runs-on: ubuntu-latest
+  ansible-bristol:
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -17,9 +17,29 @@ jobs:
           directory: Ansible
           key: ${{ secrets.ANSIBLE_PK }}
           options: |
-            --inventory inventory.yml
+            --inventory bristol.proxmox.yml
             --verbose
         env:
-          PROXMOX_TOKEN_SECRET: ${{ secrets.ANSIBLE_PROXMOX_TOKEN_SECRET }}
+          PROXMOX_PASSWORD: ${{ secrets.ROOT_PROXMOX_PASSWORD }}
+          ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
+          REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
+
+  ansible-edinburgh:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: ansible-playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: site.yml
+          directory: Ansible
+          key: ${{ secrets.ANSIBLE_PK }}
+          options: |
+            --inventory edinburgh.proxmox.yml
+            --verbose
+        env:
+          PROXMOX_PASSWORD: ${{ secrets.ROOT_PROXMOX_PASSWORD }}
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
           REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}

@@ -3,15 +3,15 @@
   block:
     - name: "update"
       include_tasks: updates.yml
-
-    - name: "profile"
-      include_tasks: profile.yml
-
-    - name: "banner"
-      include_tasks: banner.yml
-
-    - name: "ssh"
-      include_tasks: ssh.yml
-
-    - name: "general packages"
-      include_tasks: packages.yml
+#
+#    - name: "profile"
+#      include_tasks: profile.yml
+#
+#    - name: "banner"
+#      include_tasks: banner.yml
+#
+#    - name: "ssh"
+#      include_tasks: ssh.yml
+#
+#    - name: "general packages"
+#      include_tasks: packages.yml
