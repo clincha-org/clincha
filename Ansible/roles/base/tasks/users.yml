@@ -1,0 +1,53 @@
+---
+
+- name: "Block - clincha"
+  block:
+    - name: "create group clincha"
+      group:
+        name: clincha
+        state: present
+
+    - name: "create user clincha"
+      user:
+        name: clincha
+        group: clincha
+        shell: /bin/bash
+        expires: -1
+        update_password: always
+        password: "{{ lookup('env', 'CLINCHA_PASSWORD') | password_hash('sha512') }}"
+
+    - name: "SSH keys for clincha"
+      authorized_key:
+        user: clincha
+        state: present
+        key: https://github.com/clincha.keys
+
+    - name: "copy sudoers configuration"
+      copy:
+        src: clincha-sudoers
+        dest: /etc/sudoers.d/clincha
+        validate: 'visudo -cf %s'
+        mode: 0440
+
+- name: "Block - ansible"
+  block:
+    - name: "change password for ansible"
+      user:
+        name: ansible
+        update_password: always
+        expires: -1
+        password: "{{ lookup('env', 'ANSIBLE_PASSWORD') | password_hash('sha512') }}"
+
+    - name: "copy sudoers configuration"
+      copy:
+        src: ansible-sudoers
+        dest: /etc/sudoers.d/ansible
+        validate: 'visudo -cf %s'
+        mode: 0440
+
+- name: "change password for root"
+  user:
+    name: root
+    update_password: always
+    shell: /sbin/nologin
+    password: "{{ lookup('env', 'ROOT_PASSWORD') | password_hash('sha512') }}"

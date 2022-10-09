@@ -2,7 +2,7 @@ HostKey /etc/ssh/ssh_host_rsa_key
 HostKey /etc/ssh/ssh_host_ecdsa_key
 HostKey /etc/ssh/ssh_host_ed25519_key
 SyslogFacility AUTHPRIV
-PermitRootLogin yes
+PermitRootLogin no
 AuthorizedKeysFile	.ssh/authorized_keys
 PasswordAuthentication yes
 ChallengeResponseAuthentication no
@@ -17,4 +17,4 @@ AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
 AcceptEnv XMODIFIERS
 Subsystem	sftp	/usr/libexec/openssh/sftp-server
 Banner /etc/login.warn
-AllowUsers ansible root clincha
+AllowUsers ansible clincha
