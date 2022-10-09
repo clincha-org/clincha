@@ -18,10 +18,8 @@ jobs:
           key: ${{ secrets.ANSIBLE_PK }}
           options: |
             --inventory edinburgh.proxmox.yml
-            --verbose
         env:
           PROXMOX_PASSWORD: ${{ secrets.ROOT_PROXMOX_PASSWORD }}
-          ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
           REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
 
   ansible-bristol:
@@ -40,10 +38,8 @@ jobs:
           key: ${{ secrets.ANSIBLE_PK }}
           options: |
             --inventory bristol.proxmox.yml
-            --verbose
         env:
           PROXMOX_PASSWORD: ${{ secrets.ROOT_PROXMOX_PASSWORD }}
-          ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
           REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
 
   terraform:
