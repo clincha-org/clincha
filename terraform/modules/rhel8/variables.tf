@@ -7,6 +7,11 @@ variable "name" {
   type = string
 }
 
+variable "desc" {
+  type    = string
+  default = "Built by Terraform"
+}
+
 variable "port" {
   default = 22
   type    = number

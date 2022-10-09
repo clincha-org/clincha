@@ -12,6 +12,7 @@ module "edi-kubeworker-1" {
   }
   target_node = "edi-s-01"
   source_vm   = "edi-s-01-template"
+  desc        = "Kubernetes worker node in Edinburgh"
 }
 module "edi-kubeworker-2" {
   name           = "edi-kubeworker-2"
@@ -26,6 +27,7 @@ module "edi-kubeworker-2" {
   }
   target_node = "edi-s-01"
   source_vm   = "edi-s-01-template"
+  desc        = "Kubernetes worker node in Edinburgh"
 }
 module "edi-kubeworker-3" {
   name           = "edi-kubeworker-3"
@@ -40,6 +42,7 @@ module "edi-kubeworker-3" {
   }
   target_node = "edi-s-01"
   source_vm   = "edi-s-01-template"
+  desc        = "Kubernetes worker node in Edinburgh"
 }
 
 # Github runners
@@ -56,4 +59,5 @@ module "edi-runner-1" {
   }
   target_node = "edi-s-01"
   source_vm   = "edi-s-01-template"
+  desc        = "GitHub runner node in Edinburgh"
 }

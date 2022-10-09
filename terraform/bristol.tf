@@ -12,6 +12,7 @@ module "bri-kubeworker-1" {
   }
   target_node = "bri-s-01"
   source_vm   = "bri-s-01-template"
+  desc        = "Kubernetes worker node in Bristol (region 1)"
 }
 module "bri-kubeworker-2" {
   name           = "bri-kubeworker-2"
@@ -26,6 +27,7 @@ module "bri-kubeworker-2" {
   }
   target_node = "bri-s-02"
   source_vm   = "bri-s-02-template"
+  desc        = "Kubernetes worker node in Bristol (region 2)"
 }
 module "bri-kubeworker-3" {
   name           = "bri-kubeworker-3"
@@ -40,6 +42,7 @@ module "bri-kubeworker-3" {
   }
   target_node = "bri-s-01"
   source_vm   = "bri-s-01-template"
+  desc        = "Kubernetes worker node in Bristol (region 1)"
 }
 module "bri-kubeworker-4" {
   name           = "bri-kubeworker-4"
@@ -54,6 +57,7 @@ module "bri-kubeworker-4" {
   }
   target_node = "bri-s-02"
   source_vm   = "bri-s-02-template"
+  desc        = "Kubernetes worker node in Bristol (region 2)"
 }
 
 # Github runners
@@ -70,6 +74,7 @@ module "bri-runner-1" {
   }
   target_node = "bri-s-01"
   source_vm   = "bri-s-01-template"
+  desc        = "GitHub runner node in Bristol (region 1)"
 }
 module "bri-runner-2" {
   name           = "bri-runner-02"
@@ -84,4 +89,5 @@ module "bri-runner-2" {
   }
   target_node = "bri-s-02"
   source_vm   = "bri-s-02-template"
+  desc        = "GitHub runner node in Bristol (region 2)"
 }

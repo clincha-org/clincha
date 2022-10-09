@@ -1,5 +1,6 @@
 resource "proxmox_vm_qemu" "rhel8-worker" {
   name        = var.name
+  desc        = var.desc
   target_node = var.target_node
   clone       = var.source_vm
   full_clone  = var.full_clone
