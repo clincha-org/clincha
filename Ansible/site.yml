@@ -6,14 +6,14 @@
     - role: base
 
 - name: Setup github runners
-  hosts: runners
+  hosts: github_runner
   become: true
   strategy: free
   roles:
     - role: github-runner
 
 - name: Kubernetes
-  hosts: kubernetes
+  hosts: kubernetes_worker
   become: true
   strategy: free
   roles:
