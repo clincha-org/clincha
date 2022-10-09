@@ -1,5 +1,5 @@
 - name: Apply base roll
-  hosts: all:!proxmox_nodes
+  hosts: all:!proxmox_nodes:!github
   become: true
   strategy: free
   roles:

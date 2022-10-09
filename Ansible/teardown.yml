@@ -1,5 +1,5 @@
 - name: Apply teardown role
-  hosts: all
+  hosts: all:!proxmox_node:!github
   become: true
   strategy: free
   roles:
