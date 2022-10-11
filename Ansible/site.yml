@@ -15,7 +15,7 @@
     - runner_user: github
     - runner_dir: /usr/local/bin/actions-runner
     - runner_labels:
-        - "{{ site }}"
+        - "{{ proxmox_site }}"
     - reinstall_runner: yes
     - hide_sensitive_logs: no
   roles:
