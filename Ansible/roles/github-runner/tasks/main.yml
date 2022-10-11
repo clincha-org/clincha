@@ -1,10 +1,18 @@
 ---
-- name: "GitHub user"
-  user:
-    name: "{{ runner_user }}"
-    group: "{{ runner_user }}"
-    shell: /bin/bash
-    expires: -1
+- name: "Block - {{ runner_user }}"
+  block:
+    - name: "{{ runner_user }} group"
+      group:
+        name: "{{ runner_user }}"
+        state: present
+
+    - name: "{{ runner user }} user"
+      user:
+        name: "{{ runner_user }}"
+        group: "{{ runner_user }}"
+        state: present
+        shell: /bin/bash
+        expires: -1
 
 - name: "Install basic tools"
   dnf:
