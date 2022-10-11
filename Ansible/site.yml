@@ -16,6 +16,7 @@
     - runner_dir: /usr/local/bin/actions-runner
     - runner_labels:
         - "{{ site }}"
+    - reinstall_runner: yes
   roles:
     - role: github-runner
     - role: monolithprojects.github_actions_runner
