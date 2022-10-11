@@ -14,10 +14,7 @@
     - github_repo: clinch-home
     - runner_user: github
     - runner_dir: /usr/local/bin/actions-runner
-    - runner_labels:
-        - "{{ proxmox_site }}"
     - reinstall_runner: yes
-    - hide_sensitive_logs: no
   roles:
     - role: github-runner
     - role: monolithprojects.github_actions_runner
