@@ -1,0 +1,4 @@
+collections:
+  - name: monolithprojects.github_actions_runner
+    version: 1.16.0
+    type: galaxy

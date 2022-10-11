@@ -9,8 +9,14 @@
   hosts: github_runner
   become: true
   strategy: free
+  vars:
+    - github_account: clincha
+    - github_repo: clinch-home
+    - runner_user: github
+    - runner_dir: /usr/local/bin/actions-runner
   roles:
     - role: github-runner
+    - role: monolithprojects.github_actions_runner
 
 - name: Kubernetes
   hosts: kubernetes_worker

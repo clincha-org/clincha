@@ -1,4 +1,11 @@
 ---
+- name: "GitHub user"
+  user:
+    name: "{{ runner_user }}"
+    group: "{{ runner_user }}"
+    shell: /bin/bash
+    expires: -1
+
 - name: "Install basic tools"
   dnf:
     name:
