@@ -14,6 +14,8 @@
     - github_repo: clinch-home
     - runner_user: github
     - runner_dir: /usr/local/bin/actions-runner
+    - runner_labels:
+        - "{{ site }}"
   roles:
     - role: github-runner
     - role: monolithprojects.github_actions_runner
