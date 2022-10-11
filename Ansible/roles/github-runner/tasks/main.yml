@@ -14,20 +14,10 @@
         shell: /bin/bash
         expires: -1
 
-- name: "Install basic tools"
-  dnf:
-    name:
-      - dos2unix
-
 - name: "Enable Ansible repository"
   rhsm_repository:
     name: ansible-2.9-for-rhel-8-x86_64-rpms
     state: enabled
-
-- name: "Install Ansible"
-  dnf:
-    name:
-      - ansible
 
 - name: "Enable Terraform repository"
   yum_repository:
@@ -38,8 +28,10 @@
     gpgcheck: true
     gpgkey: "https://rpm.releases.hashicorp.com/gpg"
 
-- name: "Install Hashicorp tools"
+- name: "Install tools"
   dnf:
     name:
       - terraform
       - packer
+      - ansible
+      - dos2unix
