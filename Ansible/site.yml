@@ -17,6 +17,7 @@
     - runner_labels:
         - "{{ site }}"
     - reinstall_runner: yes
+    - no_log: no
   roles:
     - role: github-runner
     - role: monolithprojects.github_actions_runner
