@@ -1,4 +1,4 @@
 collections:
   - name: https://github.com/MonolithProjects/ansible-github_actions_runner
     version: 1.16.0
-    type: github
+    type: git
