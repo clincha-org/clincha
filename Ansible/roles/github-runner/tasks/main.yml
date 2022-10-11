@@ -6,7 +6,7 @@
         name: "{{ runner_user }}"
         state: present
 
-    - name: "{{ runner user }} user"
+    - name: "{{ runner_user }} user"
       user:
         name: "{{ runner_user }}"
         group: "{{ runner_user }}"
