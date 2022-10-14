@@ -20,9 +20,9 @@
     state: present
     disable_excludes: kubernetes
   with_items:
-    - "kubeadm"
-    - "kubelet"
-    - "kubectl"
+    - "kubeadm-{{ kubernetes_version }}"
+    - "kubelet-{{ kubernetes_version }}"
+    - "kubectl-{{ kubernetes_version }}"
 
 - name: "Start and enable the kubelet"
   systemd:
