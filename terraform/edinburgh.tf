@@ -1,4 +1,19 @@
 # Kubernetes workers
+module "edi-master-1" {
+  name           = "edi-master-1"
+  source         = "./modules/rhel8"
+  tags           = ["base", "kubernetes_worker", "kubernetes_master"]
+  ip             = "192.168.2.20"
+  subnet_mask    = "24"
+  gateway        = "192.168.2.1"
+  ansible_id_rsa = var.ansible_id_rsa
+  providers      = {
+    proxmox = proxmox.edi-s-01
+  }
+  target_node = "edi-s-01"
+  source_vm   = "edi-s-01-template"
+  desc        = "Kubernetes master node in Edinburgh"
+}
 module "edi-kubeworker-1" {
   name           = "edi-kubeworker-1"
   source         = "./modules/rhel8"

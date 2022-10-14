@@ -1,24 +1,18 @@
-- name: "Open firewall ports needed to communicate with the master server"
-  firewalld:
-    port: "{{ item }}"
-    permanent: yes
-    state: enabled
-  with_items:
-    - "6443/tcp"
-    - "10250/tcp"
-
-- name: "Set kubeadm to use containerd"
-  copy:
-    dest: /var/lib/kubelet/kubeadm-flags.env
-    src: kubeadm-flags.env
-    owner: root
-    group: root
-    mode: 0660
-
-- name: "Initialise the cluster"
-  command: kubeadm init --pod-network-cidr=10.100.0.0/16 --v=5
+- name: "Initialise cluster"
+  command:
+    cmd: kubeadm init --pod-network-cidr={{ pod_network_cidr }}
+    creates: /etc/kubernetes/admin.conf
   register: kubeadm_init_output
 
-- name: "Debug - kubeadm_init_output"
-  debug:
-    var: kubeadm_init_output
+- name: "Ensure .kube directory exists"
+  file:
+    path: ~/.kube
+    state: directory
+    mode: 0644
+
+- name: "Symlink kubectl admin.conf to ~/.kube/conf"
+  file:
+    src: /etc/kubernetes/admin.conf
+    dest: ~/.kube/config
+    state: link
+    mode: 0644

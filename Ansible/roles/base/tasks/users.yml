@@ -49,5 +49,6 @@
   user:
     name: root
     update_password: always
-    shell: /sbin/nologin
+    shell: /bin/bash
+    expires: -1
     password: "{{ lookup('env', 'ROOT_PASSWORD') | password_hash('sha512') }}"
