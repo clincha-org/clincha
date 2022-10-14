@@ -8,7 +8,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.1.0
 
       - name: Create SSH key
         run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa'
@@ -29,7 +29,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.1.0
 
       - name: Create SSH key
         run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa'
@@ -50,7 +50,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.1.0
 
       - name: Create SSH key
         run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa'
