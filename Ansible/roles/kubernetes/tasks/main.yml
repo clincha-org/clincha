@@ -16,10 +16,25 @@
 - name: "kubernetes requirements"
   import_tasks: kubernetes.yml
 
-#- name: "Initialise cluster on master node"
-#  when: kubernetes_role == 'master'
-#  include_tasks: initialise_master.yml
+- name: "Initialise cluster on master node"
+  when: kubernetes_role == 'master'
+  include_tasks: initialise_master.yml
 
-#- name: "Setup slave nodes"
-#  when: kubernetes_role == 'slave'
-#  include_tasks: configure_slave.yml
+- name: "Get the kubeadm join command from the master"
+  command: kubeadm token create --print-join-command
+  changed_when: false
+  when: "'kubernetes_master' in group_names"
+  register: kubernetes_join_command_result
+
+- name: "Set the kubeadm join command on workers"
+  set_fact:
+    kubernetes_join_command: >
+      {{ kubernetes_join_command_result.stdout }}
+  when: kubernetes_join_command_result.stdout is defined
+  delegate_to: "{{ item }}"
+  delegate_facts: true
+  with_items: "{{ groups['kubernetes_worker'] }}"
+
+- name: "Setup worker nodes"
+  when: "'kubernetes_worker' in group_names"
+  include_tasks: configure_worker.yml
