@@ -23,6 +23,5 @@
 - name: Kubernetes
   hosts: kubernetes_worker
   become: true
-  strategy: free
   roles:
     - role: kubernetes

@@ -1,10 +1,16 @@
-- name: "Initialise the cluster"
+- name: "Initialise cluster"
   command:
     cmd: kubeadm init --pod-network-cidr={{ pod_network_cidr }}
     creates: /etc/kubernetes/admin.conf
   register: kubeadm_init_output
 
-- name: Symlink the kubectl admin.conf to ~/.kube/conf.
+- name: "Ensure .kube directory exists"
+  file:
+    path: ~/.kube
+    state: directory
+    mode: 0644
+
+- name: "Symlink kubectl admin.conf to ~/.kube/conf"
   file:
     src: /etc/kubernetes/admin.conf
     dest: ~/.kube/config
