@@ -17,7 +17,7 @@
   import_tasks: kubernetes.yml
 
 - name: "Initialise cluster on master node"
-  when: kubernetes_role == 'master'
+  when: "'kubernetes_master' in group_names"
   include_tasks: initialise_master.yml
 
 - name: "Get the kubeadm join command from the master"
