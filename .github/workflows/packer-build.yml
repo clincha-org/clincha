@@ -1,4 +1,4 @@
-name: packer
+name: packer-build
 
 on:
   workflow_dispatch:
