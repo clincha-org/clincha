@@ -94,7 +94,7 @@ module "edi-nfs-1" {
       type    = "scsi"
     },
     {
-      size    = "6000G"
+      size    = "3000G"
       storage = "edi-s-01-data"
       type    = "scsi"
     }
