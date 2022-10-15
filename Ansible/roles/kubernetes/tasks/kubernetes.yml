@@ -16,13 +16,10 @@
 
 - name: "Install kubernetes packages"
   dnf:
-    name: "{{ item }}"
+    name: [ "kubeadm-{{ kubernetes_version }}", "kubelet-{{ kubernetes_version }}", "kubectl-{{ kubernetes_version }}" ]
     state: present
+    allow_downgrade: yes
     disable_excludes: kubernetes
-  with_items:
-    - "kubeadm-{{ kubernetes_version }}"
-    - "kubelet-{{ kubernetes_version }}"
-    - "kubectl-{{ kubernetes_version }}"
 
 - name: "Start and enable the kubelet"
   systemd:
