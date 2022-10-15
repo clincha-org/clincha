@@ -96,7 +96,7 @@ which would take place when I traveled back to Bristol.
 
 I ordered all the parts needed for EDI-S-01, and they arrived the next day.
 
-![server-parts.png](img/server-parts.png)
+![server-parts.png](../images/server-refresh/server-parts.png)
 
 It was exciting building a computer again for the first time since I built my PC for home back in 2016. The two servers
 that I had before had come built already and just needed hard drives installed. The CPU and motherboard were already
@@ -105,18 +105,18 @@ the motherboard. Luckily the fancy Noctua fans that I purchased came with a few 
 which let me utilise all 4 fans. The other was a low noise adaptor which I installed as well to try to meet the goal of
 a quiet server room.
 
-![server-built.png](img/server-built.png)
+![server-built.png](../images/server-refresh/server-built.png)
 
 Once the server was built I had less than 12 hours to get it in a working state before I needed to be on a plane heading
 down to Bristol.
 
-![test-bench.png](img/test-bench.png)
+![test-bench.png](../images/server-refresh/test-bench.png)
 
 Getting the server started was fairly trivial. It POSTed with no issues but I never got anything on the display. After
 reading the SCAN website (where I purchased the motherboard/CPU bundle) I noticed that the bundle needed an external GPU
 for the display to work, so I plugged in an old one I had lying around and got display.
 
-![test-GPU.png](img/test-GPU.png)
+![test-GPU.png](../images/server-refresh/test-GPU.png)
 
 I was pleased to see that the 450 watt power supply could handle the load of 3 HDDs, 2 SSDs, and a GPU during boot, but
 I never had any issues related to power.
@@ -130,7 +130,7 @@ user created.
 I moved the server to its final location in my flat and was happy to hear... almost nothing! The quiet fans and consumer
 hardware were doing their job.
 
-![server-cupboard.jpg](img/server-cupboard.jpg)
+![server-cupboard.jpg](../images/server-refresh/server-cupboard.jpg)
 
 I tried to be clever at this stage and use Ansible to configure the OS but hit issues with playbooks not being
 compatible with RHEL. Once I finally managed to make it work it ran the SSH playbook, changed the ssh_config file and
@@ -151,15 +151,15 @@ One of the drives is not registering on the OS. Will need to investigate and rem
 
 I removed the old servers from the server room, and hit them with compressed air to get all the dust out.
 
-![dusting.jpg](img/dusting.jpg)
+![dusting.jpg](../images/server-refresh/dusting.jpg)
 
 Some of them were pretty dusty...
 
-![dust.jpg](img/dust.jpg)
+![dust.jpg](../images/server-refresh/dust.jpg)
 
 Then I went into the server room, gave it a good clean and tidied all the computer bits up. I disconnected the internet briefly when I tidied up the cables but nobody noticed.
 
-![server-room-before.jpf](img/server-room-before.jpg)
+![server-room-before.jpf](../images/server-refresh/server-room-before.jpg)
 
 I'm going to try and sell these old machines. I don't expect to get much for them but at least they'll be gone.
 
@@ -167,11 +167,11 @@ I'm going to try and sell these old machines. I don't expect to get much for the
 
 Arriving in Bristol I waited. The server components were delayed, I was having a pleasant holiday. Once the parts finally arrived I got to work. I put both servers together without much issue. I hadn't built a computer in ages, so it was nice to get back to how it all began. Although this time there were more disks.
 
-![disks.jpg](img/disks.jpg)
+![disks.jpg](../images/server-refresh/disks.jpg)
 
 I put down two sheets of rubber matting to help with vibrations and wheeled the server rack in. The servers went in nicely and I even found an old monitor and keyboard to use as a KVM. I needed to disable 'wait for F1 if no keyboard detected' in the BIOS but after that they were good to go. I was rushed to complete on time, so I only had enough time to make sure they showed up on the network. However, I think in the end I did a good job.
 
-![server-room-after.jpg](img/server-room-after.jpg)
+![server-room-after.jpg](../images/server-refresh/server-room-after.jpg)
 
 ### Configure Ansible
 
@@ -202,9 +202,9 @@ Which locked me out when the ssh key didn't work. Needed to get dad to login and
 
 This was quite painful to set up, but I think only because I wasn't being very clever with the way that I was working on things. I needed to be careful with the IP addresses. In the end I had a static public IP address configured at both locations and removed the issue of double NAT. I mostly used the Ubiquity GUI to set everything up.
 
-![ubnt-HL-Geddes.png](img/ubnt-HL-Geddes.png)
+![ubnt-HL-Geddes.png](../images/server-refresh/ubnt-HL-Geddes.png)
 
-![ubnt-Geddes-HL.png](img/ubnt-Geddes-HL.png)
+![ubnt-Geddes-HL.png](../images/server-refresh/ubnt-Geddes-HL.png)
 
 I needed to log in to the CLI at some stage just to see what I was doing wrong. The commands to inspect things on the routers were centred around an application called ipsec. It was really important to look into the logs at BOTH sides. The issue only became clear once I was looking at the second node.
 

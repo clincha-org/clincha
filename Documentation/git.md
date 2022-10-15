@@ -8,7 +8,7 @@ and the CSOC team were getting alerts. This needs to be resolved so that I don't
 work laptop to commit personal work. The current system is that I need to select a checkbox every time I make a commit
 and then write my personal email (angus.clinch@gmail.com) in a box.
 
-![old-system.png](img/git/old-system.png)
+![old-system.png](images/git/old-system.png)
 
 ## Fix it
 
@@ -40,4 +40,4 @@ anywhere. Not sure where the Git user and email information is stored for reposi
 
 Yay! It worked
 
-![it worked.png](img/git/it-worked.png)
+![it worked.png](images/git/it-worked.png)

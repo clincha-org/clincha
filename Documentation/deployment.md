@@ -14,7 +14,7 @@ This is the end-to-end process for deploying out the clinch-home cloud.
 
 Run the "create" workflow in this repository. To do this, go to the create [actions page](https://github.com/clincha/clinch-home/actions/workflows/create.yml) of the clinch-home repository. Press the "Run workflow" button and then the same named green button that appears.
 
-![clinch-home-create-workflow.png](img/clinch-home-create-workflow.png)
+![clinch-home-create-workflow.png](images/deployment/clinch-home-create-workflow.png)
 
 The run will take around 15 minutes and at the end there will be 4 servers created on the Proxmox host in Geddes. 
 
@@ -22,7 +22,7 @@ The run will take around 15 minutes and at the end there will be 4 servers creat
 
 Go to the [Unifi portal](https://unifi.ui.com/dashboard) and select the Geddes network.
 
-![clinch-home-unifi-dashboard.png](img/clinch-home-unifi-dashboard.png)
+![clinch-home-unifi-dashboard.png](images/deployment/clinch-home-unifi-dashboard.png)
 
 On the left click "Settings" > "Firewall & Security" and scroll down to the "Port Forwarding" section. Using the "Create New Forwarding Rule" or by editing an existing rule make sure these rules exist:
 
