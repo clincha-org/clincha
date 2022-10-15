@@ -13,10 +13,10 @@ jobs:
     runs-on: [self-hosted, bristol]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.1.0
 
       - name: ansible-playbook
-        uses: dawidd6/action-ansible-playbook@v2
+        uses: dawidd6/action-ansible-playbook@master
         with:
           playbook: site.yml
           directory: Ansible
@@ -38,10 +38,10 @@ jobs:
     runs-on: [self-hosted, edinburgh]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.1.0
 
       - name: ansible-playbook
-        uses: dawidd6/action-ansible-playbook@v2
+        uses: dawidd6/action-ansible-playbook@master
         with:
           playbook: site.yml
           directory: Ansible
