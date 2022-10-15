@@ -15,7 +15,14 @@ resource "proxmox_vm_qemu" "rhel8-worker" {
 
   tags = join(",", var.tags)
 
-  for_each = [for disk in var.disks : disk]
+  dynamic "disk" {
+    for_each = var.disks
+    content {
+      size    = disk.value.size
+      storage = disk.value.storage
+      type    = disk.value.type
+    }
+  }
 
   network {
     bridge    = var.network_brige
