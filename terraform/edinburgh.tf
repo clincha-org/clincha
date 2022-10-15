@@ -74,7 +74,7 @@ module "edi-runner-1" {
 
 # NFS Servers
 module "edi-nfs-1" {
-  name           = "edi-runner-01"
+  name           = "edi-nfs-1"
   source         = "./modules/rhel8"
   tags           = ["base", "nfs_server"]
   ip             = "192.168.2.41"
