@@ -1,6 +1,9 @@
 name: terraform
 
 on:
+  push:
+    branches:
+      - "*"
   workflow_dispatch:
 
 jobs:
@@ -21,8 +24,7 @@ jobs:
       - name: terraform apply
         working-directory: terraform
         run: |
-          /usr/bin/terraform apply \
-            --auto-approve \
+          /usr/bin/terraform plan \
             -var="ansible_id_rsa=${{ secrets.ANSIBLE_PK }}" \
             -var="edinburgh_proxmox_token_secret=${{ secrets.TERRAFORM_EDINBURGH_PROXMOX_TOKEN_SECRET }}" \
             -var="bristol_proxmox_token_secret=${{ secrets.TERRAFORM_BRISTOL_PROXMOX_TOKEN_SECRET }}"

@@ -4,7 +4,6 @@ module "bri-master-1" {
   source         = "./modules/rhel8"
   tags           = ["base", "kubernetes_worker", "kubernetes_master"]
   ip             = "192.168.1.20"
-  subnet_mask    = "24"
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
@@ -19,7 +18,6 @@ module "bri-kubeworker-1" {
   source         = "./modules/rhel8"
   tags           = ["base", "kubernetes_worker"]
   ip             = "192.168.1.21"
-  subnet_mask    = "24"
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
@@ -34,7 +32,6 @@ module "bri-kubeworker-2" {
   source         = "./modules/rhel8"
   tags           = ["base", "kubernetes_worker"]
   ip             = "192.168.1.22"
-  subnet_mask    = "24"
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
@@ -49,7 +46,6 @@ module "bri-kubeworker-3" {
   source         = "./modules/rhel8"
   tags           = ["base", "kubernetes_worker"]
   ip             = "192.168.1.23"
-  subnet_mask    = "24"
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
@@ -64,7 +60,6 @@ module "bri-kubeworker-4" {
   source         = "./modules/rhel8"
   tags           = ["base", "kubernetes_worker"]
   ip             = "192.168.1.24"
-  subnet_mask    = "24"
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
@@ -81,7 +76,6 @@ module "bri-runner-1" {
   source         = "./modules/rhel8"
   tags           = ["base", "github_runner"]
   ip             = "192.168.1.31"
-  subnet_mask    = "24"
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
@@ -96,7 +90,6 @@ module "bri-runner-2" {
   source         = "./modules/rhel8"
   tags           = ["base", "github_runner"]
   ip             = "192.168.1.32"
-  subnet_mask    = "24"
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
