@@ -1,0 +1,34 @@
+---
+- name: "Install NFS packages"
+  dnf:
+    name: nfs-utils
+    state: present
+
+- name: "Create volume"
+  lvol:
+    vg: edinburgh_slow
+    lv: data
+    size: +100%FREE
+
+- name: "Create mount points"
+  file:
+    path: /mnt/edinburgh-slow
+    state: directory
+    owner: root
+    group: root
+    mode: 0777
+
+- name: "Mount volume"
+  mount:
+    src: /dev/edinburgh_slow/data
+    path: /mnt/edinburgh-slow
+    fstype: xfs
+    state: mounted
+
+- name: "Setup exports"
+  template:
+    src: exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: 0644
