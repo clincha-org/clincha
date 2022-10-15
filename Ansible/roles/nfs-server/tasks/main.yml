@@ -4,7 +4,13 @@
     name: nfs-utils
     state: present
 
-- name: "Create volume"
+- name: "Create volume group"
+  lvg:
+    vg: edinburgh_slow
+    pvs: sdb
+    pvresize: true
+
+- name: "Create logical volume"
   lvol:
     vg: edinburgh_slow
     lv: data
