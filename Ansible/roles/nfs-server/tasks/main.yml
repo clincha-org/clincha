@@ -8,7 +8,6 @@
   lvg:
     vg: edinburgh_slow
     pvs: sdb
-    pvresize: true
 
 - name: "Create logical volume"
   lvol:
