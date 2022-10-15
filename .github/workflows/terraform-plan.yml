@@ -1,10 +1,10 @@
 name: terraform-plan
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - "*"
-  workflow_dispatch:
 
 jobs:
   terraform:
