@@ -86,4 +86,17 @@ module "edi-nfs-1" {
   target_node = "edi-s-01"
   source_vm   = "edi-s-01-template"
   desc        = "NFS server in Edinburgh"
+
+  disks = [
+    {
+      size    = "32G"
+      storage = "local-lvm"
+      type    = "scsi"
+    },
+    {
+      size    = "7T"
+      storage = "edi-s-01-data"
+      type    = "scsi"
+    }
+  ]
 }
