@@ -16,3 +16,12 @@
     dest: ~/.kube/config
     state: link
     mode: 0644
+
+- name: "Symlink kubectl admin.conf to /home/kubernetes/.kube/conf"
+  file:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/kubernetes/.kube/config
+    state: link
+    owner: kubernetes
+    group: kubernetes
+    mode: 0644

@@ -18,6 +18,36 @@
     - role: github-runner
     - role: monolithprojects.github_actions_runner
 
+- name: Setup github runners (streaming)
+  hosts: github_runner
+  become: true
+  vars:
+    - github_account: clincha
+    - github_repo: streaming
+    - runner_user: github
+    - runner_dir: /usr/local/bin/streaming-runner
+    - runner_labels:
+        - "{{ site }}"
+        - "github-runner"
+  roles:
+    - role: github-runner
+    - role: monolithprojects.github_actions_runner
+
+- name: Setup github runners (streaming)
+  hosts: kubernetes_master
+  become: true
+  vars:
+    - github_account: clincha
+    - github_repo: streaming
+    - runner_user: kubernetes
+    - runner_dir: /usr/local/bin/github-runner
+    - runner_labels:
+        - "{{ site }}"
+        - "kubernetes"
+  roles:
+    - role: github-runner
+    - role: monolithprojects.github_actions_runner
+
 - name: NFS servers
   hosts: nfs_server
   become: true
