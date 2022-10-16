@@ -35,6 +35,12 @@
     fstype: xfs
     state: mounted
 
+- name: "Ensure NFS server is active"
+  service:
+    name: nfs-server
+    state: started
+    enabled: yes
+
 - name: "Setup exports"
   template:
     src: exports.j2
@@ -42,3 +48,4 @@
     owner: root
     group: root
     mode: 0644
+  notify: restart-nfs-server
