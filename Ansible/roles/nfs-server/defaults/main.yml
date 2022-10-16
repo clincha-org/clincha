@@ -1,5 +1,5 @@
 storage_speed: "slow"
-pysical_volume: "/dev/sdb"
+physical_volume: "/dev/sdb"
 volume_group: "{{ site }}_{{ storage_speed }}"
 logical_volume: "data"
 mount_path: "/mnt/{{ site }}-{{ storage_speed }}"
