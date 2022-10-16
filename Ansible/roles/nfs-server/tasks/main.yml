@@ -7,7 +7,7 @@
 - name: "Create volume group"
   lvg:
     vg: edinburgh_slow
-    pvs: sdb
+    pvs: /dev/sdb
 
 - name: "Create logical volume"
   lvol:
