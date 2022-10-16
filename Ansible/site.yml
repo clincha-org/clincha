@@ -18,7 +18,7 @@
     - role: github-runner
     - role: monolithprojects.github_actions_runner
 
-- name: Setup github runners (streaming)
+- name: Setup github runners (streaming-github-runner)
   hosts: github_runner
   become: true
   vars:
@@ -33,7 +33,7 @@
     - role: github-runner
     - role: monolithprojects.github_actions_runner
 
-- name: Setup github runners (streaming)
+- name: Setup github runners (streaming-kubernetes)
   hosts: kubernetes_master
   become: true
   vars:

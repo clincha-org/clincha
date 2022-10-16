@@ -6,14 +6,19 @@
 
 - name: "Ensure .kube directory exists"
   file:
-    path: ~/.kube
+    user: "{{ item.user }}"
+    group: "{{ item.group }}"
+    path: "{{ item.path }}"
     state: directory
     mode: 0644
+  with_items:
+    - { user: root, group: root, path: "/root/.kube" }
+    - { user: kubernetes, group: kubernetes, path: "/home/kubernetes/.kube" }
 
-- name: "Symlink kubectl admin.conf to ~/.kube/conf"
+- name: "Symlink kubectl admin.conf to /root/.kube/conf"
   file:
     src: /etc/kubernetes/admin.conf
-    dest: ~/.kube/config
+    dest: /root/.kube/config
     state: link
     mode: 0644
 
