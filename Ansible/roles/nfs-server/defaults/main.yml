@@ -1,0 +1,8 @@
+storage_speed: "slow"
+physical_volume: "/dev/sdb"
+volume_group: "{{ site }}_{{ storage_speed }}"
+logical_volume: "data"
+mount_path: "/mnt/{{ site }}-{{ storage_speed }}"
+mount_owner: root
+mount_group: root
+mount_mode: 0777

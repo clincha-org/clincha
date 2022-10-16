@@ -15,17 +15,23 @@ resource "proxmox_vm_qemu" "rhel8-worker" {
 
   tags = join(",", var.tags)
 
-  disk {
-    size    = var.disk_size
-    storage = var.disk_storage
-    type    = var.disk_type
+  dynamic "disk" {
+    for_each = var.disks
+    content {
+      size    = disk.value.size
+      storage = disk.value.storage
+      type    = disk.value.type
+    }
   }
 
-  network {
-    bridge    = var.network_brige
-    firewall  = var.network_firewall
-    link_down = var.network_link_down
-    model     = var.network_model
+  dynamic "network" {
+    for_each = var.networks
+    content {
+      bridge    = network.value.bridge
+      firewall  = network.value.firewall
+      link_down = network.value.link_down
+      model     = network.value.model
+    }
   }
 
   provisioner "remote-exec" {

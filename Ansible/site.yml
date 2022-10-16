@@ -1,14 +1,12 @@
 - name: Apply base roll
   hosts: base
   become: true
-  strategy: free
   roles:
     - role: base
 
 - name: Setup github runners
   hosts: github_runner
   become: true
-  strategy: free
   vars:
     - github_account: clincha
     - github_repo: clinch-home
@@ -19,6 +17,12 @@
   roles:
     - role: github-runner
     - role: monolithprojects.github_actions_runner
+
+- name: NFS servers
+  hosts: nfs_server
+  become: true
+  roles:
+    - role: nfs-server
 
 - name: Kubernetes
   hosts: kubernetes_worker

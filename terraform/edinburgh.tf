@@ -4,7 +4,6 @@ module "edi-master-1" {
   source         = "./modules/rhel8"
   tags           = ["base", "kubernetes_worker", "kubernetes_master"]
   ip             = "192.168.2.20"
-  subnet_mask    = "24"
   gateway        = "192.168.2.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
@@ -19,7 +18,6 @@ module "edi-kubeworker-1" {
   source         = "./modules/rhel8"
   tags           = ["base", "kubernetes_worker"]
   ip             = "192.168.2.21"
-  subnet_mask    = "24"
   gateway        = "192.168.2.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
@@ -34,7 +32,6 @@ module "edi-kubeworker-2" {
   source         = "./modules/rhel8"
   tags           = ["base", "kubernetes_worker"]
   ip             = "192.168.2.22"
-  subnet_mask    = "24"
   gateway        = "192.168.2.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
@@ -49,7 +46,6 @@ module "edi-kubeworker-3" {
   source         = "./modules/rhel8"
   tags           = ["base", "kubernetes_worker"]
   ip             = "192.168.2.23"
-  subnet_mask    = "24"
   gateway        = "192.168.2.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
@@ -66,7 +62,6 @@ module "edi-runner-1" {
   source         = "./modules/rhel8"
   tags           = ["base", "github_runner"]
   ip             = "192.168.2.31"
-  subnet_mask    = "24"
   gateway        = "192.168.2.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
@@ -75,4 +70,33 @@ module "edi-runner-1" {
   target_node = "edi-s-01"
   source_vm   = "edi-s-01-template"
   desc        = "GitHub runner node in Edinburgh"
+}
+
+# NFS Servers
+module "edi-nfs-1" {
+  name           = "edi-nfs-1"
+  source         = "./modules/rhel8"
+  tags           = ["base", "nfs_server"]
+  ip             = "192.168.2.41"
+  gateway        = "192.168.2.1"
+  ansible_id_rsa = var.ansible_id_rsa
+  providers      = {
+    proxmox = proxmox.edi-s-01
+  }
+  target_node = "edi-s-01"
+  source_vm   = "edi-s-01-template"
+  desc        = "NFS server in Edinburgh"
+
+  disks = [
+    {
+      size    = "32G"
+      storage = "local-lvm"
+      type    = "scsi"
+    },
+    {
+      size    = "5000G"
+      storage = "edi-s-01-data"
+      type    = "scsi"
+    }
+  ]
 }
