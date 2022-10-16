@@ -15,6 +15,11 @@
     lv: data
     size: +100%FREE
 
+- name: "Create filesystem"
+  filesystem:
+    dev: /dev/edinburgh_slow/data
+    fstype: xfs
+
 - name: "Create mount points"
   file:
     path: /mnt/edinburgh-slow
