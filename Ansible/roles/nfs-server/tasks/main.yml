@@ -6,32 +6,32 @@
 
 - name: "Create volume group"
   lvg:
-    vg: edinburgh_slow
-    pvs: /dev/sdb
+    vg: "{{ volume_group }}"
+    pvs: "{{ physical_volume }}"
 
 - name: "Create logical volume"
   lvol:
-    vg: edinburgh_slow
-    lv: data
+    vg: "{{ volume_group }}"
+    lv: "{{ logical_volume }}"
     size: +100%FREE
 
 - name: "Create filesystem"
   filesystem:
-    dev: /dev/edinburgh_slow/data
+    dev: "/dev/{{ volume_group }}/{{ logical_volume }}"
     fstype: xfs
 
 - name: "Create mount points"
   file:
-    path: /mnt/edinburgh-slow
+    path: "{{ mount_path }}"
     state: directory
-    owner: root
-    group: root
-    mode: 0777
+    owner: "{{ mount_owner }}"
+    group: "{{ mount_group }}"
+    mode: "{{ mount_mode }}"
 
 - name: "Mount volume"
   mount:
-    src: /dev/edinburgh_slow/data
-    path: /mnt/edinburgh-slow
+    src: "/dev/{{ volume_group }}/{{ logical_volume }}"
+    path: "{{ mount_path }}"
     fstype: xfs
     state: mounted
 
