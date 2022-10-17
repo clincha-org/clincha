@@ -10,7 +10,7 @@
     group: "{{ item.group }}"
     path: "{{ item.path }}"
     state: directory
-    mode: 0644
+    mode: 0770
   with_items:
     - { owner: root, group: root, path: "/root/.kube" }
     - { owner: kubernetes, group: kubernetes, path: "/home/kubernetes/.kube" }
@@ -20,6 +20,8 @@
     src: /etc/kubernetes/admin.conf
     dest: /root/.kube/config
     state: link
+    owner: root
+    group: root
     mode: 0644
 
 - name: "Symlink kubectl admin.conf to /home/kubernetes/.kube/conf"
