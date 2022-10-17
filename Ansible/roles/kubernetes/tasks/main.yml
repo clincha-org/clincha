@@ -5,9 +5,9 @@
 - name: "Disable SELinux"
   include_tasks: disable-selinux.yml
 
-- name: "Install iproute"
+- name: "Install dependencies"
   dnf:
-    name: iproute-tc
+    name: [ iproute-tc, nfs-utils ]
     state: present
 
 - name: "Install container runtime"
