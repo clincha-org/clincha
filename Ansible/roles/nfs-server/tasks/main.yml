@@ -1,6 +1,10 @@
 ---
 - name: "Disable SELinux"
-  include_tasks: disable-selinux.yml
+  selinux:
+    state: permissive
+    policy: targeted
+  notify:
+    restart-host
 
 - name: "Install NFS packages"
   dnf:
