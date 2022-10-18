@@ -1,0 +1,9 @@
+- name: file
+  copy:
+    src: selinux.conf
+    dest: /etc/selinux/config
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    restart-host

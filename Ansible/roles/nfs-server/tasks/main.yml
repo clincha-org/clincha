@@ -1,4 +1,7 @@
 ---
+- name: "Disable SELinux"
+  include_tasks: disable-selinux.yml
+
 - name: "Install NFS packages"
   dnf:
     name: nfs-utils

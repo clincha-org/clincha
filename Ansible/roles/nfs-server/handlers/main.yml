@@ -2,3 +2,6 @@
   service:
     name: nfs-server
     state: restarted
+
+- name: restart-host
+  reboot:
