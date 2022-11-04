@@ -157,7 +157,7 @@ module "bri-nfs-1" {
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
-    proxmox = proxmox.edi-s-01
+    proxmox = proxmox.bri-s-01
   }
   target_node = "bri-s-01"
   source_vm   = "bri-s-01-template"
@@ -184,7 +184,7 @@ module "bri-nfs-2" {
   gateway        = "192.168.1.1"
   ansible_id_rsa = var.ansible_id_rsa
   providers      = {
-    proxmox = proxmox.edi-s-01
+    proxmox = proxmox.bri-s-02
   }
   target_node = "bri-s-02"
   source_vm   = "bri-s-02-template"
