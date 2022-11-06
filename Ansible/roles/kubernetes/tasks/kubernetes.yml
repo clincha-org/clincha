@@ -53,7 +53,8 @@
 
     - name: "Move Helm binary to binary location"
       copy:
-        remote_src: "{{ helm_unarchive.dest }}/helm"
+        remote_src: true
+        src: "{{ helm_unarchive.dest }}/helm"
         dest: /usr/bin/helm
         mode: 0755
         owner: root
