@@ -1,14 +1,14 @@
 - name: "Create group"
   group:
     name: "{{ item.name }}"
-    gid: "{{ item.gid }}"
+    gid: "{{ item.gid | default(None) }}"
     state: present
   with_items: "{{ user_list }}"
 
 - name: "Create user"
   user:
     name: "{{ item.name }}"
-    uid: "{{ item.uid }}"
+    uid: "{{ item.uid | default(None) }}"
     group: "{{ item.name }}"
     groups: "{{ item.groups | default('') }}"
     expires: -1
