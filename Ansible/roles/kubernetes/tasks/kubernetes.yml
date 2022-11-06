@@ -51,14 +51,10 @@
         dest: /tmp/
       register: helm_unarchive
 
-    - name: "DEBUG - helm_unarchive"
-      debug:
-        var: helm_unarchive
-
     - name: "Move Helm binary to binary location"
       copy:
         remote_src: true
-        src: "{{ helm_unarchive.dest }}/{{ helm_unarchive.files[0] }}/helm"
+        src: "{{ helm_unarchive.dest }}/linux-amd64/helm"
         dest: /usr/bin/helm
         mode: 0755
         owner: root
