@@ -46,7 +46,8 @@
 
     - name: "Decompress Helm"
       unarchive:
-        remote_src: "{{ helm_download.dest }}"
+        remote_src: true
+        src: "{{ helm_download.dest }}"
         dest: /tmp/
       register: helm_unarchive
 
