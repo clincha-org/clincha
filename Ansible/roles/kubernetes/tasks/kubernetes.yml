@@ -26,3 +26,34 @@
     name: kubelet
     state: started
     enabled: true
+
+- name: "Check if Helm is installed"
+  command:
+    cmd: "helm version"
+  register: helm-version-check
+  changed_when: false
+  failed_when: false
+
+- name: "Install Helm"
+  when: helm-version-check.rc != 0
+  block:
+    - name: "Download Helm"
+      get_url:
+        url: https://get.helm.sh/helm-v3.10.1-linux-amd64.tar.gz
+        checksum: "c12d2cd638f2d066fec123d0bd7f010f32c643afdf288d39a4610b1f9cb32af3"
+        dest: /tmp/
+      register: helm-download
+
+    - name: "Decompress Helm"
+      unarchive:
+        src: helm-download.dest
+        dest: /tmp/
+      register: helm-unarchive
+
+    - name: "Move Helm binary to binary location"
+      copy:
+        remote_src: "{{ helm-unarchive.dest }}/helm"
+        dest: /usr/bin/helm
+        mode: 0755
+        owner: root
+        group: root
