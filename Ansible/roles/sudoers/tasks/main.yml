@@ -1,0 +1,7 @@
+- name: "sudoers"
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/sudoers.d/{{ item | basename }}"
+    validate: "visudo -cf %s"
+    mode: 0440
+  loop: "{{ lookup('fileglob', 'files/*', wantlist=True) }}"

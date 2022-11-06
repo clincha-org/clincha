@@ -38,3 +38,10 @@
 - name: "Setup worker nodes"
   when: "'kubernetes_worker' in group_names"
   include_tasks: configure_worker.yml
+
+- name: "Configure persistent volumes"
+  when:
+    - "'kubernetes_worker' in group_names"
+    - "'kubernetes_master' not in group_names"
+    - "site != 'edinburgh'"
+  include_tasks: configure_worker_storage.yml

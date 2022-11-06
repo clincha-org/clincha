@@ -2,6 +2,8 @@
   hosts: base
   become: true
   roles:
+    - role: users
+    - role: sudoers
     - role: base
 
 - name: Setup github runners
