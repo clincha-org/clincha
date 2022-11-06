@@ -4,4 +4,4 @@
     dest: "/etc/sudoers.d/{{ item }}"
     validate: "visudo -cf %s"
     mode: 0440
-  loop: "{{ lookup('fileglob', 'files/*', wantlist=True }}"
+  loop: "{{ lookup('fileglob', 'files/*', wantlist=True) }}"
