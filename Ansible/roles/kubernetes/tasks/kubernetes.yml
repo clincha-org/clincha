@@ -51,6 +51,10 @@
         dest: /tmp/
       register: helm_unarchive
 
+    - name: "DEBUG - helm_unarchive"
+      debug:
+        var: helm_unarchive
+
     - name: "Move Helm binary to binary location"
       copy:
         remote_src: true
