@@ -28,18 +28,3 @@
     path: "{{ mount_path }}"
     fstype: xfs
     state: mounted
-
-- name: "Ensure NFS server is active"
-  service:
-    name: nfs-server
-    state: started
-    enabled: yes
-
-- name: "Setup exports"
-  template:
-    src: exports.j2
-    dest: /etc/exports
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart-nfs-server
