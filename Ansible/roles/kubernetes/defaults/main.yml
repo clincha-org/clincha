@@ -6,6 +6,6 @@ physical_volume: "/dev/sdb"
 volume_group: "kubernetes"
 logical_volume: "config"
 mount_path: "/mnt/disks"
-mount_owner: root
-mount_group: root
-mount_mode: 0777
+mount_owner: streaming
+mount_group: streaming
+mount_mode: 0770
