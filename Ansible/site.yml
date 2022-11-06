@@ -50,6 +50,21 @@
     - role: github-runner
     - role: monolithprojects.github_actions_runner
 
+- name: Setup github runners (proxy-kubernetes)
+  hosts: kubernetes_master
+  become: true
+  vars:
+    - github_account: clincha
+    - github_repo: proxy
+    - runner_user: kubernetes
+    - runner_dir: /usr/local/bin/github-runner
+    - runner_labels:
+        - "{{ site }}"
+        - "kubernetes"
+  roles:
+    - role: github-runner
+    - role: monolithprojects.github_actions_runner
+
 - name: NFS servers
   hosts: nfs_server
   become: true
