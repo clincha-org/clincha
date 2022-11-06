@@ -4,9 +4,6 @@
     - name: "update"
       include_tasks: updates.yml
 
-    - name: "users"
-      include_tasks: users.yml
-
     - name: "banner"
       include_tasks: banner.yml
 

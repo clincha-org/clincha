@@ -1,0 +1,17 @@
+- name: "Create group"
+  group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid | default(omit) }}"
+    state: present
+  with_items: "{{ user_list }}"
+
+- name: "Create user"
+  user:
+    name: "{{ item.name }}"
+    uid: "{{ item.uid | default(omit) }}"
+    group: "{{ item.name }}"
+    groups: "{{ item.groups | default('') }}"
+    password: "{{ item.password | default(omit) }}"
+    shell: "{{ item.shell | default(omit) }}"
+    expires: -1
+  with_items: "{{ user_list }}"

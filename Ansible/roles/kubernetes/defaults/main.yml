@@ -1,2 +1,11 @@
 kubernetes_version: "1.25.2"
 pod_network_cidr: "10.100.0.0/16"
+
+storage_tier: "fast"
+physical_volume: "/dev/sdb"
+volume_group: "kubernetes"
+logical_volume: "config"
+mount_path: "/mnt/disks"
+mount_owner: streaming
+mount_group: streaming
+mount_mode: 0770
