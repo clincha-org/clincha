@@ -57,7 +57,7 @@
     - github_account: clincha
     - github_repo: proxy
     - runner_user: kubernetes
-    - runner_dir: /usr/local/bin/github-runner
+    - runner_dir: /usr/local/bin/github-runner-proxy-kubernetes
     - runner_labels:
         - "{{ site }}"
         - "kubernetes"
