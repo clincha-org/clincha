@@ -40,7 +40,7 @@
     - name: "Download Helm"
       get_url:
         url: https://get.helm.sh/helm-v3.10.1-linux-amd64.tar.gz
-        checksum: "c12d2cd638f2d066fec123d0bd7f010f32c643afdf288d39a4610b1f9cb32af3"
+        checksum: "sha256:c12d2cd638f2d066fec123d0bd7f010f32c643afdf288d39a4610b1f9cb32af3"
         dest: /tmp/
       register: helm_download
 
