@@ -6,11 +6,6 @@
     password: "{{ lookup('env', 'REDHAT_PASSWORD') }}"
     auto_attach: true
 
-- name: "Enforce version-locks"
-  yum_versionlock:
-    name: "containers-common-2:1-40.module+el8.7.0+16772+33343656"
-    state: present
-
 - name: "Upgrade all packages"
   dnf:
     name: "*"
