@@ -1,0 +1,10 @@
+- name: "Copy Flannel configuration"
+  copy:
+    src: flannel-manifest.yml
+    dest: /tmp/flannel-manifest.yml
+    mode: 700
+    owner: root
+    group: root
+
+- name: "Install Flannel"
+  command: kubectl apply -f /tmp/flannel-manifest.yml
