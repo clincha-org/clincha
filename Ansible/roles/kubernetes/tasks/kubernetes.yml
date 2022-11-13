@@ -59,3 +59,23 @@
         mode: 0755
         owner: root
         group: root
+
+# Bugfix - https://github.com/clincha/clinch-home/issues/50
+- name: "Ensure containers-common is compatible"
+  block:
+    - name: "Install compatible version of containers-common"
+      yum:
+        name: containers-common-2:1-39.module+el8.6.0+16891+aaa3bd4c.x86_64
+        state: present
+
+    - name: "Install versionlock"
+      yum:
+        name: python3-dnf-plugin-versionlock
+        state: present
+
+    - name: "Lock containers-common version"
+      lineinfile:
+        path: /etc/dnf/plugins/versionlock.list
+        line: containers-common-2:1-39.module+el8.6.0+16891+aaa3bd4c.*
+        state: present
+        create: false
