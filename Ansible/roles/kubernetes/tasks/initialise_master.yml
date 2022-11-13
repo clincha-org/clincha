@@ -22,7 +22,7 @@
     state: link
     owner: root
     group: root
-    mode: 0644
+    mode: 0600
 
 - name: "Symlink kubectl admin.conf to /home/kubernetes/.kube/conf"
   file:
@@ -31,4 +31,4 @@
     state: link
     owner: kubernetes
     group: kubernetes
-    mode: 0644
+    mode: 0600
