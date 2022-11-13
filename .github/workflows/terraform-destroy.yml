@@ -5,7 +5,7 @@ on:
 
 jobs:
   ansible-edinburgh:
-    runs-on: self-hosted
+    runs-on: [self-hosted, bristol]
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0
@@ -25,7 +25,7 @@ jobs:
   ansible-bristol:
     needs:
       - ansible-edinburgh
-    runs-on: self-hosted
+    runs-on: [self-hosted, edinburgh]
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0
