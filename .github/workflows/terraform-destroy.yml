@@ -43,7 +43,7 @@ jobs:
           REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
 
   terraform:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, init]
     needs:
       - ansible-bristol
       - ansible-edinburgh
