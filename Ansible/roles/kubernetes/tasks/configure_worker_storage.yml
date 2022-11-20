@@ -1,30 +1,35 @@
 - name: "Create volume group"
   lvg:
-    vg: "{{ volume_group }}"
-    pvs: "{{ physical_volume }}"
+    vg: "vg{{ index_var }}"
+    pvs: "{{ item }}"
+  with_items: configuration_volumes
 
 - name: "Create logical volume"
   lvol:
-    vg: "{{ volume_group }}"
-    lv: "{{ logical_volume }}"
+    vg: "vg{{ index_var }}"
+    lv: "lv{{ index_var }}"
     size: +100%FREE
+  with_items: configuration_volumes
 
 - name: "Create filesystem"
   filesystem:
-    dev: "/dev/{{ volume_group }}/{{ logical_volume }}"
+    dev: "/dev/vg{{ index_var }}/lv{{ index_var }}"
     fstype: xfs
+  with_items: configuration_volumes
 
 - name: "Create mount points"
   file:
-    path: "{{ mount_path }}"
+    path: "/mnt/disks/{{ index_var }}"
     state: directory
     owner: "{{ mount_owner }}"
     group: "{{ mount_group }}"
     mode: "{{ mount_mode }}"
+  with_items: configuration_volumes
 
 - name: "Mount volume"
   mount:
-    src: "/dev/{{ volume_group }}/{{ logical_volume }}"
+    src: "/dev/vg{{ index_var }}/lv{{ index_var }}"
     path: "{{ mount_path }}"
     fstype: xfs
     state: mounted
+  with_items: configuration_volumes
