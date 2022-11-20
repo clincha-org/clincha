@@ -37,7 +37,7 @@
 - name: "Mount volume"
   mount:
     src: "/dev/vg{{ index }}/lv{{ index }}"
-    path: "{{ mount_path }}"
+    path: "/mnt/disks/{{ index }}"
     fstype: xfs
     state: mounted
   loop: "{{ configuration_volumes }}"
