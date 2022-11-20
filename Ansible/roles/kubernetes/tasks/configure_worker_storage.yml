@@ -1,35 +1,45 @@
 - name: "Create volume group"
   lvg:
-    vg: "vg{{ item.index }}"
+    vg: "vg{{ index }}"
     pvs: "{{ item }}"
-  with_items: configuration_volumes
+  loop: "{{ configuration_volumes }}"
+  loop_control:
+    index_var: index
 
 - name: "Create logical volume"
   lvol:
-    vg: "vg{{ item.index }}"
-    lv: "lv{{ item.index }}"
+    vg: "vg{{ index }}"
+    lv: "lv{{ index }}"
     size: +100%FREE
-  with_items: configuration_volumes
+  loop: "{{ configuration_volumes }}"
+  loop_control:
+    index_var: index
 
 - name: "Create filesystem"
   filesystem:
-    dev: "/dev/vg{{ item.index }}/lv{{ item.index }}"
+    dev: "/dev/vg{{ index }}/lv{{ index }}"
     fstype: xfs
-  with_items: configuration_volumes
+  loop: "{{ configuration_volumes }}"
+  loop_control:
+    index_var: index
 
 - name: "Create mount points"
   file:
-    path: "/mnt/disks/{{ item.index }}"
+    path: "/mnt/disks/{{ index }}"
     state: directory
     owner: "{{ mount_owner }}"
     group: "{{ mount_group }}"
     mode: "{{ mount_mode }}"
-  with_items: configuration_volumes
+  loop: "{{ configuration_volumes }}"
+  loop_control:
+    index_var: index
 
 - name: "Mount volume"
   mount:
-    src: "/dev/vg{{ item.index }}/lv{{ item.index }}"
+    src: "/dev/vg{{ index }}/lv{{ index }}"
     path: "{{ mount_path }}"
     fstype: xfs
     state: mounted
-  with_items: configuration_volumes
+  loop: "{{ configuration_volumes }}"
+  loop_control:
+    index_var: index

@@ -1,77 +1,77 @@
-- name: Apply base roll
-  hosts: base
-  become: true
-  roles:
-    - role: users
-    - role: sudoers
-    - role: base
-
-- name: Setup github runners
-  hosts: github_runner
-  become: true
-  vars:
-    - github_account: clincha
-    - github_repo: clinch-home
-    - runner_user: github
-    - runner_dir: /usr/local/bin/actions-runner
-    - runner_labels:
-        - "{{ site }}"
-  roles:
-    - role: github-runner
-    - role: monolithprojects.github_actions_runner
-
-- name: Setup github runners (streaming-github-runner)
-  hosts: github_runner
-  become: true
-  vars:
-    - github_account: clincha
-    - github_repo: streaming
-    - runner_user: github
-    - runner_dir: /usr/local/bin/streaming-runner
-    - runner_labels:
-        - "{{ site }}"
-        - "github-runner"
-  roles:
-    - role: github-runner
-    - role: monolithprojects.github_actions_runner
-
-- name: Setup github runners (streaming-kubernetes)
-  hosts: kubernetes_master
-  become: true
-  vars:
-    - github_account: clincha
-    - github_repo: streaming
-    - runner_user: kubernetes
-    - runner_dir: /usr/local/bin/github-runner
-    - runner_labels:
-        - "{{ site }}"
-        - "kubernetes"
-    - install_tools: false
-  roles:
-    - role: github-runner
-    - role: monolithprojects.github_actions_runner
-
-- name: Setup github runners (proxy-kubernetes)
-  hosts: kubernetes_master
-  become: true
-  vars:
-    - github_account: clincha
-    - github_repo: proxy
-    - runner_user: kubernetes
-    - runner_dir: /usr/local/bin/github-runner-proxy-kubernetes
-    - runner_labels:
-        - "{{ site }}"
-        - "kubernetes"
-    - install_tools: false
-  roles:
-    - role: github-runner
-    - role: monolithprojects.github_actions_runner
-
-- name: NFS servers
-  hosts: nfs_server
-  become: true
-  roles:
-    - role: nfs-server
+#- name: Apply base roll
+#  hosts: base
+#  become: true
+#  roles:
+#    - role: users
+#    - role: sudoers
+#    - role: base
+#
+#- name: Setup github runners
+#  hosts: github_runner
+#  become: true
+#  vars:
+#    - github_account: clincha
+#    - github_repo: clinch-home
+#    - runner_user: github
+#    - runner_dir: /usr/local/bin/actions-runner
+#    - runner_labels:
+#        - "{{ site }}"
+#  roles:
+#    - role: github-runner
+#    - role: monolithprojects.github_actions_runner
+#
+#- name: Setup github runners (streaming-github-runner)
+#  hosts: github_runner
+#  become: true
+#  vars:
+#    - github_account: clincha
+#    - github_repo: streaming
+#    - runner_user: github
+#    - runner_dir: /usr/local/bin/streaming-runner
+#    - runner_labels:
+#        - "{{ site }}"
+#        - "github-runner"
+#  roles:
+#    - role: github-runner
+#    - role: monolithprojects.github_actions_runner
+#
+#- name: Setup github runners (streaming-kubernetes)
+#  hosts: kubernetes_master
+#  become: true
+#  vars:
+#    - github_account: clincha
+#    - github_repo: streaming
+#    - runner_user: kubernetes
+#    - runner_dir: /usr/local/bin/github-runner
+#    - runner_labels:
+#        - "{{ site }}"
+#        - "kubernetes"
+#    - install_tools: false
+#  roles:
+#    - role: github-runner
+#    - role: monolithprojects.github_actions_runner
+#
+#- name: Setup github runners (proxy-kubernetes)
+#  hosts: kubernetes_master
+#  become: true
+#  vars:
+#    - github_account: clincha
+#    - github_repo: proxy
+#    - runner_user: kubernetes
+#    - runner_dir: /usr/local/bin/github-runner-proxy-kubernetes
+#    - runner_labels:
+#        - "{{ site }}"
+#        - "kubernetes"
+#    - install_tools: false
+#  roles:
+#    - role: github-runner
+#    - role: monolithprojects.github_actions_runner
+#
+#- name: NFS servers
+#  hosts: nfs_server
+#  become: true
+#  roles:
+#    - role: nfs-server
 
 - name: Kubernetes
   hosts: kubernetes_worker
