@@ -44,7 +44,9 @@
 
 - name: "Ensure NFS server is active"
   service:
-    name: nfs-server
+    name:
+      - rpcbind
+      - nfs-server
     state: started
     enabled: yes
 
