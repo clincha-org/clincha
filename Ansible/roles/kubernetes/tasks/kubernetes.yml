@@ -63,13 +63,8 @@
 # Bugfix - https://github.com/clincha/clinch-home/issues/50
 - name: "Ensure containers-common is compatible"
   block:
-    - name: "Install compatible version of containers-common"
-      yum:
-        name: containers-common-2:1-39.module+el8.6.0+16891+aaa3bd4c.x86_64
-        state: present
-
     - name: "Install versionlock"
-      yum:
+      dnf:
         name: python3-dnf-plugin-versionlock
         state: present
 
@@ -79,3 +74,9 @@
         line: containers-common-2:1-39.module+el8.6.0+16891+aaa3bd4c.*
         state: present
         create: false
+
+    - name: "Install compatible version of containers-common"
+      dnf:
+        name: containers-common-2:1-39.module+el8.6.0+16891+aaa3bd4c
+        state: present
+        allow_downgrade: true
