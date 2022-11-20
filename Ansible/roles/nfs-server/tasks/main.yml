@@ -44,11 +44,12 @@
 
 - name: "Ensure NFS server is active"
   service:
-    name:
-      - rpcbind
-      - nfs-server
+    name: "{{ item }}"
     state: started
     enabled: yes
+  with_items:
+    - rpcbind
+    - nfs-server
 
 - name: "Setup exports"
   template:

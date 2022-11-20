@@ -1,9 +1,10 @@
 - name: restart-nfs-server
   service:
-    name:
-      - rpcbind
-      - nfs-server
+    name: "{{ item }}"
     state: restarted
+  with_items:
+    - rpcbind
+    - nfs-server
 
 - name: restart-host
   reboot:
