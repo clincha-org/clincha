@@ -4,46 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  ansible-edinburgh:
-    runs-on: self-hosted
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3.1.0
-
-      - name: ansible-playbook
-        uses: dawidd6/action-ansible-playbook@v2.6.1
-        with:
-          playbook: teardown.yml
-          directory: Ansible
-          key: ${{ secrets.ANSIBLE_PK }}
-          options: |
-            --inventory edinburgh.proxmox.yml
-        env:
-          PROXMOX_PASSWORD: ${{ secrets.ROOT_PROXMOX_PASSWORD }}
-          REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
-
-  ansible-bristol:
-    needs:
-      - ansible-edinburgh
-    runs-on: self-hosted
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3.1.0
-
-      - name: ansible-playbook
-        uses: dawidd6/action-ansible-playbook@v2.6.1
-        with:
-          playbook: teardown.yml
-          directory: Ansible
-          key: ${{ secrets.ANSIBLE_PK }}
-          options: |
-            --inventory bristol.proxmox.yml
-        env:
-          PROXMOX_PASSWORD: ${{ secrets.ROOT_PROXMOX_PASSWORD }}
-          REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
-
   terraform:
-    runs-on: ubuntu-latest
+    runs-on: [ self-hosted, init ]
     needs:
       - ansible-bristol
       - ansible-edinburgh
@@ -62,7 +24,8 @@ jobs:
       - name: terraform destroy
         working-directory: terraform
         run: |
-          /usr/bin/terraform destroy \
+          terraform destroy \
             -auto-approve \
+            -var="ansible_id_rsa=${{ secrets.ANSIBLE_PK }}" \
             -var="edinburgh_proxmox_token_secret=${{ secrets.TERRAFORM_EDINBURGH_PROXMOX_TOKEN_SECRET }}" \
             -var="bristol_proxmox_token_secret=${{ secrets.TERRAFORM_BRISTOL_PROXMOX_TOKEN_SECRET }}"
