@@ -15,3 +15,11 @@
     shell: "{{ item.shell | default(omit) }}"
     expires: -1
   with_items: "{{ user_list }}"
+
+- name: "Install key"
+  when: item.key is defined
+  authorized_key:
+    user: "{{ item.name }}"
+    state: present
+    key: "{{ item.key }}"
+  with_items: "{{ user_list }}"
