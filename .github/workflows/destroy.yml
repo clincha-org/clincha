@@ -1,6 +1,7 @@
 name: destroy
 
 on:
+  push:
   workflow_dispatch:
 
 jobs:
