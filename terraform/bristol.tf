@@ -36,6 +36,16 @@ module "bri-kubeworker-1" {
       size    = "16G"
       storage = "bri-s-01-cache"
       type    = "scsi"
+    },
+    {
+      size    = "16G"
+      storage = "bri-s-01-cache"
+      type    = "scsi"
+    },
+    {
+      size    = "16G"
+      storage = "bri-s-01-cache"
+      type    = "scsi"
     }
   ]
 }
@@ -56,6 +66,16 @@ module "bri-kubeworker-2" {
     {
       size    = "32G"
       storage = "local-lvm"
+      type    = "scsi"
+    },
+    {
+      size    = "16G"
+      storage = "bri-s-02-cache"
+      type    = "scsi"
+    },
+    {
+      size    = "16G"
+      storage = "bri-s-02-cache"
       type    = "scsi"
     },
     {
@@ -88,6 +108,16 @@ module "bri-kubeworker-3" {
       size    = "16G"
       storage = "bri-s-01-cache"
       type    = "scsi"
+    },
+    {
+      size    = "16G"
+      storage = "bri-s-01-cache"
+      type    = "scsi"
+    },
+    {
+      size    = "16G"
+      storage = "bri-s-01-cache"
+      type    = "scsi"
     }
   ]
 }
@@ -108,6 +138,16 @@ module "bri-kubeworker-4" {
     {
       size    = "32G"
       storage = "local-lvm"
+      type    = "scsi"
+    },
+    {
+      size    = "16G"
+      storage = "bri-s-02-cache"
+      type    = "scsi"
+    },
+    {
+      size    = "16G"
+      storage = "bri-s-02-cache"
       type    = "scsi"
     },
     {
