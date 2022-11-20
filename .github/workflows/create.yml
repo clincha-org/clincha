@@ -37,9 +37,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3.1.0
 
-      - name: "path"
-        run: "env | grep PATH"
-
       - name: ansible-playbook
         uses: dawidd6/action-ansible-playbook@v2.6.1
         with:
