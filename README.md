@@ -1,4 +1,4 @@
-# clinch-home
+# clincha
 
 ![packer](https://github.com/clincha/clinch-home/actions/workflows/packer-build.yml/badge.svg)
 ![terraform](https://github.com/clincha/clinch-home/actions/workflows/terraform-apply.yml/badge.svg)
