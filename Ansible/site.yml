@@ -11,7 +11,7 @@
   become: true
   vars:
     - github_account: clincha
-    - github_repo: clinch-home
+    - github_repo: clincha
     - runner_user: github
     - runner_dir: /usr/local/bin/actions-runner
     - runner_labels:
