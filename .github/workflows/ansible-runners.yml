@@ -34,7 +34,7 @@ jobs:
 
   bristol:
     needs:
-      - ansible-edinburgh
+      - edinburgh
     runs-on: [self-hosted, edinburgh]
     steps:
       - name: Checkout
