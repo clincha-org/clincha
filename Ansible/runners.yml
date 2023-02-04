@@ -63,7 +63,7 @@
   become: true
   vars:
     - github_account: clincha
-    - github_repo: StarSheets
+    - github_repo: StarSheet
     - runner_user: kubernetes
     - runner_dir: /usr/local/bin/github-runner-starsheets-kubernetes
     - runner_labels:
