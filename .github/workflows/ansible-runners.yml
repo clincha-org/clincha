@@ -1,10 +1,10 @@
-name: ansible
+name: GitHub Runners
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - "*"
   schedule:
     - cron: "0 5,10,15,20 * * *"
 
@@ -18,7 +18,7 @@ jobs:
       - name: ansible-playbook
         uses: dawidd6/action-ansible-playbook@v2.6.1
         with:
-          playbook: site.yml
+          playbook: runners.yml
           directory: Ansible
           key: ${{ secrets.ANSIBLE_PK }}
           requirements: galaxy-requirements.yml
@@ -43,7 +43,7 @@ jobs:
       - name: ansible-playbook
         uses: dawidd6/action-ansible-playbook@v2.6.1
         with:
-          playbook: site.yml
+          playbook: runners.yml
           directory: Ansible
           key: ${{ secrets.ANSIBLE_PK }}
           requirements: galaxy-requirements.yml
