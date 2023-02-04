@@ -2,9 +2,9 @@ kubernetes_version: "1.25.3"
 pod_network_cidr: "10.244.0.0/16"
 
 configuration_volumes:
-  - "/dev/sdb"
-  - "/dev/sdc"
   - "/dev/sdd"
+  - "/dev/sdc"
+  - "/dev/sdb"
 mount_owner: streaming
 mount_group: streaming
 mount_mode: 0770
