@@ -26,6 +26,7 @@
     - runner_dir: /usr/local/bin/actions-runner
     - runner_labels:
         - "{{ site }}"
+        - "github-runner"
   roles:
     - role: monolithprojects.github_actions_runner
 
@@ -58,15 +59,16 @@
     - role: monolithprojects.github_actions_runner
 
 - name: Setup repository - elastic-star (kubernetes)
-  hosts: github_runner
+  hosts: kubernetes_master
   become: true
   vars:
     - github_account: clincha
-    - github_repo: clincha
-    - runner_user: github
-    - runner_dir: /usr/local/bin/actions-runner
+    - github_repo: proxy
+    - runner_user: kubernetes
+    - runner_dir: /usr/local/bin/github-runner-proxy-kubernetes
     - runner_labels:
         - "{{ site }}"
+        - "kubernetes"
   roles:
     - role: monolithprojects.github_actions_runner
 
