@@ -35,7 +35,7 @@ jobs:
   bristol:
     needs:
       - edinburgh
-    runs-on: [self-hosted, edinburgh]
+    runs-on: [self-hosted, edinburgh, github-runner]
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0
