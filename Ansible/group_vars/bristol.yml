@@ -1,1 +1,5 @@
 pod_network_cidr: "10.100.0.0/16"
+configuration_volumes:
+  - "/dev/sdd"
+  - "/dev/sdc"
+  - "/dev/sdb"
