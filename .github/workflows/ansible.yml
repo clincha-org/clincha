@@ -10,7 +10,7 @@ on:
 
 jobs:
   edinburgh:
-    runs-on: [self-hosted, bristol]
+    runs-on: [self-hosted, bristol, github-runner]
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0
@@ -35,7 +35,7 @@ jobs:
   bristol:
     needs:
       - edinburgh
-    runs-on: [self-hosted, edinburgh]
+    runs-on: [self-hosted, edinburgh, github-runner]
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0

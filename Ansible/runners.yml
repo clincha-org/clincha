@@ -27,7 +27,6 @@
     - runner_labels:
         - "{{ site }}"
         - "github-runner"
-    - reinstall_runner: yes
   roles:
     - role: monolithprojects.github_actions_runner
 
@@ -42,7 +41,6 @@
     - runner_labels:
         - "{{ site }}"
         - "github-runner"
-    - reinstall_runner: yes
   roles:
     - role: monolithprojects.github_actions_runner
 
@@ -60,14 +58,14 @@
   roles:
     - role: monolithprojects.github_actions_runner
 
-- name: Setup repository - elastic-star (kubernetes)
+- name: Setup repository - StarSheets (kubernetes)
   hosts: kubernetes_master
   become: true
   vars:
     - github_account: clincha
-    - github_repo: proxy
+    - github_repo: StarSheets
     - runner_user: kubernetes
-    - runner_dir: /usr/local/bin/github-runner-proxy-kubernetes
+    - runner_dir: /usr/local/bin/github-runner-starsheets-kubernetes
     - runner_labels:
         - "{{ site }}"
         - "kubernetes"
