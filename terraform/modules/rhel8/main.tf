@@ -1,4 +1,4 @@
-resource "proxmox_vm_qemu" "rhel8-worker" {
+resource "proxmox_vm_qemu" "rhel8" {
   name        = var.name
   desc        = var.desc
   target_node = var.target_node
