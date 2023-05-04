@@ -46,7 +46,7 @@ jobs:
           -var-file="bri-s-02.pkrvars.hcl" \
           .
 
-  edi-s-01:
+  bri-s-03:
     runs-on: self-hosted
     steps:
       - name: Checkout
@@ -58,11 +58,11 @@ jobs:
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
-      - name: packer build (edi-s-01)
+      - name: packer build (bri-s-03)
         working-directory: packer
         run: |
           /usr/bin/packer build \
           -var "ansible_ssh_password=${{ secrets.ANSIBLE_PASSWORD }}" \
           -var "proxmox_api_token_secret=${{ secrets.PACKER_EDINBURGH_PROXMOX_TOKEN_SECRET }}" \
-          -var-file="edi-s-01.pkrvars.hcl" \
+          -var-file="bri-s-03.pkrvars.hcl" \
           .
