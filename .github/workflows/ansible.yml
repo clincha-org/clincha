@@ -2,11 +2,6 @@ name: ansible
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
-  schedule:
-    - cron: "0 5,10,15,20 * * *"
 
 jobs:
   edinburgh:

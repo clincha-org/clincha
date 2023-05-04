@@ -2,11 +2,6 @@ name: GitHub Runners
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - "*"
-  schedule:
-    - cron: "0 5,10,15,20 * * *"
 
 jobs:
   edinburgh:
