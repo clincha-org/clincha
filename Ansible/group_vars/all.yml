@@ -22,9 +22,3 @@ user_list:
     password: "{{ lookup('env', 'CLINCHA_PASSWORD') | password_hash('sha512') }}",
     key: "https://github.com/clincha.keys"
   }
-  - {
-    name: "streaming",
-    uid: "2001",
-    gid: "2001",
-    shell: "/bin/bash"
-  }

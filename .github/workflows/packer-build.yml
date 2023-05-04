@@ -63,6 +63,6 @@ jobs:
         run: |
           /usr/bin/packer build \
           -var "ansible_ssh_password=${{ secrets.ANSIBLE_PASSWORD }}" \
-          -var "proxmox_api_token_secret=${{ secrets.PACKER_EDINBURGH_PROXMOX_TOKEN_SECRET }}" \
+          -var "proxmox_api_token_secret=${{ secrets.PACKER_BRISTOL_PROXMOX_TOKEN_SECRET }}" \
           -var-file="bri-s-03.pkrvars.hcl" \
           .
