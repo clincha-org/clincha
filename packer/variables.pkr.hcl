@@ -118,7 +118,7 @@ variable "disk_storage_pool" {
 }
 variable "disk_storage_pool_type" {
   type        = string
-  default     = "RBD"
+  default     = "rbd"
   description = "The type of the pool defined by disk_storage_pool"
 }
 variable "disk_format" {
