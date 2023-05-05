@@ -66,7 +66,7 @@ variable "cloud_init" {
 }
 variable "cloud_init_storage_pool" {
   type        = string
-  default     = "local-lvm"
+  default     = "Hot"
   description = "Name of the Proxmox storage pool to store the cloud-init CDROM on"
 }
 variable "boot_command" {
