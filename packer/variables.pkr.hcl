@@ -116,6 +116,11 @@ variable "disk_storage_pool" {
   default     = "Hot"
   description = "The storage pool to deploy the disk onto"
 }
+variable "disk_storage_pool_type" {
+  type        = string
+  default     = "RBD"
+  description = "The type of the pool defined by disk_storage_pool"
+}
 variable "disk_format" {
   type        = string
   default     = "raw"
