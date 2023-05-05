@@ -36,17 +36,17 @@ variable "agent" {
 }
 
 variable "sockets" {
-  default = 2
+  default = 1
   type    = number
 }
 
 variable "cores" {
-  default = 2
+  default = 1
   type    = number
 }
 
 variable "memory" {
-  default = 4096
+  default = 2048
   type    = number
 }
 
