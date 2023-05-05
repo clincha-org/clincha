@@ -62,7 +62,9 @@ build {
   }
 
   provisioner "shell" {
-    inline = ["sudo cp /tmp/99-pve.cfg /etc/cloud/cloud.cfg.d/99-pve.cfg"]
-    inline = ["sudo rm /etc/cloud/cloud-init.disabled"]
+    inline = [
+      "sudo cp /tmp/99-pve.cfg /etc/cloud/cloud.cfg.d/99-pve.cfg",
+      "sudo rm /etc/cloud/cloud-init.disabled"
+    ]
   }
 }
