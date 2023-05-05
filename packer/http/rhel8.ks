@@ -27,4 +27,5 @@ python3
 
 %post
 echo "%ansible ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/ansible
+touch /etc/cloud/cloud-init.disabled
 %end

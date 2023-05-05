@@ -2,7 +2,7 @@ name: packer-build
 
 on:
   workflow_dispatch:
-#  push:
+  push:
 
 jobs:
   bri-s-01:
