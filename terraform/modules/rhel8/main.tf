@@ -6,7 +6,7 @@ resource "proxmox_vm_qemu" "rhel8" {
   full_clone  = var.full_clone
   agent       = var.agent
   onboot      = true
-#  boot        = "scsi0"
+  boot        = "ide0"
 #  hotplug     = "network,disk,cpu,memory,usb"
 
   sockets = var.sockets
