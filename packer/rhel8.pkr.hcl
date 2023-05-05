@@ -32,9 +32,10 @@ source "proxmox" "rhel8-template" {
   scsi_controller = var.scsi_controller
 
   disks {
-    disk_size    = var.disk_size
-    storage_pool = var.disk_storage_pool
-    format       = var.disk_format
+    disk_size         = var.disk_size
+    storage_pool      = var.disk_storage_pool
+    storage_pool_type = var.disk_storage_pool_type
+    format            = var.disk_format
   }
 
   network_adapters {
