@@ -1,10 +1,10 @@
 variable "disks" {
   type    = list(map(string))
   default = [
-    {
-      size    = "32G"
-      storage = "Hot"
-      type    = "scsi"
-    }
+#    {
+#      size    = "32G"
+#      storage = "Hot"
+#      type    = "scsi"
+#    }
   ]
 }
