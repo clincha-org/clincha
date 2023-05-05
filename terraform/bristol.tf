@@ -10,7 +10,7 @@ module "bri-master-1" {
     proxmox = proxmox.bri-s-01
   }
   target_node = "bri-s-03"
-  source_vm   = "bri-s-01-template"
+  source_vm   = "4898160685"
   desc        = "Kubernetes master node in Bristol (region 1)"
 }
 
