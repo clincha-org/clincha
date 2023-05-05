@@ -15,8 +15,6 @@ resource "proxmox_vm_qemu" "rhel8" {
 
   os_type    = "cloud-init"
   ipconfig0  = "ip=${ var.ip }/${ var.subnet_mask },gw=${ var.gateway }"
-  ciuser     = "clincha"
-  cipassword = "test123"
 
   tags = join(",", var.tags)
 
