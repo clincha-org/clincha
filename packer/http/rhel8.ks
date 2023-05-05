@@ -19,7 +19,6 @@ skipx
 firstboot --disable
 
 %packages
-@^minimal-environment
 qemu-guest-agent
 cloud-init
 tar
