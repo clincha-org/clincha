@@ -35,7 +35,7 @@ variable "qemu_agent" {
 }
 variable "iso" {
   type        = string
-  default     = "local:iso/rhel-8.6-x86_64-dvd.iso"
+  default     = "local:iso/rocky8.iso"
   description = "Location of the ISO to boot from"
 }
 variable "ssh_username" {
@@ -113,13 +113,8 @@ variable "disk_size" {
 }
 variable "disk_storage_pool" {
   type        = string
-  default     = "local-lvm"
+  default     = "Hot"
   description = "The storage pool to deploy the disk onto"
-}
-variable "disk_storage_pool_type" {
-  type        = string
-  default     = "lvm-thin"
-  description = "The type of the pool defined by disk_storage_pool"
 }
 variable "disk_format" {
   type        = string

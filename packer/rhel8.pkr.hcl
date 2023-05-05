@@ -8,7 +8,8 @@ source "proxmox" "rhel8-template" {
   vm_name    = var.vm_name
   qemu_agent = var.qemu_agent
 
-  iso_file = var.iso
+  iso_file    = var.iso
+  unmount_iso = true
 
   ssh_username = var.ssh_username
   ssh_password = var.ansible_ssh_password
@@ -20,6 +21,7 @@ source "proxmox" "rhel8-template" {
 
   boot_command = var.boot_command
   boot_wait    = var.boot_wait
+  onboot       = true
 
   http_directory    = var.http_directory
   http_bind_address = var.http_bind_address
@@ -30,10 +32,9 @@ source "proxmox" "rhel8-template" {
   scsi_controller = var.scsi_controller
 
   disks {
-    disk_size         = var.disk_size
-    storage_pool      = var.disk_storage_pool
-    storage_pool_type = var.disk_storage_pool_type
-    format            = var.disk_format
+    disk_size    = var.disk_size
+    storage_pool = var.disk_storage_pool
+    format       = var.disk_format
   }
 
   network_adapters {
