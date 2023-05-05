@@ -3,7 +3,7 @@ variable "disks" {
   default = [
     {
       size    = "32G"
-      storage = "local-lvm"
+      storage = "Hot"
       type    = "scsi"
     }
   ]
