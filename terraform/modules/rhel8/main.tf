@@ -7,7 +7,7 @@ resource "proxmox_vm_qemu" "rhel8" {
   agent       = var.agent
   onboot      = true
   boot        = "scsi0"
-  hotplug     = "network,disk,cpu,memory,usb"
+#  hotplug     = "network,disk,cpu,memory,usb"
 
   sockets = var.sockets
   cores   = var.cores
