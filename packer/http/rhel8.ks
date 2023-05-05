@@ -11,7 +11,7 @@ bootloader --append="rhgb quiet crashkernel=auto"
 zerombr
 clearpart --all --initlabel
 autopart
-auth --passalgo=sha512 --useshadow
+authselect --passalgo=sha512 --useshadow
 selinux --enforcing
 firewall --disable --ssh --http
 services --enabled sshd,NetworkManager

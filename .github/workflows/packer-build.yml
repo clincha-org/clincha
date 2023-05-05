@@ -2,6 +2,7 @@ name: packer-build
 
 on:
   workflow_dispatch:
+  push:
 
 jobs:
   bri-s-01:
@@ -22,5 +23,6 @@ jobs:
           /usr/bin/packer build \
           -var "ansible_ssh_password=${{ secrets.ANSIBLE_PASSWORD }}" \
           -var "proxmox_api_token_secret=${{ secrets.PACKER_BRISTOL_PROXMOX_TOKEN_SECRET }}" \
+          -var "vm_name=${{ github.run_id }}" \
           -var-file="bri-s-01.pkrvars.hcl" \
           .
