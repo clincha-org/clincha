@@ -10,18 +10,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3.1.0
 
-      - name: ansible-playbook
-        uses: dawidd6/action-ansible-playbook@v2.6.1
-        with:
-          playbook: site.yml
-          directory: Ansible
-          key: ${{ secrets.ANSIBLE_PK }}
-          requirements: galaxy-requirements.yml
-          options: |
-            --inventory bristol.proxmox.yml
+      - name: Install Galaxy requirements
+        working-directory: Ansible
+        run: |
+          ansible-galaxy install -r galaxy-requirements.yml
+
+      - name: Create SSH Key
+        working-directory: Ansible
+        run: |
+          echo ${{ secrets.ANSIBLE_PK }} > ansible.key
+
+      - name: Run Ansible
+        working-directory: Ansible
         env:
           PROXMOX_PASSWORD: ${{ secrets.ROOT_PROXMOX_PASSWORD }}
           ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
           CLINCHA_PASSWORD: ${{ secrets.CLINCHA_PASSWORD }}
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN_GITHUB }}
+        run: |
+          ansible-playbook site.yml --inventory bristol.proxmox.yml --key-file ansible.key
+
