@@ -1,9 +1,9 @@
-#terraform {
-#  cloud {
-#    organization = "clinch-home"
-#
-#    workspaces {
-#      name = "clincha"
-#    }
-#  }
-#}
+terraform {
+  cloud {
+    organization = "clinch-home"
+
+    workspaces {
+      name = "clincha"
+    }
+  }
+}
