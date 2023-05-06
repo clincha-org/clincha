@@ -1,1 +1,21 @@
-user_list: []
+user_list:
+  - {
+    name: "root",
+    shell: "/bin/bash",
+    password: "{{ lookup('env', 'ROOT_PASSWORD') | password_hash('sha512', 'salty') }}"
+  }
+  - {
+    name: "ansible",
+    uid: "1000",
+    gid: "1000",
+    shell: "/bin/bash",
+    password: "{{ lookup('env', 'ANSIBLE_PASSWORD') | password_hash('sha512', 'salty') }}"
+  }
+  - {
+    name: "clincha",
+    uid: "1002",
+    gid: "1002",
+    shell: "/bin/bash",
+    password: "{{ lookup('env', 'CLINCHA_PASSWORD') | password_hash('sha512', 'salty') }}",
+    key: "https://github.com/clincha.keys"
+  }
