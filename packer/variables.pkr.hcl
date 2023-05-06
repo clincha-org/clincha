@@ -101,9 +101,10 @@ variable "memory" {
   default     = 2048
   description = "Amount of RAM to build the machine with"
 }
+
 variable "scsi_controller" {
   type        = string
-  default     = "lsi"
+  default     = "virtio-scsi-pci"
   description = "The SCSI controller model to emulate"
 }
 variable "disk_size" {
@@ -126,6 +127,7 @@ variable "disk_format" {
   default     = "raw"
   description = "The format of the disk to be created"
 }
+
 variable "network_model" {
   type        = string
   default     = "virtio"
