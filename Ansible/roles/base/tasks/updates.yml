@@ -17,7 +17,7 @@
   failed_when: reboot_required.rc not in [0, 1]
 
 - name: "Reboot if required"
-  serial: 1
+  serial: "1"
   reboot:
     msg: "Ansible is rebooting this host for patching"
   when: "reboot_required.rc == 1"
