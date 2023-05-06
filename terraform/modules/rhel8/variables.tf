@@ -42,12 +42,12 @@ variable "sockets" {
 }
 
 variable "cores" {
-  default = 1
+  default = 4
   type    = number
 }
 
 variable "memory" {
-  default = 2048
+  default = 8192
   type    = number
 }
 

@@ -2,7 +2,7 @@ name: terraform-apply
 
 on:
   workflow_dispatch:
-#  push:
+  push:
 
 jobs:
   terraform:

@@ -11,6 +11,10 @@ module "bri-master-1" {
   }
   target_node = "bri-s-01"
   desc        = "Kubernetes master node in Bristol (node 1)"
+
+  memory  = 4096
+  sockets = 1
+  cores   = 1
 }
 
 module "bri-kubeworker-1" {
