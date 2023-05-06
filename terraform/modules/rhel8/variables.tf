@@ -23,6 +23,7 @@ variable "target_node" {
 
 variable "source_vm" {
   type = string
+  default = "rocky-template"
 }
 
 variable "full_clone" {
@@ -70,5 +71,30 @@ variable "gateway" {
 
 variable "connection_user" {
   default = "ansible"
+  type    = string
+}
+
+variable "onboot" {
+  default = true
+  type    = bool
+}
+
+variable "numa" {
+  default = true
+  type    = bool
+}
+
+variable "hotplug" {
+  default = "network,disk,cpu,memory,usb"
+  type    = string
+}
+
+variable "scsihw" {
+  default = "virtio-scsi-pci"
+  type    = string
+}
+
+variable "os_type" {
+  default = "cloud-init"
   type    = string
 }

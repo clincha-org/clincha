@@ -5,19 +5,17 @@ resource "proxmox_vm_qemu" "rhel8" {
   clone       = var.source_vm
   full_clone  = var.full_clone
   agent       = var.agent
-  onboot      = true
-  numa        = true
-  hotplug     = "network,disk,cpu,memory,usb"
-  scsihw      = "virtio-scsi-pci"
+  onboot      = var.onboot
+  numa        = var.numa
+  hotplug     = var.hotplug
+  scsihw      = var.scsihw
 
   sockets = var.sockets
   cores   = var.cores
   memory  = var.memory
 
-  os_type    = "cloud-init"
+  os_type    = var.os_type
   ipconfig0  = "ip=${ var.ip }/${ var.subnet_mask },gw=${ var.gateway }"
-  ciuser     = "clincha"
-  cipassword = "test123"
 
   tags = join(",", var.tags)
 
