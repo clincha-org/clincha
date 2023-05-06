@@ -123,7 +123,7 @@ variable "disk_storage_pool_type" {
 }
 variable "disk_format" {
   type        = string
-  default     = "qcow2"
+  default     = "raw"
   description = "The format of the disk to be created"
 }
 variable "network_model" {
