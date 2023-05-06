@@ -50,6 +50,7 @@ build {
 
   provisioner "shell" {
     inline = [
+      "sudo yum update -y",
       "sudo rm /etc/ssh/ssh_host_*",
       "sudo truncate -s 0 /etc/machine-id",
       "sudo sync"
