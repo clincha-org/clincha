@@ -1,11 +1,4 @@
 ---
-- name: Register as user and auto-subscribe to available content.
-  redhat_subscription:
-    state: present
-    username: clincha
-    password: "{{ lookup('env', 'REDHAT_PASSWORD') }}"
-    auto_attach: true
-
 - name: "Upgrade all packages"
   dnf:
     name: "*"
@@ -24,6 +17,7 @@
   failed_when: reboot_required.rc not in [0, 1]
 
 - name: "Reboot if required"
+  serial: 1
   reboot:
     msg: "Ansible is rebooting this host for patching"
   when: "reboot_required.rc == 1"

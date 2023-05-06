@@ -42,10 +42,3 @@
 - name: "Configure pod networking"
   when: "'kubernetes_master' in group_names"
   include_tasks: pod_networking.yml
-
-- name: "Configure persistent volumes"
-  when:
-    - "'kubernetes_worker' in group_names"
-    - "'kubernetes_master' not in group_names"
-    - "site != 'edinburgh'"
-  include_tasks: configure_worker_storage.yml

@@ -9,7 +9,5 @@ compose:
   site: "'bristol'"
 groups:
   base: "'base' in (proxmox_tags_parsed|list)"
-  nfs_server: "'nfs_server' in (proxmox_tags_parsed|list)"
-  github_runner: "'github_runner' in (proxmox_tags_parsed|list)"
   kubernetes_master: "'kubernetes_master' in (proxmox_tags_parsed|list)"
   kubernetes_worker: "'kubernetes_worker' in (proxmox_tags_parsed|list)"

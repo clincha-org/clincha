@@ -1,6 +1,4 @@
-roles:
-  - src: "monolithprojects.github_actions_runner"
-    version: "1.16.0"
+roles: []
 
 collections:
   - name: "community.general"
