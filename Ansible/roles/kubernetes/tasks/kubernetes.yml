@@ -63,20 +63,20 @@
 # Bugfix - https://github.com/clincha/clinch-home/issues/50
 - name: "Ensure containers-common is compatible"
   block:
-    - name: "Install versionlock"
-      dnf:
-        name: python3-dnf-plugin-versionlock
-        state: present
+#    - name: "Install versionlock"
+#      dnf:
+#        name: python3-dnf-plugin-versionlock
+#        state: absent
 
     - name: "Lock containers-common version"
       lineinfile:
         path: /etc/dnf/plugins/versionlock.list
         line: containers-common-2:1-39.module+el8.6.0+16891+aaa3bd4c.*
-        state: present
+        state: absent
         create: false
 
-    - name: "Install compatible version of containers-common"
-      dnf:
-        name: containers-common-2:1-39.module+el8.6.0+16891+aaa3bd4c
-        state: present
-        allow_downgrade: true
+#    - name: "Install compatible version of containers-common"
+#      dnf:
+#        name: containers-common-2:1-39.module+el8.6.0+16891+aaa3bd4c
+#        state: present
+#        allow_downgrade: true
