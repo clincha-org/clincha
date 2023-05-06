@@ -123,12 +123,12 @@ variable "disk_storage_pool_type" {
 }
 variable "disk_format" {
   type        = string
-  default     = "vmdk"
+  default     = "qcow2"
   description = "The format of the disk to be created"
 }
 variable "network_model" {
   type        = string
-  default     = "e1000"
+  default     = "virtio"
   description = "Model of the virtual network adapter"
 }
 variable "network_bridge" {
