@@ -20,7 +20,7 @@ variable "insecure_skip_tls_verify" {
 }
 variable "node" {
   type        = string
-  default     = "edi-s-01"
+  default     = "bri-s-01"
   description = "The compute node to deploy the VM template onto"
 }
 variable "vm_name" {
@@ -103,7 +103,7 @@ variable "memory" {
 }
 variable "scsi_controller" {
   type        = string
-  default     = "virtio-scsi-pci"
+  default     = "lsi"
   description = "The SCSI controller model to emulate"
 }
 variable "disk_size" {
@@ -123,12 +123,12 @@ variable "disk_storage_pool_type" {
 }
 variable "disk_format" {
   type        = string
-  default     = "raw"
+  default     = "vmdk"
   description = "The format of the disk to be created"
 }
 variable "network_model" {
   type        = string
-  default     = "virtio"
+  default     = "e1000"
   description = "Model of the virtual network adapter"
 }
 variable "network_bridge" {
