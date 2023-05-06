@@ -8,6 +8,7 @@ resource "proxmox_vm_qemu" "rhel8" {
   onboot      = true
   numa        = true
   hotplug     = "network,disk,cpu,memory,usb"
+  scsihw      = "virtio-scsi-pci"
 
   sockets = var.sockets
   cores   = var.cores
