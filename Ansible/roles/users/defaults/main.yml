@@ -12,6 +12,12 @@ user_list:
     password: "{{ lookup('env', 'ANSIBLE_PASSWORD') | password_hash('sha512', 'salty') }}"
   }
   - {
+    name: "kubernetes",
+    uid: "1001",
+    gid: "1001",
+    shell: "/bin/bash"
+  }
+  - {
     name: "clincha",
     uid: "1002",
     gid: "1002",
