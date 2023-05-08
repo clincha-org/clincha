@@ -5,7 +5,7 @@
 
 - name: Ensure the workers can communicate through the firewall
   firewalld:
-    port: {{ item.port }}
+    port: "{{ item.port }}"
     permanent: true
     state: enabled
   with_items: worker_ports
