@@ -8,4 +8,4 @@
     port: "{{ item }}"
     permanent: true
     state: enabled
-  with_items: worker_ports
+  loop: "{{ worker_ports }}"

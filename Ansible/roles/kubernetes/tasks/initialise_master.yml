@@ -38,4 +38,4 @@
     port: "{{ item }}"
     permanent: true
     state: enabled
-  with_items: master_ports
+  loop: "{{ master_ports }}"
