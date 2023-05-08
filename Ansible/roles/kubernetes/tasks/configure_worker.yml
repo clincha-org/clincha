@@ -9,3 +9,4 @@
     permanent: true
     state: enabled
   loop: "{{ worker_ports }}"
+  notify: reload_firewall

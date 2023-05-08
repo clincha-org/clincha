@@ -39,3 +39,4 @@
     permanent: true
     state: enabled
   loop: "{{ master_ports }}"
+  notify: reload_firewall
