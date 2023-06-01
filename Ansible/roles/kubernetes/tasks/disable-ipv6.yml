@@ -1,0 +1,18 @@
+---
+- name: Disable IPv6
+  hosts: all
+  become: true
+  tasks:
+    - name: Disable IPv6
+      lineinfile:
+        path: /etc/sysctl.conf
+        regexp: '^net.ipv6.conf.all.disable_ipv6'
+        line: 'net.ipv6.conf.all.disable_ipv6 = 1'
+        state: present
+      notify:
+        - Restart Networking
+  handlers:
+    - name: Restart Networking
+      service:
+        name: network
+        state: restarted

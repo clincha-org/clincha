@@ -42,3 +42,6 @@
 - name: "Configure pod networking"
   when: "'kubernetes_master' in group_names"
   include_tasks: pod_networking.yml
+
+- name: "Disable IPv6"
+  include_tasks: disable-ipv6.yml
