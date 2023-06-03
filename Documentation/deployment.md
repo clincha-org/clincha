@@ -79,8 +79,6 @@ As the `github` user:
 
 `dnf module install nodejs`
 
-
-
 ### Configuring Kubernetes
 
 SSH into kubeworker-1 and run the following command to initialise the cluster:
