@@ -73,6 +73,14 @@ As the `github` user:
 
 `python3 -m pip install --user ansible-core`
 
+#### NodeJS
+
+`dnf groupinstall "Development Tools"`
+
+`dnf module install nodejs`
+
+
+
 ### Configuring Kubernetes
 
 SSH into kubeworker-1 and run the following command to initialise the cluster:
