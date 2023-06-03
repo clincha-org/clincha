@@ -53,6 +53,26 @@ Finally, instead of running the run script, start a service instead by running t
 
 `sudo ./svc.sh start`
 
+### Install the required packages
+
+#### Hashicorp
+
+`sudo yum install -y yum-utils`
+
+`sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo`
+
+`sudo yum -y install terraform packer`
+
+#### RedHat
+
+`sudo yum -y install python39`
+
+`sudo update-alternatives --config python3`
+
+As the `github` user:
+
+`python3 -m pip install --user ansible-core`
+
 ### Configuring Kubernetes
 
 SSH into kubeworker-1 and run the following command to initialise the cluster:
