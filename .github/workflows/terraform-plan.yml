@@ -5,6 +5,8 @@ on:
 
 jobs:
   terraform:
+    env:
+      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
     runs-on: [ self-hosted, init ]
     steps:
       - name: Checkout
@@ -17,8 +19,6 @@ jobs:
       - name: terraform initialise
         working-directory: terraform
         run: terraform init
-        env:
-          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
       - name: terraform plan
         working-directory: terraform
@@ -26,5 +26,3 @@ jobs:
           /usr/bin/terraform plan \
             -var="ansible_id_rsa=${{ secrets.ANSIBLE_PK }}" \
             -var="bristol_proxmox_token_secret=${{ secrets.TERRAFORM_BRISTOL_PROXMOX_TOKEN_SECRET }}"
-        env:
-          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
