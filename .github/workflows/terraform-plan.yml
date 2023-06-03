@@ -11,13 +11,14 @@ jobs:
         uses: actions/checkout@v3.1.0
 
       - uses: hashicorp/setup-terraform@v2
-        working-directory: terraform
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: terraform initialise
         working-directory: terraform
         run: terraform init
+        env:
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
       - name: terraform plan
         working-directory: terraform
@@ -25,3 +26,5 @@ jobs:
           /usr/bin/terraform plan \
             -var="ansible_id_rsa=${{ secrets.ANSIBLE_PK }}" \
             -var="bristol_proxmox_token_secret=${{ secrets.TERRAFORM_BRISTOL_PROXMOX_TOKEN_SECRET }}"
+        env:
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
