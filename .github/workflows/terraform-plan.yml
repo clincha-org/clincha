@@ -5,15 +5,15 @@ on:
 
 jobs:
   terraform:
-    env:
-      ARM_CLIENT_CERTIFICATE: ${{ secrets.ARM_CLIENT_CERTIFICATE }}
-      ARM_CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.ARM_CLIENT_CERTIFICATE_PASSWORD }}
     runs-on: [ self-hosted, init ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0
 
       - name: terraform initialise
+        env:
+          ARM_CLIENT_CERTIFICATE: ${{ secrets.ARM_CLIENT_CERTIFICATE }}
+          ARM_CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.ARM_CLIENT_CERTIFICATE_PASSWORD }}
         working-directory: terraform
         run: terraform init
 
