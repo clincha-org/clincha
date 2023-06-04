@@ -6,8 +6,7 @@ on:
 jobs:
   terraform:
     env:
-      ARM_CLIENT_CERTIFICATE: ${{ secrets.ARM_CLIENT_CERTIFICATE }}
-      ARM_CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.ARM_CLIENT_CERTIFICATE_PASSWORD }}
+      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
     runs-on: [ self-hosted, init ]
     steps:
       - name: Checkout
@@ -22,4 +21,5 @@ jobs:
         run: |
           /usr/bin/terraform plan \
             -var="ansible_id_rsa=${{ secrets.ANSIBLE_PK }}" \
-            -var="bristol_proxmox_token_secret=${{ secrets.TERRAFORM_BRISTOL_PROXMOX_TOKEN_SECRET }}"
+            -var="bristol_proxmox_token_secret=${{ secrets.TERRAFORM_BRISTOL_PROXMOX_TOKEN_SECRET }}" 
+          
