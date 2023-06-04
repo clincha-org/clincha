@@ -18,3 +18,7 @@ provider "proxmox" {
   pm_api_token_secret = var.bristol_proxmox_token_secret
   pm_tls_insecure     = true
 }
+
+provider "azurerm" {
+  features {}
+}

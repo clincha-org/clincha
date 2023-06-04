@@ -79,6 +79,14 @@ As the `github` user:
 
 `dnf module install nodejs`
 
+#### az cli
+
+`sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc`
+
+`sudo dnf install -y https://packages.microsoft.com/config/rhel/8/packages-microsoft-prod.rpm`
+
+`sudo dnf install azure-cli`
+
 ### Configuring Kubernetes
 
 SSH into kubeworker-1 and run the following command to initialise the cluster:
