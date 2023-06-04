@@ -6,6 +6,9 @@ on:
 jobs:
   terraform:
     env:
+      ARM_TENANT_ID: "5bdbf6b9-7155-49e5-a3ce-f265fd5ec77e"
+      ARM_CLIENT_ID: "6dbca134-0413-45d7-82ae-9359eba597ad"
+      ARM_SUBSCRIPTION_ID: "c6ff6270-64cf-40d6-ae87-e11cca58de61"
       ARM_CLIENT_CERTIFICATE: ${{ secrets.ARM_CLIENT_CERTIFICATE }}
       ARM_CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.ARM_CLIENT_CERTIFICATE_PASSWORD }}
     runs-on: [ self-hosted, init ]
