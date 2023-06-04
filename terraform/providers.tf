@@ -6,7 +6,7 @@ terraform {
     }
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~>3.0"
+      version = "3.59.0"
     }
   }
 }
@@ -21,4 +21,8 @@ provider "proxmox" {
 
 provider "azurerm" {
   features {}
+  use_msi         = true
+  tenant_id       = "5bdbf6b9-7155-49e5-a3ce-f265fd5ec77e"
+  subscription_id = "c6ff6270-64cf-40d6-ae87-e11cca58de61"
+  client_id       = "c14e9743-5769-4821-917b-7eb1b7ea7b6a"
 }
