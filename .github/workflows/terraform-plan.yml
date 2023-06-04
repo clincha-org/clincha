@@ -5,16 +5,13 @@ on:
 
 jobs:
   terraform:
-#    env:
-#      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
+    env:
+      ARM_CLIENT_CERTIFICATE: ${{ secrets.ARM_CLIENT_CERTIFICATE }}
+      ARM_CLIENT_CERTIFICATE_PASSWORD: ${{ secrets.ARM_CLIENT_CERTIFICATE_PASSWORD }}
     runs-on: [ self-hosted, init ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0
-
-#      - uses: hashicorp/setup-terraform@v2
-#        with:
-#          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: terraform initialise
         working-directory: terraform
