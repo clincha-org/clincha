@@ -21,4 +21,7 @@ provider "proxmox" {
 
 provider "azurerm" {
   features {}
+  tenant_id       = "5bdbf6b9-7155-49e5-a3ce-f265fd5ec77e"
+  subscription_id = "c6ff6270-64cf-40d6-ae87-e11cca58de61"
+  client_id       = "6dbca134-0413-45d7-82ae-9359eba597ad"
 }
