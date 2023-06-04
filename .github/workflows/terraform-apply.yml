@@ -5,6 +5,8 @@ on:
 
 jobs:
   terraform:
+    env:
+      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
     runs-on: [ self-hosted, init ]
     steps:
       - name: Checkout
