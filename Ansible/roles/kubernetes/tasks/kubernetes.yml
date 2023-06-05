@@ -59,9 +59,3 @@
         mode: 0755
         owner: root
         group: root
-
-- name: keyPaths Fix
-  lineinfile:
-    path: /etc/containers/policy.json
-    regexp: '^.*keyPaths.*'
-    line: '                    "keyPath": "/etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release"'

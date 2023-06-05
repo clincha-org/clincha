@@ -45,6 +45,28 @@
     name: cri-o
     state: present
 
+- name: "keypath workaround"
+  # https://github.com/cri-o/cri-o/issues/6197
+  block:
+    - name: "Ensure {{ item }} exists"
+      copy:
+        src: {{ item }}
+        dest: /etc/containers/registries.d/registry.access.redhat.com.yaml
+        owner: root
+        group: root
+        mode: 0611
+      loop:
+        - registry.redhat.io.yaml
+        - registry.access.redhat.com.yaml
+
+    - name: "Ensure container image policy is set"
+      copy:
+        src: policy.json
+        dest: /etc/containers/policy.json
+        owner: root
+        group: root
+        mode: 0611
+
 - name: "Start and enable cri-o"
   systemd:
     name: cri-o
