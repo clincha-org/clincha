@@ -90,7 +90,7 @@ variable "hotplug" {
 }
 
 variable "scsihw" {
-  default = "virtio-scsi-pci"
+  default = "virtio-scsi-single"
   type    = string
 }
 
