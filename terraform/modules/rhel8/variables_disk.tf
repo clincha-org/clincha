@@ -5,6 +5,7 @@ variable "disks" {
       size    = "32G"
       storage = "Hot"
       type    = "scsi"
+      discard = "true"
     }
   ]
 }
