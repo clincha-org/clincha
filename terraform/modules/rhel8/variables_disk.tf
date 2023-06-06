@@ -7,6 +7,7 @@ variable "disks" {
       type     = "scsi"
       discard  = "true"
       iothread = "1"
+      media    = "disk"
     }
   ]
 }
