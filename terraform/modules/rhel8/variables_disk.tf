@@ -8,6 +8,7 @@ variable "disks" {
       discard  = "true"
       iothread = "1"
       media    = "disk"
+      file     = "disk"
     }
   ]
 }
