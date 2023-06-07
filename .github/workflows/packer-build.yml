@@ -19,7 +19,7 @@ jobs:
       - name: packer init
         working-directory: packer
         run: |
-          /usr/bin/packer init
+          /usr/bin/packer init .
 
       - name: packer build
         working-directory: packer
