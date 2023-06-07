@@ -81,6 +81,11 @@ variable "boot_wait" {
   default     = "2s"
   description = "Time to wait before typing the boot command"
 }
+variable "on_boot" {
+  type    = bool
+  default = true
+  description = "Should this VM automatically start if the Proxmox server is restarted"
+}
 variable "http_directory" {
   type        = string
   default     = "http"

@@ -21,7 +21,7 @@ source "proxmox" "rhel8-template" {
 
   boot_command = var.boot_command
   boot_wait    = var.boot_wait
-  onboot       = true
+  onboot       = var.on_boot
 
   http_directory    = var.http_directory
   http_bind_address = var.http_bind_address
