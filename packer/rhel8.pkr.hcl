@@ -1,3 +1,12 @@
+packer {
+  required_plugins {
+    proxmox = {
+      version = ">= 1.1.2"
+      source  = "github.com/hashicorp/proxmox"
+    }
+  }
+}
+
 source "proxmox" "rhel8-template" {
   proxmox_url              = var.proxmox_api_url
   username                 = var.proxmox_api_token_id
@@ -43,6 +52,7 @@ source "proxmox" "rhel8-template" {
     bridge = var.network_bridge
   }
 }
+
 build {
 
   name    = var.build_name
