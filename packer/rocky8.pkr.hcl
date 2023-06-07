@@ -7,7 +7,7 @@ packer {
   }
 }
 
-source "proxmox" "rhel8-template" {
+source "proxmox" "rocky8" {
   proxmox_url              = var.proxmox_api_url
   username                 = var.proxmox_api_token_id
   token                    = var.proxmox_api_token_secret
@@ -18,7 +18,7 @@ source "proxmox" "rhel8-template" {
   qemu_agent = var.qemu_agent
 
   iso_file    = var.iso
-  unmount_iso = true
+  unmount_iso = var.unmount_iso
 
   ssh_username = var.ssh_username
   ssh_password = var.ansible_ssh_password
@@ -56,7 +56,7 @@ source "proxmox" "rhel8-template" {
 build {
 
   name    = var.build_name
-  sources = ["source.proxmox.rhel8-template"]
+  sources = ["source.proxmox.rocky8"]
 
   provisioner "shell" {
     inline = [

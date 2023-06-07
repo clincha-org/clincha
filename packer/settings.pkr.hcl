@@ -25,7 +25,7 @@ variable "node" {
 }
 variable "vm_name" {
   type        = string
-  default     = "template-rhel8"
+  default     = "rocky8"
   description = "The name of the VM that will become the template"
 }
 variable "qemu_agent" {
@@ -66,13 +66,13 @@ variable "cloud_init" {
 }
 variable "cloud_init_storage_pool" {
   type        = string
-  default     = "Hot"
+  default     = "Cold"
   description = "Name of the Proxmox storage pool to store the cloud-init CDROM on"
 }
 variable "boot_command" {
   type    = list(string)
   default = [
-    "<up><wait><tab><wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rhel8.ks<enter><wait5>"
+    "<up><wait><tab><wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rocky8.ks<enter><wait5>"
   ]
   description = "Command to send to the template as it starts up"
 }
@@ -98,18 +98,18 @@ variable "http_bind_address" {
 }
 variable "cores" {
   type        = number
-  default     = 1
+  default     = 4
   description = "Number of CPU cores to build the machine with"
 }
 variable "memory" {
   type        = number
-  default     = 2048
+  default     = 8192
   description = "Amount of RAM to build the machine with"
 }
 
 variable "scsi_controller" {
   type        = string
-  default     = "virtio-scsi-pci"
+  default     = "virtio-scsi-single"
   description = "The SCSI controller model to emulate"
 }
 variable "disk_size" {
@@ -145,6 +145,11 @@ variable "network_bridge" {
 }
 variable "build_name" {
   type        = string
-  default     = "template-rhel8"
+  default     = "rocky8"
   description = "The name for the build"
+}
+variable "unmount_iso" {
+  type        = bool
+  default     = true
+  description = "Should the ISO be unmounted once the build has finished"
 }
