@@ -50,7 +50,7 @@
   block:
     - name: "Ensure {{ item }} exists"
       copy:
-        src: {{ item }}
+        src: "{{ item }}"
         dest: /etc/containers/registries.d/registry.access.redhat.com.yaml
         owner: root
         group: root
