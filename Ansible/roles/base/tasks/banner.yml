@@ -14,8 +14,3 @@
     mode: 0644
     owner: root
     group: root
-
-- name: "Remove other MOTD files"
-  file:
-    path: /etc/profile.d/motd.sh
-    state: absent
