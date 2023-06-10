@@ -48,7 +48,7 @@
 - name: "keypath workaround"
   # https://github.com/cri-o/cri-o/issues/6197
   block:
-    - name: "Ensure {{ item }} exists"
+    - name: "Ensure container registry configuration exists"
       copy:
         src: "{{ item }}"
         dest: "/etc/containers/registries.d/{{ item }}"
