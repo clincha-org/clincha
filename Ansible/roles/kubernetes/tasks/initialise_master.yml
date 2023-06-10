@@ -1,3 +1,11 @@
+- name: Ensure the master can communicate through the firewall
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: enabled
+  loop: "{{ master_ports }}"
+  notify: reload_firewall
+
 - name: "Initialise cluster"
   command:
     cmd: kubeadm init --pod-network-cidr={{ pod_network_cidr }}
@@ -32,11 +40,3 @@
     owner: kubernetes
     group: kubernetes
     mode: 0600
-
-- name: Ensure the master can communicate through the firewall
-  firewalld:
-    port: "{{ item }}"
-    permanent: true
-    state: enabled
-  loop: "{{ master_ports }}"
-  notify: reload_firewall
