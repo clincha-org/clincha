@@ -51,13 +51,13 @@
     - name: "Ensure {{ item }} exists"
       copy:
         src: "{{ item }}"
-        dest: /etc/containers/registries.d/registry.access.redhat.com.yaml
+        dest: "/etc/containers/registries.d/{{ item }}"
         owner: root
         group: root
         mode: 0611
       loop:
-        - registry.redhat.io.yaml
-        - registry.access.redhat.com.yaml
+        - "registry.redhat.io.yaml"
+        - "registry.access.redhat.com.yaml"
 
     - name: "Ensure container image policy is set"
       copy:
