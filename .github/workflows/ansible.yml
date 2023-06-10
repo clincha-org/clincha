@@ -22,7 +22,7 @@ jobs:
       - name: Run Ansible
         working-directory: Ansible
         env:
-          PROXMOX_PASSWORD: ${{ secrets.ROOT_PROXMOX_PASSWORD }}
+          PROXMOX_PASSWORD: ${{ secrets.ANSIBLE_PROXMOX_PASSWORD }}
           ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
           CLINCHA_PASSWORD: ${{ secrets.CLINCHA_PASSWORD }}
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
