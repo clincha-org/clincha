@@ -12,6 +12,7 @@ jobs:
         uses: actions/checkout@v3.1.0
 
       - name: Create kube config file from base64-encoded secret
+        working_directory: kubernetes/storage
         env:
           KUBE_CONFIG_BASE64: ${{ secrets.KUBE_CONFIG }}
         run: |
