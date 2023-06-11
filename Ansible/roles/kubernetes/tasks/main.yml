@@ -39,3 +39,7 @@
 - name: "Configure pod networking"
   when: "'kubernetes_master' in group_names"
   include_tasks: pod_networking.yml
+
+- name: "Setup helpful tools"
+  when: "'kubernetes_master' in group_names"
+  include_tasks: helpful-tools.yml
