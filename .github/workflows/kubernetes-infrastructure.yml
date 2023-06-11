@@ -16,7 +16,7 @@ jobs:
           KUBE_CONFIG_BASE64: ${{ secrets.KUBE_CONFIG }}
         run: |
           echo "$KUBE_CONFIG_BASE64" | base64 --decode > kube_config
-          export KUBE_CONFIG=$(pwd)/kube_config
+          export KUBECONFIG=$(pwd)/kube_config
 
       - name: Deploy configuration to kubernetes
         run: |
