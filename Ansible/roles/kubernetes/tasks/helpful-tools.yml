@@ -24,6 +24,9 @@
         cmd: "complete -p"
       register: collection_specifications
 
+    - debug:
+        var: collection_specifications
+
     - name: "Autocomplete k"
       become: true
       become_user: kubernetes
