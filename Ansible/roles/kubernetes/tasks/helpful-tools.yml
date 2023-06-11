@@ -8,17 +8,21 @@
 
 - name: "Block - Autocomplete k"
   block:
-    - name: "Autocomplete k"
+    - name: "Autocomplete kubectl"
       lineinfile:
         path: /home/kubernetes/.bashrc
         line: "source <(kubectl completion bash)"
         regexp: "^source <(kubectl completion bash)$"
         state: present
 
-    - name: "Check if Autocomplete for k is installed"
+    - name: "Check if Autocomplete k is installed"
+      become: true
+      become_user: kubernetes
       command: complete -p
       register: collection_specifications
 
-    - name: "Install Autocomplete for k"
+    - name: "Autocomplete k"
+      become: true
+      become_user: kubernetes
       when: not {{ k_bash_completion_command }} in collection_specifications.stdout_lines
       command: "{{ k_bash_completion_command }}"
