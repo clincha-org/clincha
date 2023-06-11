@@ -14,7 +14,6 @@ jobs:
       - name: apply storage configuration
         uses: actions-hub/kubectl@master
         with:
-          args: apply -f csi-config-map.yml
-        working-directory: kubernetes/storage
+          args: apply -f kubernetes/storage/csi-config-map.yml
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
