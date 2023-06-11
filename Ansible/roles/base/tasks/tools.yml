@@ -1,0 +1,13 @@
+---
+- name: "Install useful packages"
+  package:
+    name:
+      - git
+    state: present
+
+- name: "Alias k"
+  lineinfile:
+    path: /home/kubernetes/.bachrc
+    line: "alias k=kubectl"
+    regexp: "^alias k=kubectl$"
+    state: present
