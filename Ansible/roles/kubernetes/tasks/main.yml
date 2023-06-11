@@ -2,9 +2,6 @@
 - name: "Disable SWAP"
   include_tasks: disable-swap.yml
 
-- name: "Disable SELinux"
-  include_tasks: disable-selinux.yml
-
 - name: "Install dependencies"
   dnf:
     name: [ iproute-tc, nfs-utils ]
@@ -42,6 +39,3 @@
 - name: "Configure pod networking"
   when: "'kubernetes_master' in group_names"
   include_tasks: pod_networking.yml
-
-#- name: "Disable IPv6"
-#  include_tasks: disable-ipv6.yml
