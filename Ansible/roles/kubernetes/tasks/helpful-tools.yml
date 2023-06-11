@@ -18,6 +18,7 @@
     - name: "Check if Autocomplete k is installed"
       become: true
       become_user: kubernetes
+      changed_when: false
       shell:
         executable: /bin/bash
         cmd: "complete -p"
