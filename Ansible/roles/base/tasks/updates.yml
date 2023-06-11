@@ -1,11 +1,4 @@
 ---
-- name: Register as user and auto-subscribe to available content.
-  redhat_subscription:
-    state: present
-    username: clincha
-    password: "{{ lookup('env', 'REDHAT_PASSWORD') }}"
-    auto_attach: true
-
 - name: "Upgrade all packages"
   dnf:
     name: "*"

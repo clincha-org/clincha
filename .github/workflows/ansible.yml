@@ -2,57 +2,32 @@ name: ansible
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
   schedule:
-    - cron: "0 5,10,15,20 * * *"
+    - cron: 0 0 * * *
 
 jobs:
-  edinburgh:
-    runs-on: [self-hosted, bristol, github-runner]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3.1.0
-
-      - name: ansible-playbook
-        uses: dawidd6/action-ansible-playbook@v2.6.1
-        with:
-          playbook: site.yml
-          directory: Ansible
-          key: ${{ secrets.ANSIBLE_PK }}
-          requirements: galaxy-requirements.yml
-          options: |
-            --inventory edinburgh.proxmox.yml
-        env:
-          PROXMOX_PASSWORD: ${{ secrets.ROOT_PROXMOX_PASSWORD }}
-          ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
-          CLINCHA_PASSWORD: ${{ secrets.CLINCHA_PASSWORD }}
-          ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
-          REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN_GITHUB }}
-
   bristol:
-    needs:
-      - edinburgh
-    runs-on: [self-hosted, edinburgh, github-runner]
+    runs-on: [self-hosted]
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0
 
-      - name: ansible-playbook
-        uses: dawidd6/action-ansible-playbook@v2.6.1
+      - name: Install Galaxy requirements
+        working-directory: Ansible
+        run: |
+          ansible-galaxy install -r galaxy-requirements.yml
+
+      - uses: webfactory/ssh-agent@v0.7.0
         with:
-          playbook: site.yml
-          directory: Ansible
-          key: ${{ secrets.ANSIBLE_PK }}
-          requirements: galaxy-requirements.yml
-          options: |
-            --inventory bristol.proxmox.yml
+            ssh-private-key: ${{ secrets.ANSIBLE_PK }}
+
+      - name: Run Ansible
+        working-directory: Ansible
         env:
-          PROXMOX_PASSWORD: ${{ secrets.ROOT_PROXMOX_PASSWORD }}
+          PROXMOX_PASSWORD: ${{ secrets.ANSIBLE_PROXMOX_PASSWORD }}
           ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
           CLINCHA_PASSWORD: ${{ secrets.CLINCHA_PASSWORD }}
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
-          REDHAT_PASSWORD: ${{ secrets.REDHAT_PASSWORD }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN_GITHUB }}
+        run: |
+          ansible-playbook site.yml --inventory bristol.proxmox.yml

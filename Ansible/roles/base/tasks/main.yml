@@ -1,5 +1,5 @@
 ---
-- name: "Only execute on tasks that have the correct tag"
+- name: "base configuration"
   block:
     - name: "update"
       include_tasks: updates.yml

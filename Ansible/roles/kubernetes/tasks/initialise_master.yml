@@ -32,3 +32,17 @@
     owner: kubernetes
     group: kubernetes
     mode: 0600
+
+- name: Ensure the master can communicate through the firewall
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: enabled
+  loop: "{{ master_ports }}"
+  register: firewalld_master_node
+
+- name: reload_firewall
+  when: firewalld_master_node.changed
+  systemd:
+    name: firewalld
+    state: reloaded

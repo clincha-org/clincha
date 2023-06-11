@@ -1,4 +1,13 @@
-source "proxmox" "rhel8-template" {
+packer {
+  required_plugins {
+    proxmox = {
+      version = ">= 1.1.2"
+      source  = "github.com/hashicorp/proxmox"
+    }
+  }
+}
+
+source "proxmox" "rocky8" {
   proxmox_url              = var.proxmox_api_url
   username                 = var.proxmox_api_token_id
   token                    = var.proxmox_api_token_secret
@@ -8,7 +17,8 @@ source "proxmox" "rhel8-template" {
   vm_name    = var.vm_name
   qemu_agent = var.qemu_agent
 
-  iso_file = var.iso
+  iso_file    = var.iso
+  unmount_iso = var.unmount_iso
 
   ssh_username = var.ssh_username
   ssh_password = var.ansible_ssh_password
@@ -20,6 +30,7 @@ source "proxmox" "rhel8-template" {
 
   boot_command = var.boot_command
   boot_wait    = var.boot_wait
+  onboot       = var.on_boot
 
   http_directory    = var.http_directory
   http_bind_address = var.http_bind_address
@@ -41,13 +52,15 @@ source "proxmox" "rhel8-template" {
     bridge = var.network_bridge
   }
 }
+
 build {
 
   name    = var.build_name
-  sources = ["source.proxmox.rhel8-template"]
+  sources = ["source.proxmox.rocky8"]
 
   provisioner "shell" {
     inline = [
+      "sudo yum update -y",
       "sudo rm /etc/ssh/ssh_host_*",
       "sudo truncate -s 0 /etc/machine-id",
       "sudo sync"
@@ -60,6 +73,9 @@ build {
   }
 
   provisioner "shell" {
-    inline = ["sudo cp /tmp/99-pve.cfg /etc/cloud/cloud.cfg.d/99-pve.cfg"]
+    inline = [
+      "sudo cp /tmp/99-pve.cfg /etc/cloud/cloud.cfg.d/99-pve.cfg",
+      "sudo rm /etc/cloud/cloud-init.disabled"
+    ]
   }
 }

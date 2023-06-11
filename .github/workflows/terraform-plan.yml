@@ -2,19 +2,15 @@ name: terraform-plan
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: 0 0 * * *
 
 jobs:
   terraform:
-    runs-on: self-hosted
+    env:
+      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
+    runs-on: [ self-hosted, init ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0
-
-      - uses: hashicorp/setup-terraform@v2
-        with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: terraform initialise
         working-directory: terraform
@@ -25,5 +21,5 @@ jobs:
         run: |
           /usr/bin/terraform plan \
             -var="ansible_id_rsa=${{ secrets.ANSIBLE_PK }}" \
-            -var="edinburgh_proxmox_token_secret=${{ secrets.TERRAFORM_EDINBURGH_PROXMOX_TOKEN_SECRET }}" \
-            -var="bristol_proxmox_token_secret=${{ secrets.TERRAFORM_BRISTOL_PROXMOX_TOKEN_SECRET }}"
+            -var="bristol_proxmox_token_secret=${{ secrets.TERRAFORM_BRISTOL_PROXMOX_TOKEN_SECRET }}" 
+          

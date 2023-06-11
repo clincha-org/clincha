@@ -1,7 +1,0 @@
----
-- name: Unregister from RedHat.
-  redhat_subscription:
-    state: absent
-    username: clincha
-    password: "{{ lookup('env', 'REDHAT_PASSWORD') }}"
-    auto_attach: true

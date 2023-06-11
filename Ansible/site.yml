@@ -6,12 +6,6 @@
     - role: sudoers
     - role: base
 
-- name: NFS servers
-  hosts: nfs_server
-  become: true
-  roles:
-    - role: nfs-server
-
 - name: Kubernetes
   hosts: kubernetes_worker
   become: true

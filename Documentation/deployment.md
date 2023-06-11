@@ -53,6 +53,38 @@ Finally, instead of running the run script, start a service instead by running t
 
 `sudo ./svc.sh start`
 
+### Install the required packages
+
+#### Hashicorp (Packer/Terraform)
+
+`sudo yum install -y yum-utils`
+
+`sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo`
+
+`sudo yum -y install terraform packer`
+
+#### Ansible
+
+`sudo yum -y install python39`
+
+`sudo update-alternatives --config python3`
+
+`sudo python3 -m pip install ansible-core requests`
+
+#### NodeJS
+
+`dnf groupinstall "Development Tools"`
+
+`dnf module install nodejs`
+
+#### az cli
+
+`sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc`
+
+`sudo dnf install -y https://packages.microsoft.com/config/rhel/8/packages-microsoft-prod.rpm`
+
+`sudo dnf install azure-cli`
+
 ### Configuring Kubernetes
 
 SSH into kubeworker-1 and run the following command to initialise the cluster:

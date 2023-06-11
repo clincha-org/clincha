@@ -1,9 +1,12 @@
-roles:
-  - src: "monolithprojects.github_actions_runner"
-    version: "1.16.0"
+roles: []
 
 collections:
   - name: "community.general"
     version: "6.1.0"
+    type: "galaxy"
+    source: "https://galaxy.ansible.com"
+
+  - name: "ansible.posix"
+    version: "1.5.2"
     type: "galaxy"
     source: "https://galaxy.ansible.com"
