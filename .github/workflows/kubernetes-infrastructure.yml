@@ -1,0 +1,19 @@
+name: kubernetes-infrastructure
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  apply-infrastructure:
+    runs-on: [self-hosted]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.1.0
+
+      - name: apply storage configuration
+        uses: actions-hub/kubectl@master
+        working-directory: kubernetes/storage
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        args: apply -f csi-config-map.yml
