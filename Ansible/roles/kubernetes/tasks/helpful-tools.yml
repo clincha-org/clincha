@@ -29,4 +29,4 @@
       shell:
         executable: /bin/bash
         cmd: "{{ k_bash_completion_command }}"
-      when: not {{ k_bash_completion_command }} in collection_specifications.stdout_lines
+      when: "not '{{ k_bash_completion_command }}' in collection_specifications.stdout_lines"
