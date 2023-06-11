@@ -5,7 +5,13 @@
     permanent: true
     state: enabled
   loop: "{{ worker_ports }}"
-  notify: reload_firewall
+  register: firewalld_worker_node
+
+- name: reload_firewall
+  when: firewalld_worker_node.changed
+  systemd:
+    name: firewalld
+    state: reloaded
 
 - name: Join node to Kubernetes master
   command:

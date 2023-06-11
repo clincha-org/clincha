@@ -1,8 +1,2 @@
 ---
-- name: restart-host
-  reboot:
 
-- name: reload_firewall
-  systemd:
-    name: firewalld
-    state: reloaded

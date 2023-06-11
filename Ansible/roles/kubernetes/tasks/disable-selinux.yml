@@ -1,9 +1,9 @@
-- name: file
-  copy:
-    src: selinux.conf
-    dest: /etc/selinux/config
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    restart-host
+#- name: Put SELinux in permissive mode, logging actions that would be blocked.
+#  selinux:
+#    policy: targeted
+#    state: permissive
+#  register: selinux_mode
+#
+#- name: Reboot if necessary
+#  when: selinux_mode.changed
+#  reboot:

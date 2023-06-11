@@ -39,4 +39,10 @@
     permanent: true
     state: enabled
   loop: "{{ master_ports }}"
-  notify: reload_firewall
+  register: firewalld_master_node
+
+- name: reload_firewall
+  when: firewalld_master_node.changed
+  systemd:
+    name: firewalld
+    state: reloaded
