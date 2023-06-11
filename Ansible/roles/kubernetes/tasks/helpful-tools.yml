@@ -18,11 +18,15 @@
     - name: "Check if Autocomplete k is installed"
       become: true
       become_user: kubernetes
-      command: "complete -p"
+      shell:
+        executable: /bin/bash
+        cmd: "complete -p"
       register: collection_specifications
 
     - name: "Autocomplete k"
       become: true
       become_user: kubernetes
+      shell:
+        executable: /bin/bash
+        cmd: "{{ k_bash_completion_command }}"
       when: not {{ k_bash_completion_command }} in collection_specifications.stdout_lines
-      command: "{{ k_bash_completion_command }}"
