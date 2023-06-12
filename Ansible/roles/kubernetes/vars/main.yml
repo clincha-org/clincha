@@ -7,3 +7,4 @@ sysctl_parameters:
   - {name: "net.bridge.bridge-nf-call-ip6tables", value: 1, state: "present"}
   - {name: "net.ipv4.ip_forward", value: 1, state: "present"}
 kubeadm_bootstrap_token: "{{ lookup('env', BOOTSTRAP_TOKEN) }}"
+k_bash_completion_command: complete -o default -F __start_kubectl k

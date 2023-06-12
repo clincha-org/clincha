@@ -1,0 +1,7 @@
+---
+- name: "Install useful packages"
+  package:
+    name:
+      - git
+      - bash-completion
+    state: present
