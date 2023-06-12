@@ -2,7 +2,7 @@ name: kubernetes-infrastructure
 
 on:
   workflow_dispatch:
-  push:
+#  push:
 
 jobs:
   apply-infrastructure:
