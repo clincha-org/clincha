@@ -1,0 +1,23 @@
+---
+- name: "Alias k"
+  lineinfile:
+    path: /home/kubernetes/.bashrc
+    line: "alias k=kubectl"
+    regexp: "^alias k=kubectl$"
+    state: present
+
+- name: "Block - Autocomplete"
+  block:
+    - name: "Autocomplete kubectl"
+      lineinfile:
+        path: /home/kubernetes/.bashrc
+        line: "source <(kubectl completion bash)"
+        regexp: "^source <(kubectl completion bash)$"
+        state: present
+    - name: "Autocomplete k"
+      lineinfile:
+        path: /home/kubernetes/.bashrc
+        line: "complete -o default -F __start_kubectl k"
+        regexp: "^complete -o default -F __start_kubectl k$"
+        state: present
+
