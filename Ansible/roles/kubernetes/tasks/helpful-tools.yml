@@ -6,7 +6,7 @@
     regexp: "^alias k=kubectl$"
     state: present
 
-- name: "Block - Autocomplete k"
+- name: "Block - Autocomplete"
   block:
     - name: "Autocomplete kubectl"
       lineinfile:
@@ -14,23 +14,10 @@
         line: "source <(kubectl completion bash)"
         regexp: "^source <(kubectl completion bash)$"
         state: present
-
-    - name: "Check if Autocomplete k is installed"
-      become: true
-      become_user: kubernetes
-      changed_when: false
-      shell:
-        executable: /bin/bash
-        cmd: "complete -p"
-      register: collection_specifications
-
-    - debug:
-        var: collection_specifications
-
     - name: "Autocomplete k"
-      become: true
-      become_user: kubernetes
-      shell:
-        executable: /bin/bash
-        cmd: "{{ k_bash_completion_command }}"
-      when: "not '{{ k_bash_completion_command }}' in collection_specifications.stdout_lines"
+      lineinfile:
+        path: /home/kubernetes/.bashrc
+        line: "complete -o default -F __start_kubectl k"
+        regexp: "^complete -o default -F __start_kubectl k$"
+        state: present
+
