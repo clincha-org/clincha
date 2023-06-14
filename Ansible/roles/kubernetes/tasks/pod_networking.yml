@@ -10,7 +10,7 @@
   become_user: kubernetes
   kubernetes.core.helm:
     name: flannel
-    chart_ref: flannel
+    chart_ref: flannel/flannel
     release_namespace: kube-flannel
     create_namespace: true
     values:
