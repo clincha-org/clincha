@@ -6,30 +6,19 @@
 
 - name: "Ensure .kube directory exists"
   file:
-    owner: "{{ item.owner }}"
-    group: "{{ item.group }}"
-    path: "{{ item.path }}"
+    path: "/home/kubernetes/.kube"
     state: directory
     mode: 0770
-  with_items:
-    - { owner: root, group: root, path: "/root/.kube" }
-    - { owner: kubernetes, group: kubernetes, path: "/home/kubernetes/.kube" }
-
-- name: "Symlink kubectl admin.conf to /root/.kube/conf"
-  file:
-    src: /etc/kubernetes/admin.conf
-    dest: /root/.kube/config
-    state: link
-    owner: root
-    group: root
+    owner: "kubernetes"
+    group: "kubernetes"
 
 - name: "Symlink kubectl admin.conf to /home/kubernetes/.kube/conf"
   file:
     src: /etc/kubernetes/admin.conf
     dest: /home/kubernetes/.kube/config
     state: link
-    owner: kubernetes
-    group: kubernetes
+    owner: "kubernetes"
+    group: "kubernetes"
 
 - name: Ensure the master can communicate through the firewall
   firewalld:

@@ -1,10 +1,23 @@
-- name: "Copy Flannel configuration"
-  copy:
-    src: flannel-manifest.yml
-    dest: /tmp/flannel-manifest.yml
-    mode: 700
-    owner: root
-    group: root
+- name: Add flannel chart repository
+  kubernetes.core.helm_repository:
+    name: "v0.22.0"
+    repo_url: "https://flannel-io.github.io/flannel/"
 
-- name: "Install Flannel"
-  command: kubectl apply -f /tmp/flannel-manifest.yml
+- name: Install flannel
+  kubernetes.core.helm:
+    name: flannel
+    chart_ref: flannel
+    release_namespace: kube-flannel
+    create_namespace: true
+    values:
+      podCidr: "{{ pod_network_cidr }}"
+
+- name: Add label to namespace
+  kubernetes.core.k8s:
+    state: patched
+    kind: Namespace
+    name: kube-flannel
+    definition:
+      metadata:
+        labels:
+          "pod-security.kubernetes.io/enforce": "privileged"
