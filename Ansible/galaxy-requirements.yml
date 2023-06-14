@@ -3,10 +3,9 @@ roles: []
 collections:
   - name: "community.general"
     version: "6.1.0"
-    type: "galaxy"
-    source: "https://galaxy.ansible.com"
 
   - name: "ansible.posix"
     version: "1.5.2"
-    type: "galaxy"
-    source: "https://galaxy.ansible.com"
+
+  - name: "kubernetes.core"
+    version: "2.4.0"
