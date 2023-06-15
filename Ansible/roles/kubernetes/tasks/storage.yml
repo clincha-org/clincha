@@ -22,7 +22,6 @@
             - "192.168.1.12:6789"
             - "192.168.1.13:6789"
       provisioner:
-        name: provisioner
         enableHostNetwork: true
         httpMetrics:
           enabled: false
@@ -32,8 +31,8 @@
         annotations:
           storageclass.kubernetes.io/is-default-class: "true"
         clusterID: "c61ed9ad-0a71-4f66-8d6a-b76fd0a47798"
-        dataPool:
-        pool: "REPLICATED_SSD"
+        dataPool: "REPLICATED_SSD"
+        pool: "ERASURE_SSD"
       secret:
         create: true
         name: csi-rbd-secret
