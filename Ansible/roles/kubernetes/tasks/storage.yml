@@ -31,8 +31,8 @@
         annotations:
           storageclass.kubernetes.io/is-default-class: "true"
         clusterID: "c61ed9ad-0a71-4f66-8d6a-b76fd0a47798"
-        dataPool: "REPLICATED_SSD"
-        pool: "ERASURE_SSD"
+        dataPool: "ERASURE_SSD"
+        pool: "REPLICATED_SSD"
       secret:
         create: true
         name: csi-rbd-secret
