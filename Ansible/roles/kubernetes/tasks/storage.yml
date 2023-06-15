@@ -42,4 +42,4 @@
 - name: Create storage classes
   kubernetes.core.k8s:
     state: present
-    src: storage-classes.yml
+    definition: "{{ lookup('file', 'storage-classes.yml') | from_yaml_all }}"
