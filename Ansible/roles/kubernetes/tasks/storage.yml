@@ -1,0 +1,41 @@
+---
+- name: "Add Ceph Helm repository"
+  become: true
+  become_user: kubernetes
+  kubernetes.core.helm_repository:
+    name: "ceph-csi"
+    repo_url: "https://ceph.github.io/csi-charts"
+
+- name: Install Ceph
+  become: true
+  become_user: kubernetes
+  kubernetes.core.helm:
+    name: ceph-csi-rbd
+    chart_ref: ceph-csi/ceph-csi-rbd
+    release_namespace: ceph-csi-rbd
+    create_namespace: true
+    values:
+      csiConfig:
+        - clusterID: "c61ed9ad-0a71-4f66-8d6a-b76fd0a47798"
+          monitors:
+            - "192.168.1.11:6789"
+            - "192.168.1.12:6789"
+            - "192.168.1.13:6789"
+      provisioner:
+        name: provisioner
+        enableHostNetwork: true
+        httpMetrics:
+          enabled: false
+      storageClass:
+        create: true
+        name: csi-rbd-sc
+        annotations:
+          storageclass.kubernetes.io/is-default-class: "true"
+        clusterID: "c61ed9ad-0a71-4f66-8d6a-b76fd0a47798"
+        dataPool:
+        pool: "REPLICATED_SSD"
+      secret:
+        create: true
+        name: csi-rbd-secret
+        userID: admin
+        userKey: "{{ lookup('env', 'CEPH_KEY') }}"

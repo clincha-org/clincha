@@ -8,7 +8,7 @@ cd ceph-csi/charts/ || exit
 
 kubectl create namespace "ceph-csi-rbd"
 
-helm install --namespace "ceph-csi-rbd" "ceph-csi-rbd" ceph-csi/ceph-csi-rbd
+helm install -f ceph-csi-rbd-values.yml --namespace "ceph-csi-rbd" "ceph-csi-rbd" ceph-csi/ceph-csi-rbd
 
 helm status --namespace "ceph-csi-rbd" "ceph-csi-rbd"
 
