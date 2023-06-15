@@ -26,7 +26,7 @@
         httpMetrics:
           enabled: false
       storageClass:
-        create: true
+        create: false
         name: csi-rbd-sc
         annotations:
           storageclass.kubernetes.io/is-default-class: "true"
@@ -38,3 +38,8 @@
         name: csi-rbd-secret
         userID: admin
         userKey: "{{ lookup('env', 'CEPH_KEY') }}"
+
+- name: Create storage classes
+  kubernetes.core.k8s:
+    state: present
+    src: storage-classes.yml
