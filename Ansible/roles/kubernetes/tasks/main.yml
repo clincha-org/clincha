@@ -41,8 +41,6 @@
   include_tasks: pod_networking.yml
 
 - name: "Configure storage"
-  become: true
-  become_user: kubernetes
   when: "'kubernetes_master' in group_names"
   include_tasks: storage.yml
 

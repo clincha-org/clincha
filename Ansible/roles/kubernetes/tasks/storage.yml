@@ -1,10 +1,14 @@
 ---
 - name: "Add Ceph Helm repository"
+  become: true
+  become_user: kubernetes
   kubernetes.core.helm_repository:
     name: "ceph-csi"
     repo_url: "https://ceph.github.io/csi-charts"
 
 - name: Install Ceph
+  become: true
+  become_user: kubernetes
   kubernetes.core.helm:
     name: ceph-csi-rbd
     chart_ref: ceph-csi/ceph-csi-rbd
@@ -36,6 +40,8 @@
         userKey: "{{ lookup('env', 'CEPH_KEY') }}"
 
 - name: Create storage classes
+  become: true
+  become_user: kubernetes
   kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('file', 'storage-classes.yml') | from_yaml_all }}"
