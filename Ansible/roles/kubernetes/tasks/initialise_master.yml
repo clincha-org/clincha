@@ -33,3 +33,12 @@
   systemd:
     name: firewalld
     state: reloaded
+
+- name: "Install kubernetes pip package"
+  become: true
+  become_user: kubernetes
+  pip:
+    name: kubernetes
+    state: present
+    version: 26.1.0
+    extra_args: --user
