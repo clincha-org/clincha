@@ -27,6 +27,12 @@
     state: started
     enabled: true
 
+- name: "Install kubernetes pip package"
+  pip:
+    name: kubenetes
+    state: present
+    version: 26.1.0
+
 - name: "Check if Helm is installed"
   command:
     cmd: "helm version"
