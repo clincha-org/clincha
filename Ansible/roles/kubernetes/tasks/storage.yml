@@ -25,14 +25,6 @@
         enableHostNetwork: true
         httpMetrics:
           enabled: false
-      storageClass:
-        create: false
-        name: csi-rbd-sc
-        annotations:
-          storageclass.kubernetes.io/is-default-class: "true"
-        clusterID: "c61ed9ad-0a71-4f66-8d6a-b76fd0a47798"
-        dataPool: "ERASURE_SSD"
-        pool: "REPLICATED_SSD"
       secret:
         create: true
         name: csi-rbd-secret
