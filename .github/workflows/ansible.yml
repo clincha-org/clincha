@@ -29,5 +29,6 @@ jobs:
           CLINCHA_PASSWORD: ${{ secrets.CLINCHA_PASSWORD }}
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN_GITHUB }}
+          CEPH_KEY: ${{ secrets.CEPH_KEY }}
         run: |
           ansible-playbook site.yml --inventory bristol.proxmox.yml
