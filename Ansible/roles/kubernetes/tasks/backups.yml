@@ -91,7 +91,7 @@
       unarchive:
         remote_src: true
         src: "/tmp/velero-{{ velero_version }}-linux-amd64.tar.gz"
-        dest: "/tmp/velero-{{ velero_version }}-linux-amd64"
+        dest: "/tmp"
 
     - name: "Move the Velero binary to the binaries directory"
       copy:
