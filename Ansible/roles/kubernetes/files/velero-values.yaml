@@ -11,12 +11,10 @@ initContainers:
     volumeMounts:
       - mountPath: /target
         name: plugins
-
 dnsConfig:
   options:
     - name: ndots
       value: "1"
-
 configuration:
   backupStorageLocation:
     - name: velero
@@ -35,7 +33,6 @@ configuration:
         resourceGroup: velero
         subscriptionId: 2c3c5e03-9427-4fd2-9476-dee0f754b964
   defaultVolumesToFsBackup: true
-
 credentials:
   secretContents:
     cloud: |

@@ -1,25 +1,63 @@
 # helm install --set-file credentials.secretContents.cloud=./credentials-velero stable/velero
-#---
-#- name: "Add Ceph Helm repository"
-#  become: true
-#  become_user: kubernetes
-#  kubernetes.core.helm_repository:
-#    name: "velero"
-#    repo_url: "https://artifacthub.io/packages/helm/vmware-tanzu/velero"
-#
-#- name: Install Ceph
-#  become: true
-#  become_user: kubernetes
-#  kubernetes.core.helm:
-#    name: ceph-csi-rbd
-#    chart_ref: ceph-csi/ceph-csi-rbd
-#    release_namespace: ceph-csi-rbd
-#    create_namespace: true
-#    values:
-#
-#- name: Create storage classes
-#  become: true
-#  become_user: kubernetes
-#  kubernetes.core.k8s:
-#    state: present
-#    definition: "{{ lookup('file', 'storage-classes.yml') | from_yaml_all }}"
+---
+- name: "Add Velero Helm repository"
+  become: true
+  become_user: kubernetes
+  kubernetes.core.helm_repository:
+    name: "velero"
+    repo_url: "https://artifacthub.io/packages/helm/vmware-tanzu/velero"
+
+- name: Install Velero
+  become: true
+  become_user: kubernetes
+  kubernetes.core.helm:
+    name: velero
+    chart_ref: vmware-tanzu/velero
+    release_namespace: velero
+    create_namespace: true
+    values:
+      initContainers:
+        - name: velero-plugin-for-azure
+          image: velero/velero-plugin-for-microsoft-azure:v1.6.2
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /target
+              name: plugins
+        - name: velero-plugin-for-csi
+          image: velero/velero-plugin-for-csi:v0.5.0
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /target
+              name: plugins
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      configuration:
+        backupStorageLocation:
+          - name: velero
+            provider: azure
+            default: true
+            bucket: bristol
+            accessMode: ReadWrite
+            config:
+              resourceGroup: velero
+              subscriptionId: 2c3c5e03-9427-4fd2-9476-dee0f754b964
+              storageAccount: acvelerotest
+        volumeSnapshotLocation:
+          - name: velero
+            provider: azure
+            config:
+              resourceGroup: velero
+              subscriptionId: 2c3c5e03-9427-4fd2-9476-dee0f754b964
+        defaultVolumesToFsBackup: true
+      credentials:
+        secretContents:
+          cloud: |
+            AZURE_SUBSCRIPTION_ID=2c3c5e03-9427-4fd2-9476-dee0f754b964
+            AZURE_TENANT_ID=5bdbf6b9-7155-49e5-a3ce-f265fd5ec77e
+            AZURE_CLIENT_ID=8a84109a-b36b-4d5f-a8c4-f87cf82e5bc6
+            AZURE_CLIENT_SECRET={{ lookup('env', 'AZURE_CLIENT_SECRET') }}
+            AZURE_RESOURCE_GROUP=velero
+            AZURE_CLOUD_NAME=AzurePublicCloud
+      snapshotsEnabled: true
