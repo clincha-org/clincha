@@ -20,9 +20,14 @@
     owner: "kubernetes"
     group: "kubernetes"
 
-- name: Ensure the master can communicate through the firewall
+- name: Enable masquerading on firewalld
   firewalld:
     masquerade: true
+    permanent: true
+    state: enabled
+
+- name: Ensure the master can communicate through the firewall
+  firewalld:
     port: "{{ item }}"
     permanent: true
     state: enabled
