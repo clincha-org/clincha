@@ -21,3 +21,9 @@
         regexp: "^complete -o default -F __start_kubectl k$"
         state: present
 
+    - name: "Autocomplete helm"
+      lineinfile:
+        path: /home/kubernetes/.bashrc
+        line: "source <(helm completion bash)"
+        regexp: "^source <(helm completion bash)$"
+        state: present

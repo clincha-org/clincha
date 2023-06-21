@@ -1,0 +1,25 @@
+# helm install --set-file credentials.secretContents.cloud=./credentials-velero stable/velero
+#---
+#- name: "Add Ceph Helm repository"
+#  become: true
+#  become_user: kubernetes
+#  kubernetes.core.helm_repository:
+#    name: "velero"
+#    repo_url: "https://artifacthub.io/packages/helm/vmware-tanzu/velero"
+#
+#- name: Install Ceph
+#  become: true
+#  become_user: kubernetes
+#  kubernetes.core.helm:
+#    name: ceph-csi-rbd
+#    chart_ref: ceph-csi/ceph-csi-rbd
+#    release_namespace: ceph-csi-rbd
+#    create_namespace: true
+#    values:
+#
+#- name: Create storage classes
+#  become: true
+#  become_user: kubernetes
+#  kubernetes.core.k8s:
+#    state: present
+#    definition: "{{ lookup('file', 'storage-classes.yml') | from_yaml_all }}"

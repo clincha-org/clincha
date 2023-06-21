@@ -44,6 +44,10 @@
   when: "'kubernetes_master' in group_names"
   include_tasks: storage.yml
 
+- name: "Configure backups"
+  when: "'kubernetes_master' in group_names"
+  include_tasks: backups.yml
+
 - name: "Setup helpful tools"
   when: "'kubernetes_master' in group_names"
   include_tasks: helpful-tools.yml
