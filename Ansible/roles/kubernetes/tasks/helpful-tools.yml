@@ -27,3 +27,10 @@
         line: "source <(helm completion bash)"
         regexp: "^source <(helm completion bash)$"
         state: present
+
+    - name: "Autocomplete velero"
+      lineinfile:
+        path: /home/kubernetes/.bashrc
+        line: "source <(velero completion bash)"
+        regexp: "^source <(velero completion bash)$"
+        state: present
