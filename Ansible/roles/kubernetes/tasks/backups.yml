@@ -37,12 +37,12 @@
           - name: velero
             provider: azure
             default: true
-            bucket: bristol
+            bucket: production
             accessMode: ReadWrite
             config:
               resourceGroup: velero
               subscriptionId: c6ff6270-64cf-40d6-ae87-e11cca58de61
-              storageAccount: acvelerotest
+              storageAccount: clinchavelero
         volumeSnapshotLocation:
           - name: velero
             provider: azure
