@@ -66,3 +66,35 @@
           options:
             - name: ndots
               value: "1"
+
+- name: "Check Velero version"
+  failed_when: false
+  changed_when: false
+  command:
+    cmd: velero version
+  register: velero_version_output
+
+- name: Debug velero_version_output
+  debug:
+    var: velero_version_output
+
+- name: "Install Velero CLI"
+  when: false
+  block:
+    - name: "Get Velero CLI from GitHub"
+      get_url:
+        url: "https://github.com/vmware-tanzu/velero/releases/download/{{ velero_version }}/velero-{{ velero_version }}-linux-amd64.tar.gz"
+        dest: "/tmp/velero-{{ velero_version }}-linux-amd64.tar.gz"
+        checksum: "md5:09b92fd0baebbcafd850044cd35f6be1"
+
+    - name: "Extract Velero binary"
+      unarchive:
+        src: "/tmp/velero-{{ velero_version }}-linux-amd64.tar.gz"
+        dest: "/tmp/velero-{{ velero_version }}-linux-amd64"
+
+    - name: "Move the Velero binary to the binaries directory"
+      copy:
+        remote_src: true
+        src: "/tmp/velero-{{ velero_version }}-linux-amd64/velero"
+        dest: "/usr/bin/velero"
+
