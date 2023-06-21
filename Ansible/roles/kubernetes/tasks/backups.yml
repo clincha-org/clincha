@@ -68,10 +68,12 @@
               value: "1"
 
 - name: "Check Velero version"
-  failed_when: false
-  changed_when: false
   command:
     cmd: velero version
+  failed_when: false
+  changed_when: false
+  become: true
+  become_user: kubernetes
   register: velero_version_output
 
 - name: Debug velero_version_output
