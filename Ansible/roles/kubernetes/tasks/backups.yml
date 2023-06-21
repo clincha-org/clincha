@@ -79,7 +79,7 @@
     var: velero_version_output
 
 - name: "Install Velero CLI"
-  when: false
+  when: velero_version_output.rc != 0
   block:
     - name: "Get Velero CLI from GitHub"
       get_url:
