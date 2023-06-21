@@ -98,6 +98,7 @@
         remote_src: true
         src: "/tmp/velero-{{ velero_version }}-linux-amd64/velero"
         dest: "/usr/bin/velero"
+        mode: 0755
 
     - name: "Tidy up"
       file:
