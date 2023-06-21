@@ -1,11 +1,10 @@
-# helm install --set-file credentials.secretContents.cloud=./credentials-velero stable/velero
 ---
 - name: "Add Velero Helm repository"
   become: true
   become_user: kubernetes
   kubernetes.core.helm_repository:
-    name: "velero"
-    repo_url: "https://artifacthub.io/packages/helm/vmware-tanzu/velero"
+    name: "vmware-tanzu"
+    repo_url: "https://vmware-tanzu.github.io/helm-charts/"
 
 - name: Install Velero
   become: true
