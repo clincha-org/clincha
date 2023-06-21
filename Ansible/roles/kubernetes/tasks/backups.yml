@@ -60,3 +60,9 @@
             AZURE_RESOURCE_GROUP=velero
             AZURE_CLOUD_NAME=AzurePublicCloud
       snapshotsEnabled: true
+      nodeAgent:
+        privileged: true
+        dnsConfig:
+          options:
+            - name: ndots
+              value: "1"
