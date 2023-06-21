@@ -99,3 +99,12 @@
         src: "/tmp/velero-{{ velero_version }}-linux-amd64/velero"
         dest: "/usr/bin/velero"
 
+    - name: "Tidy up"
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "/tmp/velero-{{ velero_version }}-linux-amd64.tar.gz"
+        - "/tmp/velero-{{ velero_version }}-linux-amd64"
+
+
