@@ -25,6 +25,7 @@
     masquerade: true
     permanent: true
     state: enabled
+  register: firewalld_master_node_masquerading
 
 - name: Ensure the master can communicate through the firewall
   firewalld:
@@ -35,7 +36,7 @@
   register: firewalld_master_node
 
 - name: reload_firewall
-  when: firewalld_master_node.changed
+  when: firewalld_master_node.changed or firewalld_master_node_masquerading.changed
   systemd:
     name: firewalld
     state: reloaded

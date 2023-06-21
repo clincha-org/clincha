@@ -4,6 +4,7 @@
     masquerade: true
     permanent: true
     state: enabled
+  register: firewalld_worker_node_masquerading
 
 - name: Ensure the workers can communicate through the firewall
   firewalld:
@@ -14,7 +15,7 @@
   register: firewalld_worker_node
 
 - name: reload_firewall
-  when: firewalld_worker_node.changed
+  when: firewalld_worker_node.changed or firewalld_worker_node_masquerading.changed
   systemd:
     name: firewalld
     state: reloaded
