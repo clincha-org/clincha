@@ -76,10 +76,6 @@
   become_user: kubernetes
   register: velero_version_output
 
-- name: Debug velero_version_output
-  debug:
-    var: velero_version_output
-
 - name: "Install Velero CLI"
   when:
     - velero_version_output.rc != 0
