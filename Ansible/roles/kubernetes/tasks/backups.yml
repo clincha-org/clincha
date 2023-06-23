@@ -53,6 +53,7 @@
       credentials:
         secretContents:
           cloud: |
+            AZURE_TENANT_ID=5bdbf6b9-7155-49e5-a3ce-f265fd5ec77e
             AZURE_STORAGE_ACCOUNT_ACCESS_KEY={{ lookup('env', 'AZURE_CLIENT_SECRET') }}
             AZURE_CLOUD_NAME=AzurePublicCloud
       snapshotsEnabled: true
