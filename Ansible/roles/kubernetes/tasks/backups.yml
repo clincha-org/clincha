@@ -43,21 +43,21 @@
               resourceGroup: velero
               subscriptionId: c6ff6270-64cf-40d6-ae87-e11cca58de61
               storageAccount: clinchavelero
-        volumeSnapshotLocation:
-          - name: velero
-            provider: azure
-            bucket: production
-            config:
-              resourceGroup: velero
-              subscriptionId: c6ff6270-64cf-40d6-ae87-e11cca58de61
-              storageAccount: clinchavelero
+#        volumeSnapshotLocation:
+#          - name: velero
+#            provider: azure
+#            bucket: production
+#            config:
+#              resourceGroup: velero
+#              subscriptionId: c6ff6270-64cf-40d6-ae87-e11cca58de61
+#              storageAccount: clinchavelero
         defaultVolumesToFsBackup: true
       credentials:
         secretContents:
           cloud: |
             AZURE_STORAGE_ACCOUNT_ACCESS_KEY={{ lookup('env', 'AZURE_CLIENT_SECRET') }}
             AZURE_CLOUD_NAME=AzurePublicCloud
-      snapshotsEnabled: true
+      snapshotsEnabled: false
       deployNodeAgent: true
       nodeAgent:
         dnsConfig:
