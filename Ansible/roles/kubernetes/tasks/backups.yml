@@ -43,15 +43,15 @@
               resourceGroup: velero
               subscriptionId: c6ff6270-64cf-40d6-ae87-e11cca58de61
               storageAccount: clinchavelero
-#        volumeSnapshotLocation:
-#          - name: velero
-#            provider: azure
-#            bucket: production
-#            config:
-#              resourceGroup: velero
-#              subscriptionId: c6ff6270-64cf-40d6-ae87-e11cca58de61
-#              storageAccount: clinchavelero
-        defaultVolumesToFsBackup: true
+        volumeSnapshotLocation:
+          - name: velero
+            provider: azure
+            bucket: production
+            config:
+              resourceGroup: velero
+              subscriptionId: c6ff6270-64cf-40d6-ae87-e11cca58de61
+              storageAccount: clinchavelero
+        defaultVolumesToFsBackup: false
       credentials:
         secretContents:
           cloud: |
