@@ -38,18 +38,39 @@
     state: present
     resource_definition: "{{ lookup('file', 'storage-classes.yml') | from_yaml_all }}"
 
-- name: Create snapshot CRDs
+- name: Create snapshot CRDs directory
+  file:
+    path: /tmp/kubernetes_snapshot_crd
+    state: directory
+    owner: kubernetes
+    group: kubernetes
+    mode: 0660
+
+- name: Download snapshot CRDs
   become: true
   become_user: kubernetes
-  k8s:
-    state: present
-    resource_definition: "{{ item }}"
+  ansible.builtin.get_url:
+    url: "{{ item }}"
+    dest: "/tmp/kubernetes_snapshot_crd"
   loop:
     - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml"
     - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml"
     - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml"
     - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml"
     - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/deploy/kubernetes/snapshot-controller/setup-snapshot-controller.yaml"
+
+- name: Create snapshot CRDs
+  become: true
+  become_user: kubernetes
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ item }}"
+  loop:
+    - "/tmp/kubernetes_snapshot_crd/snapshot.storage.k8s.io_volumesnapshots.yaml"
+    - "/tmp/kubernetes_snapshot_crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml"
+    - "/tmp/kubernetes_snapshot_crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml"
+    - "/tmp/kubernetes_snapshot_crd/rbac-snapshot-controller.yaml"
+    - "/tmp/kubernetes_snapshot_crd/setup-snapshot-controller.yaml"
 
 - name: Create snapshot class
   become: true
