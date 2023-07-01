@@ -44,7 +44,7 @@
     state: directory
     owner: kubernetes
     group: kubernetes
-    mode: 0660
+    mode: 0770
 
 - name: Download snapshot CRDs
   ansible.builtin.get_url:
