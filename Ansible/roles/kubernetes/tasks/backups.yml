@@ -108,5 +108,3 @@
       loop:
         - "/tmp/velero-{{ velero_version }}-linux-amd64.tar.gz"
         - "/tmp/velero-{{ velero_version }}-linux-amd64"
-
-

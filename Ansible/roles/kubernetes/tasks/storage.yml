@@ -36,4 +36,24 @@
   become_user: kubernetes
   kubernetes.core.k8s:
     state: present
-    definition: "{{ lookup('file', 'storage-classes.yml') | from_yaml_all }}"
+    resource_definition: "{{ lookup('file', 'storage-classes.yml') | from_yaml_all }}"
+
+- name: Create snapshot CRDs
+  become: true
+  become_user: kubernetes
+  k8s:
+    state: present
+    resource_definition: "{{ item }}"
+  loop:
+    - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml"
+    - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml"
+    - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml"
+    - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml"
+    - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/deploy/kubernetes/snapshot-controller/setup-snapshot-controller.yaml"
+
+- name: Create snapshot class
+  become: true
+  become_user: kubernetes
+  k8s:
+    state: present
+    resource_definition: "{{ lookup('file', 'snapshot-class.yml') | from_yaml }}"
