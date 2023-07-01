@@ -1,14 +1,3 @@
 kubernetes_version: "1.26.4"
+velero_version: "v1.11.0"
 pod_network_cidr: "10.244.0.0/16"
-
-master_ports:
-  - "6443/tcp"
-  - "2379/tcp"
-  - "2380/tcp"
-  - "10250/tcp"
-  - "10251/tcp"
-  - "10252/tcp"
-
-worker_ports:
-  - "10250/tcp"
-  - "30000-32767/tcp"
