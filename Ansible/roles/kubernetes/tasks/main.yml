@@ -2,6 +2,12 @@
 - name: "Disable SWAP"
   include_tasks: disable-swap.yml
 
+- name: "Disable firewalld"
+  service:
+    name: firewalld
+    state: stopped
+    enabled: false
+
 - name: "Install dependencies"
   dnf:
     name: [ iproute-tc, nfs-utils ]
