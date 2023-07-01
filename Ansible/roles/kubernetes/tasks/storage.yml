@@ -47,11 +47,12 @@
     mode: 0660
 
 - name: Download snapshot CRDs
-  become: true
-  become_user: kubernetes
   ansible.builtin.get_url:
     url: "{{ item }}"
     dest: "/tmp/kubernetes_snapshot_crd"
+    owner: kubernetes
+    group: kubernetes
+    mode: 0660
   loop:
     - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml"
     - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml"
