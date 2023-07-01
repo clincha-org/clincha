@@ -1,16 +1,3 @@
 kubernetes_version: "1.26.4"
 velero_version: "v1.11.0"
 pod_network_cidr: "10.244.0.0/16"
-
-master_ports:
-  - "6443/tcp" # Kubernetes API
-  - "2379/tcp" # etcd client API
-  - "2380/tcp" # etcd client API
-  - "10251/tcp" # kube-scheduler
-  - "10252/tcp" # kube-controller-manager
-
-worker_ports:
-  - "10250/tcp" # Kubelet API
-  - "30000-32767/tcp" # NodePorts
-  - "8285/udp" # flannel
-  - "8472/udp" # flannel
