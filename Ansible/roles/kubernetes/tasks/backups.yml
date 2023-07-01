@@ -61,7 +61,7 @@
             AZURE_CLIENT_SECRET={{ lookup('env', 'AZURE_CLIENT_SECRET') }}
             AZURE_RESOURCE_GROUP=velero
             AZURE_CLOUD_NAME=AzurePublicCloud
-      snapshotsEnabled: false
+      snapshotsEnabled: true
       deployNodeAgent: true
       nodeAgent:
         dnsConfig:
