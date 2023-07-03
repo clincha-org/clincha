@@ -21,7 +21,7 @@
 
 - name: "Initialise cluster on master node"
   when: "'kubernetes_master' in group_names"
-  include_tasks: initialise_master.yml
+  include_tasks: configure_master.yml
 
 - name: "Get the kubeadm join command from the master"
   command: kubeadm token create --print-join-command
@@ -40,19 +40,9 @@
 
 - name: "Setup worker nodes"
   when: "'kubernetes_worker' in group_names"
-  include_tasks: configure_worker.yml
-
-- name: "Configure pod networking"
-  when: "'kubernetes_master' in group_names"
-  include_tasks: pod_networking.yml
-
-- name: "Configure storage"
-  when: "'kubernetes_master' in group_names"
-  include_tasks: storage.yml
-
-- name: "Configure backups"
-  when: "'kubernetes_master' in group_names"
-  include_tasks: backups.yml
+  command:
+    cmd: "{{ kubernetes_join_command }}"
+    creates: "/etc/kubernetes/kubelet.conf"
 
 - name: "Setup helpful tools"
   when: "'kubernetes_master' in group_names"

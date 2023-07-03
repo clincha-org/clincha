@@ -5,9 +5,3 @@
     - role: users
     - role: sudoers
     - role: base
-
-- name: Kubernetes
-  hosts: kubernetes_worker
-  become: true
-  roles:
-    - role: kubernetes

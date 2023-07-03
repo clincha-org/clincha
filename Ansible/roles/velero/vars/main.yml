@@ -1,0 +1,2 @@
+---
+velero_helm_repository: "https://vmware-tanzu.github.io/helm-charts/"

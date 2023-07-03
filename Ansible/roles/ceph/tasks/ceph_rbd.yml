@@ -1,0 +1,29 @@
+---
+- name: Install Ceph RBD from helm chart
+  become: true
+  become_user: kubernetes
+  kubernetes.core.helm:
+    name: ceph-csi-rbd
+    chart_ref: ceph-csi/ceph-csi-rbd
+    release_namespace: "{{ ceph_rbd_namespace }}"
+    create_namespace: true
+    values:
+      csiConfig:
+        - clusterID: "{{ ceph_cluster_id }}"
+          monitors: "{{ ceph_monitors }}"
+      provisioner:
+        enableHostNetwork: true
+        httpMetrics:
+          enabled: false
+      secret:
+        create: true
+        name: csi-rbd-secret
+        userID: "{{ ceph_user_id }}"
+        userKey: "{{ lookup('env', 'CEPH_KEY') }}"
+
+- name: Create storage classes
+  become: true
+  become_user: kubernetes
+  kubernetes.core.k8s:
+    state: present
+    resource_definition: "{{ lookup('file', 'storage-classes.yml') | from_yaml_all }}"

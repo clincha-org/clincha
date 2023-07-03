@@ -1,0 +1,32 @@
+---
+- name: Create snapshot CRDs directory
+  file:
+    path: /tmp/kubernetes_snapshot_crd
+    state: directory
+    owner: kubernetes
+    group: kubernetes
+    mode: 0770
+
+- name: Download snapshot CRDs
+  ansible.builtin.get_url:
+    url: "{{ item }}"
+    dest: "/tmp/kubernetes_snapshot_crd"
+    owner: kubernetes
+    group: kubernetes
+    mode: 0660
+  loop: "{{ ceph_snapshot_crds }}"
+
+- name: Create snapshot CRDs
+  become: true
+  become_user: kubernetes
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ item }}"
+  loop: "{{ ceph_snapshot_crds_download_locations }}"
+
+- name: Create snapshot class
+  become: true
+  become_user: kubernetes
+  k8s:
+    state: present
+    resource_definition: "{{ lookup('file', 'snapshot-class.yml') | from_yaml }}"

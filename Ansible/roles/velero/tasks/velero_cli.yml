@@ -1,0 +1,48 @@
+---
+- name: "Check Velero version"
+  command:
+    cmd: velero version
+  failed_when: false
+  changed_when: false
+  become: true
+  become_user: kubernetes
+  register: velero_version_output
+
+- name: "Install Velero CLI"
+  when: |
+    (velero_version_output.rc != 0) or
+    (velero_version in velero_version_output.stdout_lines)
+  block:
+    - name: "Get Velero CLI from GitHub"
+      get_url:
+        url: "https://github.com/vmware-tanzu/velero/releases/download/{{ velero_version }}/velero-{{ velero_version }}-linux-amd64.tar.gz"
+        dest: "/tmp/velero-{{ velero_version }}-linux-amd64.tar.gz"
+        checksum: "md5:09b92fd0baebbcafd850044cd35f6be1"
+
+    - name: "Extract Velero binary"
+      unarchive:
+        remote_src: true
+        src: "/tmp/velero-{{ velero_version }}-linux-amd64.tar.gz"
+        dest: "/tmp"
+
+    - name: "Move the Velero binary to the binaries directory"
+      copy:
+        remote_src: true
+        src: "/tmp/velero-{{ velero_version }}-linux-amd64/velero"
+        dest: "/usr/bin/velero"
+        mode: 0755
+
+    - name: "Tidy up"
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "/tmp/velero-{{ velero_version }}-linux-amd64.tar.gz"
+        - "/tmp/velero-{{ velero_version }}-linux-amd64"
+
+- name: "Autocomplete velero"
+  lineinfile:
+    path: /home/kubernetes/.bashrc
+    line: "source <(velero completion bash)"
+    regexp: "^source <(velero completion bash)$"
+    state: present

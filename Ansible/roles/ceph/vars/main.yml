@@ -1,0 +1,16 @@
+---
+ceph_helm_repository: "https://ceph.github.io/csi-charts"
+
+ceph_snapshot_crds:
+  - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml"
+  - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml"
+  - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml"
+  - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml"
+  - "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/deploy/kubernetes/snapshot-controller/setup-snapshot-controller.yaml"
+
+ceph_snapshot_crds_download_locations:
+  - "/tmp/kubernetes_snapshot_crd/snapshot.storage.k8s.io_volumesnapshots.yaml"
+  - "/tmp/kubernetes_snapshot_crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml"
+  - "/tmp/kubernetes_snapshot_crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml"
+  - "/tmp/kubernetes_snapshot_crd/rbac-snapshot-controller.yaml"
+  - "/tmp/kubernetes_snapshot_crd/setup-snapshot-controller.yaml"
