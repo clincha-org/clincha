@@ -16,6 +16,8 @@
     create_namespace: true
     values:
       podCidr: "{{ pod_network_cidr }}"
+  notify:
+    - restart kube-dns pods
 
 - name: Add label to namespace
   become: true
