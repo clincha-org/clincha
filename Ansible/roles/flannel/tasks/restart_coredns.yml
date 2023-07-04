@@ -1,0 +1,13 @@
+- name: Get all pods in kube-system namespace
+  k8s_info:
+    kind: Pod
+    namespace: kube-system
+  register: kube-system-pods
+
+- name: Restart core-dns pods
+  k8s:
+    kind: Pod
+    namespace: kube-system
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ kube-system-pods | select('regex', 'coredns') | list }}"
