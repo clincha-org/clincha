@@ -6,7 +6,7 @@
     name: "ceph-csi"
     repo_url: "{{ ceph_helm_repository }}"
 
-- name: "Install Ceph RDB"
+- name: "Install Ceph RBD"
   include_tasks: ceph_rbd.yml
 
 - name: "Install Ceph snapshot capabilities"
