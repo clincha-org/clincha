@@ -6,6 +6,12 @@
     namespace: kube-system
   register: kube_system_pods
 
+- debug:
+    var: kube_system_pods
+
+- debug:
+    msg: "{{ kube_system_pods | select('regex', 'coredns') | list }}"
+
 - name: Restart core-dns pods
   become: true
   become_user: kubernetes
