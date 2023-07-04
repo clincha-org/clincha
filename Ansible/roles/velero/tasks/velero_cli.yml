@@ -23,7 +23,7 @@
       unarchive:
         remote_src: true
         src: "{{ velero_archive }}"
-        dest: "/tmp/{{ velero_dest }}"
+        dest: "/tmp"
 
     - name: "Move the Velero binary to the binaries directory"
       copy:
