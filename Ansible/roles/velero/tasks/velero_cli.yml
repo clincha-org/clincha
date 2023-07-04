@@ -16,14 +16,14 @@
     - name: "Get Velero CLI from GitHub"
       get_url:
         url: "{{ velero_url }}"
-        dest: "{{ velero_dest }}"
+        dest: "{{ velero_archive }}"
         checksum: "{{ velero_checksum }}"
 
     - name: "Extract Velero binary"
       unarchive:
         remote_src: true
-        src: "{{ velero_dest }}"
-        dest: "/tmp"
+        src: "{{ velero_archive }}"
+        dest: "/tmp/{{ velero_dest }}"
 
     - name: "Move the Velero binary to the binaries directory"
       copy:
@@ -37,8 +37,8 @@
         path: "{{ item }}"
         state: absent
       loop:
-        - "{{ velero_dest }}.tar.gz"
         - "{{ velero_dest }}"
+        - "{{ velero_archive }}"
 
 - name: "Autocomplete velero"
   lineinfile:

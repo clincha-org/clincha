@@ -1,5 +1,6 @@
 ---
 velero_helm_repository: "https://vmware-tanzu.github.io/helm-charts/"
 velero_url: "https://github.com/vmware-tanzu/velero/releases/download/{{ velero_version }}/velero-{{ velero_version }}-linux-amd64.tar.gz"
-velero_dest: "/tmp/velero-{{ velero_version }}-linux-amd64.tar.gz"
+velero_dest: "/tmp/velero-{{ velero_version }}-linux-amd64"
+velero_archive: "{{ velero_dest }}.tar.gz"
 velero_checksum: "md5:09b92fd0baebbcafd850044cd35f6be1"
