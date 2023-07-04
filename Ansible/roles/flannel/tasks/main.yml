@@ -30,3 +30,5 @@
       metadata:
         labels:
           "pod-security.kubernetes.io/enforce": "privileged"
+
+- meta: flush_handlers
