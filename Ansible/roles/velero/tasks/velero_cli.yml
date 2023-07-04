@@ -15,20 +15,20 @@
   block:
     - name: "Get Velero CLI from GitHub"
       get_url:
-        url: "https://github.com/vmware-tanzu/velero/releases/download/{{ velero_version }}/velero-{{ velero_version }}-linux-amd64.tar.gz"
-        dest: "/tmp/velero-{{ velero_version }}-linux-amd64.tar.gz"
-        checksum: "md5:09b92fd0baebbcafd850044cd35f6be1"
+        url: "{{ velero_url }}"
+        dest: "{{ velero_dest }}"
+        checksum: "{{ velero_checksum }}"
 
     - name: "Extract Velero binary"
       unarchive:
         remote_src: true
-        src: "/tmp/velero-{{ velero_version }}-linux-amd64.tar.gz"
+        src: "{{ velero_dest }}"
         dest: "/tmp"
 
     - name: "Move the Velero binary to the binaries directory"
       copy:
         remote_src: true
-        src: "/tmp/velero-{{ velero_version }}-linux-amd64/velero"
+        src: "{{ velero_dest }}/velero"
         dest: "/usr/bin/velero"
         mode: 0755
 
@@ -37,8 +37,8 @@
         path: "{{ item }}"
         state: absent
       loop:
-        - "/tmp/velero-{{ velero_version }}-linux-amd64.tar.gz"
-        - "/tmp/velero-{{ velero_version }}-linux-amd64"
+        - "{{ velero_dest }}.tar.gz"
+        - "{{ velero_dest }}"
 
 - name: "Autocomplete velero"
   lineinfile:
