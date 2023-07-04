@@ -1,10 +1,14 @@
 - name: Get all pods in kube-system namespace
+  become: true
+  become_user: kubernetes
   k8s_info:
     kind: Pod
     namespace: kube-system
   register: kube_system_pods
 
 - name: Restart core-dns pods
+  become: true
+  become_user: kubernetes
   k8s:
     kind: Pod
     namespace: kube-system
