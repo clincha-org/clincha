@@ -140,7 +140,7 @@ variable "network_model" {
 }
 variable "network_bridge" {
   type        = string
-  default     = "vmbr0"
+  default     = "vmbr1"
   description = "The hypervisor network bride to attach the VNIC to"
 }
 variable "build_name" {
