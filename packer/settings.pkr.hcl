@@ -119,7 +119,7 @@ variable "disk_size" {
 }
 variable "disk_storage_pool" {
   type        = string
-  default     = "Hot"
+  default     = "ssd"
   description = "The storage pool to deploy the disk onto"
 }
 variable "disk_storage_pool_type" {
