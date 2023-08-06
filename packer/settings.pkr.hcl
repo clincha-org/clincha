@@ -35,7 +35,7 @@ variable "qemu_agent" {
 }
 variable "iso" {
   type        = string
-  default     = "local:iso/Rocky-8.8-x86_64-minimal.iso"
+  default     = "local:iso/Rocky-8.8-x86_64-dvd1.iso"
   description = "Location of the ISO to boot from"
 }
 variable "ssh_username" {
@@ -72,7 +72,7 @@ variable "cloud_init_storage_pool" {
 variable "boot_command" {
   type    = list(string)
   default = [
-    "<up><wait><tab><wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rocky8.ks<enter><wait5>"
+    "<up><wait><tab><wait> text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rocky8.ks<enter><wait5>"
   ]
   description = "Command to send to the template as it starts up"
 }
