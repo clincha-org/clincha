@@ -35,7 +35,7 @@ variable "qemu_agent" {
 }
 variable "iso" {
   type        = string
-  default     = "local:iso/rocky8.iso"
+  default     = "local:iso/Rocky-8.8-x86_64-minimal.iso"
   description = "Location of the ISO to boot from"
 }
 variable "ssh_username" {
