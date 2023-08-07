@@ -1,0 +1,40 @@
+---
+- name: "Check if Helm is installed"
+  command:
+    cmd: "helm version"
+  register: helm_version_check
+  changed_when: false
+  failed_when: false
+
+- name: "Install Helm"
+  when: helm_version_check.rc != 0
+  block:
+    - name: "Download Helm"
+      get_url:
+        url: "{{ helm_download_url }}"
+        checksum: "{{ helm_checksum }}"
+        dest: /tmp/
+      register: helm_download
+
+    - name: "Decompress Helm"
+      unarchive:
+        remote_src: true
+        src: "{{ helm_download.dest }}"
+        dest: /tmp/
+      register: helm_unarchive
+
+    - name: "Move Helm binary to binary location"
+      copy:
+        remote_src: true
+        src: "{{ helm_unarchive.dest }}/linux-amd64/helm"
+        dest: /usr/bin/helm
+        mode: 0755
+        owner: root
+        group: root
+
+- name: "Autocomplete helm"
+  lineinfile:
+    path: /home/kubernetes/.bashrc
+    line: "source <(helm completion bash)"
+    regexp: "^source <(helm completion bash)$"
+    state: present

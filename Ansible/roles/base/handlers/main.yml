@@ -1,5 +1,4 @@
 ---
-# handlers file for base
 - name: sshd restart
   service:
     name: sshd

@@ -4,4 +4,5 @@
     name:
       - git
       - bash-completion
+      - jq
     state: present

@@ -1,0 +1,13 @@
+---
+- name: "Add Ceph Helm repository"
+  become: true
+  become_user: kubernetes
+  kubernetes.core.helm_repository:
+    name: "ceph-csi"
+    repo_url: "{{ ceph_helm_repository }}"
+
+- name: "Install Ceph RBD"
+  include_tasks: ceph_rbd.yml
+
+- name: "Install Ceph snapshot capabilities"
+  include_tasks: snapshots.yml

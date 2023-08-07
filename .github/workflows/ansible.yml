@@ -21,15 +21,21 @@ jobs:
         with:
             ssh-private-key: ${{ secrets.ANSIBLE_PK }}
 
-      - name: Run Ansible
+      - name: Run Ansible core configuration
         working-directory: Ansible
         env:
           PROXMOX_PASSWORD: ${{ secrets.ANSIBLE_PROXMOX_PASSWORD }}
           ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
           CLINCHA_PASSWORD: ${{ secrets.CLINCHA_PASSWORD }}
           ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN_GITHUB }}
+        run: |
+          ansible-playbook core-configuration.yml --inventory bristol.proxmox.yml
+
+      - name: Run Ansible kubernetes configuration
+        working-directory: Ansible
+        env:
+          PROXMOX_PASSWORD: ${{ secrets.ANSIBLE_PROXMOX_PASSWORD }}
           CEPH_KEY: ${{ secrets.CEPH_KEY }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         run: |
-          ansible-playbook site.yml --inventory bristol.proxmox.yml
+          ansible-playbook kubernetes.yml --inventory bristol.proxmox.yml
