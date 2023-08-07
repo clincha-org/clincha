@@ -47,7 +47,7 @@ variable "cores" {
 }
 
 variable "memory" {
-  default = 8192
+  default = 32768
   type    = number
 }
 

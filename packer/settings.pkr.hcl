@@ -35,7 +35,7 @@ variable "qemu_agent" {
 }
 variable "iso" {
   type        = string
-  default     = "local:iso/rocky8.iso"
+  default     = "local:iso/Rocky-8.8-x86_64-dvd1.iso"
   description = "Location of the ISO to boot from"
 }
 variable "ssh_username" {
@@ -66,13 +66,13 @@ variable "cloud_init" {
 }
 variable "cloud_init_storage_pool" {
   type        = string
-  default     = "Hot"
+  default     = "ssd"
   description = "Name of the Proxmox storage pool to store the cloud-init CDROM on"
 }
 variable "boot_command" {
   type    = list(string)
   default = [
-    "<up><wait><tab><wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rocky8.ks<enter><wait5>"
+    "<up><wait><tab><wait> text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/rocky8.ks<enter><wait5>"
   ]
   description = "Command to send to the template as it starts up"
 }
@@ -119,7 +119,7 @@ variable "disk_size" {
 }
 variable "disk_storage_pool" {
   type        = string
-  default     = "Hot"
+  default     = "ssd"
   description = "The storage pool to deploy the disk onto"
 }
 variable "disk_storage_pool_type" {
@@ -140,7 +140,7 @@ variable "network_model" {
 }
 variable "network_bridge" {
   type        = string
-  default     = "vmbr0"
+  default     = "vmbr1"
   description = "The hypervisor network bride to attach the VNIC to"
 }
 variable "build_name" {
