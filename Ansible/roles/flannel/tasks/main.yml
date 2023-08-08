@@ -3,12 +3,17 @@
   when: "'kubernetes_master' in group_names"
 
 - name: "Flush old network configuration"
-  when: flannel_helm_install.changed
   block:
-    - command: "ip link set cni0 down && ip link set flannel.1 down"
+    - command: "ip link set cni0 down"
       changed_when: true
 
-    - command: "ip link delete cni0 && ip link delete flannel.1"
+    - command: "ip link set flannel.1 down"
+      changed_when: true
+
+    - command: "ip link delete cni0"
+      changed_when: true
+
+    - command: "ip link delete flannel.1"
       changed_when: true
 
     - service:
