@@ -6,3 +6,4 @@ ceph_monitors:
   - "192.168.1.11:6789"
   - "192.168.1.12:6789"
   - "192.168.1.13:6789"
+ceph_wait_for_pods_to_be_ready: true

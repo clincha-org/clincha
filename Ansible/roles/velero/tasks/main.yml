@@ -4,3 +4,8 @@
 
 - name: "Install Velero CLI"
   include_tasks: velero_cli.yml
+
+- name: "Wait for velero pods to be ready"
+  when: "{{ velero_wait_for_pods_to_be_ready }}"
+  command: "kubectl wait --for=condition=Ready pods --all -n {{ velero_namespace }}"
+  changed_when: false
