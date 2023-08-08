@@ -13,6 +13,8 @@
   include_tasks: snapshots.yml
 
 - name: "Wait for ceph pods to be ready"
+  become: true
+  become_user: kubernetes
   when: "{{ ceph_wait_for_pods_to_be_ready }}"
   command: "kubectl wait --for=condition=Ready pods --all -n {{ ceph_rbd_namespace }}"
   changed_when: false

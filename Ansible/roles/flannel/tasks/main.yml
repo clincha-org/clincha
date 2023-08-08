@@ -32,3 +32,10 @@
           "pod-security.kubernetes.io/enforce": "privileged"
 
 - meta: flush_handlers
+
+- name: "Wait for flannel pods to be ready"
+  become: true
+  become_user: kubernetes
+  when: "{{ flannel_wait_for_pods_to_be_ready }}"
+  command: "kubectl wait --for=condition=Ready pods --all -n {{ flannel_namespace }}"
+  changed_when: false
