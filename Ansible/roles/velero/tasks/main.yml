@@ -8,6 +8,6 @@
 - name: "Wait for velero pods to be ready"
   become: true
   become_user: kubernetes
-  when: "{{ velero_wait_for_pods_to_be_ready }}"
-  command: "kubectl wait --for=condition=Ready pods --all -n {{ velero_namespace }}"
+  when: velero_wait_for_pods_to_be_ready
+  command: "kubectl wait --for=condition=Ready pods --all -n {{ velero_namespace }} --timeout=10m"
   changed_when: false
