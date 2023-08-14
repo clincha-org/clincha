@@ -2,23 +2,24 @@
 - include_tasks: install_flannel.yml
   when: "'kubernetes_master' in group_names"
 
-- name: "Flush old network configuration"
-  block:
-    - command: "ip link set cni0 down"
-      changed_when: true
-
-    - command: "ip link set flannel.1 down"
-      changed_when: true
-
-    - command: "ip link delete cni0"
-      changed_when: true
-
-    - command: "ip link delete flannel.1"
-      changed_when: true
-
-    - service:
-        name: "{{ loop_item }}"
-        state: restarted
-      loop:
-        - "cri-o"
-        - "kubelet"
+# TODO: This needs to happen only after the first install
+#- name: "Flush old network configuration"
+#  block:
+#    - command: "ip link set cni0 down"
+#      changed_when: true
+#
+#    - command: "ip link set flannel.1 down"
+#      changed_when: true
+#
+#    - command: "ip link delete cni0"
+#      changed_when: true
+#
+#    - command: "ip link delete flannel.1"
+#      changed_when: true
+#
+#    - service:
+#        name: "{{ loop_item }}"
+#        state: restarted
+#      loop:
+#        - "cri-o"
+#        - "kubelet"
