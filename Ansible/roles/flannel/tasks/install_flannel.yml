@@ -20,6 +20,25 @@
   notify:
     - "restart coredns pods"
 
+# https://github.com/clincha/clincha/issues/107
+- name: "Reset the Kubernetes network bridges"
+  block:
+    - name: "Delete the connections"
+      nmcli:
+        state: absent
+        conn_name: "{{ loop_item }}"
+      loop:
+        - "cni0"
+        - "flannel.1"
+
+    - name: "Restart the kubernetes services"
+      service:
+        state: restarted
+        name: "{{ loop_item }}"
+      loop:
+        - "podman"
+        - "kubelet"
+
 - name: Add label to namespace
   become: true
   become_user: kubernetes
