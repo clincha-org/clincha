@@ -20,31 +20,6 @@
   notify:
     - "restart coredns pods"
 
-# https://github.com/clincha/clincha/issues/107
-- name: "Reset the Kubernetes network bridges"
-  block:
-    - name: "Down the connections"
-      command:
-        cmd: "ip link set {{ item }} down"
-      loop:
-        - "cni0"
-        - "flannel.1"
-
-    - name: "Delete the connections"
-      command:
-        cmd: "ip link delete {{ item }}"
-      loop:
-        - "cni0"
-        - "flannel.1"
-
-    - name: "Restart the kubernetes services"
-      service:
-        state: restarted
-        name: "{{ item }}"
-      loop:
-        - "podman"
-        - "kubelet"
-
 - name: Add label to namespace
   become: true
   become_user: kubernetes
