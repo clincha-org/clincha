@@ -25,11 +25,11 @@
   block:
     - name: "Down the connections"
       command:
-        cmd: "ip link down {{ item }}"
+        cmd: "ip link set {{ item }} down"
       loop:
         - "cni0"
         - "flannel.1"
-        -
+
     - name: "Delete the connections"
       command:
         cmd: "ip link delete {{ item }}"
