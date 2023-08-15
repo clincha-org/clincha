@@ -23,10 +23,16 @@
 # https://github.com/clincha/clincha/issues/107
 - name: "Reset the Kubernetes network bridges"
   block:
+    - name: "Down the connections"
+      command:
+        cmd: "ip link down {{ item }}"
+      loop:
+        - "cni0"
+        - "flannel.1"
+        -
     - name: "Delete the connections"
-      nmcli:
-        state: absent
-        conn_name: "{{ item }}"
+      command:
+        cmd: "ip link delete {{ item }}"
       loop:
         - "cni0"
         - "flannel.1"
