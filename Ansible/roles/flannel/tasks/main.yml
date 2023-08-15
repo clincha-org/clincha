@@ -5,6 +5,14 @@
 # https://github.com/clincha/clincha/issues/107
 - name: "Reset the Kubernetes network bridges"
   block:
+    - name: "Restart the kubernetes services to ensure interfaces are created"
+      service:
+        state: restarted
+        name: "{{ item }}"
+      loop:
+        - "podman"
+        - "kubelet"
+
     - name: "Down the connections"
       command:
         cmd: "ip link set {{ item }} down"
