@@ -5,27 +5,13 @@
 # https://github.com/clincha/clincha/issues/107
 - name: "Reset the Kubernetes network bridges"
   block:
-    - name: "Restart the kubernetes services to ensure interfaces are created"
-      service:
-        state: restarted
-        name: "{{ item }}"
-      loop:
-        - "podman"
-        - "kubelet"
-
-    - name: "Wait for the interfaces to come online"
-      command: "ip link"
-      register: links
-      delay: 10
-      retries: 6
-      until: "links.stdout_lines | accept('search', '^(\\d*): flannel\\.1|: cni0' | list | count == 2"
-
     - name: "Down the connections"
       command:
         cmd: "ip link set {{ item }} down"
       loop:
         - "cni0"
         - "flannel.1"
+      failed_when: false
 
     - name: "Delete the connections"
       command:
@@ -33,6 +19,7 @@
       loop:
         - "cni0"
         - "flannel.1"
+      failed_when: false
 
     - name: "Restart the kubernetes services"
       service:
