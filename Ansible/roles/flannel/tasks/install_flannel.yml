@@ -2,7 +2,6 @@
 - name: Add flannel chart repository
   become: true
   become_user: kubernetes
-  register: flannel_helm_install
   kubernetes.core.helm_repository:
     name: "flannel"
     repo_url: "{{ flannel_helm_repository_url }}"
@@ -17,8 +16,7 @@
     create_namespace: true
     values:
       podCidr: "{{ pod_network_cidr }}"
-  notify:
-    - "restart coredns pods"
+  register: "flannel_install"
 
 - name: Add label to namespace
   become: true
@@ -32,11 +30,17 @@
         labels:
           "pod-security.kubernetes.io/enforce": "privileged"
 
-- meta: flush_handlers
-
-- name: "Wait for flannel pods to be ready"
+- name: "restart coredns pods"
+  when: flannel_install.changed
   become: true
   become_user: kubernetes
-  when: flannel_wait_for_pods_to_be_ready
+  command:
+    cmd: "kubectl delete pod -n kube-system -l k8s-app=kube-dns"
+  changed_when: true
+
+- name: "Wait for flannel pods to be ready"
+  when: flannel_wait_for_pods_to_be_ready and flannel_install.changed
+  become: true
+  become_user: kubernetes
   command: "kubectl wait --for=condition=Ready pods --all -n {{ flannel_namespace }} --timeout=10m"
   changed_when: false

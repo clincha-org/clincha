@@ -13,6 +13,13 @@
         - "podman"
         - "kubelet"
 
+    - name: "Show links"
+      command: "ip link"
+      register: links
+
+    - debug:
+        var: links
+
     - name: "Down the connections"
       command:
         cmd: "ip link set {{ item }} down"
