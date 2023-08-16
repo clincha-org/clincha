@@ -16,7 +16,8 @@
     - name: "Wait for the interfaces to come online"
       command: "ip link"
       register: links
-      retries: 10
+      delay: 10
+      retries: 6
       until: "links.stdout_lines | accept('search', '^(\d*): flannel\.1|: cni0' | list | count == 2"
 
     - name: "Down the connections"
