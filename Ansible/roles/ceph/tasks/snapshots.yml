@@ -17,7 +17,6 @@
   loop: "{{ ceph_snapshot_crds }}"
 
 - name: Create snapshot CRDs
-  retries: 3
   become: true
   become_user: kubernetes
   kubernetes.core.k8s:
