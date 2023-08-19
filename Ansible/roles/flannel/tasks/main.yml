@@ -3,7 +3,7 @@
   when: "'kubernetes_master' in group_names"
 
 - debug:
-    var: ansible.vars.hostvars.HostVarsVars
+    var: ansible_play_hosts_all
 
 # https://github.com/clincha/clincha/issues/107
 - name: "Reset the Kubernetes network bridges"
