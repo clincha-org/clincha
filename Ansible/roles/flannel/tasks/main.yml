@@ -2,6 +2,8 @@
 - include_tasks: install_flannel.yml
   when: "'kubernetes_master' in group_names"
 
+- debug: ansible.vars.hostvars.HostVarsVars
+
 # https://github.com/clincha/clincha/issues/107
 - name: "Reset the Kubernetes network bridges"
   # Run all on all hosts even though it's only changed on the master node
