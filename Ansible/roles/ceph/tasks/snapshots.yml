@@ -19,6 +19,8 @@
 - name: Create snapshot CRDs
   become: true
   become_user: kubernetes
+  retries: 12
+  delay: 10
   kubernetes.core.k8s:
     state: present
     src: "{{ item }}"
@@ -27,6 +29,8 @@
 - name: Create snapshot class
   become: true
   become_user: kubernetes
+  retries: 12
+  delay: 10
   k8s:
     state: present
     resource_definition: "{{ lookup('file', 'snapshot-class.yml') | from_yaml }}"

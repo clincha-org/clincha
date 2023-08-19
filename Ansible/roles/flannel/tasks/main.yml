@@ -3,40 +3,40 @@
   when: "'kubernetes_master' in group_names"
 
 # https://github.com/clincha/clincha/issues/107
-- name: "Restart kubernetes hosts to take network changes"
-  reboot:
-    msg: "Restarting host for Kubernetes network changes to take effect"
+- name: "Reset the Kubernetes network bridges"
+  # Run all on all hosts even though it's only changed on the master node
+  when: "{{ ansible_play_hosts_all|
+            map('extract', hostvars, 'flannel_install')|
+            select is any }}"
+  block:
+    - name: "Down the connections"
+      command:
+        cmd: "ip link set {{ item }} down"
+      loop:
+        - "cni0"
+        - "flannel.1"
+      failed_when: false
 
-#- name: "Reset the Kubernetes network bridges"
-#  block:
-#    - name: "Down the connections"
-#      command:
-#        cmd: "ip link set {{ item }} down"
-#      loop:
-#        - "cni0"
-#        - "flannel.1"
-#      failed_when: false
-#
-#    - name: "Delete the connections"
-#      command:
-#        cmd: "ip link delete {{ item }}"
-#      loop:
-#        - "cni0"
-#        - "flannel.1"
-#      failed_when: false
-#
-#    - name: "Restart the kubernetes services"
-#      service:
-#        state: restarted
-#        name: "{{ item }}"
-#      loop:
-#        - "podman"
-#        - "kubelet"
-#
-#- name: "restart coredns pods"
-#  when: "'kubernetes_master' in group_names and flannel_install.changed"
-#  become: true
-#  become_user: kubernetes
-#  command:
-#    cmd: "kubectl delete pod -n kube-system -l k8s-app=kube-dns"
-#  changed_when: true
+    - name: "Delete the connections"
+      command:
+        cmd: "ip link delete {{ item }}"
+      loop:
+        - "cni0"
+        - "flannel.1"
+      failed_when: false
+
+    - name: "Restart the kubernetes services"
+      service:
+        state: restarted
+        name: "{{ item }}"
+      loop:
+        - "podman"
+        - "kubelet"
+
+- name: "restart coredns pods"
+  when: "'kubernetes_master' in group_names and flannel_install.changed"
+  become: true
+  become_user: kubernetes
+  command:
+    cmd: "kubectl delete pod -n kube-system -l k8s-app=kube-dns"
+  changed_when: true

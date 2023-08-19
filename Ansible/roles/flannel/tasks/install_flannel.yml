@@ -9,6 +9,8 @@
 - name: Install flannel
   become: true
   become_user: kubernetes
+  retries: 12
+  delay: 10
   kubernetes.core.helm:
     name: flannel
     chart_ref: flannel/flannel
@@ -21,6 +23,8 @@
 - name: Add label to namespace
   become: true
   become_user: kubernetes
+  retries: 12
+  delay: 10
   kubernetes.core.k8s:
     state: patched
     kind: Namespace
@@ -34,5 +38,7 @@
   when: flannel_wait_for_pods_to_be_ready and flannel_install.changed
   become: true
   become_user: kubernetes
+  retries: 12
+  delay: 10
   command: "kubectl wait --for=condition=Ready pods --all -n {{ flannel_namespace }} --timeout=10m"
   changed_when: false
