@@ -91,7 +91,7 @@
   become: true
   become_user: kubernetes
   register: flannel_wait
-  until: flannel_wait.rc == 0
+  until: flannel_wait.failed is false
   retries: 12
   delay: 10
   command: "kubectl wait --for=condition=Ready pods --all -n {{ flannel_namespace }} --timeout=10m"
