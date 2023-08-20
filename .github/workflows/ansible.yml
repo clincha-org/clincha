@@ -38,4 +38,4 @@ jobs:
           CEPH_KEY: ${{ secrets.CEPH_KEY }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         run: |
-          ansible-playbook -vv kubernetes.yml --inventory bristol.proxmox.yml
+          ansible-playbook kubernetes.yml --inventory bristol.proxmox.yml
