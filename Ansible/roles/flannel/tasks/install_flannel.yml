@@ -46,7 +46,7 @@
   with_items: "{{ groups['kubernetes_worker'] }}"
 
 - name: Configure network after install
-  when: flannel_install.changed
+  when: flannel_installed
   block:
     # https://github.com/clincha/clincha/issues/107
     - name: "Reset the Kubernetes network bridges"
