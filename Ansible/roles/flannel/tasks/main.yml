@@ -12,9 +12,9 @@
   become: true
   become_user: kubernetes
   register: flannel_install
-  until: flannel_install.rc == 0
-  retries: 12
-  delay: 10
+  #  until: flannel_install.rc == 0
+  #  retries: 12
+  #  delay: 10
   kubernetes.core.helm:
     name: flannel
     chart_ref: flannel/flannel
@@ -22,6 +22,9 @@
     create_namespace: true
     values:
       podCidr: "{{ pod_network_cidr }}"
+
+- debug:
+    var: flannel_install
 
 - name: Add label to namespace
   when: "'kubernetes_master' in group_names"
@@ -87,7 +90,7 @@
       changed_when: true
 
 - name: "Wait for flannel pods to be ready"
-  when:  "'kubernetes_master' in group_names and flannel_wait_for_pods_to_be_ready"
+  when: "'kubernetes_master' in group_names and flannel_wait_for_pods_to_be_ready"
   become: true
   become_user: kubernetes
   register: flannel_wait
