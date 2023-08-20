@@ -37,6 +37,14 @@
         labels:
           "pod-security.kubernetes.io/enforce": "privileged"
 
+- name: "Set the flannel install fact on kubernetes workers"
+  set_fact:
+    flannel_installed: true
+  when: flannel_install.changed is true
+  delegate_to: "{{ item }}"
+  delegate_facts: true
+  with_items: "{{ groups['kubernetes_worker'] }}"
+
 - name: Configure network after install
   when: flannel_install.changed
   block:
