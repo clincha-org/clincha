@@ -10,7 +10,7 @@
   become: true
   become_user: kubernetes
   register: velero_install
-  until: velero_install.rc == 0
+  until: velero_install.failed is false
   retries: 12
   delay: 10
   kubernetes.core.helm:

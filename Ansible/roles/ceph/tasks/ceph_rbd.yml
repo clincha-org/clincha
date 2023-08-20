@@ -3,7 +3,7 @@
   become: true
   become_user: kubernetes
   register: ceph_install_result
-  until: ceph_install_result.rc == 0
+  until: ceph_install_result.failed is false
   retries: 12
   delay: 10
   kubernetes.core.helm:
