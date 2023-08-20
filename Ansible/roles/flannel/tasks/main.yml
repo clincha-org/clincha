@@ -48,8 +48,11 @@
   delegate_facts: true
   with_items: "{{ groups['kubernetes_worker'] }}"
 
+- debug:
+    msg: "flannel_installed|default('false')"
+
 - name: Configure network after install
-  when: "flannel_installed | default('false')"
+  when: "flannel_installed|default('false')"
   block:
     # https://github.com/clincha/clincha/issues/107
     - name: "Reset the Kubernetes network bridges"
