@@ -27,8 +27,8 @@
   when: "'kubernetes_master' in group_names"
   become: true
   become_user: kubernetes
-  register: flannel_namespace
-  until: flannel_namespace.failed is false
+  register: flannel_namespace_label
+  until: flannel_namespace_label.failed is false
   retries: 12
   delay: 10
   kubernetes.core.k8s:
