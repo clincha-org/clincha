@@ -78,8 +78,16 @@
             - "podman"
             - "kubelet"
 
+    - name: "restart flannel pods"
+      when: "'kubernetes_master' in group_names"
+      become: true
+      become_user: kubernetes
+      command:
+        cmd: "kubectl delete pod --all -n flannel"
+      changed_when: true
+
     - name: "restart coredns pods"
-      when: "'kubernetes_master' in group_names and flannel_install.changed"
+      when: "'kubernetes_master' in group_names"
       become: true
       become_user: kubernetes
       command:
