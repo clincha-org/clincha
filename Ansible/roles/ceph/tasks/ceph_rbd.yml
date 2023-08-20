@@ -2,6 +2,8 @@
 - name: Install Ceph RBD from helm chart
   become: true
   become_user: kubernetes
+  register: ceph_install_result
+  until: ceph_install_result.rc == 0
   retries: 12
   delay: 10
   kubernetes.core.helm:
@@ -26,6 +28,8 @@
 - name: Create storage classes
   become: true
   become_user: kubernetes
+  register: ceph_storage_class_result
+  until: ceph_storage_class_result.rc == 0
   retries: 12
   delay: 10
   kubernetes.core.k8s:
