@@ -10,7 +10,7 @@
 
 - name: "Install dependencies"
   dnf:
-    name: [ iproute-tc, nfs-utils ]
+    name: [iproute-tc, nfs-utils]
     state: present
 
 - name: "Install container runtime"
@@ -43,10 +43,6 @@
   command:
     cmd: "{{ kubernetes_join_command }}"
     creates: "/etc/kubernetes/kubelet.conf"
-
-#- name: "Wait for the control namespace pods to be ready"
-#  command: "kubectl wait --namespace=kube-system --for=condition=Ready pods --selector tier=control-plane"
-#  changed_when: false
 
 - name: "Setup helpful tools"
   when: "'kubernetes_master' in group_names"

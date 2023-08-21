@@ -1,3 +1,4 @@
+---
 - name: "Initialise cluster"
   command:
     cmd: kubeadm init --pod-network-cidr={{ pod_network_cidr }}

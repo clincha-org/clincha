@@ -24,10 +24,14 @@
   yum_repository:
     name: "devel_kubic_libcontainers_stable"
     file: "devel:kubic:libcontainers:stable.repo"
-    description: "Stable Releases of Upstream github.com/containers packages (CentOS_8)"
-    baseurl: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_8/
+    description: >
+      "Stable Releases of Upstream github.com/containers packages (CentOS_8)"
+    baseurl: >
+      https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_8/
     gpgcheck: true
-    gpgkey: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_8/repodata/repomd.xml.key
+    gpgkey: >
+      https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/
+      CentOS_8/repodata/repomd.xml.key
     enabled: true
 
 - name: "Add cri-o repositories"
@@ -35,9 +39,13 @@
     name: "devel_kubic_libcontainers_stable_cri-o_1.21"
     file: "devel:kubic:libcontainers:stable:cri-o:1.21.repo"
     description: "devel:kubic:libcontainers:stable:cri-o:1.21 (CentOS_8)"
-    baseurl: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.21/CentOS_8/
+    baseurl: >
+      https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/
+      stable:/cri-o:/1.21/CentOS_8/
     gpgcheck: true
-    gpgkey: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.21/CentOS_8/repodata/repomd.xml.key
+    gpgkey: >
+      https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/
+      stable:/cri-o:/1.21/CentOS_8/repodata/repomd.xml.key
     enabled: true
 
 - name: "Install cri-o"
@@ -71,4 +79,4 @@
   systemd:
     name: cri-o
     state: started
-    enabled: yes
+    enabled: true
