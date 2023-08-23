@@ -52,9 +52,13 @@
   when: "flannel_installed | default(false)"
   block:
     # https://github.com/clincha/clincha/issues/107
-    - name: "Restart servers"
-      reboot:
-        msg: "Restarting for flannel installation"
+    - name: "Restart the kubernetes services"
+      service:
+        state: restarted
+        name: "{{ item }}"
+      loop:
+        - "podman"
+        - "kubelet"
 
     - name: "Reset the Kubernetes network bridges"
       block:
