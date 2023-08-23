@@ -52,6 +52,10 @@
   when: flannel_installed
   block:
     # https://github.com/clincha/clincha/issues/107
+    - name: "Restart servers"
+      reboot:
+        msg: "Restarting for flannel installation"
+
     - name: "Reset the Kubernetes network bridges"
       block:
         - name: "Down the connections"
