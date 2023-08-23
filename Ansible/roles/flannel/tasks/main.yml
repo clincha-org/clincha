@@ -64,7 +64,11 @@
           loop:
             - "cni0"
             - "flannel.1"
-          failed_when: false
+          register: down_result
+          retries: 5
+          delay: 10
+          until: down_result.rc == 0
+
 
         - name: "Delete the connections"
           command:
@@ -72,7 +76,10 @@
           loop:
             - "cni0"
             - "flannel.1"
-          failed_when: false
+          register: delete_result
+          retries: 5
+          delay: 10
+          until: delete_result.rc == 0
 
         - name: "Restart the kubernetes services"
           service:

@@ -1,9 +1,9 @@
 ---
 ceph_rbd_namespace: "ceph-csi-rbd"
 ceph_user_id: "admin"
-ceph_cluster_id: "c61ed9ad-0a71-4f66-8d6a-b76fd0a47798"
+ceph_cluster_id: "7c245ed6-0cd9-440e-887b-d9fd402c8470"
 ceph_monitors:
-  - "192.168.1.11:6789"
-  - "192.168.1.12:6789"
-  - "192.168.1.13:6789"
+  - "10.1.2.11:6789"
+  - "10.1.2.12:6789"
+  - "10.1.2.13:6789"
 ceph_wait_for_pods_to_be_ready: true
