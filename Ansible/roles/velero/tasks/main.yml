@@ -9,7 +9,7 @@
   become: true
   become_user: kubernetes
   register: velero_wait
-  until: velero_wait.rc == 0
+  until: velero_wait.failed is false
   retries: 12
   delay: 10
   when: velero_wait_for_pods_to_be_ready

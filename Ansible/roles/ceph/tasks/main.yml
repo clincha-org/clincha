@@ -16,7 +16,7 @@
   become: true
   become_user: kubernetes
   register: ceph_wait_result
-  until: ceph_wait_result.rc == 0
+  until: ceph_wait_result.failed is false
   retries: 12
   delay: 10
   when: ceph_wait_for_pods_to_be_ready

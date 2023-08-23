@@ -12,7 +12,7 @@
   become: true
   become_user: kubernetes
   register: flannel_install
-  until: flannel_install.rc == 0
+  until: flannel_install.failed is false
   retries: 12
   delay: 10
   kubernetes.core.helm:
@@ -27,8 +27,8 @@
   when: "'kubernetes_master' in group_names"
   become: true
   become_user: kubernetes
-  register: flannel_namespace
-  until: flannel_namespace.rc == 0
+  register: flannel_namespace_label
+  until: flannel_namespace_label.failed is false
   retries: 12
   delay: 10
   kubernetes.core.k8s:
@@ -49,7 +49,7 @@
   with_items: "{{ groups['kubernetes_worker'] }}"
 
 - name: Configure network after install
-  when: flannel_installed
+  when: "flannel_installed | default(false)"
   block:
     # https://github.com/clincha/clincha/issues/107
     - name: "Restart servers"
@@ -82,8 +82,16 @@
             - "podman"
             - "kubelet"
 
+    - name: "restart flannel pods"
+      when: "'kubernetes_master' in group_names"
+      become: true
+      become_user: kubernetes
+      command:
+        cmd: "kubectl delete pod --all -n flannel"
+      changed_when: true
+
     - name: "restart coredns pods"
-      when: "'kubernetes_master' in group_names and flannel_install.changed"
+      when: "'kubernetes_master' in group_names"
       become: true
       become_user: kubernetes
       command:
@@ -91,11 +99,11 @@
       changed_when: true
 
 - name: "Wait for flannel pods to be ready"
-  when:  "'kubernetes_master' in group_names and flannel_wait_for_pods_to_be_ready"
+  when: "'kubernetes_master' in group_names and flannel_wait_for_pods_to_be_ready"
   become: true
   become_user: kubernetes
   register: flannel_wait
-  until: flannel_wait.rc == 0
+  until: flannel_wait.failed is false
   retries: 12
   delay: 10
   command: "kubectl wait --for=condition=Ready pods --all -n {{ flannel_namespace }} --timeout=10m"
