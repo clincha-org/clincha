@@ -65,7 +65,7 @@
             - "cni0"
             - "flannel.1"
           register: down_result
-          retries: 5
+          retries: 12
           delay: 10
           until: down_result.rc == 0
 
@@ -77,7 +77,7 @@
             - "cni0"
             - "flannel.1"
           register: delete_result
-          retries: 5
+          retries: 12
           delay: 10
           until: delete_result.rc == 0
 
