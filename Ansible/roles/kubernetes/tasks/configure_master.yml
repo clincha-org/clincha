@@ -3,6 +3,8 @@
     cmd: kubeadm init --pod-network-cidr={{ pod_network_cidr }}
     creates: /etc/kubernetes/admin.conf
   register: kubeadm_init_output
+  retries: 5
+  until: kubeadm_init_output.stdout.find('Your Kubernetes control-plane has initialized successfully!') != -1
 
 - name: "Ensure .kube directory exists"
   file:

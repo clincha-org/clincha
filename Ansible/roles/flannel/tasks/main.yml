@@ -52,6 +52,14 @@
   when: "flannel_installed | default(false)"
   block:
     # https://github.com/clincha/clincha/issues/107
+    - name: "Restart the kubernetes services"
+      service:
+        state: restarted
+        name: "{{ item }}"
+      loop:
+        - "podman"
+        - "kubelet"
+
     - name: "Reset the Kubernetes network bridges"
       block:
         - name: "Down the connections"
@@ -60,7 +68,11 @@
           loop:
             - "cni0"
             - "flannel.1"
-          failed_when: false
+          register: down_result
+          retries: 12
+          delay: 10
+          until: down_result.rc == 0
+
 
         - name: "Delete the connections"
           command:
@@ -68,7 +80,10 @@
           loop:
             - "cni0"
             - "flannel.1"
-          failed_when: false
+          register: delete_result
+          retries: 12
+          delay: 10
+          until: delete_result.rc == 0
 
         - name: "Restart the kubernetes services"
           service:
