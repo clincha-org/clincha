@@ -4,15 +4,18 @@
 - name: Get Calico helm repo
   become: true
   become_user: kubernetes
+  when: "'kubernetes_master' in group_names"
   kubernetes.core.helm_repository:
-    name: calico
-    repo_url: https://docs.tigera.io/calico/charts
-    state: present
+    name: "calico"
+    repo_url: "https://docs.tigera.io/calico/charts"
 
 - name: Install Calico using Helm
   become: true
   become_user: kubernetes
+  when: "'kubernetes_master' in group_names"
   kubernetes.core.helm:
     name: tigera-operator
     chart_ref: projectcalico/tigera-operator
-
+  register: calico_install
+  until: calico_install.failed is false
+  retries: 3
