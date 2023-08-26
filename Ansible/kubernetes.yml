@@ -10,15 +10,15 @@
   roles:
     - role: helm
 
-- name: Install network
-  hosts: kubernetes_worker
-  become: true
-  roles:
-    - role: flannel
-
-- name: Kubernetes services
-  hosts: kubernetes_master
-  become: true
-  roles:
-    - role: ceph
-    - role: velero
+#- name: Install network
+#  hosts: kubernetes_worker
+#  become: true
+#  roles:
+#    - role: flannel
+#
+#- name: Kubernetes services
+#  hosts: kubernetes_master
+#  become: true
+#  roles:
+#    - role: ceph
+#    - role: velero
