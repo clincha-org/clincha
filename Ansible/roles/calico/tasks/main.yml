@@ -16,6 +16,8 @@
   kubernetes.core.helm:
     name: tigera-operator
     chart_ref: projectcalico/tigera-operator
+    release_namespace: calico-system
+    create_namespace: true
   register: calico_install
   until: calico_install.failed is false
   retries: 3
