@@ -1,2 +1,18 @@
 ---
-# tasks file for calico
+# Installs Calico on a Kubernetes cluster.
+
+- name: Get Calico helm repo
+  become: true
+  become_user: kubernetes
+  kubernetes.core.helm_repository:
+    name: calico
+    repo_url: https://docs.tigera.io/calico/charts
+    state: present
+
+- name: Install Calico using Helm
+  become: true
+  become_user: kubernetes
+  kubernetes.core.helm:
+    name: tigera-operator
+    chart_ref: projectcalico/tigera-operator
+
