@@ -1,6 +1,5 @@
 ---
 # Installs Calico on a Kubernetes cluster.
-
 - name: Get Calico helm repo
   become: true
   become_user: kubernetes
@@ -18,6 +17,15 @@
     chart_ref: projectcalico/tigera-operator
     release_namespace: tigera-operator
     create_namespace: true
+    values:
+      tigeraOperator:
+        image: tigera/operator
+        version: v1.30.4
+        registry: quay.io
+      calicoctl:
+        image: calico/ctl
+        tag: v3.26.1
+        registry: quay.io
   register: calico_install
 #  until: calico_install.failed is false
 #  retries: 3
