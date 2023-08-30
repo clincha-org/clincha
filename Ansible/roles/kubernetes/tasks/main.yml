@@ -23,6 +23,16 @@
   when: "'kubernetes_master' in group_names"
   include_tasks: configure_master.yml
 
+- name: "Install Helm"
+  when: "'kubernetes_master' in group_names"
+  include_role:
+    name: helm
+
+- name: "Install network"
+  when: "'kubernetes_master' in group_names"
+  include_role:
+      name: calico
+
 - name: "Get the kubeadm join command from the master"
   command: kubeadm token create --print-join-command
   changed_when: false
