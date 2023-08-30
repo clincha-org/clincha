@@ -27,5 +27,9 @@
         tag: v3.26.1
         registry: quay.io
   register: calico_install
-#  until: calico_install.failed is false
-#  retries: 3
+  until: calico_install.failed is false
+  retries: 3
+
+- name: Restart servers for changes to take effect
+  reboot:
+    msg: "Reboot initiated by Ansible for network changes to take effect"
