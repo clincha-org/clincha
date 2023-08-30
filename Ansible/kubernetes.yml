@@ -16,10 +16,10 @@
   roles:
     - role: calico
 #    - role: flannel
-#
-#- name: Kubernetes services
-#  hosts: kubernetes_master
-#  become: true
-#  roles:
-#    - role: ceph
-#    - role: velero
+
+- name: Kubernetes services
+  hosts: kubernetes_master
+  become: true
+  roles:
+    - role: ceph
+    - role: velero
