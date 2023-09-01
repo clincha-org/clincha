@@ -30,6 +30,12 @@
   until: calico_install.failed is false
   retries: 3
 
-- name: Restart servers for changes to take effect
-  reboot:
-    msg: "Reboot initiated by Ansible for network changes to take effect"
+- name: Wait for Calico pods to be ready
+  become: true
+  become_user: kubernetes
+  when: "'kubernetes_master' in group_names"
+  command: "kubectl wait --namespace=tigera-operator --for=condition=Ready pods --selector k8s-app=calico-kube-controllers"
+  changed_when: false
+  register: calico_wait
+  until: calico_wait.failed is false
+  retries: 3
