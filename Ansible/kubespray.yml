@@ -1,0 +1,4 @@
+- name: Install Kubernetes
+  become: true
+  become_user: root
+  ansible.builtin.import_playbook: kubernetes_sigs.kubespray.cluster

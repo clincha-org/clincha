@@ -1,0 +1,28 @@
+name: kubespray
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  bristol:
+    runs-on: [self-hosted]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.1.0
+
+      - name: Install Galaxy requirements
+        working-directory: Ansible
+        run: |
+          ansible-galaxy install -r galaxy-requirements.yml
+
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+            ssh-private-key: ${{ secrets.ANSIBLE_PK }}
+
+      - name: Run Ansible core configuration
+        working-directory: Ansible
+        run: |
+          ansible-playbook kubespray.yml --inventory bristol.proxmox.yml

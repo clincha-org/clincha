@@ -9,5 +9,7 @@ compose:
   site: "'bristol'"
 groups:
   base: "'base' in (proxmox_tags_parsed|list)"
-  kubernetes_master: "'kubernetes_master' in (proxmox_tags_parsed|list)"
-  kubernetes_worker: "'kubernetes_worker' in (proxmox_tags_parsed|list)"
+  kube-master: "'kubernetes_master' in (proxmox_tags_parsed|list)"
+  etcd: "'kubernetes_master' in (proxmox_tags_parsed|list)"
+  kube-node: "'kubernetes_worker' in (proxmox_tags_parsed|list)"
+  k8s-cluster: "'kubernetes_worker' in (proxmox_tags_parsed|list) or 'kubernetes_master' in (proxmox_tags_parsed|list)"
