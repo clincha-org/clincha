@@ -25,6 +25,6 @@ jobs:
       - name: Run Ansible core configuration
         working-directory: Ansible
         run: |
-          ansible-playbook kubespray.yml --inventory bristol.proxmox.yml
+          ansible-playbook kubespray.yml --inventory bristol.proxmox.yml --become --become-user root
         env:
           PROXMOX_PASSWORD: ${{ secrets.ANSIBLE_PROXMOX_PASSWORD }}
