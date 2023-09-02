@@ -1,2 +1,12 @@
+- name: Install requirements
+  become: true
+  hosts: all
+  tasks:
+    - name: "Install required packages"
+      package:
+        name:
+          - iproute-tc
+        state: present
+
 - name: Install Kubernetes
   ansible.builtin.import_playbook: kubernetes_sigs.kubespray.cluster
