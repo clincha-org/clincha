@@ -70,5 +70,5 @@
   become: true
   roles:
     - role: helm
-    - role: ceph
+#    - role: ceph
 #    - role: velero
