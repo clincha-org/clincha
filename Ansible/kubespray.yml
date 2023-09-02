@@ -1,4 +1,4 @@
-- name: Install requirements
+- name: Requirements
   hosts: k8s_cluster
   tasks:
     - name: Install required packages
@@ -6,6 +6,12 @@
         name:
           - iproute-tc
         state: present
+
+    - name: Disable the firewall
+      service:
+        name: firewalld
+        state: stopped
+        enabled: no
 
 - name: Install Kubernetes
   ansible.builtin.import_playbook: kubernetes_sigs.kubespray.cluster
