@@ -19,6 +19,22 @@
 - name: "Configure kubernetes user"
   hosts: kube_control_plane
   tasks:
+    - name: "Ensure .kube directory exists"
+      file:
+        path: "/home/kubernetes/.kube"
+        state: directory
+        mode: 0770
+        owner: "kubernetes"
+        group: "kubernetes"
+
+    - name: "Symlink kubectl admin.conf to /home/kubernetes/.kube/conf"
+      file:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/kubernetes/.kube/config
+        state: link
+        owner: "kubernetes"
+        group: "kubernetes"
+
     - name: "Alias k"
       lineinfile:
         path: /home/kubernetes/.bashrc
@@ -40,21 +56,14 @@
         regexp: "^complete -o default -F __start_kubectl k$"
         state: present
 
-    - name: "Ensure .kube directory exists"
-      file:
-        path: "/home/kubernetes/.kube"
-        state: directory
-        mode: 0770
-        owner: "kubernetes"
-        group: "kubernetes"
-
-    - name: "Symlink kubectl admin.conf to /home/kubernetes/.kube/conf"
-      file:
-        src: /etc/kubernetes/admin.conf
-        dest: /home/kubernetes/.kube/config
-        state: link
-        owner: "kubernetes"
-        group: "kubernetes"
+    - name: "Install kubernetes pip package"
+      become: true
+      become_user: kubernetes
+      pip:
+        name: kubernetes
+        state: present
+        version: 26.1.0
+        extra_args: --user
 
 - name: "Install kubernetes services"
   hosts: kube_control_plane
@@ -62,4 +71,4 @@
   roles:
     - role: helm
     - role: ceph
-    - role: velero
+#    - role: velero
