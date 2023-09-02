@@ -55,3 +55,10 @@
         state: link
         owner: "kubernetes"
         group: "kubernetes"
+
+- name: "Install kubernetes services"
+  hosts: kubernetes_master
+  become: true
+  roles:
+    - role: ceph
+    - role: velero
