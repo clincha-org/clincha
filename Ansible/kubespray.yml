@@ -60,5 +60,6 @@
   hosts: kube_control_plane
   become: true
   roles:
+    - role: helm
     - role: ceph
     - role: velero
