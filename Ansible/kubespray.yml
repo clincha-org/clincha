@@ -1,6 +1,5 @@
 - name: Install requirements
-  become: true
-  hosts: all
+  hosts: k8s-cluster
   tasks:
     - name: "Install required packages"
       package:
