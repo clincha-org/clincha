@@ -57,7 +57,7 @@
         group: "kubernetes"
 
 - name: "Install kubernetes services"
-  hosts: kubernetes_master
+  hosts: kube_control_plane
   become: true
   roles:
     - role: ceph
