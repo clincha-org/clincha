@@ -1,7 +1,7 @@
 packer {
   required_plugins {
     proxmox = {
-      version = ">= 1.1.2"
+      version = ">= 1.1.3"
       source  = "github.com/hashicorp/proxmox"
     }
   }
@@ -48,8 +48,8 @@ source "proxmox" "rocky8" {
     storage_pool      = var.disk_storage_pool
     storage_pool_type = var.disk_storage_pool_type
     format            = var.disk_format
-#    ssd               = var.disk_ssd
-#    discard           = var.disk_discard
+    ssd               = var.disk_ssd
+    discard           = var.disk_discard
     cache_mode        = var.disk_cache_mode
   }
 
