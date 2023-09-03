@@ -143,6 +143,11 @@ variable "disk_storage_pool_type" {
   default     = "rbd"
   description = "The type of the pool defined by disk_storage_pool"
 }
+variable "disk_type" {
+  type        = string
+  default     = "virtio"
+  description = "The type of disk to be created"
+}
 variable "disk_format" {
   type        = string
   default     = "raw"

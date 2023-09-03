@@ -47,6 +47,7 @@ source "proxmox" "rocky8" {
     disk_size         = var.disk_size
     storage_pool      = var.disk_storage_pool
     storage_pool_type = var.disk_storage_pool_type
+    type              = var.disk_type
     format            = var.disk_format
     ssd               = var.disk_ssd
     discard           = var.disk_discard
