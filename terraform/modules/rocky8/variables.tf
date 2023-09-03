@@ -27,7 +27,7 @@ variable "source_vm" {
 }
 
 variable "full_clone" {
-  default = false
+  default = true
   type    = bool
 }
 
