@@ -4,14 +4,3 @@
 
 - name: "Install Velero CLI"
   include_tasks: velero_cli.yml
-
-- name: "Wait for velero pods to be ready"
-  become: true
-  become_user: kubernetes
-  register: velero_wait
-  until: velero_wait.failed is false
-  retries: 12
-  delay: 10
-  when: velero_wait_for_pods_to_be_ready
-  command: "kubectl wait --for=condition=Ready pods --all -n {{ velero_namespace }} --timeout=10m"
-  changed_when: false

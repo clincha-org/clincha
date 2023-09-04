@@ -11,14 +11,3 @@
 
 - name: "Install Ceph snapshot capabilities"
   include_tasks: snapshots.yml
-
-- name: "Wait for ceph pods to be ready"
-  become: true
-  become_user: kubernetes
-  register: ceph_wait_result
-  until: ceph_wait_result.failed is false
-  retries: 12
-  delay: 10
-  when: ceph_wait_for_pods_to_be_ready
-  command: "kubectl wait --for=condition=Ready pods --all -n {{ ceph_rbd_namespace }} --timeout=20m"
-  changed_when: false
