@@ -10,7 +10,7 @@ collections:
   - name: "kubernetes.core"
     version: "2.4.0"
 
-  - name: https://github.com/kubernetes-sigs/kubespray
+  - name: "https://github.com/kubernetes-sigs/kubespray"
     type: git
     version: v2.22.1
 
