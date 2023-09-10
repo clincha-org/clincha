@@ -29,4 +29,5 @@
   become_user: kubernetes
   k8s:
     state: present
-    resource_definition: "{{ lookup('file', 'snapshot-class.yml') | from_yaml }}"
+    resource_definition: >
+      "{{ lookup('file', 'snapshot-class.yml') | from_yaml }}"

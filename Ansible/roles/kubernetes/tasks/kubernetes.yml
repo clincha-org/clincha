@@ -7,7 +7,9 @@
     baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
     gpgcheck: true
     repo_gpgcheck: true
-    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    gpgkey: >
+      https://packages.cloud.google.com/yum/doc/yum-key.gpg
+      https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
     enabled: true
     exclude:
       - kubelet
@@ -16,9 +18,12 @@
 
 - name: "Install kubernetes packages"
   dnf:
-    name: [ "kubeadm-{{ kubernetes_version }}", "kubelet-{{ kubernetes_version }}", "kubectl-{{ kubernetes_version }}" ]
+    name:
+      - "kubeadm-{{ kubernetes_version }}"
+      - "kubelet-{{ kubernetes_version }}"
+      - "kubectl-{{ kubernetes_version }}"
     state: present
-    allow_downgrade: yes
+    allow_downgrade: true
     disable_excludes: kubernetes
 
 - name: "Install kubernetes pip package"

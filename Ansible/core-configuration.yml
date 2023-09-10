@@ -1,3 +1,4 @@
+---
 - name: Apply base roll
   hosts: base
   become: true

@@ -26,4 +26,5 @@
   become_user: kubernetes
   kubernetes.core.k8s:
     state: present
-    resource_definition: "{{ lookup('file', 'storage-classes.yml') | from_yaml_all }}"
+    resource_definition: >
+      "{{ lookup('file', 'storage-classes.yml') | from_yaml_all }}"
