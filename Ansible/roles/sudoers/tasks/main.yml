@@ -1,3 +1,4 @@
+---
 - name: "sudoers"
   copy:
     src: "{{ item }}"
