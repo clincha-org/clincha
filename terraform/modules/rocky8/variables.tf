@@ -37,7 +37,7 @@ variable "agent" {
 }
 
 variable "sockets" {
-  default = 1
+  default = 2
   type    = number
 }
 

@@ -1,7 +1,0 @@
----
-- name: "restart coredns pods"
-  become: true
-  become_user: kubernetes
-  command:
-    cmd: "kubectl delete pod -n kube-system -l k8s-app=kube-dns"
-  changed_when: true

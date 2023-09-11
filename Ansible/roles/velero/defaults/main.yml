@@ -6,3 +6,5 @@ velero_clientId: "aa8bff16-f664-4478-91ad-6bdfe88dd6f0"
 velero_resourceGroup: "velero"
 velero_storageAccount: "clinchavelero"
 velero_bucket: "production"
+velero_namespace: "velero"
+velero_wait_for_pods_to_be_ready: true

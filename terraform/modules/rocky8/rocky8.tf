@@ -14,8 +14,8 @@ resource "proxmox_vm_qemu" "rocky8" {
   cores   = var.cores
   memory  = var.memory
 
-  os_type    = var.os_type
-  ipconfig0  = "ip=${ var.ip }/${ var.subnet_mask },gw=${ var.gateway }"
+  os_type   = var.os_type
+  ipconfig0 = "ip=${ var.ip }/${ var.subnet_mask },gw=${ var.gateway }"
 
   tags = join(",", var.tags)
 

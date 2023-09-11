@@ -1,13 +1,11 @@
-name: ansible
+name: kubespray
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: 0 0 * * *
 
 jobs:
   bristol:
-    runs-on: [self-hosted]
+    runs-on: [ self-hosted ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0
@@ -19,7 +17,7 @@ jobs:
 
       - uses: webfactory/ssh-agent@v0.7.0
         with:
-            ssh-private-key: ${{ secrets.ANSIBLE_PK }}
+          ssh-private-key: ${{ secrets.ANSIBLE_PK }}
 
       - name: Run Ansible core configuration
         working-directory: Ansible
@@ -31,11 +29,11 @@ jobs:
         run: |
           ansible-playbook core-configuration.yml --inventory bristol.proxmox.yml
 
-      - name: Run Ansible kubernetes configuration
+      - name: Install Kubernetes cluster
         working-directory: Ansible
+        run: |
+          ansible-playbook kubespray.yml --inventory bristol.proxmox.yml --become --become-user root
         env:
           PROXMOX_PASSWORD: ${{ secrets.ANSIBLE_PROXMOX_PASSWORD }}
           CEPH_KEY: ${{ secrets.CEPH_KEY }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-        run: |
-          ansible-playbook kubernetes.yml --inventory bristol.proxmox.yml

@@ -24,7 +24,7 @@ jobs:
       - name: packer build
         working-directory: packer
         run: |
-          /usr/bin/packer build \
+          /usr/bin/packer build --force \
           -var "ansible_ssh_password=${{ secrets.ANSIBLE_PASSWORD }}" \
           -var "proxmox_api_token_secret=${{ secrets.PACKER_BRISTOL_PROXMOX_TOKEN_SECRET }}" \
           -var-file="rocky8.pkrvars.hcl" \

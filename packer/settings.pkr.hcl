@@ -10,6 +10,7 @@ variable "proxmox_api_token_id" {
 }
 variable "proxmox_api_token_secret" {
   type        = string
+  sensitive   = true
   default     = "secret"
   description = "The Proxmox API token"
 }
@@ -28,10 +29,20 @@ variable "vm_name" {
   default     = "rocky8"
   description = "The name of the VM that will become the template"
 }
+variable "vm_id" {
+  type        = number
+  default     = 999
+  description = "The ID of the template"
+}
 variable "qemu_agent" {
   type        = bool
   default     = true
   description = "Uses the QEMU agent to query the VM properties"
+}
+variable "os" {
+  type        = string
+  default     = "l26"
+  description = "The OS type of the VM"
 }
 variable "iso" {
   type        = string
@@ -82,8 +93,8 @@ variable "boot_wait" {
   description = "Time to wait before typing the boot command"
 }
 variable "on_boot" {
-  type    = bool
-  default = true
+  type        = bool
+  default     = true
   description = "Should this VM automatically start if the Proxmox server is restarted"
 }
 variable "http_directory" {
@@ -95,6 +106,11 @@ variable "http_bind_address" {
   type        = string
   default     = "0.0.0.0"
   description = "IP address to bind the webserver to"
+}
+variable "cpu_type" {
+  type        = string
+  default     = "host"
+  description = "The CPU type to emulate"
 }
 variable "cores" {
   type        = number
@@ -127,10 +143,20 @@ variable "disk_storage_pool_type" {
   default     = "rbd"
   description = "The type of the pool defined by disk_storage_pool"
 }
+variable "disk_type" {
+  type        = string
+  default     = "virtio"
+  description = "The type of disk to be created"
+}
 variable "disk_format" {
   type        = string
   default     = "raw"
   description = "The format of the disk to be created"
+}
+variable "disk_cache_mode" {
+  type        = string
+  default     = "none"
+  description = "How to cache operations to the disk. Can be none, writethrough, writeback, unsafe or directsync."
 }
 
 variable "network_model" {

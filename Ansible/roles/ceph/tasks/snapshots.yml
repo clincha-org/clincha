@@ -19,6 +19,10 @@
 - name: Create snapshot CRDs
   become: true
   become_user: kubernetes
+  register: ceph_snapshot_crd_result
+  until: ceph_snapshot_crd_result.failed is false
+  retries: 3
+  delay: 10
   kubernetes.core.k8s:
     state: present
     src: "{{ item }}"
@@ -27,7 +31,10 @@
 - name: Create snapshot class
   become: true
   become_user: kubernetes
+  register: ceph_snapshot_class_result
+  until: ceph_snapshot_class_result.failed is false
+  retries: 3
+  delay: 10
   k8s:
     state: present
-    resource_definition: >
-      "{{ lookup('file', 'snapshot-class.yml') | from_yaml }}"
+    resource_definition: "{{ lookup('file', 'snapshot-class.yml') | from_yaml }}"

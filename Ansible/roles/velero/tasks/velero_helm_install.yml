@@ -9,6 +9,10 @@
 - name: Install Velero
   become: true
   become_user: kubernetes
+  register: velero_install
+  until: velero_install.failed is false
+  retries: 3
+  delay: 10
   kubernetes.core.helm:
     name: velero
     chart_ref: vmware-tanzu/velero

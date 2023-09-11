@@ -1,4 +1,0 @@
----
-flannel_helm_repository_url: "https://flannel-io.github.io/flannel/"
-flannel_namespace: "flannel"
-pod_network_cidr: "10.244.0.0/16"

@@ -1,7 +1,7 @@
 packer {
   required_plugins {
     proxmox = {
-      version = ">= 1.1.2"
+      version = ">= 1.1.3"
       source  = "github.com/hashicorp/proxmox"
     }
   }
@@ -15,8 +15,10 @@ source "proxmox" "rocky8" {
 
   node       = var.node
   vm_name    = var.vm_name
+  vm_id      = var.vm_id
   qemu_agent = var.qemu_agent
 
+  os          = var.os
   iso_file    = var.iso
   unmount_iso = var.unmount_iso
 
@@ -35,8 +37,9 @@ source "proxmox" "rocky8" {
   http_directory    = var.http_directory
   http_bind_address = var.http_bind_address
 
-  cores  = var.cores
-  memory = var.memory
+  cpu_type = var.cpu_type
+  cores    = var.cores
+  memory   = var.memory
 
   scsi_controller = var.scsi_controller
 
@@ -44,7 +47,9 @@ source "proxmox" "rocky8" {
     disk_size         = var.disk_size
     storage_pool      = var.disk_storage_pool
     storage_pool_type = var.disk_storage_pool_type
+    type              = var.disk_type
     format            = var.disk_format
+    cache_mode        = var.disk_cache_mode
   }
 
   network_adapters {

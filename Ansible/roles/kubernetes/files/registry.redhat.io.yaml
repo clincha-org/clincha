@@ -1,4 +1,0 @@
----
-docker:
-  registry.redhat.io:
-    sigstore: https://registry.redhat.io/containers/sigstore
