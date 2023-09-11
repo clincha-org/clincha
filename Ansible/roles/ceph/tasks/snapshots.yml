@@ -21,7 +21,7 @@
   become_user: kubernetes
   register: ceph_snapshot_crd_result
   until: ceph_snapshot_crd_result.failed is false
-  retries: 12
+  retries: 3
   delay: 10
   kubernetes.core.k8s:
     state: present
@@ -33,7 +33,7 @@
   become_user: kubernetes
   register: ceph_snapshot_class_result
   until: ceph_snapshot_class_result.failed is false
-  retries: 12
+  retries: 3
   delay: 10
   k8s:
     state: present

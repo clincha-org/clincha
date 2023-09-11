@@ -2,9 +2,6 @@ name: kubespray
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - "*"
 
 jobs:
   bristol:

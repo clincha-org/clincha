@@ -153,16 +153,6 @@ variable "disk_format" {
   default     = "raw"
   description = "The format of the disk to be created"
 }
-variable "disk_ssd" {
-  type        = bool
-  default     = true
-  description = "Drive will be presented to the guest as solid-state drive rather than a rotational disk"
-}
-variable "disk_discard" {
-  type        = bool
-  default     = true
-  description = "Relay TRIM commands to the underlying storage."
-}
 variable "disk_cache_mode" {
   type        = string
   default     = "none"

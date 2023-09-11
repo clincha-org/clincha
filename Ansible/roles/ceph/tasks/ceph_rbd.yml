@@ -4,7 +4,7 @@
   become_user: kubernetes
   register: ceph_install_result
   until: ceph_install_result.failed is false
-  retries: 12
+  retries: 3
   delay: 10
   kubernetes.core.helm:
     name: ceph-csi-rbd
@@ -30,7 +30,7 @@
   become_user: kubernetes
   register: ceph_storage_class_result
   until: ceph_storage_class_result.failed is false
-  retries: 12
+  retries: 3
   delay: 10
   kubernetes.core.k8s:
     state: present
