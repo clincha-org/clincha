@@ -31,7 +31,7 @@ variable "vm_name" {
 }
 variable "vm_id" {
   type        = number
-  default     = 999
+  default     = 1000
   description = "The ID of the template"
 }
 variable "qemu_agent" {
