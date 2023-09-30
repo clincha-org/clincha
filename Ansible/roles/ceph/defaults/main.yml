@@ -7,3 +7,5 @@ ceph_monitors:
   - "10.1.2.12:6789"
   - "10.1.2.13:6789"
 ceph_wait_for_pods_to_be_ready: true
+
+cephfs_namespace: "ceph-csi-cephfs"
