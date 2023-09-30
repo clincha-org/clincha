@@ -34,4 +34,4 @@
   delay: 10
   kubernetes.core.k8s:
     state: present
-    resource_definition: "{{ lookup('file', 'storage-classes.yml') | from_yaml_all }}"
+    resource_definition: "{{ lookup('file', 'storage-classes-cephfs.yml') | from_yaml_all }}"
