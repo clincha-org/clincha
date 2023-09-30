@@ -77,7 +77,7 @@ variable "cloud_init" {
 }
 variable "cloud_init_storage_pool" {
   type        = string
-  default     = "ssd"
+  default     = "local-lvm"
   description = "Name of the Proxmox storage pool to store the cloud-init CDROM on"
 }
 variable "boot_command" {
@@ -135,7 +135,7 @@ variable "disk_size" {
 }
 variable "disk_storage_pool" {
   type        = string
-  default     = "ssd"
+  default     = "local-lvm"
   description = "The storage pool to deploy the disk onto"
 }
 variable "disk_storage_pool_type" {
