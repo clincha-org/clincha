@@ -6,6 +6,9 @@ on:
 jobs:
   bri-s-01:
     runs-on: self-hosted
+    strategy:
+      matrix:
+        node: [ bri-s-01, bri-s-02, bri-s-03 ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0
@@ -27,5 +30,5 @@ jobs:
           /usr/bin/packer build --force \
           -var "ansible_ssh_password=${{ secrets.ANSIBLE_PASSWORD }}" \
           -var "proxmox_api_token_secret=${{ secrets.PACKER_BRISTOL_PROXMOX_TOKEN_SECRET }}" \
-          -var-file="rocky8.pkrvars.hcl" \
+          -var-file="${{ matrix.node }}.pkrvars.hcl" \
           .
