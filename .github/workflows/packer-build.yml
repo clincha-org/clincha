@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  bri-s-01:
+  build-templates:
     runs-on: self-hosted
     strategy:
       matrix:
