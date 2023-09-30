@@ -16,6 +16,7 @@ parameters:
   csi.storage.k8s.io/provisioner-secret-name: csi-cephfs-secret
   csi.storage.k8s.io/provisioner-secret-namespace: ceph-csi-cephfs
   fsName: movies
+  pool: movies_data
 provisioner: cephfs.csi.ceph.com
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
