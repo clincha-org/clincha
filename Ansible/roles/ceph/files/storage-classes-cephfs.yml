@@ -10,7 +10,6 @@ parameters:
   clusterID: 7c245ed6-0cd9-440e-887b-d9fd402c8470
   csi.storage.k8s.io/controller-expand-secret-name: csi-cephfs-secret
   csi.storage.k8s.io/controller-expand-secret-namespace: ceph-csi-cephfs
-  csi.storage.k8s.io/fstype: ext4
   csi.storage.k8s.io/node-stage-secret-name: csi-cephfs-secret
   csi.storage.k8s.io/node-stage-secret-namespace: ceph-csi-cephfs
   csi.storage.k8s.io/provisioner-secret-name: csi-cephfs-secret
