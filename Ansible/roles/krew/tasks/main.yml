@@ -7,6 +7,7 @@
 
 - name: Install krew
   when: krew_version_output.rc != 0
+  block:
     - name: Copy install script
       become: true
       become_user: "{{ user }}"
