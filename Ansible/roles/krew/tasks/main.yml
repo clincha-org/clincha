@@ -3,7 +3,7 @@
   become: true
   become_user: "{{ user }}"
   file:
-    src: install_krew.sh
+    path: install_krew.sh
     dest: "{{ home_dir }}/install_krew.sh"
     mode: 0755
 
