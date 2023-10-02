@@ -6,7 +6,8 @@ Use the Krew install guide script to install Krew
 Requirements
 ------------
 
-Git
+git
+kubectl
 
 
 Role Variables
