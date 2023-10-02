@@ -19,29 +19,20 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.ANSIBLE_PK }}
 
-#      - name: Run Ansible core configuration
-#        working-directory: Ansible
-#        env:
-#          PROXMOX_PASSWORD: ${{ secrets.ANSIBLE_PROXMOX_PASSWORD }}
-#          ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
-#          CLINCHA_PASSWORD: ${{ secrets.CLINCHA_PASSWORD }}
-#          ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
-#        run: |
-#          ansible-playbook core-configuration.yml --inventory bristol.proxmox.yml
-#
-#      - name: Install Kubernetes cluster
-#        working-directory: Ansible
-#        run: |
-#          ansible-playbook kubespray.yml --inventory bristol.proxmox.yml --become --become-user root
-#        env:
-#          PROXMOX_PASSWORD: ${{ secrets.ANSIBLE_PROXMOX_PASSWORD }}
-#          CEPH_KEY: ${{ secrets.CEPH_KEY }}
-#          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      - name: Run Ansible core configuration
+        working-directory: Ansible
+        env:
+          PROXMOX_PASSWORD: ${{ secrets.ANSIBLE_PROXMOX_PASSWORD }}
+          ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
+          CLINCHA_PASSWORD: ${{ secrets.CLINCHA_PASSWORD }}
+          ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
+        run: |
+          ansible-playbook core-configuration.yml --inventory bristol.proxmox.yml
 
-      - name: Install Kubernetes tooling
+      - name: Install Kubernetes cluster
         working-directory: Ansible
         run: |
-          ansible-playbook ksniff.yml --inventory bristol.proxmox.yml --become --become-user root
+          ansible-playbook kubespray.yml --inventory bristol.proxmox.yml --become --become-user root
         env:
           PROXMOX_PASSWORD: ${{ secrets.ANSIBLE_PROXMOX_PASSWORD }}
           CEPH_KEY: ${{ secrets.CEPH_KEY }}
