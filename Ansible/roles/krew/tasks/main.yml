@@ -2,8 +2,8 @@
 - name: Copy install script
   become: true
   become_user: "{{ user }}"
-  file:
-    path: install_krew.sh
+  copy:
+    src: install_krew.sh
     dest: "{{ home_dir }}/install_krew.sh"
     mode: 0755
 
