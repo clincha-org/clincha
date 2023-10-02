@@ -1,3 +1,5 @@
 ---
 - name: Install sniff using krew
   shell: kubectl krew install sniff
+  environment:
+    PATH: "/usr/local/bin:/home/kubernetes/.krew/bin:{{ ansible_env.PATH }}"

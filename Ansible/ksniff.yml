@@ -4,5 +4,3 @@
   roles:
     - role: krew
     - role: ksniff
-  environment:
-    PATH: "/usr/local/bin:/home/kubernetes/.krew/bin:{{ ansible_env.PATH }}"
