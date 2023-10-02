@@ -1,21 +1,29 @@
 ---
-- name: Copy install script
+- name: Check if krew is installed
   become: true
   become_user: "{{ user }}"
-  copy:
-    src: install_krew.sh
-    dest: "{{ install_script }}"
-    mode: 0755
+  shell: kubectl krew version
+  register: krew_version_output
 
-- name: Run bash script to install krew
-  become: true
-  become_user: "{{ user }}"
-  shell: "{{ install_script }}"
+- name: Install krew
+  when: krew_version_output.rc != 0
+    - name: Copy install script
+      become: true
+      become_user: "{{ user }}"
+      copy:
+        src: install_krew.sh
+        dest: "{{ install_script }}"
+        mode: 0755
 
-- name: Add krew bin to PATH
-  become: true
-  become_user: "{{ user }}"
-  lineinfile:
-    path: "{{ bashrc }}"
-    line: 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"'
-    create: yes
+    - name: Run bash script to install krew
+      become: true
+      become_user: "{{ user }}"
+      shell: "{{ install_script }}"
+
+    - name: Add krew bin to PATH
+      become: true
+      become_user: "{{ user }}"
+      lineinfile:
+        path: "{{ bashrc }}"
+        line: 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"'
+        create: yes
