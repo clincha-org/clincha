@@ -2,9 +2,8 @@
 - name: Check if krew is installed
   become: true
   become_user: "{{ user }}"
-  shell: |
-    source {{ bashrc }}
-    kubectl krew version
+  command:
+    cmd: kubectl krew version
   register: krew_version_output
 
 - name: Install krew
