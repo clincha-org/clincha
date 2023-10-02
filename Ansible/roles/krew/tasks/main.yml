@@ -4,13 +4,13 @@
   become_user: "{{ user }}"
   copy:
     src: install_krew.sh
-    dest: "{{ home_dir }}/install_krew.sh"
+    dest: "{{ install_script }}"
     mode: 0755
 
 - name: Run bash script to install krew
   become: true
   become_user: "{{ user }}"
-  shell: install_krew.sh
+  shell: "{{ install_script }}"
 
 - name: Add krew bin to PATH
   become: true

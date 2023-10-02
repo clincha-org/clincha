@@ -2,3 +2,4 @@
 user: kubernetes
 home_dir: "/home/{{ user }}"
 bashrc: "{{ home_dir }}/.bashrc"
+install_script: "{{ home_dir }}/install_krew.sh"
