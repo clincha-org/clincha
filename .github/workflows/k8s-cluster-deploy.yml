@@ -1,4 +1,4 @@
-name: kubespray
+name: k8s-cluster-deploy
 
 on:
   workflow_dispatch:
