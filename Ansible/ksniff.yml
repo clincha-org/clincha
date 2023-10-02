@@ -1,0 +1,7 @@
+---
+- name: Install ksniff
+  hosts: base
+  become: true
+  roles:
+    - role: krew
+#    - role: ksniff

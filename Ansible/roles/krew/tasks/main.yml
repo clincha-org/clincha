@@ -1,0 +1,21 @@
+---
+- name: Copy install script
+  become: true
+  become_user: "{{ user }}"
+  file:
+    src: install_krew.sh
+    dest: "{{ home_dir }}/install_krew.sh"
+    mode: 0755
+
+- name: Run bash script to install krew
+  become: true
+  become_user: "{{ user }}"
+  shell: install_krew.sh
+
+- name: Add krew bin to PATH
+  become: true
+  become_user: "{{ user }}"
+  lineinfile:
+    path: "{{ bashrc }}"
+    line: 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"'
+    create: yes

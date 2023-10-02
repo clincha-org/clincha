@@ -1,0 +1,4 @@
+---
+user: kubernetes
+home_dir: "/home/{{ user }}"
+bashrc: "{{ home_dir }}/.bashrc"
