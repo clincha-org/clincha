@@ -1,21 +1,18 @@
-Krew
+ksniff
 =========
 
-Use the Krew install guide script to install Krew 
+Install ksniff on a kubernetes cluster
 
 Requirements
 ------------
 
-git
+Kubernetes cluster
 kubectl
-
 
 Role Variables
 --------------
 
-user: kubernetes
-home_dir: "/home/{{ user }}"
-bashrc: "{{ home_dir }}/.bashrc"
+N/A
 
 Dependencies
 ------------
@@ -31,7 +28,6 @@ Example Playbook
   roles:
     - role: krew
     - role: ksniff
-
 ```
 
 License
