@@ -22,8 +22,8 @@
       secret:
         create: true
         name: csi-cephfs-secret
-        userID: "{{ ceph_user_id }}"
-        userKey: "{{ lookup('env', 'CEPH_KEY') }}"
+        adminID: "{{ ceph_user_id }}"
+        adminKey: "{{ lookup('env', 'CEPH_KEY') }}"
 
 - name: Create storage classes
   become: true
