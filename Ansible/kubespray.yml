@@ -1,76 +1,76 @@
-- name: "Requirements"
-  hosts: k8s_cluster
-  tasks:
-    - name: "Install required packages"
-      package:
-        name:
-          - iproute-tc
-        state: present
-
-    - name: "Disable the firewall"
-      service:
-        name: firewalld
-        state: stopped
-        enabled: false
-
-- name: "Create cluster"
-  ansible.builtin.import_playbook: kubernetes_sigs.kubespray.cluster
-
-- name: "Configure kubernetes user"
-  hosts: kube_control_plane
-  tasks:
-    - name: "Ensure .kube directory exists"
-      file:
-        path: "/home/kubernetes/.kube"
-        state: directory
-        mode: 0770
-        owner: "kubernetes"
-        group: "kubernetes"
-
-    - name: "Symlink kubectl admin.conf to /home/kubernetes/.kube/conf"
-      file:
-        src: /etc/kubernetes/admin.conf
-        dest: /home/kubernetes/.kube/config
-        state: link
-        owner: "kubernetes"
-        group: "kubernetes"
-
-    - name: "Alias k"
-      lineinfile:
-        path: /home/kubernetes/.bashrc
-        line: "alias k=kubectl"
-        regexp: "^alias k=kubectl$"
-        state: present
-
-    - name: "Autocomplete kubectl"
-      lineinfile:
-        path: /home/kubernetes/.bashrc
-        line: "source <(kubectl completion bash)"
-        regexp: "^source <(kubectl completion bash)$"
-        state: present
-
-    - name: "Autocomplete k"
-      lineinfile:
-        path: /home/kubernetes/.bashrc
-        line: "complete -o default -F __start_kubectl k"
-        regexp: "^complete -o default -F __start_kubectl k$"
-        state: present
-
-    - name: "Install kubernetes pip package"
-      become: true
-      become_user: kubernetes
-      pip:
-        name: kubernetes
-        state: present
-        version: 26.1.0
-        extra_args: --user
+#- name: "Requirements"
+#  hosts: k8s_cluster
+#  tasks:
+#    - name: "Install required packages"
+#      package:
+#        name:
+#          - iproute-tc
+#        state: present
+#
+#    - name: "Disable the firewall"
+#      service:
+#        name: firewalld
+#        state: stopped
+#        enabled: false
+#
+#- name: "Create cluster"
+#  ansible.builtin.import_playbook: kubernetes_sigs.kubespray.cluster
+#
+#- name: "Configure kubernetes user"
+#  hosts: kube_control_plane
+#  tasks:
+#    - name: "Ensure .kube directory exists"
+#      file:
+#        path: "/home/kubernetes/.kube"
+#        state: directory
+#        mode: 0770
+#        owner: "kubernetes"
+#        group: "kubernetes"
+#
+#    - name: "Symlink kubectl admin.conf to /home/kubernetes/.kube/conf"
+#      file:
+#        src: /etc/kubernetes/admin.conf
+#        dest: /home/kubernetes/.kube/config
+#        state: link
+#        owner: "kubernetes"
+#        group: "kubernetes"
+#
+#    - name: "Alias k"
+#      lineinfile:
+#        path: /home/kubernetes/.bashrc
+#        line: "alias k=kubectl"
+#        regexp: "^alias k=kubectl$"
+#        state: present
+#
+#    - name: "Autocomplete kubectl"
+#      lineinfile:
+#        path: /home/kubernetes/.bashrc
+#        line: "source <(kubectl completion bash)"
+#        regexp: "^source <(kubectl completion bash)$"
+#        state: present
+#
+#    - name: "Autocomplete k"
+#      lineinfile:
+#        path: /home/kubernetes/.bashrc
+#        line: "complete -o default -F __start_kubectl k"
+#        regexp: "^complete -o default -F __start_kubectl k$"
+#        state: present
+#
+#    - name: "Install kubernetes pip package"
+#      become: true
+#      become_user: kubernetes
+#      pip:
+#        name: kubernetes
+#        state: present
+#        version: 26.1.0
+#        extra_args: --user
 
 - name: "Install kubernetes services"
   hosts: kube_control_plane
   become: true
   roles:
-    - role: helm
-    - role: velero
+#    - role: helm
+#    - role: velero
     - role: ceph
-    - role: krew
-    - role: ksniff
+#    - role: krew
+#    - role: ksniff
