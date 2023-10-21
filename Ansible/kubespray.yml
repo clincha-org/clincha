@@ -72,3 +72,5 @@
 #    - role: helm
 #    - role: velero
     - role: ceph
+    - role: krew
+    - role: ksniff

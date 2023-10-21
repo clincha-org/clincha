@@ -1,0 +1,6 @@
+---
+- name: Install ksniff
+  hosts: kube_control_plane
+  roles:
+    - role: krew
+    - role: ksniff

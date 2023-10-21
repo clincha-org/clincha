@@ -1,0 +1,6 @@
+---
+user: kubernetes
+home_dir: "/home/{{ user }}"
+bashrc: "{{ home_dir }}/.bashrc"
+install_script: "{{ home_dir }}/install_krew.sh"
+install_check_location: "{{ home_dir }}/.krew/bin/kubectl-krew"
