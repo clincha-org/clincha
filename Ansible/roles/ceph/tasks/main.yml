@@ -9,5 +9,8 @@
 - name: "Install Ceph RBD"
   include_tasks: ceph_rbd.yml
 
+- name: "Install Cephfs"
+  include_tasks: cephfs.yml
+
 - name: "Install Ceph snapshot capabilities"
   include_tasks: snapshots.yml

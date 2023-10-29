@@ -1,0 +1,37 @@
+---
+- name: Install Cephfs from helm chart
+  become: true
+  become_user: kubernetes
+  register: cephfs_install_result
+  until: cephfs_install_result.failed is false
+  retries: 3
+  delay: 10
+  kubernetes.core.helm:
+    name: ceph-csi-cephfs
+    chart_ref: ceph-csi/ceph-csi-cephfs
+    release_namespace: "{{ cephfs_namespace }}"
+    create_namespace: true
+    values:
+      csiConfig:
+        - clusterID: "{{ ceph_cluster_id }}"
+          monitors: "{{ ceph_monitors }}"
+      provisioner:
+        enableHostNetwork: true
+        httpMetrics:
+          enabled: false
+      secret:
+        create: true
+        name: csi-cephfs-secret
+        adminID: "{{ ceph_user_id }}"
+        adminKey: "{{ lookup('env', 'CEPH_KEY') }}"
+
+- name: Create storage classes
+  become: true
+  become_user: kubernetes
+  register: cephfs_storage_class_result
+  until: cephfs_storage_class_result.failed is false
+  retries: 3
+  delay: 10
+  kubernetes.core.k8s:
+    state: present
+    resource_definition: "{{ lookup('file', 'cephfs-sc.yml') | from_yaml_all }}"
