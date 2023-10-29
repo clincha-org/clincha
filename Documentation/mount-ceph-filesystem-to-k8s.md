@@ -27,34 +27,44 @@ To create instead:
 ceph fs subvolume create data complete downloads --size=1073741824
 ```
 
-Then I need to create a config file for each of the mounts
+Then I need to create a config file for each of the mounts that creates a persistent volume and claim.
 
 ```yaml
+---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: data-downloads-incomplete
+  name: data-media
 spec:
   accessModes:
-  - ReadWriteMany
+    - ReadWriteMany
   capacity:
-    storage: 1Gi
+    storage: 10T
   csi:
     driver: cephfs.csi.ceph.com
     nodeStageSecretRef:
-      # node stage secret name
       name: csi-rbd-secret
-      # node stage secret namespace where above secret is created
       namespace: ceph-csi-rbd
     volumeAttributes:
-      # Required options from storageclass parameters need to be added in volumeAttributes
       "clusterID": "7c245ed6-0cd9-440e-887b-d9fd402c8470"
       "fsName": "data"
       "staticVolume": "true"
-      "rootPath": /volumes/downloads/incomplete/
-    # volumeHandle can be anything, need not to be same
-    # as PV name or volume name. keeping same for brevity
-    volumeHandle: data-downloads-incomplete
+      "rootPath": /volumes/_nogroup/media/
+    volumeHandle: data-media
   persistentVolumeReclaimPolicy: Retain
   volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-media-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 10T
+  storageClassName: ""
+  volumeName: data-media
 ```
