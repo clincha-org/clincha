@@ -21,13 +21,13 @@
     values:
       initContainers:
         - name: velero-plugin-for-azure
-          image: velero/velero-plugin-for-microsoft-azure:v1.7.0
+          image: velero/velero-plugin-for-microsoft-azure:v1.8.1
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /target
               name: plugins
         - name: velero-plugin-for-csi
-          image: velero/velero-plugin-for-csi:v0.5.0
+          image: velero/velero-plugin-for-csi:v0.6.1
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /target
