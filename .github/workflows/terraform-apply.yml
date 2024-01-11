@@ -7,6 +7,7 @@ jobs:
   terraform:
     env:
       ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
+      GODEBUG: "asyncpreemptoff=1"
     runs-on: [ self-hosted, init ]
     steps:
       - name: Checkout
@@ -27,5 +28,3 @@ jobs:
             --auto-approve \
             -var="ansible_id_rsa=${{ secrets.ANSIBLE_PK }}" \
             -var="bristol_proxmox_token_secret=${{ secrets.TERRAFORM_BRISTOL_PROXMOX_TOKEN_SECRET }}"
-        env:
-          GODEBUG: "asyncpreemptoff=1"
