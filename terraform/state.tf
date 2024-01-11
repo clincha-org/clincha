@@ -1,8 +1,8 @@
 terraform {
   backend "azurerm" {
     resource_group_name  = "tfstate"
-    storage_account_name = "tfstate7859"
+    storage_account_name = "clincha"
     container_name       = "tfstate"
-    key                  = "clincha_terraform.tfstate"
+    key                  = "clincha.tfstate"
   }
 }
