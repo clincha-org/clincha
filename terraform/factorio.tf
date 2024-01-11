@@ -1,4 +1,4 @@
-module "bri-master-1" {
+module "bri-fact01" {
   name           = "bri-fact01"
   source         = "./modules/rocky8"
   tags           = ["base"]
