@@ -27,3 +27,5 @@ jobs:
             --auto-approve \
             -var="ansible_id_rsa=${{ secrets.ANSIBLE_PK }}" \
             -var="bristol_proxmox_token_secret=${{ secrets.TERRAFORM_BRISTOL_PROXMOX_TOKEN_SECRET }}"
+        env:
+          GODEBUG: "asyncpreemptoff=1"
