@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     proxmox = {
-      source = "telmate/proxmox"
+      source = "github.com/clincha/terraform-provider-proxmox"
     }
   }
 }
