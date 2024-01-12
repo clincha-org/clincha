@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     proxmox = {
-      source  = "Telmate/proxmox"
-      version = "2.9.14"
+      source  = "github.com/clincha/terrafrom-provider-proxmox"
+      branch  = "master"
     }
     azurerm = {
       source  = "hashicorp/azurerm"
