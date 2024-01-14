@@ -3,3 +3,6 @@
 /terraform/modules/rocky8/rocky8.tf
 /id_rsa
 /terraform/credentials.auto.tfvars.hcl
+/terraform/.terraform
+/terraform/.terraform.lock.hcl
+/terraform/development.auto.tfvars
