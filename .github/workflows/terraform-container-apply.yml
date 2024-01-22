@@ -5,13 +5,10 @@ on:
       - 'v*'
 jobs:
   build:
-    runs-on: [ self-hosted, init ]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Create empty auth.json file
-        run: touch auth.json
 
       - name: Log in to Docker Hub
         uses: redhat-actions/podman-login@v1.6
@@ -19,8 +16,6 @@ jobs:
           username: "clincha"
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           registry: docker.io
-        env:
-          REGISTRY_AUTH_FILE: "auth.json"
 
       - name: Build image
         run: make build
