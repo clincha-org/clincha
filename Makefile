@@ -15,7 +15,7 @@ build:
 
 apply: build
 	@echo "Applying"
-	@podman run --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION}
+	@podman run --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION}
 
 debug: build
 	@echo "Applying"
