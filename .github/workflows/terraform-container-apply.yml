@@ -3,11 +3,6 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:
-    inputs:
-      desc:
-        description: "desc"
-        required: false
 jobs:
   build:
     runs-on: [ self-hosted, init ]
