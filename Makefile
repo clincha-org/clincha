@@ -1,6 +1,5 @@
-ARM_ACCESS_KEY = "1234567890"
-ANSIBLE_SSH_KEY = "1234567890"
-PROXMOX_TERRAFORM_TOKEN_KEY = "1234567890"
+# Azure Resource Manager
+ARM_ACCESS_KEY = ""
 
 DESCRIBE           := $(shell git describe --match "v*" --always --tags)
 DESCRIBE_PARTS     := $(subst -, ,$(DESCRIBE))

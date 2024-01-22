@@ -4,7 +4,7 @@ on:
     tags:
       - 'v*'
 jobs:
-  build:
+  apply:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,8 +18,7 @@ jobs:
           registry: docker.io
 
       - name: Apply Terraform
-        run: make
+        run: make ARM_ACCESS_KEY=${{ secrets.ARM_ACCESS_KEY }}
         env:
-          ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
           TF_VAR_ansible_id_rsa: ${{ secrets.ANSIBLE_PK }}
           TF_VAR_bristol_proxmox_token_secret: ${{ secrets.BRISTOL_PROXMOX_TOKEN_SECRET }}
