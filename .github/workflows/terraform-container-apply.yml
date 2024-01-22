@@ -21,7 +21,7 @@ jobs:
         run: make build
 
       - name: Apply Terraform
-        run: make build
+        run: make
         env:
           TF_VAR_ansible_id_rsa: ${{ secrets.ANSIBLE_PK }}
           TF_VAR_bristol_proxmox_token_secret: ${{ secrets.BRISTOL_PROXMOX_TOKEN_SECRET }}
