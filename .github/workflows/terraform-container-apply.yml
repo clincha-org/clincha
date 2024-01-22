@@ -20,7 +20,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           registry: docker.io
         env:
-          REGISTRY_AUTH_FILE: "/tmp/auth.json"
+          REGISTRY_AUTH_FILE: "auth.json"
 
       - name: Build image
         run: make build
