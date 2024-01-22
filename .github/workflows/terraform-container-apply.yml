@@ -10,18 +10,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Log in to Docker Hub
+      - name: Log in to docker.io
         uses: redhat-actions/podman-login@v1.6
         with:
           username: "clincha"
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           registry: docker.io
 
-      - name: Build image
-        run: make build
-
       - name: Apply Terraform
         run: make
         env:
+          ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
           TF_VAR_ansible_id_rsa: ${{ secrets.ANSIBLE_PK }}
           TF_VAR_bristol_proxmox_token_secret: ${{ secrets.BRISTOL_PROXMOX_TOKEN_SECRET }}
