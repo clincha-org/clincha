@@ -10,12 +10,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Create empty auth.json file
+        run: touch auth.json
+
       - name: Log in to Docker Hub
         uses: redhat-actions/podman-login@v1.6
         with:
           username: "clincha"
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           registry: docker.io
+        env:
+          REGISTRY_AUTH_FILE: "/tmp/auth.json"
 
       - name: Build image
         run: make build
