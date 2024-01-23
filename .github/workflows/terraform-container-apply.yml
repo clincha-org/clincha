@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up WireGuard
-        uses: egor-tensin/setup-w@v1.2.0
+        uses: egor-tensin/setup-wireguard@v1.2.0
         with:
           endpoint: '${{ secrets.HL_ENDPOINT }}'
           endpoint_public_key: '6/tGUsqU3ib5LEEua2cLCUxSDFpiEFhOT0sGkqz0LHk='
