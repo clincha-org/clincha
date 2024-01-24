@@ -16,7 +16,7 @@ jobs:
           endpoint: '${{ secrets.HL_ENDPOINT }}'
           endpoint_public_key: '6/tGUsqU3ib5LEEua2cLCUxSDFpiEFhOT0sGkqz0LHk='
           ips: '10.1.5.2/32'
-          allowed_ips: '10.1.5.1/32,10.1.5.2/32,0.0.0.0/0'
+          allowed_ips: '10.1.5.1/32,10.1.5.2/32,192.168.1.11/24,0.0.0.0/0'
           private_key: '${{ secrets.HL_PRIVATE_KEY }}'
           preshared_key: '${{ secrets.HL_PRESHARED_KEY }}'
 
