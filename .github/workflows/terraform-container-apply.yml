@@ -32,7 +32,7 @@ jobs:
           [Peer]
           PublicKey = 6/tGUsqU3ib5LEEua2cLCUxSDFpiEFhOT0sGkqz0LHk=
           PresharedKey = ${{ secrets.HL_PRESHARED_KEY }}
-          AllowedIPs = 10.1.5.1/32,10.1.5.2/32,192.168.1.11/24,0.0.0.0/0
+          AllowedIPs = 10.1.5.1/32,10.1.5.2/32,192.168.1.11/24,10.1.1.1/24,10.1.2.1/24,10.1.3.1/24,0.0.0.0/0
           Endpoint = ${{ secrets.HL_ENDPOINT }}
           EOF
 
