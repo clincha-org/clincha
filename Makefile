@@ -19,7 +19,7 @@ debug: build
 
 apply: build
 	@echo "Applying..."
-	@podman run --entrypoint sh --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION} -c "terraform init && terraform apply"
+	@podman run --entrypoint sh --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION} -c "terraform init && terraform apply -auto-approve"
 
 plan: build
 	@echo "Planning..."
@@ -27,4 +27,4 @@ plan: build
 
 destroy: build
 	@echo "Destroying..."
-	@podman run --entrypoint sh --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION} -c "terraform init && terraform destroy"
+	@podman run --entrypoint sh --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION} -c "terraform init && terraform destroy -auto-approve"
