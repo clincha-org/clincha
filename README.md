@@ -1,8 +1,8 @@
 # clincha
 
-![packer](https://github.com/clincha/clinch-home/actions/workflows/packer-build.yml/badge.svg)
-![terraform](https://github.com/clincha/clinch-home/actions/workflows/terraform-apply.yml/badge.svg)
-![ansible](https://github.com/clincha/clinch-home/actions/workflows/ansible.yml/badge.svg)
+[![packer-build](https://github.com/clincha-org/clincha/actions/workflows/packer-build.yml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/packer-build.yml)
+[![terraform-apply](https://github.com/clincha-org/clincha/actions/workflows/terraform-apply.yml/badge.svg?branch=master)](https://github.com/clincha-org/clincha/actions/workflows/terraform-apply.yml)
+[![k8s-cluster-deploy](https://github.com/clincha-org/clincha/actions/workflows/k8s-cluster-deploy.yml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-cluster-deploy.yml)
 
 ## Overview
 
