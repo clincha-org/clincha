@@ -10,7 +10,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - uses: ./.github/workflows/template-terraform
+      - uses: ".github/workflows/template-terraform.yml"
         with:
           ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}

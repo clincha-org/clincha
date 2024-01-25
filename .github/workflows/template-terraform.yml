@@ -45,7 +45,7 @@ on:
         required: true
         description: "The Docker Hub password"
 jobs:
-  apply:
+  terraform:
     runs-on: ubuntu-latest
     steps:
       - name: "Install WireGuard"
