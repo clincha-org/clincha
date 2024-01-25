@@ -11,7 +11,7 @@ all: build plan apply
 
 build:
 	@echo "Building"
-	@podman build . --tag docker.io/clincha/terraform-init:${VERSION}
+	@podman build . --file containers/Dockerfile --tag docker.io/clincha/terraform-init:${VERSION}
 
 debug: build
 	@echo "Debugging"
@@ -23,4 +23,4 @@ apply: build
 
 plan: build
 	@echo "Planning"
-	@podman run --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION}
+	@podman run -it --entrypoint ["terraform", "init", "&&", "terraform", "plan"] --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION}
