@@ -1,25 +1,19 @@
 name: terraform-plan
-
 on:
+  push:
+    branches:
+      - "*"
   workflow_dispatch:
-
 jobs:
-  terraform:
-    env:
+  plan:
+    uses: "./.github/workflows/template-terraform.yml"
+    with:
+      command: "plan"
+    secrets:
       ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
-    runs-on: [ self-hosted, init ]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3.1.0
-
-      - name: terraform initialise
-        working-directory: terraform
-        run: terraform init
-
-      - name: terraform plan
-        working-directory: terraform
-        run: |
-          /usr/bin/terraform plan \
-            -var="ansible_id_rsa=${{ secrets.ANSIBLE_PK }}" \
-            -var="bristol_proxmox_token_secret=${{ secrets.TERRAFORM_BRISTOL_PROXMOX_TOKEN_SECRET }}" 
-          
+      ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
+      BRISTOL_PROXMOX_TOKEN_SECRET: ${{ secrets.BRISTOL_PROXMOX_TOKEN_SECRET }}
+      HL_PRIVATE_KEY: ${{ secrets.HL_PRIVATE_KEY }}
+      HL_PRESHARED_KEY: ${{ secrets.HL_PRESHARED_KEY }}
+      HL_ENDPOINT: ${{ secrets.HL_ENDPOINT }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
