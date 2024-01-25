@@ -19,8 +19,8 @@ debug: build
 
 apply: build
 	@echo "Applying"
-	@podman run --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION}
+	@podman run --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION} apply
 
 plan: build
 	@echo "Planning"
-	@podman run --entrypoint ["terraform", "init", "&&", "terraform", "plan"] --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION}
+	@podman run --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION} plan
