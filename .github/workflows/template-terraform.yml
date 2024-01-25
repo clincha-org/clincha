@@ -83,14 +83,14 @@ jobs:
           sudo wg
           ping 192.168.1.11 -c 3
 
-      - name: Log in to docker.io
+      - name: "Log in to docker.io"
         uses: redhat-actions/podman-login@v1.6
         with:
           username: "clincha"
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           registry: docker.io
 
-      - name: Apply Terraform
+      - name: "Run the make command"
         run: make ${{ inputs.command }} ARM_ACCESS_KEY=${{ secrets.ARM_ACCESS_KEY }}
         env:
           TF_VAR_ansible_id_rsa: ${{ secrets.ANSIBLE_PK }}
