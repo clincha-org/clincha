@@ -10,17 +10,17 @@ VERSION            := $(subst v,,$(VERSION_TAG))
 all: build plan apply
 
 build:
-	@echo "Building"
+	@echo "Building..."
 	@podman build . --file containers/Dockerfile --tag docker.io/clincha/terraform-init:${VERSION}
 
 debug: build
-	@echo "Debugging"
+	@echo "Debugging..."
 	@podman run -it --entrypoint /bin/sh --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION}
 
 apply: build
-	@echo "Applying"
+	@echo "Applying..."
 	@podman run --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION} apply
 
 plan: build
-	@echo "Planning"
+	@echo "Planning..."
 	@podman run --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION} plan
