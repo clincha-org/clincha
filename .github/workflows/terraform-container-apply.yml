@@ -10,15 +10,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up WireGuard
-        uses: egor-tensin/setup-wireguard@v1.0.0
-        with:
-          endpoint: '${{ secrets.HL_ENDPOINT }}'
-          endpoint_public_key: '6/tGUsqU3ib5LEEua2cLCUxSDFpiEFhOT0sGkqz0LHk='
-          ips: '10.1.5.2/32'
-          allowed_ips: '10.1.5.1/32,10.1.5.2/32,192.168.1.11/24,0.0.0.0/0'
-          private_key: '${{ secrets.HL_PRIVATE_KEY }}'
-          preshared_key: '${{ secrets.HL_PRESHARED_KEY }}'
+      - name: "Install WireGuard"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wireguard
+
+      - name: "Create WireGuard config"
+        run: |
+          sudo mkdir -p /etc/wireguard
+          sudo chmod 700 /etc/wireguard
+          sudo touch /etc/wireguard/wg0.conf
+          sudo chmod 600 /etc/wireguard/wg0.conf
+          sudo bash -c "cat > /etc/wireguard/wg0.conf" << EOF
+          [Interface]
+          PrivateKey = ${{ secrets.HL_PRIVATE_KEY }}
+          Address = 10.1.5.2/32
+          DNS = 10.1.5.1
+          
+          [Peer]
+          PublicKey = 6/tGUsqU3ib5LEEua2cLCUxSDFpiEFhOT0sGkqz0LHk=
+          PresharedKey = ${{ secrets.HL_PRESHARED_KEY }}
+          AllowedIPs = 10.1.5.1/32,10.1.5.2/32,192.168.1.11/24,0.0.0.0/0
+          Endpoint = ${{ secrets.HL_ENDPOINT }}
+          EOF
+
+      - name: "Start WireGuard"
+        run: |
+          sudo wg-quick up wg0
+          sudo wg
+          ping 192.168.1.11 -c 3
 
       - name: Log in to docker.io
         uses: redhat-actions/podman-login@v1.6
@@ -32,3 +52,9 @@ jobs:
         env:
           TF_VAR_ansible_id_rsa: ${{ secrets.ANSIBLE_PK }}
           TF_VAR_bristol_proxmox_token_secret: ${{ secrets.BRISTOL_PROXMOX_TOKEN_SECRET }}
+
+      - name: "Stop WireGuard"
+        continue-on-error: true
+        run: |
+          sudo wg-quick down wg0
+          sudo rm -rf /etc/wireguard
