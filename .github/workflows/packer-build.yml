@@ -1,8 +1,8 @@
 name: packer-build
 on:
   push:
-    branches:
-      - "*"
+    tags:
+      - "v*"
 
 jobs:
   build-templates:
