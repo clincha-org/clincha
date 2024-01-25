@@ -11,7 +11,7 @@ all: build plan
 
 build:
 	@echo "Building..."
-	@podman build . --file containers/Dockerfile --tag docker.io/clincha/terraform-init:${VERSION}
+	@podman build . --file Dockerfile --tag docker.io/clincha/terraform-init:${VERSION}
 
 debug: build
 	@echo "Debugging..."
