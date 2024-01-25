@@ -46,6 +46,12 @@ jobs:
           sudo wg
           ping 192.168.1.11 -c 3
 
+      - name: Install Packer
+        run: |
+          curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+          sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+          sudo apt-get update && sudo apt-get install -y packer
+
       - name: Create SSH key
         run: 'echo "$ANSIBLE_PK" > id_rsa && chmod 600 id_rsa'
         shell: bash
@@ -60,7 +66,7 @@ jobs:
       - name: packer build
         working-directory: packer
         run: |
-          /usr/bin/packer build --force \
+          packer build --force \
           -var "ansible_ssh_password=${{ secrets.ANSIBLE_PASSWORD }}" \
           -var "proxmox_api_token_secret=${{ secrets.PACKER_BRISTOL_PROXMOX_TOKEN_SECRET }}" \
           -var-file="nodes/${{ matrix.node }}.pkrvars.hcl" \
