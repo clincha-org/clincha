@@ -23,7 +23,7 @@ apply: build
 
 plan: build
 	@echo "Planning..."
-	@podman run --entrypoint /bin/sh --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION} -c "terraform init && terraform plan"
+	@podman run --entrypoint sh --env="TF_VAR*" --env="ARM_ACCESS_KEY=${ARM_ACCESS_KEY}" docker.io/clincha/terraform-init:${VERSION} -c "terraform init && terraform plan"
 
 destroy: build
 	@echo "Destroying..."
