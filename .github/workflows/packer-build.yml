@@ -59,10 +59,17 @@ jobs:
         env:
           ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
 
+      - name: Disable the firewall
+        run: |
+          sudo ufw status
+          sudo ufw disable
+          sudo ufw status
+
       - name: packer init
         working-directory: packer
         run: |
           /usr/bin/packer init .
+
 
       - name: packer build
         working-directory: packer
