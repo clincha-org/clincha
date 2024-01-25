@@ -7,7 +7,7 @@ DESCRIBE_PARTS     := $(subst -, ,$(DESCRIBE))
 VERSION_TAG        := $(word 1,$(DESCRIBE_PARTS))
 VERSION            := $(subst v,,$(VERSION_TAG))
 
-all: build apply
+all: build plan apply
 
 build:
 	@echo "Building"
