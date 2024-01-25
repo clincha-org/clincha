@@ -1,32 +1,18 @@
-name: terraform-apply
-
+name: Terraform apply
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - master
-
+    tags:
+      - 'v*'
 jobs:
-  terraform:
-    env:
-      ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
-    runs-on: [ self-hosted, init ]
+  apply:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3.1.0
-
-      - uses: hashicorp/setup-terraform@v2
+      - uses: ./github/workflows/template-terraform.yml
         with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
-      - name: terraform initialise
-        working-directory: terraform
-        run: terraform init
-
-      - name: terraform apply
-        working-directory: terraform
-        run: |
-          /usr/bin/terraform apply \
-            --auto-approve \
-            -var="ansible_id_rsa=${{ secrets.ANSIBLE_PK }}" \
-            -var="bristol_proxmox_token_secret=${{ secrets.TERRAFORM_BRISTOL_PROXMOX_TOKEN_SECRET }}"
+          ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
+          ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
+          BRISTOL_PROXMOX_TOKEN_SECRET: ${{ secrets.BRISTOL_PROXMOX_TOKEN_SECRET }}
+          HL_PRIVATE_KEY: ${{ secrets.HL_PRIVATE_KEY }}
+          HL_PRESHARED_KEY: ${{ secrets.HL_PRESHARED_KEY }}
+          HL_ENDPOINT: ${{ secrets.HL_ENDPOINT }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}

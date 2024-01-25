@@ -1,8 +1,49 @@
-name: Build container image
+name: Terraform apply
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_call:
+    inputs:
+      command:
+        type: string
+        default: "apply"
+        description: "The terraform command to run"
+        required: true
+      wg_allowed_ips:
+        type: string
+        default: "10.1.5.1/32,10.1.5.2/32,192.168.1.11/24,10.1.1.1/24,10.1.2.1/24,10.1.3.1/24,0.0.0.0/0"
+        description: "The IP addresses in HL that this host can access"
+        required: true
+      wg_address:
+        type: string
+        default: "10.1.5.2/32"
+        description: "The WireGuard address to use for this host"
+        required: true
+      wg_dns:
+        type: string
+        default: "10.1.5.1"
+        description: "The WireGuard DNS server"
+        required: true
+    secrets:
+      ARM_ACCESS_KEY:
+        required: true
+        description: "The Azure storage account access key"
+      ANSIBLE_PK:
+        required: true
+        description: "The Ansible private key"
+      BRISTOL_PROXMOX_TOKEN_SECRET:
+        required: true
+        description: "The HL Proxmox token secret"
+      HL_PRIVATE_KEY:
+        required: true
+        description: "The HL WireGuard private key"
+      HL_PRESHARED_KEY:
+        required: true
+        description: "The HL WireGuard preshared key"
+      HL_ENDPOINT:
+        required: true
+        description: "The HL WireGuard endpoint"
+      DOCKERHUB_PASSWORD:
+        required: true
+        description: "The Docker Hub password"
 jobs:
   apply:
     runs-on: ubuntu-latest
@@ -26,13 +67,13 @@ jobs:
           sudo bash -c "cat > /etc/wireguard/wg0.conf" << EOF
           [Interface]
           PrivateKey = ${{ secrets.HL_PRIVATE_KEY }}
-          Address = 10.1.5.2/32
-          DNS = 10.1.5.1
+          Address = ${{ inputs.wg_address }}
+          DNS = ${{ inputs.wg_dns }}
           
           [Peer]
           PublicKey = 6/tGUsqU3ib5LEEua2cLCUxSDFpiEFhOT0sGkqz0LHk=
           PresharedKey = ${{ secrets.HL_PRESHARED_KEY }}
-          AllowedIPs = 10.1.5.1/32,10.1.5.2/32,192.168.1.11/24,10.1.1.1/24,10.1.2.1/24,10.1.3.1/24,0.0.0.0/0
+          AllowedIPs = ${{ inputs.wg_allowed_ips }}
           Endpoint = ${{ secrets.HL_ENDPOINT }}
           EOF
 
@@ -56,7 +97,7 @@ jobs:
           TF_VAR_bristol_proxmox_token_secret: ${{ secrets.BRISTOL_PROXMOX_TOKEN_SECRET }}
 
       - name: "Stop WireGuard"
-        continue-on-error: true
+        if: always()
         run: |
           sudo wg-quick down wg0
           sudo rm -rf /etc/wireguard
