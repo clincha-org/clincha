@@ -8,7 +8,7 @@ jobs:
   plan:
     uses: "./.github/workflows/template-terraform.yml"
     with:
-      command: plan
+      command: "plan"
     secrets:
       ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
       ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}

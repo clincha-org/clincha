@@ -88,7 +88,7 @@ jobs:
           registry: docker.io
 
       - name: Apply Terraform
-        run: make ARM_ACCESS_KEY=${{ secrets.ARM_ACCESS_KEY }}
+        run: make ${{ inputs.command }} ARM_ACCESS_KEY=${{ secrets.ARM_ACCESS_KEY }}
         env:
           TF_VAR_ansible_id_rsa: ${{ secrets.ANSIBLE_PK }}
           TF_VAR_bristol_proxmox_token_secret: ${{ secrets.BRISTOL_PROXMOX_TOKEN_SECRET }}
