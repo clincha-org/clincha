@@ -1,4 +1,4 @@
-name: Terraform apply
+name: terraform-apply
 on:
   push:
     tags:

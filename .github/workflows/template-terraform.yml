@@ -1,4 +1,4 @@
-name: Terraform apply
+name: template-terraform
 on:
   workflow_call:
     inputs:
