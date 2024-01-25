@@ -92,6 +92,7 @@ jobs:
 
       - name: "Run the make command"
         run: make ${{ inputs.command }} ARM_ACCESS_KEY=${{ secrets.ARM_ACCESS_KEY }}
+        working-directory: terraform
         env:
           TF_VAR_ansible_id_rsa: ${{ secrets.ANSIBLE_PK }}
           TF_VAR_bristol_proxmox_token_secret: ${{ secrets.BRISTOL_PROXMOX_TOKEN_SECRET }}
