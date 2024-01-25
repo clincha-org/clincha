@@ -32,10 +32,10 @@ on:
       BRISTOL_PROXMOX_TOKEN_SECRET:
         required: true
         description: "The HL Proxmox token secret"
-      HL_PRIVATE_KEY:
+      HL_TF_PRIVATE_KEY:
         required: true
         description: "The HL WireGuard private key"
-      HL_PRESHARED_KEY:
+      HL_TF_PRESHARED_KEY:
         required: true
         description: "The HL WireGuard preshared key"
       HL_ENDPOINT:

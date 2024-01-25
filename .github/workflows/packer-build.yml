@@ -8,6 +8,7 @@ jobs:
   build-templates:
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 1
       matrix:
         node: [ bri-s-01, bri-s-02, bri-s-03 ]
     steps:
