@@ -2,7 +2,7 @@ terraform {
   required_providers {
     proxmox = {
       source  = "telmate/proxmox"
-      version = "1.0.14"
+      version = "1.0.16"
     }
     azurerm = {
       source  = "hashicorp/azurerm"
