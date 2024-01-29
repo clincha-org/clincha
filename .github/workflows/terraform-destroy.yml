@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  plan:
+  destroy:
     uses: "./.github/workflows/template-terraform.yml"
     with:
       command: "destroy"
@@ -12,7 +12,7 @@ jobs:
       ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
       ANSIBLE_PK: ${{ secrets.ANSIBLE_PK }}
       BRISTOL_PROXMOX_TOKEN_SECRET: ${{ secrets.BRISTOL_PROXMOX_TOKEN_SECRET }}
-      HL_PRIVATE_KEY: ${{ secrets.HL_PRIVATE_KEY }}
-      HL_PRESHARED_KEY: ${{ secrets.HL_PRESHARED_KEY }}
+      HL_TF_PRIVATE_KEY: ${{ secrets.HL_TF_PRIVATE_KEY }}
+      HL_TF_PRESHARED_KEY: ${{ secrets.HL_TF_PRESHARED_KEY }}
       HL_ENDPOINT: ${{ secrets.HL_ENDPOINT }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
