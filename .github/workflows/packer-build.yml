@@ -1,6 +1,9 @@
 name: packer-build
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - "*"
 
 jobs:
   build-templates:
