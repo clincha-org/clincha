@@ -66,15 +66,15 @@ jobs:
           sudo chmod 600 /etc/wireguard/wg0.conf
           sudo bash -c "cat > /etc/wireguard/wg0.conf" << EOF
           [Interface]
-          PrivateKey = ${{ inputs.HL_TF_PRIVATE_KEY }}
+          PrivateKey = ${{ secrets.HL_TF_PRIVATE_KEY }}
           Address = ${{ inputs.wg_address }}
           DNS = ${{ inputs.wg_dns }}
           
           [Peer]
           PublicKey = 6/tGUsqU3ib5LEEua2cLCUxSDFpiEFhOT0sGkqz0LHk=
-          PresharedKey = ${{ inputs.HL_TF_PRESHARED_KEY }}
+          PresharedKey = ${{ secrets.HL_TF_PRESHARED_KEY }}
           AllowedIPs = ${{ inputs.wg_allowed_ips }}
-          Endpoint = ${{ inputs.HL_ENDPOINT }}
+          Endpoint = ${{ secrets.HL_ENDPOINT }}
           EOF
 
       - name: "Start WireGuard"

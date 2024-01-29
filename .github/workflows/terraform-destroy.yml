@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  plan:
+  destroy:
     uses: "./.github/workflows/template-terraform.yml"
     with:
       command: "destroy"
