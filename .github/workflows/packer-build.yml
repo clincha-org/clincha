@@ -1,9 +1,6 @@
 name: packer-build
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - "*"
 
 jobs:
   build-templates:
@@ -11,7 +8,10 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        node: [ bri-s-01, bri-s-02, bri-s-03 ]
+        node:
+         - "bri-s-01"
+         - "bri-s-02"
+         - "bri-s-03"
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0
