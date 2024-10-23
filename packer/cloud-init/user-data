@@ -1,0 +1,38 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_GB
+  keyboard:
+    layout: gb
+  network:
+    version: 2
+    ethernets:
+      ens18:
+        addresses: [10.0.2.16/24]
+        nameservers:
+          addresses: [8.8.8.8, 8.8.4.4]
+        routes:
+          - to: default
+            via: 10.0.2.2
+  ssh:
+    install-server: true
+    allow-pw: true
+  user-data:
+    preserve_hostname: false
+    hostname: ubuntu
+    timezone: Europe/London
+    users:
+      - name: ansible
+        passwd: $6$CVLxCzUg9C4XlLTX$arh4WBeqb/of/p9Wc1iknnup/ybQ0ZeWQH8hKpe017jkELMQmlSlVaGYRh64jOpEDfsBqaiipb6wAWsubmFO3.
+        groups: [sudo]
+        lock-passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        shell: /bin/bash
+  apt:
+    mirror-selection:
+      primary:
+        - country-mirror
+        - uri: http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu/
+        - uri: https://mirror.server.net/ubuntu/
+  packages:
+    - qemu-guest-agent

@@ -1,0 +1,10 @@
+- name: "Proxmox host configuration"
+  hosts: hawkfield
+  become: true
+  tasks:
+    - name: "Install sudo"
+      package:
+        name: sudo
+        state: present
+  roles:
+    - role: users

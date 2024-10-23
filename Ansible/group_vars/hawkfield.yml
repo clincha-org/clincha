@@ -1,0 +1,26 @@
+ansible_user: ansible
+ansible_password: "{{ lookup('env', 'ANSIBLE_PASSWORD') }}"
+ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+ansible_python_interpreter: /usr/bin/python3
+
+user_list:
+  - {
+    name: "root",
+    shell: "/bin/bash",
+    password: "{{ lookup('env', 'ROOT_PASSWORD') | password_hash('sha512', 'salty_root') }}"
+  }
+  - {
+    name: "ansible",
+    uid: "1000",
+    gid: "1000",
+    shell: "/bin/bash",
+    password: "{{ lookup('env', 'ANSIBLE_PASSWORD') | password_hash('sha512', 'salty_ansible') }}"
+  }
+  - {
+    name: "clincha",
+    uid: "1001",
+    gid: "1001",
+    shell: "/bin/bash",
+    password: "{{ lookup('env', 'CLINCHA_PASSWORD') | password_hash('sha512', 'salty_clincha') }}",
+    key: "https://github.com/clincha.keys"
+  }

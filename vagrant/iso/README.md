@@ -1,0 +1,1 @@
+Put ISO's in this file for each OS you want to build, they will be mounted into the correct location to be used for creating templates in Proxmox.

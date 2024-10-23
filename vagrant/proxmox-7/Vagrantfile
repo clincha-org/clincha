@@ -1,0 +1,10 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "clincha/proxmox-ve-7"
+  config.vm.box_version = "1.2.1"
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "8192"
+    vb.cpus = "4"
+  end
+
+  config.vm.synced_folder "iso", "/var/lib/vz/template/iso"
+end
