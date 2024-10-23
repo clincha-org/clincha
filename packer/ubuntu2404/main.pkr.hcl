@@ -22,14 +22,9 @@ source "proxmox-iso" "ubuntu2404" {
   cores   = 2
   memory  = 4096
 
-  cpu_type = "host"
+  # cpu_type = "host"
   os       = "l26"
-  numa     = true
-
-  vga {
-    type = "virtio"
-    memory = 32
-  }
+  numa     = false
 
   network_adapters {
     model  = "e1000"
@@ -52,34 +47,24 @@ source "proxmox-iso" "ubuntu2404" {
     unmount          = true
   }
 
-  boot_wait         = "1s"
-  boot_key_interval = "3s"
-  boot_command = [
-    "<spacebar><wait><spacebar><wait><spacebar><wait><spacebar><wait><spacebar><wait>",
-    "e<wait>",
-    "<down><down><down><end><left><left><left><left><wait5>",
-    "autoinstall",
-    "<wait>",
-    "<f10>",
-  ]
+  boot_wait    = var.boot_wait
+  boot_command = var.boot_command
 
-  ssh_host     = "127.0.0.1"
-  ssh_port     = 2223
-  ssh_timeout  = "1h"
-  ssh_username = "ansible"
+  ssh_host     = var.ssh_host
+  ssh_port     = var.ssh_port
+  ssh_username = var.ssh_username
   ssh_password = var.ssh_password
-
-  serials = ["socket"]
+  ssh_timeout  = var.ssh_timeout
 }
 
 build {
   sources = ["source.proxmox-iso.ubuntu2404"]
 
   provisioner "shell" {
-    script = "scripts/non-interactive-front-end.sh"
+    script = "../scripts/non-interactive-front-end.sh"
   }
 
   provisioner "shell" {
-    script = "scripts/update.sh"
+    script = "../scripts/update.sh"
   }
 }
