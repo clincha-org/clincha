@@ -68,3 +68,8 @@ variable boot_command {
     "<f10>",
   ]
 }
+
+variable node {
+  type    = string
+  default = "pve"
+}

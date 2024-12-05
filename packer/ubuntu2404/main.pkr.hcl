@@ -17,14 +17,14 @@ source "proxmox-iso" "ubuntu2404" {
   iso_checksum = var.iso_checksum
   unmount_iso  = var.unmount_iso
 
-  node    = "pve"
+  node    = var.node
   sockets = 1
   cores   = 2
-  memory  = 4096
+  memory = 4096
 
   # cpu_type = "host"
-  os       = "l26"
-  numa     = false
+  os   = "l26"
+  numa = false
 
   network_adapters {
     model  = "e1000"
@@ -37,7 +37,7 @@ source "proxmox-iso" "ubuntu2404" {
     type         = "scsi"
   }
 
-  cloud_init              = true
+  cloud_init = true
   cloud_init_storage_pool = "local-lvm"
 
   additional_iso_files {
@@ -47,10 +47,10 @@ source "proxmox-iso" "ubuntu2404" {
     unmount          = true
   }
 
-  boot_wait    = var.boot_wait
+  boot_wait = var.boot_wait
   boot_command = var.boot_command
 
-  ssh_host     = var.ssh_host
+  # ssh_host     = var.ssh_host
   ssh_port     = var.ssh_port
   ssh_username = var.ssh_username
   ssh_password = var.ssh_password
