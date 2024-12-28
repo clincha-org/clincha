@@ -10,3 +10,5 @@ all:
           ansible_host: 10.1.2.12
         hawk03:
           ansible_host: 10.1.2.13
+        hawk04:
+          ansible_host: 10.1.2.14
