@@ -81,7 +81,7 @@ jobs:
         run: |
           sudo wg-quick up wg0
           sudo wg
-          ping 192.168.1.11 -c 3
+          ping 10.1.2.1 -c 3
 
       - name: "Log in to docker.io"
         uses: redhat-actions/podman-login@v1.6
