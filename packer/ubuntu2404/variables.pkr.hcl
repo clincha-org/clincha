@@ -19,11 +19,11 @@ variable proxmox_insecure_skip_tls_verify {
 # ISO details
 variable iso_file {
   type    = string
-  default = "local:iso/ubuntu-24.04.1-live-server-amd64.iso"
+  default = "local:iso/ubuntu.iso"
 }
 variable iso_checksum {
   type    = string
-  default = "sha256:e240e4b801f7bb68c20d1356b60968ad0c33a41d00d828e74ceb3364a0317be9"
+  default = "sha256:d6dab0c3a657988501b4bd76f1297c053df710e06e0c3aece60dead24f270b4d"
 }
 variable unmount_iso {
   type    = bool
@@ -41,7 +41,7 @@ variable ssh_port {
 }
 variable ssh_username {
   type    = string
-  default = "root"
+  default = "ansible"
 }
 variable ssh_password {
   type    = string
@@ -72,4 +72,9 @@ variable boot_command {
 variable node {
   type    = string
   default = "pve"
+}
+
+variable vm_id {
+  type = string
+  default = 100
 }

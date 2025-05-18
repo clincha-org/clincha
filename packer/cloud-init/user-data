@@ -13,6 +13,8 @@ autoinstall:
     timezone: Europe/London
     users:
       - name: ansible
+        ssh_authorized_keys:
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMaJZYtkHZpzRHmA/rcEi9UOkSgwCL9Vn/lnZqFerwnu ansible
         passwd: $6$CVLxCzUg9C4XlLTX$arh4WBeqb/of/p9Wc1iknnup/ybQ0ZeWQH8hKpe017jkELMQmlSlVaGYRh64jOpEDfsBqaiipb6wAWsubmFO3.
         groups: [sudo]
         lock-passwd: false
@@ -26,3 +28,7 @@ autoinstall:
         - uri: https://mirror.server.net/ubuntu/
   packages:
     - qemu-guest-agent
+  storage:
+    layout:
+      name: lvm
+      sizing-policy: all

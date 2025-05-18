@@ -8,6 +8,9 @@ packer {
 }
 
 source "proxmox-iso" "ubuntu2404" {
+  vm_name = "ubuntu2404"
+  vm_id      = var.vm_id
+
   proxmox_url              = var.proxmox_url
   username                 = var.proxmox_username
   password                 = var.proxmox_password
@@ -26,18 +29,19 @@ source "proxmox-iso" "ubuntu2404" {
   os   = "l26"
   numa = false
 
+
   network_adapters {
     model  = "e1000"
     bridge = "vmbr0"
   }
 
   disks {
-    disk_size    = "10G"
+    disk_size    = "32G"
     storage_pool = "local-lvm"
-    type         = "scsi"
+    type         = "virtio"
   }
 
-  cloud_init = true
+  cloud_init              = true
   cloud_init_storage_pool = "local-lvm"
 
   additional_iso_files {
@@ -66,5 +70,9 @@ build {
 
   provisioner "shell" {
     script = "../scripts/update.sh"
+  }
+
+  provisioner "shell" {
+    script = "../scripts/cloud-init.sh"
   }
 }
