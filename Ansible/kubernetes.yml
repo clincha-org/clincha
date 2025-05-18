@@ -1,0 +1,118 @@
+---
+- name: Apply base configuration
+  hosts: base
+  become: true
+  roles:
+    - role: users
+    - role: sudoers
+    - role: base
+
+- name: Apply Kubernetes secondary disk configuration
+  hosts: kube_node
+  become: true
+  vars:
+    disks:
+      - device: "/dev/vdb"
+        vg: "fast"
+        lv: "fast"
+        mountpoint: "/mnt/fast"
+  tasks:
+    - name: Create partition
+      parted:
+        device: "{{ item.device }}"
+        number: 1
+        flags: [ lvm ]
+        label: gpt
+        state: present
+      loop: "{{ disks }}"
+
+    - name: Create the volume group
+      lvg:
+        vg: "{{ item.vg }}"
+        pvs: "{{ item.device }}1" # /dev/sdx1
+      loop: "{{ disks }}"
+
+    - name: Create the logical volume
+      lvol:
+        vg: "{{ item.vg }}"
+        lv: "{{ item.lv }}"
+        size: "100%VG"
+      loop: "{{ disks }}"
+
+    - name: Format the filesystem
+      filesystem:
+        fstype: xfs
+        dev: "/dev/{{ item.vg }}/{{ item.lv }}"
+      loop: "{{ disks }}"
+
+    - name: Mount the disks
+      mount:
+        path: "{{ item.mountpoint }}"
+        src: "/dev/{{ item.vg }}/{{ item.lv }}"
+        fstype: xfs
+        state: mounted
+      loop: "{{ disks }}"
+
+- name: "Setup servers for Longhorn"
+  hosts: kube_node
+  become: true
+  tasks:
+    - name: "Install NFS Common"
+      ansible.builtin.package:
+        name: nfs-common
+        state: present
+
+    - name: "Disable multipath service"
+      ansible.builtin.systemd:
+        name: multipathd
+        enabled: false
+        state: stopped
+
+- name: "Create cluster"
+  ansible.builtin.import_playbook: kubernetes_sigs.kubespray.cluster
+
+- name: "Configure kubernetes user"
+  hosts: kube_control_plane
+  tasks:
+    - name: "Ensure .kube directory exists"
+      file:
+        path: "/home/kubernetes/.kube"
+        state: directory
+        mode: 0770
+        owner: "kubernetes"
+        group: "kubernetes"
+
+    - name: "Symlink kubectl admin.conf to /home/kubernetes/.kube/conf"
+      file:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/kubernetes/.kube/config
+        state: link
+        owner: "kubernetes"
+        group: "kubernetes"
+
+    - name: "Alias k"
+      lineinfile:
+        path: /home/kubernetes/.bashrc
+        line: "alias k=kubectl"
+        regexp: "^alias k=kubectl$"
+        state: present
+
+    - name: "Autocomplete kubectl"
+      lineinfile:
+        path: /home/kubernetes/.bashrc
+        line: "source <(kubectl completion bash)"
+        regexp: "^source <(kubectl completion bash)$"
+        state: present
+
+    - name: "Autocomplete k"
+      lineinfile:
+        path: /home/kubernetes/.bashrc
+        line: "complete -o default -F __start_kubectl k"
+        regexp: "^complete -o default -F __start_kubectl k$"
+        state: present
+
+- name: "Install Helm"
+  hosts: kube_control_plane
+  become: true
+  roles:
+    - role: helm

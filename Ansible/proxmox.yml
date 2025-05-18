@@ -1,6 +1,9 @@
 - name: "Proxmox host configuration"
   hosts: hawkfield
   become: true
+  roles:
+    - role: users
+    - role: sudoers
   tasks:
     - name: "Install sudo"
       package:
@@ -9,12 +12,9 @@
 
     - name: "Ensure Ubuntu iso is available"
       ansible.builtin.get_url:
-        url: "https://releases.ubuntu.com/24.04.1/ubuntu-24.04.1-live-server-amd64.iso"
-        dest: "/var/lib/vz/template/iso/ubuntu-24.04.1-live-server-amd64.iso"
-        checksum: "sha256:e240e4b801f7bb68c20d1356b60968ad0c33a41d00d828e74ceb3364a0317be9"
+        url: "https://releases.ubuntu.com/24.04/ubuntu-24.04.2-live-server-amd64.iso"
+        dest: "/var/lib/vz/template/iso/ubuntu.iso"
+        checksum: "sha256:d6dab0c3a657988501b4bd76f1297c053df710e06e0c3aece60dead24f270b4d"
         owner: root
         group: root
         mode: 0644
-  roles:
-    - role: users
-    - role: sudoers

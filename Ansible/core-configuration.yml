@@ -1,8 +1,0 @@
----
-- name: Apply base roll
-  hosts: base
-  become: true
-  roles:
-    - role: users
-    - role: sudoers
-    - role: base
