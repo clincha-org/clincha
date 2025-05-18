@@ -1,0 +1,12 @@
+---
+service:
+  ui:
+    type: LoadBalancer
+persistence:
+  defaultClass: true
+defaultSettings:
+  createDefaultDiskLabeledNodes: true
+  storageReservedPercentageForDefaultDisk: 0
+defaultBackupStore:
+  backupTarget: s3://clincha-longhorn@gcp/
+  backupTargetCredentialSecret: backup-secret
