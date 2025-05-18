@@ -1,0 +1,12 @@
+all:
+  children:
+    hawkfield:
+      hosts:
+        hawk01:
+          ansible_host: 10.1.2.11
+        hawk02:
+          ansible_host: 10.1.2.12
+        hawk03:
+          ansible_host: 10.1.2.13
+        hawk04:
+          ansible_host: 10.1.2.14

@@ -1,0 +1,25 @@
+---
+plugin: "community.general.proxmox"
+url: "https://10.1.2.11:8006"
+user: "ansible@pam"
+token_id: "ansible"
+token_secret: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  38393535393832623136353965383034363435313662353430393363653762356261343139323562
+  6236336263306165353533626335353839306535643238630a356365623338373037656135383263
+  30376233393135666164626464663237636138613430343363663161373661616631363363383338
+  3039616435353038660a653066626639646362623964343531393631383136393766653635386661
+  30613736396338636430353033633163343764343337373934623563386637323532646539623064
+  3139663362313631646265383262396635313132656164373835
+validate_certs: false
+want_facts: true
+want_proxmox_nodes_ansible_host: true
+compose:
+  ansible_host: proxmox_ipconfig0.ip | replace('/24', '')
+  site: "'hawkfield'"
+groups:
+  base: "'base' in (proxmox_tags_parsed|list)"
+  kube_control_plane: "'kubernetes_master' in (proxmox_tags_parsed|list)"
+  etcd: "'kubernetes_master' in (proxmox_tags_parsed|list)"
+  kube_node: "'kubernetes_worker' in (proxmox_tags_parsed|list)"
+  k8s_cluster: "'kubernetes_worker' in (proxmox_tags_parsed|list) or 'kubernetes_master' in (proxmox_tags_parsed|list)"

@@ -1,8 +1,11 @@
 ---
 - name: "Install useful packages"
-  package:
+  apt:
     name:
       - git
       - bash-completion
       - jq
+      - acl # https://stackoverflow.com/questions/46352173/ansible-failed-to-set-permissions-on-the-temporary
+      - python3-pip
     state: present
+    update_cache: true

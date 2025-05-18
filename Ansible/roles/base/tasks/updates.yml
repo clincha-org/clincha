@@ -1,22 +1,15 @@
 ---
 - name: "Upgrade all packages"
-  dnf:
+  apt:
     name: "*"
     state: latest
+    update_cache: true
 
-- name: "Ensure yum-utils is installed for checking for restart required"
-  dnf:
-    name: "yum-utils"
-    state: latest
+- name: "Check if reboot is required"
+  stat:
+    path: /var/run/reboot-required
+  register: stat_result
 
-- name: "Check if reboot required"
-  command:
-    cmd: "needs-restarting -r"
-  changed_when: false
-  register: reboot_required
-  failed_when: reboot_required.rc not in [0, 1]
-
-- name: "Reboot if required"
+- name: "Restart if needed"
   reboot:
-    msg: "Ansible is rebooting this host for patching"
-  when: "reboot_required.rc == 1"
+  when: stat_result.stat.exists

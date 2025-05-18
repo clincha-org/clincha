@@ -1,0 +1,34 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_GB
+  keyboard:
+    layout: gb
+  ssh:
+    install-server: true
+    allow-pw: true
+  user-data:
+    preserve_hostname: false
+    hostname: ubuntu
+    timezone: Europe/London
+    users:
+      - name: ansible
+        ssh_authorized_keys:
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMaJZYtkHZpzRHmA/rcEi9UOkSgwCL9Vn/lnZqFerwnu ansible
+        passwd: $6$CVLxCzUg9C4XlLTX$arh4WBeqb/of/p9Wc1iknnup/ybQ0ZeWQH8hKpe017jkELMQmlSlVaGYRh64jOpEDfsBqaiipb6wAWsubmFO3.
+        groups: [sudo]
+        lock-passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        shell: /bin/bash
+  apt:
+    mirror-selection:
+      primary:
+        - country-mirror
+        - uri: http://www.mirrorservice.org/sites/archive.ubuntu.com/ubuntu/
+        - uri: https://mirror.server.net/ubuntu/
+  packages:
+    - qemu-guest-agent
+  storage:
+    layout:
+      name: lvm
+      sizing-policy: all
