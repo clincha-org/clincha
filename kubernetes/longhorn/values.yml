@@ -8,5 +8,4 @@ defaultSettings:
   createDefaultDiskLabeledNodes: true
   storageReservedPercentageForDefaultDisk: 0
 defaultBackupStore:
-  backupTarget: s3://clincha-longhorn@gcp/
-  backupTargetCredentialSecret: backup-secret
+  backupTarget: nfs://10.1.2.10:/mnt/data/backups/longhorn
