@@ -1,0 +1,9 @@
+#ports:
+#  web:
+#    redirectTo:
+#      port: websecure
+ingressRoute:
+  dashboard:
+    enabled: true
+    entryPoints: [web, websecure]
+    matchRule: Host(`traefik.clinch-home.com`)
