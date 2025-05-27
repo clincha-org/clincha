@@ -1,7 +1,10 @@
-#ports:
-#  web:
-#    redirectTo:
-#      port: websecure
+ports:
+  web:
+    redirections:
+      entryPoint:
+        to: websecure
+        scheme: https
+        permanent: true
 ingressRoute:
   dashboard:
     enabled: true

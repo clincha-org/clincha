@@ -24,18 +24,20 @@ spec:
       initContainers:
         - name: copy-server-settings
           image: busybox
-          command: [ "sh", "-c", "mkdir -p /factorio/config && cp /configmap/server-settings.json /factorio/config/server-settings.json" ]
+          command: [ "sh", "-c", "cp /settings/*.json /config" ]
           volumeMounts:
-            - name: factorio
-              mountPath: /factorio
+            - name: config
+              mountPath: /config
             - name: server-settings
-              mountPath: /configmap
+              mountPath: /settings
       containers:
         - name: factorio
           image: factoriotools/factorio:2.0.47
           ports:
             - containerPort: 34197
               protocol: UDP
+            - containerPort: 27015
+              protocol: TCP
           env:
             - name: DLC_SPACE_AGE
               value: "true"
@@ -44,12 +46,17 @@ spec:
               cpu: "4"
               memory: "16Gi"
           volumeMounts:
-            - mountPath: /factorio
-              name: factorio
+            - mountPath: /factorio/config
+              name: config
+            - mountPath: /factorio/saves
+              name: saves
       volumes:
-        - name: factorio
-          persistentVolumeClaim:
-            claimName: factorio
+        - name: config
+          emptyDir: { }
+        - name: saves
+          nfs:
+            path: /mnt/data/factorio/spaceage
+            server: 10.1.2.10
         - name: server-settings
           configMap:
             name: factorio-server-settings
@@ -67,25 +74,16 @@ spec:
   selector:
     name: factorio
   ports:
-    - name: factorio-udp
+    - name: factorio
       port: 34197
       targetPort: 34197
       nodePort: 31497
       protocol: UDP
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: factorio
-  namespace: factorio
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: fast
-  resources:
-    requests:
-      storage: 50Gi
+    - name: rcon
+      port: 27015
+      targetPort: 27015
+      nodePort: 31015
+      protocol: TCP
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -93,6 +91,17 @@ metadata:
   name: factorio-server-settings
   namespace: factorio
 data:
+  server-whitelist.json: |
+    [
+      "clincha",
+      "Ragingrabit"
+    ]
+
+  server-adminlist.json: |
+    [
+      "clincha",
+      "Ragingrabit"
+    ]
   server-settings.json: |
     {
       "name": "blaze clage",
@@ -106,37 +115,216 @@ data:
         "lan": true
       },
       "autosave_interval": 5,
-      "autosave_slots": 10,
+      "autosave_slots": 3,
       "afk_autokick_interval": 0,
       "auto_pause": true,
       "auto_pause_when_players_connect": false,
       "only_admins_can_pause_the_game": true,
       "autosave_only_on_server": true
     }
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: factorio-map-settings
-  namespace: factorio
-data:
-  server-settings.json: |
+  map-settings.json: |
     {
-      "name": "blaze clage",
-      "description": "clincha & blaze go to space",
-      "tags": [
-        "rad"
-      ],
-      "max_players": 2,
-      "visibility": {
-        "public": false,
-        "lan": true
+      "difficulty_settings": {
+        "technology_price_multiplier": 1,
+        "spoil_time_modifier": 1
       },
-      "autosave_interval": 5,
-      "autosave_slots": 10,
-      "afk_autokick_interval": 0,
-      "auto_pause": true,
-      "auto_pause_when_players_connect": false,
-      "only_admins_can_pause_the_game": true,
-      "autosave_only_on_server": true
+      "pollution": {
+        "enabled": true,
+        "_comment_min_to_diffuse_1": "these are values for 60 ticks (1 simulated second)",
+        "_comment_min_to_diffuse_2": "amount that is diffused to neighboring chunk",
+        "diffusion_ratio": 0.02,
+        "min_to_diffuse": 15,
+        "ageing": 1,
+        "expected_max_per_chunk": 150,
+        "min_to_show_per_chunk": 50,
+        "min_pollution_to_damage_trees": 60,
+        "pollution_with_max_forest_damage": 150,
+        "pollution_per_tree_damage": 50,
+        "pollution_restored_per_tree_damage": 10,
+        "max_pollution_to_restore_trees": 20,
+        "enemy_attack_pollution_consumption_modifier": 1
+      },
+      "enemy_evolution": {
+        "enabled": true,
+        "time_factor": 0.000004,
+        "destroy_factor": 0.002,
+        "pollution_factor": 0.0000009
+      },
+      "enemy_expansion": {
+        "enabled": true,
+        "max_expansion_distance": 7,
+        "friendly_base_influence_radius": 2,
+        "enemy_building_influence_radius": 2,
+        "building_coefficient": 0.1,
+        "other_base_coefficient": 2.0,
+        "neighbouring_chunk_coefficient": 0.5,
+        "neighbouring_base_chunk_coefficient": 0.4,
+        "max_colliding_tiles_coefficient": 0.9,
+        "settler_group_min_size": 5,
+        "settler_group_max_size": 20,
+        "min_expansion_cooldown": 14400,
+        "max_expansion_cooldown": 216000
+      },
+      "unit_group": {
+        "min_group_gathering_time": 3600,
+        "max_group_gathering_time": 36000,
+        "max_wait_time_for_late_members": 7200,
+        "max_group_radius": 30.0,
+        "min_group_radius": 5.0,
+        "max_member_speedup_when_behind": 1.4,
+        "max_member_slowdown_when_ahead": 0.6,
+        "max_group_slowdown_factor": 0.3,
+        "max_group_member_fallback_factor": 3,
+        "member_disown_distance": 10,
+        "tick_tolerance_when_member_arrives": 60,
+        "max_gathering_unit_groups": 30,
+        "max_unit_group_size": 200
+      },
+      "steering": {
+        "default": {
+          "radius": 1.2,
+          "separation_force": 0.005,
+          "separation_factor": 1.2,
+          "force_unit_fuzzy_goto_behavior": false
+        },
+        "moving": {
+          "radius": 3,
+          "separation_force": 0.01,
+          "separation_factor": 3,
+          "force_unit_fuzzy_goto_behavior": false
+        }
+      },
+      "path_finder": {
+        "fwd2bwd_ratio": 5,
+        "goal_pressure_ratio": 2,
+        "max_steps_worked_per_tick": 1000,
+        "max_work_done_per_tick": 8000,
+        "use_path_cache": true,
+        "short_cache_size": 5,
+        "long_cache_size": 25,
+        "short_cache_min_cacheable_distance": 10,
+        "short_cache_min_algo_steps_to_cache": 50,
+        "long_cache_min_cacheable_distance": 30,
+        "cache_max_connect_to_cache_steps_multiplier": 100,
+        "cache_accept_path_start_distance_ratio": 0.2,
+        "cache_accept_path_end_distance_ratio": 0.15,
+        "negative_cache_accept_path_start_distance_ratio": 0.3,
+        "negative_cache_accept_path_end_distance_ratio": 0.3,
+        "cache_path_start_distance_rating_multiplier": 10,
+        "cache_path_end_distance_rating_multiplier": 20,
+        "stale_enemy_with_same_destination_collision_penalty": 30,
+        "ignore_moving_enemy_collision_distance": 5,
+        "enemy_with_different_destination_collision_penalty": 30,
+        "general_entity_collision_penalty": 10,
+        "general_entity_subsequent_collision_penalty": 3,
+        "extended_collision_penalty": 3,
+        "max_clients_to_accept_any_new_request": 10,
+        "max_clients_to_accept_short_new_request": 100,
+        "direct_distance_to_consider_short_request": 100,
+        "short_request_max_steps": 1000,
+        "short_request_ratio": 0.5,
+        "min_steps_to_check_path_find_termination": 2000,
+        "start_to_goal_cost_multiplier_to_terminate_path_find": 2000.0,
+        "overload_levels": [
+          0,
+          100,
+          500
+        ],
+        "overload_multipliers": [
+          2,
+          3,
+          4
+        ],
+        "negative_path_cache_delay_interval": 20
+      },
+      "asteroids": {
+        "spawning_rate": 1,
+        "max_ray_portals_expanded_per_tick": 100
+      },
+      "max_failed_behavior_count": 3
+    }
+  map-gen-settings.json: |
+    {
+      "_comment_width+height": "Width and height of map, in tiles; 0 means infinite",
+      "width": 0,
+      "height": 0,
+      "_starting_area_comment": "Multiplier for 'biter free zone radius'",
+      "starting_area": 1,
+      "peaceful_mode": false,
+      "autoplace_controls": {
+        "coal": {
+          "frequency": 1,
+          "size": 1,
+          "richness": 1
+        },
+        "stone": {
+          "frequency": 1,
+          "size": 1,
+          "richness": 1
+        },
+        "copper-ore": {
+          "frequency": 1,
+          "size": 1,
+          "richness": 1
+        },
+        "iron-ore": {
+          "frequency": 1,
+          "size": 1,
+          "richness": 1
+        },
+        "uranium-ore": {
+          "frequency": 1,
+          "size": 1,
+          "richness": 1},
+        "crude-oil": {
+          "frequency": 1,
+          "size": 1,
+          "richness": 1
+        },
+        "water": {
+          "frequency": 1,
+          "size": 1},
+        "trees": {
+          "frequency": 1,
+          "size": 1},
+        "enemy-base": {
+          "frequency": 1,
+          "size": 1}
+      },
+      "cliff_settings": {
+        "_name_comment": "Name of the cliff prototype",
+        "name": "cliff",
+        "_cliff_elevation_0_comment": "Elevation of first row of cliffs",
+        "cliff_elevation_0": 10,
+        "_cliff_elevation_interval_comment": [
+          "Elevation difference between successive rows of cliffs.",
+          "This is inversely proportional to 'frequency' in the map generation GUI. Specifically, when set from the GUI the value is 40 / frequency."
+        ],
+        "cliff_elevation_interval": 40,
+        "_richness_comment": "Called 'cliff continuity' in the map generator GUI. 0 will result in no cliffs, 10 will make all cliff rows completely solid",
+        "richness": 1
+      },
+      "_property_expression_names_comment": [
+        "Overrides for property value generators (map type)",
+        "Leave 'elevation' blank to get 'normal' terrain.",
+        "Use 'elevation': 'elevation_island' to get an island.",
+        "Moisture and terrain type are also controlled via this.",
+        "'control:moisture:frequency' is the inverse of the 'moisture scale' in the map generator GUI.",
+        "'control:moisture:bias' is the 'moisture bias' in the map generator GUI.",
+        "'control:aux:frequency' is the inverse of the 'terrain type scale' in the map generator GUI.",
+        "'control:aux:bias' is the 'terrain type bias' in the map generator GUI."
+      ],
+      "property_expression_names": {
+        "control:moisture:frequency": "1",
+        "control:moisture:bias": "0",
+        "control:aux:frequency": "1",
+        "control:aux:bias": "0"
+      },
+      "starting_points": [
+        {
+          "x": 0,
+          "y": 0}
+      ],
+      "_seed_comment": "Use null for a random seed, number for a specific seed.",
+      "seed": null
     }
