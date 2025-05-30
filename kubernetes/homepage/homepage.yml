@@ -85,3 +85,4 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - clincha.co.uk
+    - www.clincha.co.uk
