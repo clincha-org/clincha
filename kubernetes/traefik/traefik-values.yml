@@ -10,6 +10,8 @@ ingressRoute:
     enabled: true
     entryPoints: [web, websecure]
     matchRule: Host(`traefik.clinch-home.com`)
+    tls:
+      secretName: traefik-certificate-secret
 providers:
   kubernetesIngress:
     allowExternalNameServices: true
