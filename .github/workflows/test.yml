@@ -1,0 +1,11 @@
+name: test.yml
+on:
+  push:
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: github-runners-clincha
+    name: Echo test
+    steps:
+      - run: echo "This is a test job running on the GitHub Runners cluster."
