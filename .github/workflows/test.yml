@@ -6,7 +6,7 @@ on:
 jobs:
   test:
     runs-on:
-      group: github-runners-clincha
+      labels: github-runners-clincha
     name: Echo test
     steps:
       - run: echo "This is a test job running on the GitHub Runners cluster."
