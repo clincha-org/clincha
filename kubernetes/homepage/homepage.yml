@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: homepage
-          image: docker.io/clincha/homepage:0.0.3
+          image: docker.io/clincha/homepage:0.0.2
           ports:
             - containerPort: 80
               protocol: TCP
