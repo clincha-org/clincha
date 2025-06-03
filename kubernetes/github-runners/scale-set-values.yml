@@ -1,0 +1,3 @@
+githubConfigUrl: "https://github.com/clincha-org"
+githubConfigSecret: "github-config-secret"
+minRunners: 3
