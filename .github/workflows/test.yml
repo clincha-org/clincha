@@ -3,10 +3,10 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 jobs:
   test:
-    runs-on:
-      labels: github-runners-clincha
+    runs-on: github-runners-clincha
     name: Echo test
     steps:
       - run: echo "This is a test job running on the GitHub Runners cluster."
