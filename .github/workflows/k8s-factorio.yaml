@@ -1,3 +1,4 @@
+name: Factorio Kubernetes Deployment
 on:
   push:
     branches:

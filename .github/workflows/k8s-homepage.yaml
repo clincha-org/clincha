@@ -1,3 +1,4 @@
+name: Homepage Kubernetes Deployment
 on:
   push:
     branches:
