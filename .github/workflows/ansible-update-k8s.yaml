@@ -36,12 +36,18 @@ jobs:
         run: |
           ansible-galaxy collection install -r galaxy-requirements.yml
 
+      - name: Setup vault password
+        working-directory: Ansible
+        run: |
+          echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > vault
+
       - name: Run Ansible playbook
         working-directory: Ansible
         run: |
           ansible-playbook update.yml \
             --inventory inventory/kubernetes-dynamic.proxmox.yml \
-            --limit "k8s-master-1"
+            --limit "k8s-master-1" \
+            --vault-password-file vault
 #
 #      - name: Set up Kubernetes CLI
 #        uses: azure/setup-kubectl@v4
