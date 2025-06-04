@@ -13,7 +13,7 @@
       register: reboot_required
 
     - name: "Bounce node"
-      when: reboot_required.stat.exists
+#      when: reboot_required.stat.exists
       block:
         - name: "Drain node"
           kubernetes.core.k8s_drain:
