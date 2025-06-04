@@ -1,4 +1,5 @@
 - name: "Update packages"
+  hosts: all
   become: true
   tasks:
     - name: "Update packages"
