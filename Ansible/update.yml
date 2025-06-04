@@ -1,12 +1,10 @@
 - name: "Update packages"
-  hosts: hawkfield
   become: true
-  serial: 1
   tasks:
     - name: "Update packages"
       ansible.builtin.package:
         name: "*"
         state: latest
 
-    - name: "Restart host"
-      ansible.builtin.reboot:
+#    - name: "Restart host"
+#      ansible.builtin.reboot:
