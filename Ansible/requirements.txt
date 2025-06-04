@@ -1,3 +1,4 @@
 ansible-core
 distlib # Required to install collections
 requests # Required for Proxmox dynamic inventory
+kubernetes # For Kubernetes collection
