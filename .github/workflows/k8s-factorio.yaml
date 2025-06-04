@@ -1,0 +1,28 @@
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'kubernetes/factorio/**'
+  workflow_dispatch:
+jobs:
+  apply:
+    runs-on: github-runners-clincha
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Kubernetes CLI
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'latest'
+
+      - name: Deploy kube config
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Apply Kubernetes manifests
+        run: |
+          kubectl apply -f kubernetes/factorio/factorio.yml
