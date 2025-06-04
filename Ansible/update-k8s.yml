@@ -15,6 +15,11 @@
     - name: "Bounce node"
 #      when: reboot_required.stat.exists
       block:
+        - name: "Ensure Kubernetes python client is installed"
+          ansible.builtin.pip:
+            name: kubernetes
+            state: latest
+
         - name: "Drain node"
           kubernetes.core.k8s_drain:
             name: "{{ inventory_hostname }}"
