@@ -41,6 +41,13 @@ jobs:
         run: |
           echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > vault
 
+      - name: Setup SSH key
+        run: |
+          echo "${{ secrets.ANSIBLE_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-agent bash
+          ssh-add ~/.ssh/id_ed25519
+
       - name: Run Ansible playbook
         working-directory: Ansible
         run: |
