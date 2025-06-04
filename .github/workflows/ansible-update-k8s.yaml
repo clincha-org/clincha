@@ -5,6 +5,7 @@ on:
       - master
     paths:
       - 'Ansible/**'
+      - '.github/workflows/ansible-update-k8s.yaml'
   workflow_dispatch:
 jobs:
   update:
@@ -27,7 +28,7 @@ jobs:
 
       - name: Set up Ansible
         run: |
-          pip install ansible
+          pip install ansible distlib
 
       - name: Install Ansible collections
         working-directory: Ansible
