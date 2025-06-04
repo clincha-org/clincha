@@ -27,7 +27,6 @@
             delete_options:
               ignore_daemonsets: true
               delete_emptydir_data: true
-              force: true
 
         - name: "Restart host"
           ansible.builtin.reboot:
