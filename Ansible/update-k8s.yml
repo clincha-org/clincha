@@ -1,5 +1,5 @@
 - name: "Update packages"
-  hosts: all
+  hosts: kube_node
   become: true
   serial: 1
   max_fail_percentage: 0
