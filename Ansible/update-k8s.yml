@@ -3,7 +3,7 @@
   become: true
   tasks:
     - name: "Update packages"
-      ansible.builtin.package:
+      ansible.builtin.apt:
         name: "*"
         state: latest
 
@@ -16,8 +16,8 @@
 #      when: reboot_required.stat.exists
       block:
         - name: "Ensure Kubernetes python client is installed"
-          ansible.builtin.pip:
-            name: kubernetes
+          ansible.builtin.apt:
+            name: python3-kubernetes
             state: latest
 
         - name: "Drain node"
