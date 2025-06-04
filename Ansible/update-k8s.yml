@@ -1,6 +1,8 @@
 - name: "Update packages"
   hosts: all
   become: true
+  serial: 1
+  max_fail_percentage: 0
   tasks:
     - name: "Update packages"
       ansible.builtin.apt:
@@ -13,7 +15,7 @@
       register: reboot_required
 
     - name: "Bounce node"
-#      when: reboot_required.stat.exists
+      when: reboot_required.stat.exists
       block:
         - name: "Ensure Kubernetes python client is installed"
           ansible.builtin.apt:
