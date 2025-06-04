@@ -1,0 +1,54 @@
+name: Ansible Update Kubernetes
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'Ansible/**'
+  workflow_dispatch:
+jobs:
+  update:
+#    strategy:
+#      fail-fast: true
+#      max-parallel: 1
+#      matrix:
+#        node:
+#          - "k8s-master-1"
+#          - "k8s-master-2"
+#          - "k8s-worker-3"
+    runs-on: github-runners-clincha
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Install Ansible collections
+        working-directory: Ansible
+        run: |
+          ansible-galaxy collection install -r galaxy-requirements.yml
+
+      - name: Run Ansible playbook
+        working-directory: Ansible
+        run: |
+          ansible-playbook update.yml \
+            --inventory inventory/kubernetes-dynamic.proxmox.yml \
+            --limit "k8s-master-1"
+#
+#      - name: Set up Kubernetes CLI
+#        uses: azure/setup-kubectl@v4
+#        with:
+#          version: 'latest'
+#
+#      - name: Deploy kube config
+#        run: |
+#          mkdir -p $HOME/.kube
+#          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+#          chmod 600 $HOME/.kube/config
+#
+#      - name: Apply Kubernetes manifests
+#        run: |
+#          kubectl drain ${{ matrix.node }} --ignore-daemonsets --delete-local-data
