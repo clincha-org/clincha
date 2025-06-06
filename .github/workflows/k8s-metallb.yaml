@@ -52,5 +52,5 @@ jobs:
       - name: Apply MetalLB manifests
         working-directory: kubernetes/metallb
         run: |
-            kubectl apply -f pool.yml
+            kubectl apply -f pools.yml
 
