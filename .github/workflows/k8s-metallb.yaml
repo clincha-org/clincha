@@ -45,7 +45,7 @@ jobs:
         run: |
           helm repo add metallb https://metallb.github.io/metallb
           helm repo update
-          helm upgrade --install metallb metallb/metallb \
+          helm upgrade --install --wait metallb metallb/metallb \
             --version ${{ env.METALLB_VERSION }} \
             --namespace ${{ env.NAMESPACE }} --create-namespace
 
