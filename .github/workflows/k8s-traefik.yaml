@@ -1,5 +1,11 @@
 name: Traefik Kubernetes Deployment
 on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'kubernetes/traefik/**'
+      - '.github/workflows/k8s-traefik.yaml'
   workflow_dispatch:
 jobs:
   apply:
