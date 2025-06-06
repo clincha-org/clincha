@@ -70,6 +70,8 @@
 
 - name: "Create cluster"
   ansible.builtin.import_playbook: kubernetes_sigs.kubespray.cluster
+  vars:
+    kube_version: "v1.32.0"
 
 - name: "Configure kubernetes user"
   hosts: kube_control_plane

@@ -6,7 +6,7 @@ https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted
 
 1. Install the Actions Runner Controller Helm chart:
    ```bash
-   helm install arc --namespace "github-runners" --create-namespace oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
+   helm install "github-runners" --namespace "github-runners" --create-namespace oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
    ```
 
 2. Create a Kubernetes secret with the GitHub pem key encoded in base64.
