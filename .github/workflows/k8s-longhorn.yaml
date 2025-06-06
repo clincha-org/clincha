@@ -1,11 +1,11 @@
 name: Longhorn Kubernetes Deployment
 on:
-#  push:
-#    branches:
-#      - master
-#    paths:
-#      - 'kubernetes/longhorn/**'
-#      - '.github/workflows/k8s-longhorn.yaml'
+  push:
+    branches:
+      - master
+    paths:
+      - 'kubernetes/longhorn/**'
+      - '.github/workflows/k8s-longhorn.yaml'
   workflow_dispatch:
 jobs:
   apply:
