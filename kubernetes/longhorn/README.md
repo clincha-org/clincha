@@ -2,24 +2,6 @@
 
 Storage provider for Kubernetes
 
-## Create secrets
-
-A file called `backup-secret.yml` is provided which contains the secrets for the backup storage. This should be updated with the correct values for your environment.
-
-```yaml
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: backup-secret
-  namespace: longhorn
-type: Opaque
-stringData:
-  AWS_ACCESS_KEY_ID: "" # Get from the GCP console
-  AWS_SECRET_ACCESS_KEY: "" # Get from the GCP console
-  AWS_ENDPOINTS: "https://storage.googleapis.com"
-```
-
 ## Install
 
 1. Annotate the nodes so that default disks are created

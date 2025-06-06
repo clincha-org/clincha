@@ -1,0 +1,55 @@
+name: Longhorn Certificate Manager Deployment
+on:
+  #  push:
+  #    branches:
+  #      - master
+  #    paths:
+  #      - 'kubernetes/certificate-manager/**'
+  #      - '.github/workflows/k8s-certificate-manager.yaml'
+  workflow_dispatch:
+jobs:
+  apply:
+    env:
+      CERTIFICATE_MANAGER_VERSION: 1.17.2
+      NAMESPACE: cert-manager
+    runs-on: github-runners-clincha
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Kubernetes CLI
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'latest'
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4.3.0
+        with:
+          version: 'latest'
+
+      - name: Deploy kube config
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Install Certificate Manager using Helm
+        working-directory: kubernetes/certificate-manager
+        run: |
+          helm repo add jetstack https://charts.jetstack.io
+          helm repo update
+          helm install cert-manager jetstack/cert-manager \
+              --version ${{ env.CERTIFICATE_MANAGER_VERSION }} \
+              --namespace ${{ env.NAMESPACE }} --create-namespace \
+              --values values.yml
+
+      - name: Deploy Cloudflare API credentials
+        working-directory: kubernetes/certificate-manager
+        run: |
+          echo "${{ secrets.CERTIFICATE_MANAGER_CLOUDFLARE_API_TOKEN_K8S_SECRET }}" > cloudflare-secret.yaml
+          kubectl apply -f cloudflare-secret.yaml
+
+      - name: Deploy cluster issuer
+        working-directory: kubernetes/certificate-manager
+        run: |
+          kubectl apply -f issuers.yml

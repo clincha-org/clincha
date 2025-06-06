@@ -1,0 +1,50 @@
+name: MetalLB Kubernetes Deployment
+on:
+  workflow_dispatch:
+jobs:
+  apply:
+    env:
+      METALLB_VERSION: 0.15.2
+      NAMESPACE: metallb-system
+    runs-on: github-runners-clincha
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Kubernetes CLI
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'latest'
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4.3.0
+        with:
+          version: 'latest'
+
+      - name: Deploy kube config
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      # https://metallb.universe.tf/installation/#preparation
+      - name: Enforce strict ARP
+        run: |
+          kubectl get configmap kube-proxy -n kube-system -o yaml | \
+          sed -e "s/strictARP: false/strictARP: true/" | \
+          kubectl apply -f - -n kube-system
+
+      - name: Install MetalLB using Helm
+        working-directory: kubernetes/metallb
+        run: |
+          helm repo add metallb https://metallb.github.io/metallb
+          helm repo update
+          helm upgrade --install metallb metallb/metallb \
+            --version ${{ env.METALLB_VERSION }} \
+            --namespace ${{ env.NAMESPACE }} --create-namespace
+
+      - name: Apply MetalLB manifests
+        working-directory: kubernetes/metallb
+        run: |
+            kubectl apply -f pool.yml
+
