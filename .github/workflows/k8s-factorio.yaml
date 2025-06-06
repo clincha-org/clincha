@@ -5,6 +5,7 @@ on:
       - master
     paths:
       - 'kubernetes/factorio/**'
+      - '.github/workflows/k8s-factorio.yaml'
   workflow_dispatch:
 jobs:
   apply:
