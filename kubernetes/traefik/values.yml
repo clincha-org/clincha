@@ -1,5 +1,5 @@
 service:
-  labels:
+  annotations:
     metallb.io/loadBalancerIPs: 10.1.2.205
 ports:
   web:
