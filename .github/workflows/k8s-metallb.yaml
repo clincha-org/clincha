@@ -1,11 +1,17 @@
 name: MetalLB Kubernetes Deployment
 on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'kubernetes/metallb/**'
+      - '.github/workflows/k8s-metallb.yaml'
   workflow_dispatch:
 jobs:
   apply:
     env:
       METALLB_VERSION: 0.15.2
-      NAMESPACE: metallb-system
+      NAMESPACE: metallb
     runs-on: github-runners-clincha
     steps:
       - name: Checkout code
