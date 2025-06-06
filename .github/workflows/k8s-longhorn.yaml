@@ -47,7 +47,7 @@ jobs:
           helm repo update
           helm upgrade --install --wait longhorn longhorn/longhorn \
             --version ${{ env.LONGHORN_VERSION }} \
-            --namespace ${{ NAMESPACE }} --create-namespace \
+            --namespace ${{ env.NAMESPACE }} --create-namespace \
             --values values.yml
 
       - name: Deploy Longhorn backup jobs
