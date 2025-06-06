@@ -1,4 +1,4 @@
-name: Longhorn Certificate Manager Deployment
+name: Certificate Manager Deployment
 on:
   #  push:
   #    branches:
