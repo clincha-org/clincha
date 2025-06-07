@@ -9,7 +9,7 @@ https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted
    helm install "github-runners" --namespace "github-runners" --create-namespace oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
    ```
 
-2. Create a Kubernetes secret with the GitHub pem key encoded in base64.
+2. Create a Kubernetes secret with the GitHub pem key encoded in base64. These details can be found in BitWarden.
 
 3. Install the scale set:
    ```bash
