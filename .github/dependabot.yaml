@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: "/Ansible"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: github-actions
+    directory: "/.github/workflows"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: terraform
+    directory: "/terraform"
+    schedule:
+      interval: "weekly"
