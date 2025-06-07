@@ -9,4 +9,5 @@
 - Deploy MetalLB
 - Deploy cert-manager
 - Deploy Traefik
-- 
+- Deploy Longhorn
+- Deploy applications
