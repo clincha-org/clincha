@@ -1,15 +1,16 @@
 ---
 - name: "Upgrade all packages"
-  apt:
+  ansible.builtin.apt:
     name: "*"
     state: latest
     update_cache: true
+    only_upgrade: true
 
 - name: "Check if reboot is required"
-  stat:
+  ansible.builtin.stat:
     path: /var/run/reboot-required
   register: stat_result
 
 - name: "Restart if needed"
-  reboot:
+  ansible.builtin.reboot:
   when: stat_result.stat.exists

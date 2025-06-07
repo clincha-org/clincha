@@ -6,7 +6,7 @@
     - role: sudoers
   tasks:
     - name: "Install sudo"
-      package:
+      ansible.builtin.package:
         name: sudo
         state: present
 
@@ -17,4 +17,4 @@
         checksum: "sha256:d6dab0c3a657988501b4bd76f1297c053df710e06e0c3aece60dead24f270b4d"
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"
