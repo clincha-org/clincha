@@ -1,9 +1,0 @@
----
-- name: Install sniff using krew
-  become: true
-  become_user: "{{ user }}"
-  shell: kubectl krew install sniff
-  args:
-    creates: "{{ install_check_location }}"
-  environment:
-    PATH: "{{ kubernetes_paths }}:{{ ansible_env.PATH }}"
