@@ -1,8 +1,8 @@
 ---
-- name: "sudoers"
-  copy:
+- name: "Sudoers configuration"
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "/etc/sudoers.d/{{ item | basename }}"
     validate: "visudo -cf %s"
-    mode: 0440
+    mode: "0440"
   loop: "{{ lookup('fileglob', 'files/*', wantlist=True) }}"

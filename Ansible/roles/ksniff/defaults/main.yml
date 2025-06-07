@@ -1,3 +1,0 @@
-user: kubernetes
-kubernetes_paths: "/usr/local/bin:/home/kubernetes/.krew/bin"
-install_check_location: "/home/kubernetes/.krew/store/sniff"

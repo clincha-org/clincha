@@ -8,6 +8,8 @@
       ansible.builtin.apt:
         name: "*"
         state: latest
+        update_cache: true
+        only_upgrade: true
 
     - name: "Check if reboot file is present"
       ansible.builtin.stat:
@@ -20,7 +22,7 @@
         - name: "Ensure Kubernetes python client is installed"
           ansible.builtin.apt:
             name: python3-kubernetes
-            state: latest
+            state: present
 
         - name: "Drain node"
           kubernetes.core.k8s_drain:

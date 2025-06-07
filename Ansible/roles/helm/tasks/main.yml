@@ -1,6 +1,6 @@
 ---
 - name: "Check if Helm is installed"
-  command:
+  ansible.builtin.command:
     cmd: "helm version"
   register: helm_version_check
   changed_when: false
@@ -10,30 +10,31 @@
   when: helm_version_check.rc != 0
   block:
     - name: "Download Helm"
-      get_url:
+      ansible.builtin.get_url:
         url: "{{ helm_download_url }}"
         checksum: "{{ helm_checksum }}"
         dest: /tmp/
+        mode: "0644"
       register: helm_download
 
     - name: "Decompress Helm"
-      unarchive:
+      ansible.builtin.unarchive:
         remote_src: true
         src: "{{ helm_download.dest }}"
         dest: /tmp/
       register: helm_unarchive
 
     - name: "Move Helm binary to binary location"
-      copy:
+      ansible.builtin.copy:
         remote_src: true
         src: "{{ helm_unarchive.dest }}/linux-amd64/helm"
         dest: /usr/bin/helm
-        mode: 0755
+        mode: "0755"
         owner: root
         group: root
 
 - name: "Autocomplete helm"
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /home/kubernetes/.bashrc
     line: "source <(helm completion bash)"
     regexp: "^source <(helm completion bash)$"

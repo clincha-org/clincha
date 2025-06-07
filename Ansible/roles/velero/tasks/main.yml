@@ -1,6 +1,0 @@
----
-- name: "Install Velero Helm chart"
-  include_tasks: velero_helm_install.yml
-
-- name: "Install Velero CLI"
-  include_tasks: velero_cli.yml

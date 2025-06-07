@@ -1,9 +1,9 @@
 ---
 - name: "Copy over sshd config file"
-  copy:
+  ansible.builtin.copy:
     src: sshd_config
     dest: /etc/ssh/sshd_config
     owner: root
     group: root
-    mode: 0644
-  notify: sshd restart
+    mode: "0644"
+  notify: Restart ssh service

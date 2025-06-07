@@ -18,35 +18,36 @@
         mountpoint: "/mnt/fast"
   tasks:
     - name: Create partition
-      parted:
+      community.general.parted:
         device: "{{ item.device }}"
         number: 1
-        flags: [ lvm ]
+        flags:
+          - "lvm"
         label: gpt
         state: present
       loop: "{{ disks }}"
 
     - name: Create the volume group
-      lvg:
+      community.general.lvg:
         vg: "{{ item.vg }}"
         pvs: "{{ item.device }}1" # /dev/sdx1
       loop: "{{ disks }}"
 
     - name: Create the logical volume
-      lvol:
+      community.general.lvol:
         vg: "{{ item.vg }}"
         lv: "{{ item.lv }}"
         size: "100%VG"
       loop: "{{ disks }}"
 
     - name: Format the filesystem
-      filesystem:
+      community.general.filesystem:
         fstype: xfs
         dev: "/dev/{{ item.vg }}/{{ item.lv }}"
       loop: "{{ disks }}"
 
     - name: Mount the disks
-      mount:
+      ansible.posix.mount:
         path: "{{ item.mountpoint }}"
         src: "/dev/{{ item.vg }}/{{ item.lv }}"
         fstype: xfs
@@ -77,15 +78,15 @@
   hosts: kube_control_plane
   tasks:
     - name: "Ensure .kube directory exists"
-      file:
+      ansible.builtin.file:
         path: "/home/kubernetes/.kube"
         state: directory
-        mode: 0770
+        mode: "0770"
         owner: "kubernetes"
         group: "kubernetes"
 
     - name: "Symlink kubectl admin.conf to /home/kubernetes/.kube/conf"
-      file:
+      ansible.builtin.file:
         src: /etc/kubernetes/admin.conf
         dest: /home/kubernetes/.kube/config
         state: link
@@ -93,21 +94,21 @@
         group: "kubernetes"
 
     - name: "Alias k"
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /home/kubernetes/.bashrc
         line: "alias k=kubectl"
         regexp: "^alias k=kubectl$"
         state: present
 
     - name: "Autocomplete kubectl"
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /home/kubernetes/.bashrc
         line: "source <(kubectl completion bash)"
         regexp: "^source <(kubectl completion bash)$"
         state: present
 
     - name: "Autocomplete k"
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /home/kubernetes/.bashrc
         line: "complete -o default -F __start_kubectl k"
         regexp: "^complete -o default -F __start_kubectl k$"

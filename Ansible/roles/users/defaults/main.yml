@@ -1,5 +1,5 @@
 ---
-user_list:
+users_list:
   - {
     name: "root",
     shell: "/bin/bash",

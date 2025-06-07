@@ -1,6 +1,6 @@
 ---
 - name: "Install useful packages"
-  apt:
+  ansible.builtin.apt:
     name:
       - git
       - bash-completion

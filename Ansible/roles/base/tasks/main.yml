@@ -1,14 +1,14 @@
 ---
-- name: "base configuration"
+- name: "Base configuration"
   block:
-    - name: "update"
-      include_tasks: updates.yml
+    - name: "Update"
+      ansible.builtin.include_tasks: updates.yml
 
-    - name: "banner"
-      include_tasks: banner.yml
+    - name: "Banner"
+      ansible.builtin.include_tasks: banner.yml
 
-    - name: "ssh"
-      include_tasks: ssh.yml
+    - name: "SSH"
+      ansible.builtin.include_tasks: ssh.yml
 
-    - name: "tools"
-      include_tasks: tools.yml
+    - name: "Tools"
+      ansible.builtin.include_tasks: tools.yml
