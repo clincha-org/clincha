@@ -1,5 +1,6 @@
 # clincha
 
+This is my personal cloud! Okay, maybe it isn't quite a _cloud_, but it's certainly more than a "home lab". I have physical servers in Edinburgh and Bristol. They run Proxmox, my hypervisor. I've connected the two sites with a site-to-site VPN connection and I use that as my lab. It's already helped me reinforce my learning of the "infrastructure" component of the stack and will soon be my playground to push my understanding of the "development" component of the stack. I want to be the ultimate full stack developer, not just understanding the code that runs but the complete environment it runs in, right down to the electrons leaving the plug.
 
 ## Workflow Status
 
@@ -23,10 +24,6 @@
 [![Factorio Kubernetes Deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-factorio.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-factorio.yaml)
 
 [![Homepage Kubernetes Deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-homepage.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-homepage.yaml)
-
-## Overview
-
-This is my personal cloud! Okay, maybe it isn't quite a _cloud_, but it's certainly more than a "home lab". I have physical servers in Edinburgh and Bristol. They run Proxmox, my hypervisor. I've connected the two sites with a site-to-site VPN connection and I use that as my lab. It's already helped me reinforce my learning of the "infrastructure" component of the stack and will soon be my playground to push my understanding of the "development" component of the stack. I want to be the ultimate full stack developer, not just understanding the code that runs but the complete environment it runs in, right down to the electrons leaving the plug.
 
 ## From bottom to top
 
