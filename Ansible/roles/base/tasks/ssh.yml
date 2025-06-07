@@ -10,22 +10,25 @@
   notify: Restart ssh service
   register: sshd_config_copy
 
-- name: "Validate sshd config"
-  ansible.builtin.command: sshd -t
-  register: sshd_config_test
-  changed_when: false
+- name: "Validate and rescue sshd config"
+  block:
+    - name: "Validate sshd config"
+      ansible.builtin.command: sshd -t
+      register: sshd_config_test
+      changed_when: false
+  rescue:
+    - name: "Revert sshd config if validation fails"
+      ansible.builtin.copy:
+        src: "{{ sshd_config_copy.backup_file }}"
+        remote_src: true
+        dest: /etc/ssh/sshd_config
+        owner: root
+        group: root
+        mode: "0644"
+      when: sshd_config_test.rc != 0
+      notify: Restart ssh service
 
-- name: "Revert sshd config if validation fails"
-  ansible.builtin.copy:
-    src: sshd_config_copy.backup_file
-    dest: /etc/ssh/sshd_config
-    owner: root
-    group: root
-    mode: "0644"
-  when: sshd_config_test.rc != 0
-  notify: Restart ssh service
-
-- name: "Fail the playbook if sshd config validation fails"
-  ansible.builtin.fail:
-    msg: "sshd config validation failed, reverted to backup ${{ sshd_config_copy.backup_file }}."
-  when: sshd_config_test.rc != 0
+- name: "Delete backup file"
+  ansible.builtin.file:
+    path: "{{ sshd_config_copy.backup_file }}"
+    state: absent
