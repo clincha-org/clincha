@@ -1,11 +1,5 @@
 name: Ansible Update Kubernetes
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - 'Ansible/**'
-      - '.github/workflows/ansible-update-k8s.yaml'
   workflow_dispatch:
 jobs:
   update:

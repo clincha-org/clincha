@@ -10,7 +10,8 @@ user_list:
     uid: "1000",
     gid: "1000",
     shell: "/bin/bash",
-    password: "{{ lookup('env', 'ANSIBLE_PASSWORD') | password_hash('sha512', 'salty') }}"
+    password: "{{ lookup('env', 'ANSIBLE_PASSWORD') | password_hash('sha512', 'salty') }}",
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL0PsOw/7B9Qr16/iKa2h3j5Nr0jZtrj+JI8qKgYSWep ansible"
   }
   - {
     name: "clincha",
