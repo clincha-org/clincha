@@ -2,13 +2,14 @@ name: Ansible Lint
 on:
   push:
     branches:
-      - main
+      - master
+      - '110-lint'
     paths:
       - '.github/workflows/ansible-lint.yaml'
       - 'Ansible/**'
   pull_request:
     branches:
-      - main
+      - master
   workflow_dispatch:
 jobs:
   lint:
