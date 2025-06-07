@@ -7,11 +7,9 @@ This is my personal cloud! Okay, maybe it isn't quite a _cloud_, but it's certai
 ### Cluster Services
 
 [![MetalLB Kubernetes Deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-metallb.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-metallb.yaml)
-
 [![Certificate Manager Deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-certificate-manager.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-certificate-manager.yaml)
 
 [![Traefik Kubernetes Deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-traefik.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-traefik.yaml)
-
 [![Longhorn Kubernetes Deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-longhorn.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-longhorn.yaml)
 
 
@@ -22,7 +20,6 @@ This is my personal cloud! Okay, maybe it isn't quite a _cloud_, but it's certai
 ### Applications
 
 [![Factorio Kubernetes Deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-factorio.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-factorio.yaml)
-
 [![Homepage Kubernetes Deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-homepage.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-homepage.yaml)
 
 ## From bottom to top
