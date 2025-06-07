@@ -38,4 +38,4 @@ jobs:
       - name: Run ansible-lint
         working-directory: Ansible
         run: |
-          ansible-lint --format json --strict --force-color
+          ansible-lint --format pep8 --strict --force-color
