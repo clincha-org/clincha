@@ -33,4 +33,4 @@ jobs:
       - name: Run ansible-lint
         working-directory: Ansible
         run: |
-          ansible-lint --format full --strict
+          ansible-lint --format full --strict .
