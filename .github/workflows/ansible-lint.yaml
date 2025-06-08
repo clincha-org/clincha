@@ -1,4 +1,4 @@
-name: .*
+name: Ansible lint
 permissions:
   contents: read
 on:
