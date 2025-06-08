@@ -1,0 +1,36 @@
+---
+eck-elasticsearch:
+  enabled: true
+  fullnameOverride: elasticsearch
+  http:
+    service:
+      spec:
+        type: LoadBalancer
+  nodeSets:
+    - name: masters
+      count: 3
+      initContainers:
+        - command:
+            - sh
+            - "-c"
+            - sysctl -w vm.max_map_count=262144
+          name: sysctl
+          securityContext:
+            privileged: true
+#      volumeClaimTemplates:
+#        - metadata:
+#            name: elasticsearch-data
+#          spec:
+#            resources:
+#              requests:
+#                storage: 10Gi
+#            storageClassName: fast
+eck-kibana:
+  enabled: true
+  fullnameOverride: kibana
+  http:
+    service:
+      spec:
+        type: LoadBalancer
+  elasticsearchRef:
+    name: elasticsearch
