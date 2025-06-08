@@ -32,3 +32,4 @@
   ansible.builtin.file:
     path: "{{ sshd_config_copy.backup_file }}"
     state: absent
+  when: sshd_config_copy.backup_file is defined
