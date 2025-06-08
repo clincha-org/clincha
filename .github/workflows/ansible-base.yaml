@@ -42,17 +42,6 @@ jobs:
           eval `ssh-agent -s`
           ssh-add ~/.ssh/id_ed25519
 
-      - name: Set up Kubernetes CLI
-        uses: azure/setup-kubectl@v4
-        with:
-          version: 'v1.32.0'
-
-      - name: Deploy kube config
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
-          chmod 600 $HOME/.kube/config
-
       - name: Run Ansible playbook
         working-directory: Ansible
         run: |
