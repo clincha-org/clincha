@@ -1,6 +1,6 @@
 name: .*
 permissions:
-	contents: read
+  contents: read
 on:
   push:
     branches:
@@ -54,5 +54,5 @@ jobs:
       - name: Apply MetalLB manifests
         working-directory: kubernetes/metallb
         run: |
-            kubectl apply -f pools.yml
+          kubectl apply -f pools.yml
 

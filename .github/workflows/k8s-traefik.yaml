@@ -1,6 +1,6 @@
 name: .*
 permissions:
-	contents: read
+  contents: read
 on:
   push:
     branches:
