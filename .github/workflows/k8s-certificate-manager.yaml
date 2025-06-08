@@ -1,4 +1,6 @@
-name: Certificate Manager Deployment
+name: .*
+permissions:
+	contents: read
 on:
   push:
     branches:

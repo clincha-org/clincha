@@ -1,4 +1,6 @@
-name: Ansible Lint
+name: .*
+permissions:
+	contents: read
 on:
   push:
     branches:

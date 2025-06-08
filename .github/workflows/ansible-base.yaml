@@ -1,4 +1,6 @@
 name: Ansible base configuration
+permissions:
+  contents: read
 on:
   push:
     branches:

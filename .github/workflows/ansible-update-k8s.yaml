@@ -1,4 +1,6 @@
-name: Ansible Update Kubernetes
+name: .*
+permissions:
+	contents: read
 on:
   workflow_dispatch:
 jobs:

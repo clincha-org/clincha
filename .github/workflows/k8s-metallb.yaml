@@ -1,4 +1,6 @@
-name: MetalLB Kubernetes Deployment
+name: .*
+permissions:
+	contents: read
 on:
   push:
     branches:
