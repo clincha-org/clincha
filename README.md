@@ -12,6 +12,8 @@ This is my personal cloud! Okay, maybe it isn't quite a _cloud_, but it's certai
 [![Traefik Kubernetes Deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-traefik.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-traefik.yaml)
 [![Longhorn Kubernetes Deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-longhorn.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-longhorn.yaml)
 
+[![Kubernetes Elastic Operator deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-elastic-operator.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-elastic-operator.yaml)
+
 
 ### Maintenance Jobs 
 
@@ -21,6 +23,8 @@ This is my personal cloud! Okay, maybe it isn't quite a _cloud_, but it's certai
 
 [![Factorio Kubernetes Deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-factorio.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-factorio.yaml)
 [![Homepage Kubernetes Deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-homepage.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-homepage.yaml)
+
+[![Kubernetes Elastic Finance deployment](https://github.com/clincha-org/clincha/actions/workflows/k8s-elastic-finance.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/k8s-elastic-finance.yaml)
 
 ## From bottom to top
 
