@@ -1,0 +1,45 @@
+name: Kubernetes Elastic Operator deployment
+permissions:
+  contents: read
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'kubernetes/elastic-operator/**'
+      - '.github/workflows/k8s-elastic-operator.yaml'
+  workflow_dispatch:
+jobs:
+  apply:
+    env:
+      CHART_VERSION: 3.0.0
+      NAMESPACE: elastic-operator
+    runs-on: github-runners-clincha
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Kubernetes CLI
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.32.0'
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4.3.0
+        with:
+          version: 'v3.18.2'
+
+      - name: Deploy kube config
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Install the Elastic Operator using Helm
+        working-directory: kubernetes/elastic-operator
+        run: |
+          helm repo add elastic https://helm.elastic.co
+          helm repo update
+          helm upgrade --install --wait elastic-operator elastic/eck-operator \
+            --version ${{ env.CHART_VERSION }} \
+            --namespace elastic-system --create-namespace

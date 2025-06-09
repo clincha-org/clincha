@@ -1,11 +1,10 @@
 ---
 eck-elasticsearch:
   enabled: true
+  config:
+    elasticsearch:
+      publicBaseUrl: "https://elastic.clinch-home.com"
   fullnameOverride: elasticsearch
-  http:
-    service:
-      spec:
-        type: LoadBalancer
   nodeSets:
     - name: masters
       count: 3
@@ -17,20 +16,56 @@ eck-elasticsearch:
           name: sysctl
           securityContext:
             privileged: true
-#      volumeClaimTemplates:
-#        - metadata:
-#            name: elasticsearch-data
-#          spec:
-#            resources:
-#              requests:
-#                storage: 10Gi
-#            storageClassName: fast
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 5Gi
+            storageClassName: fast
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  ingress:
+    enabled: true
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+    PathType: Prefix
+    hosts:
+      - host: elastic.clinch-home.com
+        path: "/"
+      - host: elastic.clincha.co.uk
+        path: "/"
+    tls:
+      enabled: true
+      secretName: elastic-certificate-secret
+
 eck-kibana:
   enabled: true
+  config:
+    server:
+      publicBaseUrl: "https://kibana.clinch-home.com"
   fullnameOverride: kibana
-  http:
-    service:
-      spec:
-        type: LoadBalancer
   elasticsearchRef:
     name: elasticsearch
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  ingress:
+    enabled: true
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+    PathType: Prefix
+    hosts:
+      - host: kibana.clinch-home.com
+        path: "/"
+      - host: kibana.clincha.co.uk
+        path: "/"
+    tls:
+      enabled: true
+      secretName: kibana-certificate-secret

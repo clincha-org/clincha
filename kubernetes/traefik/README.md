@@ -10,7 +10,7 @@
    ```
 2. Install Traefik
    ```bash
-   helm install traefik traefik/traefik --namespace traefik --values traefik-values.yml --create-namespace
+   helm upgrade --install traefik traefik/traefik --namespace traefik --values values.yml --create-namespace
    ```
 
 Additional settings can be configured using the [Helm values](https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml).
