@@ -13,5 +13,10 @@ https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted
 
 3. Install the scale set:
    ```bash
-   helm install "github-runners-clincha" --namespace "github-runners-clincha" --create-namespace --values scale-set-values.yml oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
+   helm upgrade --install "github-runners-clincha" --namespace "github-runners-clincha" --create-namespace --values runners-clincha-values.yml oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
+   ```
+   
+4. Install the scale set:
+   ```bash
+   helm upgrade --install "github-runners-elasticstar" --namespace "github-runners-elasticstar" --create-namespace --values runners-elasticstar-values.yml oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
    ```
