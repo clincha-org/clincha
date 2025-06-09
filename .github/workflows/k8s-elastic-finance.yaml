@@ -12,7 +12,7 @@ on:
 jobs:
   apply:
     env:
-      CHART_VERSION: 1.9.0
+      CHART_VERSION: 0.15.0
       NAMESPACE: elastic-finance
     runs-on: github-runners-clincha
     steps:
