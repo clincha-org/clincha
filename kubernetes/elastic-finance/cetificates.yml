@@ -1,0 +1,28 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: elastic-certificate
+  namespace: elastic-finance
+spec:
+  secretName: elastic-certificate-secret
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - elastic.clincha.co.uk
+    - elastic.clinch-home.com
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kibana-certificate
+  namespace: elastic-finance
+spec:
+  secretName: kibana-certificate-secret
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - kibana.clincha.co.uk
+    - kibana.clinch-home.com
