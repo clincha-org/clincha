@@ -30,3 +30,4 @@ jobs:
       - name: Apply Kubernetes manifests
         run: |
           kubectl apply -f kubernetes/factorio/factorio.yml
+          kubectl apply -f kubernetes/factorio/factorio-speedrun.yml
