@@ -23,4 +23,3 @@ groups:
   etcd: "'kubernetes_master' in (proxmox_tags_parsed|list)"
   kube_node: "'kubernetes_worker' in (proxmox_tags_parsed|list)"
   k8s_cluster: "'kubernetes_worker' in (proxmox_tags_parsed|list) or 'kubernetes_master' in (proxmox_tags_parsed|list)"
-  hypervisor: "not proxmox_node is defined"

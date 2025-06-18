@@ -1,5 +1,5 @@
 - name: "Proxmox host configuration"
-  hosts: hypervisor
+  hosts: proxmox_nodes
   become: true
   roles:
     - role: users
