@@ -17,10 +17,10 @@ want_proxmox_nodes_ansible_host: true
 compose:
   ansible_host: proxmox_ipconfig0.ip | replace('/24', '')
   site: "'hawkfield'"
-  hypervisor: "not proxmox_node is defined"
 groups:
   base: "'base' in (proxmox_tags_parsed|list)"
   kube_control_plane: "'kubernetes_master' in (proxmox_tags_parsed|list)"
   etcd: "'kubernetes_master' in (proxmox_tags_parsed|list)"
   kube_node: "'kubernetes_worker' in (proxmox_tags_parsed|list)"
   k8s_cluster: "'kubernetes_worker' in (proxmox_tags_parsed|list) or 'kubernetes_master' in (proxmox_tags_parsed|list)"
+  hypervisor: "not proxmox_node is defined"
