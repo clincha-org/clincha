@@ -14,3 +14,9 @@
     mode: "0644"
     owner: root
     group: root
+
+- name: "Remove default motd directory"
+  ansible.builtin.file:
+    path: /etc/update-motd.d
+    state: absent
+
