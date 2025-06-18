@@ -1,8 +1,6 @@
 - name: "Update packages"
   hosts: proxmox_nodes
   become: true
-  serial: 1
-  max_fail_percentage: 0
   tasks:
     - name: "Update packages"
       ansible.builtin.apt:
@@ -10,15 +8,3 @@
         state: latest
         update_cache: true
         only_upgrade: true
-
-    - name: "Check if reboot file is present"
-      ansible.builtin.stat:
-        path: "/var/run/reboot-required"
-      register: reboot_required
-
-    - name: "Bounce node"
-      when: reboot_required.stat.exists
-      block:
-        - name: "Restart host"
-          ansible.builtin.reboot:
-            msg: "Rebooting after package update"

@@ -9,6 +9,10 @@ on:
       - '.github/workflows/ansible-base.yaml'
       - 'Ansible/**'
   workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+concurrency:
+  group: "${{github.workflow}}"
 jobs:
   base:
     runs-on: github-runners-clincha
