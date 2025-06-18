@@ -18,6 +18,7 @@ resource "proxmox_vm_qemu" "k8s-master-1" {
 
   os_type   = "ubuntu"
   ipconfig0 = "ip=${var.ip_address}/24,gw=10.1.2.1"
+  onboot    = true
 
   tags = "base,kubernetes_master,kubernetes_worker"
 

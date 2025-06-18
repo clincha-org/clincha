@@ -1,5 +1,5 @@
 ---
-plugin: "community.general.proxmox"
+plugin: "community.proxmox.proxmox"
 url: "https://10.1.2.11:8006"
 user: "ansible@pam"
 token_id: "ansible"
@@ -17,6 +17,7 @@ want_proxmox_nodes_ansible_host: true
 compose:
   ansible_host: proxmox_ipconfig0.ip | replace('/24', '')
   site: "'hawkfield'"
+  hypervisor: "not proxmox_node is defined"
 groups:
   base: "'base' in (proxmox_tags_parsed|list)"
   kube_control_plane: "'kubernetes_master' in (proxmox_tags_parsed|list)"
