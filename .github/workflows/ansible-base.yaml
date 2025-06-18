@@ -50,8 +50,6 @@ jobs:
 
       - name: Run Ansible playbook
         working-directory: Ansible
-        env:
-          ANSIBLE_DEBUG: 1
         run: |
           ansible-playbook base.yml \
             --inventory inventory/hawkfield.proxmox.yml \
