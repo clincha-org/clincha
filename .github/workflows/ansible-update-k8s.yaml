@@ -53,5 +53,5 @@ jobs:
         working-directory: Ansible
         run: |
           ansible-playbook update-k8s.yml \
-            --inventory inventory/kubernetes-dynamic.proxmox.yml \
+            --inventory inventory/hawkfield.proxmox.yml \
             --vault-password-file vault

@@ -1,9 +1,6 @@
 ---
 - name: "Base configuration"
   block:
-    - name: "Update"
-      ansible.builtin.include_tasks: updates.yml
-
     - name: "Banner"
       ansible.builtin.include_tasks: banner.yml
 

@@ -1,4 +1,4 @@
-name: Ansible update Kubernetes nodes
+name: Ansible update Proxmox
 permissions:
   contents: read
 on:
@@ -42,5 +42,5 @@ jobs:
         working-directory: Ansible
         run: |
           ansible-playbook update-proxmox.yml \
-            --inventory inventory/proxmox.yml \
+            --inventory inventory/hawkfield.proxmox.yml \
             --vault-password-file vault
