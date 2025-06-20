@@ -10,3 +10,7 @@
 ```bash
   kubectl get secret elasticsearch-es-elastic-user -n elastic-finance -o=jsonpath='{.data.elastic}' | base64 --decode; echo
 ```
+
+```bash
+    helm uninstall elastic-finance -n elastic-finance
+```
