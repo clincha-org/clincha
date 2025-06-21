@@ -13,4 +13,10 @@
    helm upgrade --install traefik traefik/traefik --namespace traefik --values values.yml --create-namespace
    ```
 
-Additional settings can be configured using the [Helm values](https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml).
+   Additional settings can be configured using the [Helm values](https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml).
+
+3. Uninstall
+   ```bash
+   helm uninstall traefik -n traefik
+   kubectl delete namespace traefik
+   ```

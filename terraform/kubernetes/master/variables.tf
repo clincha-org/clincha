@@ -27,12 +27,12 @@ variable "sockets" {
 }
 variable "cores" {
   description = "CPU cores"
-  default     = 8
+  default     = 10
   type        = number
 }
 variable "memory" {
   description = "Memory (Megabytes)"
-  default     = 32768
+  default     = 49152
   type        = number
 }
 variable "agent" {

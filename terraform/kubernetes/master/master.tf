@@ -14,6 +14,7 @@ resource "proxmox_vm_qemu" "k8s-master-1" {
     id     = 0
     bridge = "vmbr1"
     model  = "virtio"
+    mtu    = 1 # Inherit from bridge
   }
 
   os_type   = "ubuntu"
@@ -41,7 +42,7 @@ resource "proxmox_vm_qemu" "k8s-master-1" {
       }
       virtio1 {
         disk {
-          size     = "64G"
+          size     = "100G"
           storage  = "fast"
           iothread = "true"
         }

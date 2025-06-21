@@ -18,6 +18,9 @@ Do the following from a kubernetes master as the user `kubernetes`
     helm repo update
     helm install metallb metallb/metallb --namespace metallb --create-namespace
     ```
+   _Additional Helm values can be set using
+   the [chart's values](https://github.com/metallb/metallb/blob/main/charts/metallb/values.yaml)_
+
 3. Create the IP pools
     ```bash
    kubectl apply -f ./pools.yml 
@@ -29,5 +32,8 @@ Do the following from a kubernetes master as the user `kubernetes`
    ```
    Navigate to the IP address given in the EXTERNAL-IP section for nginx after running `kubectl get service`
 
-_Additional Helm values can be set using
-the [chart's values](https://github.com/metallb/metallb/blob/main/charts/metallb/values.yaml)_
+5. Uninstall
+    ```bash
+    helm uninstall metallb -n metallb
+    kubectl delete namespace metallb
+    ```

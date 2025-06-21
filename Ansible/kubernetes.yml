@@ -69,10 +69,16 @@
         enabled: false
         state: stopped
 
+    - name: "Enable dm_crypt kernel module"
+      community.general.modprobe:
+        name: dm_crypt
+        state: present
+        persistent: present
+
 - name: "Create cluster"
   ansible.builtin.import_playbook: kubernetes_sigs.kubespray.cluster
   vars:
-    kube_version: "v1.32.0"
+    kube_version: "1.32.0"
 
 - name: "Configure kubernetes user"
   hosts: kube_control_plane
