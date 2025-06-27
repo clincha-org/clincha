@@ -2,19 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: factorio-speedrun
+  name: factorio-runsmart
   namespace: factorio
   labels:
-    name: factorio-speedrun
+    name: factorio-runsmart
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: factorio-speedrun
+      name: factorio-runsmart
   template:
     metadata:
       labels:
-        name: factorio-speedrun
+        name: factorio-runsmart
     spec:
       initContainers:
         - name: copy-server-settings
@@ -50,35 +50,35 @@ spec:
           emptyDir: { }
         - name: saves
           nfs:
-            path: /mnt/data/factorio/speedrun
+            path: /mnt/data/factorio/runsmart
             server: 10.1.2.10
         - name: server-settings
           configMap:
-            name: factorio-speedrun-server-settings
+            name: factorio-runsmart-server-settings
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: factorio-speedrun
+  name: factorio-runsmart
   namespace: factorio
   labels:
-    name: factorio-speedrun
+    name: factorio-runsmart
 spec:
   type: NodePort
   selector:
-    name: factorio-speedrun
+    name: factorio-runsmart
   ports:
     - name: factorio
       port: 34197
       targetPort: 34197
-      nodePort: 31498
+      nodePort: 31499
       protocol: UDP
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: factorio-speedrun-server-settings
+  name: factorio-runsmart-server-settings
   namespace: factorio
 data:
   server-whitelist.json: |
@@ -94,8 +94,8 @@ data:
     ]
   server-settings.json: |
     {
-      "name": "Run fast",
-      "description": "clincha & blaze get a speeding ticket",
+      "name": "Run smart",
+      "description": "clincha & blaze get to space hella fast",
       "tags": [
         "rad"
       ],
