@@ -7,7 +7,7 @@ eck-elasticsearch:
   fullnameOverride: elasticsearch
   nodeSets:
     - name: masters
-      count: 3
+      count: 1
       initContainers:
         - command:
             - sh
@@ -24,7 +24,7 @@ eck-elasticsearch:
               - ReadWriteOnce
             resources:
               requests:
-                storage: 2Gi
+                storage: 5Gi
             storageClassName: fast
   http:
     tls:
