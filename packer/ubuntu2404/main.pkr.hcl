@@ -36,7 +36,7 @@ source "proxmox-iso" "ubuntu2404" {
   }
 
   disks {
-    disk_size    = "32G"
+    disk_size    = "50G"
     storage_pool = "local-lvm"
     type         = "virtio"
   }
