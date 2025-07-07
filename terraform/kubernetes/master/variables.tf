@@ -32,11 +32,11 @@ variable "cores" {
 }
 variable "memory" {
   description = "Memory (Megabytes)"
-  default     = 49152
+  default     = 65536
   type        = number
 }
 variable "agent" {
-  description = ""
+  description = "Run the Promox agent on the guest"
   default     = 1
   type        = number
 }

@@ -35,7 +35,7 @@ resource "proxmox_vm_qemu" "k8s-master-1" {
     virtio {
       virtio0 {
         disk {
-          size     = "32G"
+          size     = "50G"
           storage  = "local-lvm"
           iothread = "true"
         }
