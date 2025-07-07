@@ -27,6 +27,10 @@ jobs:
           echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
 
+      - name: Apply Factorio namespace
+        run: |
+          kubectl apply -f kubernetes/factorio/namespace.yml
+
       - name: Apply Kubernetes manifests
         run: |
           kubectl apply -f kubernetes/factorio/factorio.yml
