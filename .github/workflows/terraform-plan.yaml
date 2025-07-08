@@ -35,6 +35,6 @@ jobs:
       - name: Terraform Plan
         working-directory: terraform/kubernetes
         run: |
-          terraform plan -out=tfplan -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}"
+          terraform plan -out=tfplan -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}"
           
 
