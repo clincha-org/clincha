@@ -6,8 +6,8 @@ on:
     branches:
       - "master"
     paths:
-      - '.github/workflows/terraform-plan.yaml'
-      - 'Terraform/**'
+      - '.github/workflows/terraform.yaml'
+      - 'terraform/**'
   workflow_dispatch:
 concurrency:
   group: "${{github.workflow}}"
@@ -43,3 +43,37 @@ jobs:
           if-no-files-found: 'error'
           path: terraform/kubernetes/tfplan
           name: tfplan
+
+  apply:
+    runs-on: github-runners-clincha
+    needs: plan
+    environment:
+      name: production
+    steps:
+      - name: Install Terraform
+        run: |
+          sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+          curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --yes --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install -y terraform
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: terraform/kubernetes/tfplan
+
+      - name: Terraform Init
+        working-directory: terraform/kubernetes
+        run: |
+          terraform init -backend-config="secret_key=${{ secrets.MINIO_SECRET_KEY }}"
+
+      - name: Terraform Apply
+        working-directory: terraform/kubernetes
+        run: |
+          terraform apply -auto-approve tfplan -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}"
