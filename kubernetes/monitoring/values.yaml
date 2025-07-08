@@ -173,7 +173,7 @@ prometheus:
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
     probeSelectorNilUsesHelmValues: false
-    retention: 6h
+    retention: 14d
     enableAdminAPI: true
     walCompression: true
     scrapeInterval: 30s
