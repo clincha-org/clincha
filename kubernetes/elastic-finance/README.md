@@ -2,7 +2,7 @@
 - Install an eck-managed Elasticsearch and Kibana
 
 ```bash
-  helm upgrade --install elastic-finance elastic/eck-stack -n elastic-finance --create-namespace --values values.yml
+  helm upgrade --install --wait elastic-finance elastic/eck-stack -n elastic-finance --create-namespace --values values.yml
 ```
 
 - Get the password for the elastic user
