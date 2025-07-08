@@ -10,8 +10,8 @@ helm repo update
 ```
 
 ```bash
-echo -n 'adminuser' > ./admin-user # clincha
-echo -n 'p@ssword!' > ./admin-password # Bitwarden (grafana)
+echo -n 'clincha' > ./admin-user
+echo -n 'p@ssword!' > ./admin-password # Bitwarden (grafana.clinch-home.com)
 ```
 
 ```bash
