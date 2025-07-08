@@ -36,5 +36,10 @@ jobs:
         working-directory: terraform/kubernetes
         run: |
           terraform plan -out=tfplan -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}"
-          
 
+      - name: Artifact Upload
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: 'error'
+          path: terraform/kubernetes/tfplan
+          name: tfplan
