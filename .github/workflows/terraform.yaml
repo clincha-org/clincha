@@ -76,4 +76,4 @@ jobs:
       - name: Terraform Apply
         working-directory: terraform/kubernetes
         run: |
-          terraform apply -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}" tfplan
+          terraform apply -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}" tfplan/tfplan
