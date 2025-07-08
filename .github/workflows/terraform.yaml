@@ -1,4 +1,4 @@
-name: terraform-plan.yaml
+name: Terraform Kubernetes Deployment
 permissions:
   contents: read
 on:
@@ -76,4 +76,4 @@ jobs:
       - name: Terraform Apply
         working-directory: terraform/kubernetes
         run: |
-          terraform apply -auto-approve tfplan -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}"
+          terraform apply -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}" tfplan
