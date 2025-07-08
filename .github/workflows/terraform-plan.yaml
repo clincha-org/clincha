@@ -24,5 +24,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y terraform
 
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Terraform Init
+        working-directory: terraform/kubernetes
+        run: |
+          terraform init -backend-config="secret_key=${{ secrets.MINIO_SECRET_KEY }}"
+
+      - name: Terraform Plan
+        working-directory: terraform/kubernetes
+        run: |
+          terraform plan -out=tfplan -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}"
           
 

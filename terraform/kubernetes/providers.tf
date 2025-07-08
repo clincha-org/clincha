@@ -2,6 +2,13 @@ terraform {
   backend "s3" {
     # Configured using backend.conf
     # Pass -backend-config=backend.conf to terraform init
+    bucket = "terraform"
+    endpoints = {
+      s3 = "http://10.1.2.10:9000"
+    }
+    key        = "clinch-home-kubernetes.tfstate"
+    access_key = "clincha"
+
     region                      = "main"
     skip_credentials_validation = true
     skip_requesting_account_id  = true
