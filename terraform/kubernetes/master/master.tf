@@ -5,7 +5,7 @@ resource "proxmox_vm_qemu" "k8s-master-1" {
 
   clone = "ubuntu2404"
 
-  cpu = {
+  cpu {
     cores   = var.cores
     sockets = var.sockets
     type    = "host"
