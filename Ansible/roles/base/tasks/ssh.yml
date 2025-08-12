@@ -8,28 +8,28 @@
     mode: "0644"
     backup: true
   notify: Restart ssh service
-  register: ssh_sshd_config_copy
+  register: base_sshd_config_copy
 
 - name: "Validate and rescue sshd config"
   block:
     - name: "Validate sshd config"
       ansible.builtin.command: sshd -t
-      register: ssh_sshd_config_test
+      register: base_sshd_config_test
       changed_when: false
   rescue:
     - name: "Revert sshd config if validation fails"
       ansible.builtin.copy:
-        src: "{{ ssh_sshd_config_copy.backup_file }}"
+        src: "{{ base_sshd_config_copy.backup_file }}"
         remote_src: true
         dest: /etc/ssh/sshd_config
         owner: root
         group: root
         mode: "0644"
-      when: ssh_sshd_config_test.rc != 0
+      when: base_sshd_config_test.rc != 0
       notify: Restart ssh service
 
 - name: "Delete backup file"
   ansible.builtin.file:
-    path: "{{ ssh_sshd_config_copy.backup_file }}"
+    path: "{{ base_sshd_config_copy.backup_file }}"
     state: absent
-  when: ssh_sshd_config_copy.backup_file is defined
+  when: base_sshd_config_copy.backup_file is defined
