@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: elastic-values
-  namespace: default
+  namespace: flux-system
 data:
   values.yaml: |
     eck-elasticsearch:
