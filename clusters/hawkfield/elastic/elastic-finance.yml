@@ -4,6 +4,7 @@ metadata:
   name: elastic-finance
   namespace: elastic-finance
 spec:
+  targetNamespace: elastic-finance
   interval: 10m
   chart:
     spec:
