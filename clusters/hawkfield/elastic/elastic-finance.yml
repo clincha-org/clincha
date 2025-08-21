@@ -14,5 +14,7 @@ spec:
         name: elastic
         namespace: elastic
       interval: 1m
-      valuesFiles:
-        - values.yml
+  valuesFrom:
+    - kind: ConfigMap
+      name: elastic-values
+      valuesKey: values.yaml
