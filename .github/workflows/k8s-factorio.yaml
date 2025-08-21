@@ -2,12 +2,12 @@ name: Kubernetes Factorio deployment
 permissions:
   contents: read
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - 'kubernetes/factorio/**'
-      - '.github/workflows/k8s-factorio.yaml'
+#  push:
+#    branches:
+#      - master
+#    paths:
+#      - 'kubernetes/factorio/**'
+#      - '.github/workflows/k8s-factorio.yaml'
   workflow_dispatch:
 jobs:
   apply:
