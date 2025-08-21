@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: elastic-finance
-  namespace: elastic-finance
+  namespace: flux-system
 spec:
   targetNamespace: elastic-finance
   interval: 1m
