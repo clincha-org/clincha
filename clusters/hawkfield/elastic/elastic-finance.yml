@@ -5,7 +5,7 @@ metadata:
   namespace: elastic-finance
 spec:
   targetNamespace: elastic-finance
-  interval: 10m
+  interval: 1m
   chart:
     spec:
       chart: eck-operator
