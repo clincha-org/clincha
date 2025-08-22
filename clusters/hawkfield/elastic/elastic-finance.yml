@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: eck-stack
-      version: '3.0.0'
+      version: '0.15.0'
       sourceRef:
         kind: HelmRepository
         name: elastic
