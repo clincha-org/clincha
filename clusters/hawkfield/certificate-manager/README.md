@@ -17,8 +17,10 @@ Simple certificate management for Kubernetes.
 
 3. Apply the Cloudflare token secret
     ```bash
-    kubectl apply -f issuer-secret.yml
+    kubectl -n cert-manager create secret generic cloudflare-api-token-secret --from-literal=api-token='<CLOUDFLARE_API_TOKEN>' --dry-run=client -o yaml > cloudflare-secret.yml
+   sops --encrypt --in-place cloudflare-secret.yml
     ```
+    Do not apply this using kubectl, instead commit it to this repository and let the gitops operator apply it.
 
 4. Apply the certificate issuers
     ```bash
