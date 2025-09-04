@@ -1,6 +1,6 @@
 ansible-core==2.16.14
 distlib==0.4.0 # Required to install collections
-requests==2.32.4 # Required for Proxmox dynamic inventory
+requests==2.32.5 # Required for Proxmox dynamic inventory
 passlib==1.7.4
 netaddr
 jmespath
