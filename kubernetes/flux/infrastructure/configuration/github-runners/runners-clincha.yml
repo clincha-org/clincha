@@ -9,7 +9,7 @@ metadata:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: github-runners-clincha
+  name: runners-clincha
   namespace: flux-system
 spec:
   targetNamespace: github-runners-clincha

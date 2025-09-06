@@ -9,7 +9,7 @@ metadata:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: github-runners-elasticstar
+  name: runners-elasticstar
   namespace: flux-system
 spec:
   targetNamespace: github-runners-elasticstar
