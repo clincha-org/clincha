@@ -6,7 +6,7 @@ on:
     branches:
       - master
     paths:
-      - 'kubernetes/longhorn/**'
+      - '../../kubernetes/flux/infrastructure/external/longhorn/**'
       - '.github/workflows/k8s-longhorn.yaml'
   workflow_dispatch:
 jobs:
