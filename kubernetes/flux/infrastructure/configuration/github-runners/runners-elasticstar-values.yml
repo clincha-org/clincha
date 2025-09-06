@@ -1,0 +1,73 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: github-runners-elasticstar
+  labels:
+    name: github-runners-elasticstar
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: github-runners-elasticstar
+  namespace: flux-system
+spec:
+  targetNamespace: github-runners-elasticstar
+  interval: 30m
+  chart:
+    spec:
+      chart: gha-runner-scale-set
+      sourceRef:
+        kind: HelmRepository
+        name: actions-runner-controller-charts
+        namespace: flux-system
+      interval: 1m
+  valuesFrom:
+    - kind: ConfigMap
+      name: github-runners-elasticstar-values
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: github-runners-elasticstar-values
+  namespace: flux-system
+data:
+  values.yaml: |
+    githubConfigUrl: "https://github.com/clincha/ElasticStar"
+    githubConfigSecret: "github-config-secret"
+    minRunners: 1
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: github-config-secret
+  namespace: github-runners-elasticstar
+type: Opaque
+stringData:
+  github_token: ENC[AES256_GCM,data:o2vXpDUy/Uf/WctoguLQguSqELyHGC6y7bBul8ysE9bw8fPunOvWBA==,iv:O74bKoFTQ18629ub9qUycVOOhCQjE+GiBWH7cHvjdDU=,tag:pIvIXZiWPxb/+v7/y3XsmQ==,type:str]
+sops:
+  lastmodified: "2025-09-05T15:34:12Z"
+  mac: ENC[AES256_GCM,data:xV4k/4mhYbYYMUGeUTYipynHNd+TDcS9Vrc17ixWgkdxdIrh56rMK+uk64CBoOth1tzSGZ3BUjiCy9vkycagjB2cieJVwohqmjOBBBKoexsyzr7ZzEDjpN1ENx7OE4gn4hYA4s5eiaPGeLTr8eI3UQMNhZgzsT9SVJM6lsUA6Fk=,iv:ioKE5mVGSipBmtBHZrErEv/y3SfFs28EogYHFkofdDI=,tag:0Cx8SJcA9BR+gXHC7VvTcQ==,type:str]
+  pgp:
+    - created_at: "2025-09-05T15:34:12Z"
+      enc: |-
+        -----BEGIN PGP MESSAGE-----
+        
+        hQIMA+iIV7UXPYO1ARAAr3KFdFhVXtYvkboni8tTNp6gaSMhuQlwMuxn6UiDgx3x
+        iOUicXF0446UveYvgVdHtJ45kgjq4JYoDxYThHHA4x3qFdV9w2/Te6z2OpT8r+TH
+        O346OPrA/mYTaPplQUUEzUrGDBADWYSBrYQwAZyRPLUx5/+GHTAD45oGU6IeKpZ/
+        4f7mxUZfMy2fGIxfii3SqZkRZzEVE5SVHjKnmxGInrsx5bB3h2kwYylqcaAlUYqT
+        CbZ7VhKliDZriyd/O0d++jJ+oZCMMs7A+BJmamwYhyuqbe4PQROVTXz5r1dYsYeM
+        frQRLEtl6k0IHzSnjIT4KcjT+bQXTXesWMjy8KCDuLu3Hszhh+vuMTvuGf1v51sS
+        qqM09qlHrjtI861jtP+EynlWxb4Y9vL++Vd7R+6FyvzQAalbSkYGUWe2+NdfnAWg
+        tihJ7x1jtB66SEpDvRl3y+JsFfdEyPxekJT56A9/0UorHZwQNUOGSERJGjUYkKe1
+        7/vzY810Mu5r3KU+MPDskEURRSBd1IsXEmWbMur3CnSMIdS6b+Puls9JbF3/JsbX
+        4cB+ehnv0LrHKB1yUE62UlJA55Jg9eMeWqj5vNFR/m9T12+yHhGHp6sTl6RVQYdp
+        sN4d3upDmBR1ZE8AvSKHZgyo+egVTT3zh19KYPPOSX41Zaiplm1ucfVNL0tDY3vS
+        XgGjC+Nnb4BdDSu1dW8fougBZtQ3P0zk1eOsSFHNpCXShMSAFf4+aBrS1t6+KqPV
+        /jHYQOYntzVhT2+kFYqX5LZq+nwv7maWG7kv5MoQVTuRfVvQuTpJTPBKYjdh9BM=
+        =Rwi8
+        -----END PGP MESSAGE-----
+      fp: 76AF39813C2297E8F98C542D42436A07A9BA1DE0
+  encrypted_regex: ^(data|stringData)$
+  version: 3.10.2
