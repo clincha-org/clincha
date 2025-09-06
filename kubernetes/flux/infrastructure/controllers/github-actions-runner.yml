@@ -7,17 +7,7 @@ metadata:
 spec:
   interval: 30m
   type: oci
-  url: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: gha-runner-scale-set
-  namespace: flux-system
-spec:
-  interval: 30m
-  type: oci
-  url: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
+  url: oci://ghcr.io/actions/actions-runner-controller-charts
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
