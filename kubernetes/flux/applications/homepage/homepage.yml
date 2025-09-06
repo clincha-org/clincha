@@ -81,7 +81,7 @@ metadata:
 spec:
   secretName: homepage-certificate-secret
   issuerRef:
-    name: letsencrypt
+    name: letsencrypt-staging
     kind: ClusterIssuer
   dnsNames:
     - clincha.co.uk

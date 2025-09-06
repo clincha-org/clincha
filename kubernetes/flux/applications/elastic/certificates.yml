@@ -7,7 +7,7 @@ metadata:
 spec:
   secretName: elastic-certificate-secret
   issuerRef:
-    name: letsencrypt
+    name: letsencrypt-staging
     kind: ClusterIssuer
   dnsNames:
     - elastic.clincha.co.uk
@@ -21,7 +21,7 @@ metadata:
 spec:
   secretName: kibana-certificate-secret
   issuerRef:
-    name: letsencrypt
+    name: letsencrypt-staging
     kind: ClusterIssuer
   dnsNames:
     - kibana.clincha.co.uk

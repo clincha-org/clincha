@@ -1,0 +1,35 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: gha-runner-scale-set-controller
+  namespace: flux-system
+spec:
+  interval: 30m
+  url: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: gha-runner-scale-set
+  namespace: flux-system
+spec:
+  interval: 30m
+  url: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: github-actions-runner-controller
+  namespace: flux-system
+spec:
+  targetNamespace: github-actions-runner
+  interval: 30m
+  chart:
+    spec:
+      chart: gha-runner-scale-set-controller
+      sourceRef:
+        kind: HelmRepository
+        name: gha-runner-scale-set-controller
+        namespace: flux-system
+      interval: 1m

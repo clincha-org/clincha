@@ -6,7 +6,7 @@ on:
     branches:
       - master
     paths:
-      - 'kubernetes/metallb/**'
+      - '../../kubernetes/flux/infrastructure/metallb/**'
       - '.github/workflows/k8s-metallb.yaml'
   workflow_dispatch:
 jobs:

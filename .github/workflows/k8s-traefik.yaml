@@ -6,7 +6,7 @@ on:
     branches:
       - master
     paths:
-      - 'kubernetes/traefik/**'
+      - '../../kubernetes/flux/infrastructure/traefik/**'
       - '.github/workflows/k8s-traefik.yaml'
   workflow_dispatch:
 jobs:
