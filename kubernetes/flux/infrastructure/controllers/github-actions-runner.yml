@@ -19,9 +19,9 @@ spec:
   interval: 30m
   chart:
     spec:
-      chart: actions-runner-controller-charts
+      chart: gha-runner-scale-set-controller
       sourceRef:
         kind: HelmRepository
-        name: gha-runner-scale-set-controller
+        name: actions-runner-controller-charts
         namespace: flux-system
       interval: 1m
