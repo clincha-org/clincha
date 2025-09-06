@@ -1,4 +1,9 @@
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: traefik
+---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
@@ -50,7 +55,7 @@ data:
     ingressRoute:
       dashboard:
         enabled: true
-        entryPoints: [web, websecure]
+        entryPoints: [ web, websecure ]
         matchRule: Host(`traefik.clinch-home.com`)
         tls:
           secretName: traefik-certificate-secret
