@@ -6,21 +6,15 @@ https://fluxcd.io/flux/installation/bootstrap/github/
 
 Generate an SSH key and install a deployment key in the GitHub repository to allow Flux to push changes to the repository.
 
-```bash
-flux check --pre
-```
+## Bootstrap
+
+For staging, start kind
 
 ```bash
-flux bootstrap git \
-  --url=ssh://git@github.com/clincha-org/clincha \
-  --branch=master \
-  --private-key-file=/home/clincha/.ssh/flux \
-  --path=kubernetes/flux/clusters/hawkfield
+kind create cluster
 ```
 
-## Secrets
-
-https://fluxcd.io/flux/guides/mozilla-sops/
+### Create the decryption secret
 
 Download the key from BitWarden and import it
 
@@ -42,6 +36,36 @@ kubectl create secret generic sops-gpg \
 --namespace=flux-system \
 --from-file=sops.asc=/dev/stdin
 ```
+
+### Bootstrap Flux
+
+```bash
+flux check --pre
+```
+
+Hawkfield
+
+```bash
+flux bootstrap git \
+  --url=ssh://git@github.com/clincha-org/clincha \
+  --branch=master \
+  --private-key-file=/home/clincha/.ssh/flux \
+  --path=kubernetes/flux/clusters/hawkfield
+```
+
+Staging
+
+```bash
+flux bootstrap git \
+  --url=ssh://git@github.com/clincha-org/clincha \
+  --branch=master \
+  --private-key-file=/home/clincha/.ssh/flux \
+  --path=kubernetes/flux/clusters/staging
+```
+
+## Secrets
+
+https://fluxcd.io/flux/guides/mozilla-sops/
 
 You can use the public key to encrypt files locally. Make sure you are in the `/kubernetes/flux` directory which contains the `.sops.yaml` file.
 
