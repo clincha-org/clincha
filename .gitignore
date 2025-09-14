@@ -6,3 +6,4 @@
 /terraform/.terraform
 /terraform/.terraform.lock.hcl
 /terraform/development.auto.tfvars
+/kubernetes/flux/sops.asc
