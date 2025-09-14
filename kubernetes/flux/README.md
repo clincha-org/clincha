@@ -31,6 +31,7 @@ export KEY_FP=76AF39813C2297E8F98C542D42436A07A9BA1DE0
 Create the kubernetes secret from the key
 
 ```bash
+kubectl create namespace flux-system
 gpg --export-secret-keys --armor "${KEY_FP}" |
 kubectl create secret generic sops-gpg \
 --namespace=flux-system \
@@ -43,16 +44,6 @@ kubectl create secret generic sops-gpg \
 flux check --pre
 ```
 
-Hawkfield
-
-```bash
-flux bootstrap git \
-  --url=ssh://git@github.com/clincha-org/clincha \
-  --branch=master \
-  --private-key-file=/home/clincha/.ssh/flux \
-  --path=kubernetes/flux/clusters/hawkfield
-```
-
 Staging
 
 ```bash
@@ -61,6 +52,18 @@ flux bootstrap git \
   --branch=master \
   --private-key-file=/home/clincha/.ssh/flux \
   --path=kubernetes/flux/clusters/staging
+
+minikube ssh -- sudo apt update && sudo apt install open-iscsi
+```
+
+Hawkfield
+
+```bash
+flux bootstrap git \
+  --url=ssh://git@github.com/clincha-org/clincha \
+  --branch=master \
+  --private-key-file=/home/clincha/.ssh/flux \
+  --path=kubernetes/flux/clusters/hawkfield
 ```
 
 ## Secrets
