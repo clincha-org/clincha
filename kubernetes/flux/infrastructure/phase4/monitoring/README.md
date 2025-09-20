@@ -19,7 +19,7 @@ kubectl create namespace monitoring
 ```
 
 ```bash
-kubectl create secret generic grafana-admin-credentials --from-file=./admin-user --from-file=admin-password -n monitoring
+kubectl create secret generic grafana-admin-credentials --from-file=admin-user --from-file=admin-password -n monitoring --dry-run=client -o yaml > grafana-admin-credentials.yaml
 ```
 
 ```bash
