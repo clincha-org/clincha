@@ -8,10 +8,18 @@ Generate an SSH key and install a deployment key in the GitHub repository to all
 
 ## Bootstrap
 
-For staging, start kind
+For staging, start minikube and install open-iscsi for Longhorn
 
 ```bash
-kind create cluster
+minikube start -p staging --nodes 3 --driver=docker --cpus=8 --memory=16gb --disk-size=40gb
+ 
+minikube ssh --profile staging -n staging -- sudo apt update  
+minikube ssh --profile staging -n staging-m02 -- sudo apt update  
+minikube ssh --profile staging -n staging-m03 -- sudo apt update  
+
+minikube ssh --profile staging -n staging -- sudo apt install -y open-iscsi
+minikube ssh --profile staging -n staging-m02 -- sudo apt install -y open-iscsi
+minikube ssh --profile staging -n staging-m03 -- sudo apt install -y open-iscsi
 ```
 
 ### Create the decryption secret
@@ -47,13 +55,11 @@ flux check --pre
 Staging
 
 ```bash
-flux bootstrap git \
+flux bootstrap git --silent \
   --url=ssh://git@github.com/clincha-org/clincha \
   --branch=master \
   --private-key-file=/home/clincha/.ssh/flux \
   --path=kubernetes/flux/clusters/staging
-
-minikube ssh -- sudo apt update && sudo apt install open-iscsi
 ```
 
 Hawkfield
