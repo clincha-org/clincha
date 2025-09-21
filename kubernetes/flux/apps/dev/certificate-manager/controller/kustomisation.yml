@@ -4,4 +4,4 @@ namespace: podinfo
 metadata:
   name: certificate-manager-controller
 resources:
-  - ../../../base/certificate-manager/controller/kustomisation.yml
+  - ../../../base/certificate-manager/controller
