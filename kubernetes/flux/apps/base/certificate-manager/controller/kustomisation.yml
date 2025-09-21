@@ -4,4 +4,7 @@ namespace: podinfo
 metadata:
   name: certificate-manager-controller
 resources:
-  - certificate-manager.yml
+  - namespace.yml
+  - helm-repository.yml
+  - config-map-values.yml
+  - helm-release.yml
