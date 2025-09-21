@@ -10,16 +10,32 @@ Generate an SSH key and install a deployment key in the GitHub repository to all
 
 For staging, start minikube and install open-iscsi for Longhorn
 
+STAGING
+
 ```bash
-minikube start -p staging --nodes 3 --driver=docker --cpus=8 --memory=16gb --disk-size=40gb
+minikube start -p staging --nodes 3 --driver=docker --cpus=2 --memory=4gb --disk-size=40gb
  
-minikube ssh --profile staging -n staging -- sudo apt update  
-minikube ssh --profile staging -n staging-m02 -- sudo apt update  
-minikube ssh --profile staging -n staging-m03 -- sudo apt update  
+minikube ssh --profile staging -n staging -- sudo apt update
+minikube ssh --profile staging -n staging-m02 -- sudo apt update
+minikube ssh --profile staging -n staging-m03 -- sudo apt update
 
 minikube ssh --profile staging -n staging -- sudo apt install -y open-iscsi
 minikube ssh --profile staging -n staging-m02 -- sudo apt install -y open-iscsi
 minikube ssh --profile staging -n staging-m03 -- sudo apt install -y open-iscsi
+```
+
+DEV
+
+```bash
+minikube start -p dev --nodes 3 --driver=docker --cpus=2 --memory=4gb --disk-size=40gb
+ 
+minikube ssh --profile dev -n dev -- sudo apt update
+minikube ssh --profile dev -n dev-m02 -- sudo apt update
+minikube ssh --profile dev -n dev-m03 -- sudo apt update
+
+minikube ssh --profile dev -n dev -- sudo apt install -y open-iscsi
+minikube ssh --profile dev -n dev-m02 -- sudo apt install -y open-iscsi
+minikube ssh --profile dev -n dev-m03 -- sudo apt install -y open-iscsi
 ```
 
 ### Create the decryption secret
@@ -57,9 +73,21 @@ Staging
 ```bash
 flux bootstrap git --silent \
   --url=ssh://git@github.com/clincha-org/clincha \
+  --profile=staging \
   --branch=master \
   --private-key-file=/home/clincha/.ssh/flux \
   --path=kubernetes/flux/clusters/staging
+```
+
+dev
+
+```bash
+flux bootstrap git --silent \
+  --url=ssh://git@github.com/clincha-org/clincha \
+  --profile=dev \
+  --branch=master \
+  --private-key-file=/home/clincha/.ssh/flux \
+  --path=kubernetes/flux/clusters/dev
 ```
 
 Hawkfield
