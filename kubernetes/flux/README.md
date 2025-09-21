@@ -73,7 +73,7 @@ Staging
 ```bash
 flux bootstrap git --silent \
   --url=ssh://git@github.com/clincha-org/clincha \
-  --profile=staging \
+  --context=staging \
   --branch=master \
   --private-key-file=/home/clincha/.ssh/flux \
   --path=kubernetes/flux/clusters/staging
@@ -84,7 +84,7 @@ dev
 ```bash
 flux bootstrap git --silent \
   --url=ssh://git@github.com/clincha-org/clincha \
-  --profile=dev \
+  --context=dev \
   --branch=master \
   --private-key-file=/home/clincha/.ssh/flux \
   --path=kubernetes/flux/clusters/dev
