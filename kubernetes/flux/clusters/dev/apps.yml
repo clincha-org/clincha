@@ -29,7 +29,7 @@ spec:
     name: flux-system
   path: kubernetes/flux/apps/dev/certificate-manager/configuration
   dependsOn:
-    - name: certificate-manager-controller
+    - name: certificate-manager-controller-dev
   prune: true
   wait: true
   decryption:
