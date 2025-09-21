@@ -1,8 +1,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
-namespace: flux-system
 metadata:
   name: certificate-manager-configuration
+  namespace: flux-system
 resources:
   - issuers.yml
   - cloudflare-secret.yml
