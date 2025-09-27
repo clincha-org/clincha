@@ -15,35 +15,49 @@ STAGING
 ```bash
 minikube start -p staging --nodes 3 --driver=docker --cpus=2 --memory=4gb --disk-size=40gb
  
-minikube ssh --profile staging -n staging -- sudo apt update
-minikube ssh --profile staging -n staging-m02 -- sudo apt update
-minikube ssh --profile staging -n staging-m03 -- sudo apt update
+minikube ssh --profile staging -n staging "sudo apt-get update;sudo apt-get install -y open-iscsi"
+minikube ssh --profile staging -n staging-m02 "sudo apt-get update;sudo apt-get install -y open-iscsi"
+minikube ssh --profile staging -n staging-m03 "sudo apt-get update;sudo apt-get install -y open-iscsi"
+```
 
-minikube ssh --profile staging -n staging -- sudo apt install -y open-iscsi
-minikube ssh --profile staging -n staging-m02 -- sudo apt install -y open-iscsi
-minikube ssh --profile staging -n staging-m03 -- sudo apt install -y open-iscsi
+```bash
+minikube --profile staging delete
 ```
 
 DEV
 
 ```bash
-minikube start -p dev --nodes 3 --driver=docker --cpus=2 --memory=4gb --disk-size=40gb
- 
-minikube ssh --profile dev -n dev -- sudo apt update
-minikube ssh --profile dev -n dev-m02 -- sudo apt update
-minikube ssh --profile dev -n dev-m03 -- sudo apt update
+minikube start -p dev --nodes 3 --driver=docker --cpus=2 --memory=4gb --disk-size=40gb;
+```
 
-minikube ssh --profile dev -n dev -- sudo apt install -y open-iscsi
-minikube ssh --profile dev -n dev-m02 -- sudo apt install -y open-iscsi
-minikube ssh --profile dev -n dev-m03 -- sudo apt install -y open-iscsi
+```bash
+minikube ssh --profile dev -n dev "sudo apt-get update;sudo apt-get install -y open-iscsi";
+```
+
+```bash
+minikube ssh --profile dev -n dev-m02 "sudo apt-get update;sudo apt-get install -y open-iscsi";
+```
+
+```bash
+minikube ssh --profile dev -n dev-m03 "sudo apt-get update;sudo apt-get install -y open-iscsi";
+```
+
+```bash
+minikube --profile dev delete
 ```
 
 ### Create the decryption secret
 
-Download the key from BitWarden and import it
+Download the sops key from BitWarden and import it. 
 
 ```bash
 gpg --import sops.asc
+```
+
+Download the SSH key from BitWarden and save it to `/home/clincha/.ssh/flux` and set the permissions
+
+```bash
+chmod 600 /home/clincha/.ssh/flux
 ```
 
 ```bash
