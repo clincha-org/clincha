@@ -3,4 +3,5 @@ kind: Kustomization
 metadata:
   name: certificate-manager-controller-dev
 resources:
-  - ../../../base/certificate-manager/controller
+#  - ../../../base/certificate-manager/controller
+  - ns.yml
