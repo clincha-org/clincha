@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gha-elasticstar
+  labels:
+    name: gha-elasticstar
