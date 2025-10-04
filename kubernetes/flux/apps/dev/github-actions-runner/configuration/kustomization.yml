@@ -3,4 +3,5 @@ kind: Kustomization
 metadata:
   name: github-actions-runner-controller-dev
 resources:
-  - ../../../base/github-actions-runner/configuration
+  - ../../../base/github-actions-runner/configuration/clincha
+  - ../../../base/github-actions-runner/configuration/elasticstar
