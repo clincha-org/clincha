@@ -1,8 +1,12 @@
 ---
-#- op: replace
-#  path: /spec/acme/server
-#  value: https://acme-v02.api.letsencrypt.org./directory
-
 - op: replace
   path: /metadata/name
   value: letsencrypt-production
+
+- op: replace
+  path: /spec/acme/server
+  value: https://acme-v02.api.letsencrypt.org./directory
+
+- op: replace
+  path: /spec/acme/privateKeySecretRef/name
+  value: letsencrypt-production-issuer-account-key
