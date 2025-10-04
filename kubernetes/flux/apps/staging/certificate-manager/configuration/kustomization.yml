@@ -6,7 +6,8 @@ metadata:
 resources:
   - ../../../base/certificate-manager/configuration
 patches:
-  - path: issuers-patch.yml
-    target:
-      kind: Issuer
+  - target:
+      group: cert-manager.io
+      version: v1
+      kind: ClusterIssuer
       name: letsencrypt-staging
