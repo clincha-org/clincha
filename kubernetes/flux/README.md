@@ -10,21 +10,7 @@ Generate an SSH key and install a deployment key in the GitHub repository to all
 
 For staging, start minikube and install open-iscsi for Longhorn
 
-STAGING
-
-```bash
-minikube start -p staging --nodes 3 --driver=docker --cpus=2 --memory=4gb --disk-size=40gb
- 
-minikube ssh --profile staging -n staging "sudo apt-get update;sudo apt-get install -y open-iscsi"
-minikube ssh --profile staging -n staging-m02 "sudo apt-get update;sudo apt-get install -y open-iscsi"
-minikube ssh --profile staging -n staging-m03 "sudo apt-get update;sudo apt-get install -y open-iscsi"
-```
-
-```bash
-minikube --profile staging delete
-```
-
-DEV
+### Development
 
 ```bash
 minikube start -p dev --nodes 3 --driver=docker --cpus=2 --memory=4gb --disk-size=40gb;
@@ -32,18 +18,28 @@ minikube start -p dev --nodes 3 --driver=docker --cpus=2 --memory=4gb --disk-siz
 
 ```bash
 minikube ssh --profile dev -n dev "sudo apt-get update;sudo apt-get install -y open-iscsi";
-```
-
-```bash
 minikube ssh --profile dev -n dev-m02 "sudo apt-get update;sudo apt-get install -y open-iscsi";
-```
-
-```bash
 minikube ssh --profile dev -n dev-m03 "sudo apt-get update;sudo apt-get install -y open-iscsi";
 ```
 
 ```bash
-minikube --profile dev delete
+kubectl config use-context dev
+```
+
+### Staging
+
+```bash
+minikube start -p staging --nodes 3 --driver=docker --cpus=2 --memory=4gb --disk-size=40gb
+```
+
+```bash
+minikube ssh --profile staging -n staging "sudo apt-get update;sudo apt-get install -y open-iscsi"
+minikube ssh --profile staging -n staging-m02 "sudo apt-get update;sudo apt-get install -y open-iscsi"
+minikube ssh --profile staging -n staging-m03 "sudo apt-get update;sudo apt-get install -y open-iscsi"
+```
+
+```bash
+kubectl config use-context staging
 ```
 
 ### Create the decryption secret
@@ -113,6 +109,23 @@ flux bootstrap git \
   --private-key-file=/home/clincha/.ssh/flux \
   --path=kubernetes/flux/clusters/hawkfield
 ```
+
+### Uninstall Flux
+
+dev
+
+```bash
+kubectl config use-context dev
+flux uninstall --namespace=flux-system --silent
+```
+
+staging
+
+```bash
+kubectl config use-context staging
+flux uninstall --namespace=flux-system --silent
+```
+
 
 ## Secrets
 

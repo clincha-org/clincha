@@ -5,3 +5,9 @@ metadata:
 resources:
   - ../../../base/github-actions-runner/configuration/clincha
   - ../../../base/github-actions-runner/configuration/elasticstar
+configMapGenerator:
+  - name: values.yaml
+    behavior: merge
+    literals:
+      - runnerGroup=dev
+      - runnerScaleSetName=clincha-runners-dev

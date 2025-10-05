@@ -9,3 +9,5 @@ data:
     githubConfigUrl: "https://github.com/clincha-org"
     githubConfigSecret: "github-config-secret"
     minRunners: 3
+    runnerGroup: "clincha-runners"
+    runnerScaleSetName: "clincha-runners"
