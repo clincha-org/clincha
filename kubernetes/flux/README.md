@@ -8,7 +8,7 @@ Generate an SSH key and install a deployment key in the GitHub repository to all
 
 ## Bootstrap
 
-For staging, start minikube and install open-iscsi for Longhorn
+Start minikube and install open-iscsi for Longhorn.
 
 ### Development
 
@@ -44,7 +44,7 @@ kubectl config use-context staging
 
 ### Create the decryption secret
 
-Download the sops key from BitWarden and import it. 
+Download the sops key from BitWarden and import it.
 
 ```bash
 gpg --import sops.asc
@@ -55,6 +55,8 @@ Download the SSH key from BitWarden and save it to `/home/clincha/.ssh/flux` and
 ```bash
 chmod 600 /home/clincha/.ssh/flux
 ```
+
+Set the following environment variables so we can create the kubernetes secret
 
 ```bash
 export KEY_NAME="hawkfield.clinch-home.com"
@@ -72,13 +74,13 @@ kubectl create secret generic sops-gpg \
 --from-file=sops.asc=/dev/stdin
 ```
 
-### Bootstrap Flux
+### Flux
 
 ```bash
 flux check --pre
 ```
 
-Staging
+#### Staging
 
 ```bash
 flux bootstrap git --silent \
@@ -89,7 +91,7 @@ flux bootstrap git --silent \
   --path=kubernetes/flux/clusters/staging
 ```
 
-dev
+#### dev
 
 ```bash
 flux bootstrap git --silent \
@@ -100,7 +102,7 @@ flux bootstrap git --silent \
   --path=kubernetes/flux/clusters/dev
 ```
 
-Hawkfield
+#### Hawkfield
 
 ```bash
 flux bootstrap git \
@@ -109,6 +111,8 @@ flux bootstrap git \
   --private-key-file=/home/clincha/.ssh/flux \
   --path=kubernetes/flux/clusters/hawkfield
 ```
+
+## Uninstall
 
 ### Uninstall Flux
 
@@ -126,12 +130,33 @@ kubectl config use-context staging
 flux uninstall --namespace=flux-system --silent
 ```
 
+hawkfield
+
+```bash
+kubectl config use-context hawkfield
+flux uninstall --namespace=flux-system --silent
+```
+
+### Delete the minikube clusters
+
+#### Development
+
+```bash
+minikube delete --profile dev
+```
+
+#### Staging
+
+```bash
+minikube delete --profile staging
+```
 
 ## Secrets
 
 https://fluxcd.io/flux/guides/mozilla-sops/
 
-You can use the public key to encrypt files locally. Make sure you are in the `/kubernetes/flux` directory which contains the `.sops.yaml` file.
+You can use the public key to encrypt files locally. Make sure you are in the
+`/kubernetes/flux` directory which contains the `.sops.yaml` file.
 
 ```bash
 gpg --import ./clusters/hawkfield/.sops.pub.asc
