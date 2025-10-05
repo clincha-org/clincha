@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: metallb-controller-dev
+resources:
+  - ../../../base/metallb/configuration
+patches:
+  - target:
+      group: metallb.io
+      version: v1beta1
+      kind: IPAddressPool
+      name: production
+      namespace: metallb
+    path: ipaddresspool-patch.yml
+  - target:
+      group: metallb.io
+      version: v1beta1
+      kind: L2Advertisement
+      name: production
+      namespace: metallb
+    path: l2advertisement-patch.yml

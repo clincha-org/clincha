@@ -1,0 +1,8 @@
+- op: replace
+  path: /metadata/name
+  value: development
+
+- op: replace
+  path: /spec/addresses
+  value:
+    - 10.10.2.200-10.10.2.250
