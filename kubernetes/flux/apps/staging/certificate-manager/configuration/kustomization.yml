@@ -11,4 +11,5 @@ patches:
       version: v1
       kind: ClusterIssuer
       name: letsencrypt-staging
+      namespace: certificate-manager
     path: issuers-patch.yml
