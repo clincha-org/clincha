@@ -5,10 +5,11 @@ metadata:
 resources:
   - ../../../base/github-actions-runner/configuration/clincha
   - ../../../base/github-actions-runner/configuration/elasticstar
-configMapGenerator:
-  - name: gha-clincha-values
-    namespace: flux-system
-    behavior: merge
-    literals:
-      - runnerGroup=dev
-      - runnerScaleSetName=clincha-runners-dev
+patches:
+  - target:
+      group: helm.toolkit.fluxcd.io
+      version: v2
+      kind: HelmRelease
+      name: runners-clincha
+      namespace: flux-system
+    path: helm-release-patch.yml
