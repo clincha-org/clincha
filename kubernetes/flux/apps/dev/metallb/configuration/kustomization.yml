@@ -18,4 +18,4 @@ patches:
       kind: L2Advertisement
       name: production
       namespace: metallb
-    path: l2advertisement-patch.yml
+    path: l2-advertisement-patch.yml
