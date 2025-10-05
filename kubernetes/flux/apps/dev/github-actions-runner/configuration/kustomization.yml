@@ -6,7 +6,8 @@ resources:
   - ../../../base/github-actions-runner/configuration/clincha
   - ../../../base/github-actions-runner/configuration/elasticstar
 configMapGenerator:
-  - name: values.yaml
+  - name: gha-clincha-values
+    namespace: flux-system
     behavior: merge
     literals:
       - runnerGroup=dev
