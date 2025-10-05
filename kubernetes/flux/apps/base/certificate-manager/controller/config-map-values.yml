@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: certificate-manager-values
-  namespace: flux-system
+  namespace: certificate-manager
 data:
   values.yaml: |
     crds:
