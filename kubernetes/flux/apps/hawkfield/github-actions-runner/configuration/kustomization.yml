@@ -13,10 +13,3 @@ patches:
       name: runners-clincha
       namespace: flux-system
     path: helm-release-patch.yml
-  - target:
-      group: helm.toolkit.fluxcd.io
-      version: v2
-      kind: HelmRelease
-      name: runners-elasticstar
-      namespace: flux-system
-    path: helm-release-patch.yml
