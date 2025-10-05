@@ -3,7 +3,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: actions-runner-controller-charts
-  namespace: flux-system
+  namespace: gha-controller
 spec:
   interval: 30m
   type: oci

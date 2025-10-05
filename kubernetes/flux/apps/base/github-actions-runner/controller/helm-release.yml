@@ -3,9 +3,9 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: github-actions-runner-controller
-  namespace: flux-system
+  namespace: gha-controller
 spec:
-  targetNamespace: github-actions-runner
+  targetNamespace: gha-controller
   interval: 30m
   chart:
     spec:
