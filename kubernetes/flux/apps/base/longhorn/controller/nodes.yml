@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Node
 metadata:
-  name: staging
+  name: k8s-master-1
   labels:
     node.longhorn.io/create-default-disk: "config"
   annotations:
@@ -21,7 +21,7 @@ metadata:
 apiVersion: v1
 kind: Node
 metadata:
-  name: staging-m02
+  name: k8s-master-2
   labels:
     node.longhorn.io/create-default-disk: "config"
   annotations:
@@ -40,7 +40,7 @@ metadata:
 apiVersion: v1
 kind: Node
 metadata:
-  name: staging-m03
+  name: k8s-master-3
   labels:
     node.longhorn.io/create-default-disk: "config"
   annotations:

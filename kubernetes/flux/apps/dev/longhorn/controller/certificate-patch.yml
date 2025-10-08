@@ -1,0 +1,5 @@
+- op: replace
+  path: /spec/dnsNames
+  value:
+    - longhorn.dev.clincha.co.uk
+    - longhorn.dev.clinch-home.com

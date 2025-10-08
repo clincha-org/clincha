@@ -1,0 +1,36 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: longhorn-controller-dev
+resources:
+  - ../../../base/longhorn/controller
+patches:
+  - target:
+      kind: Node
+      version: v1
+      name: k8s-master-1
+    path: node-01-patch.yml
+  - target:
+      kind: Node
+      version: v1
+      name: k8s-master-2
+    path: node-02-patch.yml
+  - target:
+      kind: Node
+      version: v1
+      name: k8s-master-3
+    path: node-03-patch.yml
+  - target:
+      kind: Ingress
+      group: networking.k8s.io
+      version: v1
+      name: longhorn
+      namespace: longhorn
+    path: ingress-patch.yml
+configMapGenerator:
+  - namespace: longhorn
+    name: longhorn-values
+    files:
+      - values.yaml=values.yml
+    options:
+      disableNameSuffixHash: true
