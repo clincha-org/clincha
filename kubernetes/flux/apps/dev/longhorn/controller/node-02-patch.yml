@@ -2,6 +2,6 @@
   path: /metadata/name
   value: dev-m02
 - op: remove
-  path: /metadata/annotations/node.longhorn.io/default-disks-config
+  path: /metadata/annotations/node.longhorn.io~1default-disks-config # ~1 represents /
 - op: remove
-  path: /metadata/labels/node.longhorn.io/create-default-disk
+  path: /metadata/labels/node.longhorn.io~1create-default-disk # ~1 represents /
