@@ -27,6 +27,13 @@ patches:
       name: longhorn
       namespace: longhorn
     path: ingress-patch.yml
+  - target:
+      kind: Certificate
+      group: cert-manager.io
+      version: v1
+      name: longhorn-certificate
+      namespace: longhorn
+    path: certificate-patch.yml
 configMapGenerator:
   - namespace: longhorn
     name: longhorn-values
