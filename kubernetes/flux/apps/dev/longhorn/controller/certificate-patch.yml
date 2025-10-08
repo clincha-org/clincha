@@ -3,3 +3,6 @@
   value:
     - longhorn.dev.clincha.co.uk
     - longhorn.dev.clinch-home.com
+- op: replace
+  path: /spec/issuerRef/name
+  value: letsencrypt-staging
