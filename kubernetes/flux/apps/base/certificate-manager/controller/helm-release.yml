@@ -19,4 +19,4 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: certificate-manager-values
-      valuesKey: values.yaml
+      valuesKey: values.yml
