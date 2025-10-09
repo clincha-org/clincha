@@ -5,7 +5,7 @@ metadata:
   name: certificate-manager-values
   namespace: certificate-manager
 data:
-  values.yaml: |
+  values.yml: |
     crds:
       enabled: true
     extraArgs:

@@ -19,4 +19,4 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: longhorn-values
-      valuesKey: config-map-values.yml
+      valuesKey: values.yml
