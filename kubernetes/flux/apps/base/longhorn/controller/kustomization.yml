@@ -5,6 +5,5 @@ resources:
   - namespace.yml
   - helm-repository.yml
   - helm-release.yml
-  - ../configuration/storage-class.yml
   - ingress.yml
   - certificate.yml
