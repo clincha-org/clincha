@@ -1,0 +1,8 @@
+- op: replace
+  path: /spec/dnsNames
+  value:
+    - grafana.dev.clincha.co.uk
+    - grafana.dev.clinch-home.com
+- op: replace
+  path: /spec/issuerRef/name
+  value: letsencrypt-staging

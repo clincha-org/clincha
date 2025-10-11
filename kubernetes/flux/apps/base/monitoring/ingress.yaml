@@ -19,16 +19,3 @@ spec:
                 name: grafana
                 port:
                   number: 80
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: grafana-certificate
-  namespace: monitoring
-spec:
-  secretName: grafana-certificate-secret
-  issuerRef:
-    name: letsencrypt
-    kind: ClusterIssuer
-  dnsNames:
-    - grafana.clinch-home.com
