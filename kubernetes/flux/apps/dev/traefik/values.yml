@@ -1,3 +1,6 @@
+service:
+  annotations:
+    metallb.io/loadBalancerIPs: 10.2.1.205
 ports:
   web:
     redirections:

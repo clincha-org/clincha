@@ -5,4 +5,4 @@
 - op: replace
   path: /spec/addresses
   value:
-    - 192.168.58.10 - 192.168.58.254
+    - 10.2.1.200 - 10.2.1.250

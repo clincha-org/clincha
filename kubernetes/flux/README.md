@@ -13,7 +13,7 @@ Start minikube and install open-iscsi for Longhorn.
 ### Development
 
 ```bash
-minikube start -p dev --nodes 3 --driver=docker --cpus=2 --memory=4gb --disk-size=40gb;
+minikube start -p dev --nodes 3 --driver=docker --cpus=2 --memory=4gb --subnet=10.2.1.0/24;
 ```
 
 ```bash
