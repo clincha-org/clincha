@@ -26,22 +26,6 @@ minikube ssh --profile dev -n dev-m03 "sudo apt-get update;sudo apt-get install 
 kubectl config use-context dev
 ```
 
-### Staging
-
-```bash
-minikube start -p staging --nodes 3 --driver=docker --cpus=2 --memory=4gb --disk-size=40gb
-```
-
-```bash
-minikube ssh --profile staging -n staging "sudo apt-get update;sudo apt-get install -y open-iscsi"
-minikube ssh --profile staging -n staging-m02 "sudo apt-get update;sudo apt-get install -y open-iscsi"
-minikube ssh --profile staging -n staging-m03 "sudo apt-get update;sudo apt-get install -y open-iscsi"
-```
-
-```bash
-kubectl config use-context staging
-```
-
 ### Create the decryption secret
 
 Download the sops key from BitWarden and import it.
@@ -80,17 +64,6 @@ kubectl create secret generic sops-gpg \
 flux check --pre
 ```
 
-#### Staging
-
-```bash
-flux bootstrap git --silent \
-  --url=ssh://git@github.com/clincha-org/clincha \
-  --context=staging \
-  --branch=master \
-  --private-key-file=/home/clincha/.ssh/flux \
-  --path=kubernetes/flux/clusters/staging
-```
-
 #### dev
 
 ```bash
@@ -123,13 +96,6 @@ kubectl config use-context dev
 flux uninstall --namespace=flux-system --silent
 ```
 
-staging
-
-```bash
-kubectl config use-context staging
-flux uninstall --namespace=flux-system --silent
-```
-
 hawkfield
 
 ```bash
@@ -143,12 +109,6 @@ flux uninstall --namespace=flux-system --silent
 
 ```bash
 minikube delete --profile dev
-```
-
-#### Staging
-
-```bash
-minikube delete --profile staging
 ```
 
 ## Secrets

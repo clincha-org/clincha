@@ -1,0 +1,8 @@
+- op: replace
+  path: /spec/dnsNames
+  value:
+    - traefik.dev.clincha.co.uk
+    - traefik.dev.clinch-home.com
+- op: replace
+  path: /spec/issuerRef/name
+  value: letsencrypt-staging

@@ -1,0 +1,20 @@
+service:
+  annotations:
+    metallb.io/loadBalancerIPs: 10.1.2.205
+ports:
+  web:
+    redirections:
+      entryPoint:
+        to: websecure
+        scheme: https
+        permanent: true
+ingressRoute:
+  dashboard:
+    enabled: true
+    entryPoints: [ web, websecure ]
+    matchRule: Host(`traefik.clinch-home.com`)
+    tls:
+      secretName: traefik-certificate-secret
+providers:
+  kubernetesIngress:
+    allowExternalNameServices: true

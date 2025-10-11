@@ -38,6 +38,6 @@ configMapGenerator:
   - namespace: longhorn
     name: longhorn-values
     files:
-      - values.yml=values.yml
+      - values.yml
     options:
       disableNameSuffixHash: true

@@ -1,8 +1,0 @@
-- op: replace
-  path: /metadata/name
-  value: staging
-
-- op: replace
-  path: /spec/ipAddressPools
-  value:
-    - staging
