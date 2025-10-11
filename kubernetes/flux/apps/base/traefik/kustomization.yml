@@ -4,3 +4,4 @@ resources:
   - namespace.yml
   - helm-release.yml
   - helm-repository.yml
+  - certificate.yml
