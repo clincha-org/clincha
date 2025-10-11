@@ -11,6 +11,8 @@ spec:
     kind: GitRepository
     name: flux-system
   path: ./kubernetes/flux/applications/dev/elastic-logging
+  dependsOn:
+    - name: elastic-operator-dev
   prune: true
   wait: true
   decryption:

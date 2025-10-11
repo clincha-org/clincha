@@ -4,7 +4,7 @@ metadata:
   name: elastic-operator
   namespace: elastic-operator
 spec:
-  targetNamespace: elastic
+  targetNamespace: elastic-operator
   interval: 1m
   chart:
     spec:

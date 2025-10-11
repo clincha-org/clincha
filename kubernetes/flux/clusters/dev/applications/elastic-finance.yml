@@ -11,6 +11,9 @@ spec:
     kind: GitRepository
     name: flux-system
   path: ./kubernetes/flux/applications/dev/elastic-finance
+  dependsOn:
+    - name: elastic-operator-dev
+    - name: certificate-manager-configuration-dev
   prune: true
   wait: true
   decryption:
