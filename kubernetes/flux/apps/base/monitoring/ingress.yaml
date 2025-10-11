@@ -9,7 +9,7 @@ spec:
   tls:
     - secretName: grafana-certificate-secret
   rules:
-    - host: grafana.clinch-home.com
+    - host: grafana.dev.clinch-home.com
       http:
         paths:
           - path: /
