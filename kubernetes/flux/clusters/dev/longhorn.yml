@@ -6,12 +6,14 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m
+  timeout: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
   path: ./kubernetes/flux/apps/dev/longhorn/controller
   dependsOn:
     - name: certificate-manager-configuration-dev
+    - name: metallb-configuration-dev
   prune: true
   wait: true
   decryption:
