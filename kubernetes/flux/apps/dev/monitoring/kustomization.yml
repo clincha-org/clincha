@@ -9,7 +9,7 @@ patches:
       kind: Certificate
       group: cert-manager.io
       version: v1
-      name: monitoring-certificate
+      name: grafana-certificate
       namespace: monitoring
     path: certificate-patch.yml
 configMapGenerator:
