@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: homepage-certificate
+  namespace: homepage
+spec:
+  secretName: homepage-certificate-secret
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - clincha.co.uk
+    - www.clincha.co.uk
