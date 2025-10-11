@@ -10,6 +10,8 @@ spec:
     kind: GitRepository
     name: flux-system
   path: ./kubernetes/flux/apps/dev/longhorn/controller
+  dependsOn:
+    - name: certificate-manager-configuration-dev
   prune: true
   wait: true
   decryption:

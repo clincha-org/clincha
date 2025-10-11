@@ -26,6 +26,12 @@ minikube ssh --profile dev -n dev-m03 "sudo apt-get update;sudo apt-get install 
 kubectl config use-context dev
 ```
 
+Open a tunnel to the minikube cluster so we can access services like the Longhorn UI
+
+```bash
+minikube --profile dev tunnel
+```
+
 ### Create the decryption secret
 
 Download the sops key from BitWarden and import it.
