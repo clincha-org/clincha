@@ -18,3 +18,4 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: elastic-finance-config
+      valuesKey: values.yml
