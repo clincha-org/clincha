@@ -2,7 +2,7 @@
   path: /metadata/name
   value: dev
 - op: replace
-  path: /metadata/labels/node.longhorn.io~1default-disks-config # ~1 represents /
+  path: /metadata/annotations/node.longhorn.io~1default-disks-config # ~1 represents /
   value: |-
     [
       {
