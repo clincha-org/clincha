@@ -7,7 +7,7 @@
     [
       {
         "name": "fast",
-        "path": "/tmp",
+        "path": "/var/lib/longhorn",
         "allowScheduling": true,
         "tags": [
           "fast"
