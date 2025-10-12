@@ -3,7 +3,7 @@
   value: dev-m02
 - op: replace
   path: /metadata/labels/node.longhorn.io~1create-default-disk # ~1 represents /
-  value: |
+  value: |-
     [
       {
         "name": "fast",
