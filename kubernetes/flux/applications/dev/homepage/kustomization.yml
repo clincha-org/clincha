@@ -9,8 +9,8 @@ patches:
       kind: Certificate
       group: cert-manager.io
       version: v1
-      name: grafana-certificate
-      namespace: monitoring
+      name: homepage-certificate
+      namespace: homepage
     path: certificate-patch.yml
   - target:
       kind: Ingress
