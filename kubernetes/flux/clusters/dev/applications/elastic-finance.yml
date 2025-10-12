@@ -14,6 +14,9 @@ spec:
   dependsOn:
     - name: elastic-operator-dev
     - name: certificate-manager-configuration-dev
+    - name: metallb-configuration-dev
+    - name: traefik-dev
+    - name: longhorn-dev
   prune: true
   wait: true
   decryption:

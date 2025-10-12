@@ -17,9 +17,9 @@ minikube start -p dev --nodes 3 --driver=docker --cpus=2 --memory=4gb --subnet=1
 ```
 
 ```bash
-minikube ssh --profile dev -n dev "sudo apt-get update;sudo apt-get install -y open-iscsi";
-minikube ssh --profile dev -n dev-m02 "sudo apt-get update;sudo apt-get install -y open-iscsi";
-minikube ssh --profile dev -n dev-m03 "sudo apt-get update;sudo apt-get install -y open-iscsi";
+minikube ssh --profile dev -n dev "sudo apt-get update;sudo apt-get install -y open-iscsi nfs-common";
+minikube ssh --profile dev -n dev-m02 "sudo apt-get update;sudo apt-get install -y open-iscsi nfs-common";
+minikube ssh --profile dev -n dev-m03 "sudo apt-get update;sudo apt-get install -y open-iscsi nfs-common";
 ```
 
 ```bash
