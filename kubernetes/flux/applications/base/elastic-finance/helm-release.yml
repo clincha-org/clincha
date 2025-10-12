@@ -15,3 +15,6 @@ spec:
         name: elastic
         namespace: elastic-operator
       interval: 1m
+  valuesFrom:
+    - kind: ConfigMap
+      name: elastic-finance-config

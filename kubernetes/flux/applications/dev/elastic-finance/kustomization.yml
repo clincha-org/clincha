@@ -4,3 +4,8 @@ metadata:
   name: elastic-finance
 resources:
   - ../../base/elastic-finance
+configMapGenerator:
+  - name: elastic-finance-config
+    namespace: elastic-finance
+    files:
+      - values.yml
