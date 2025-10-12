@@ -16,7 +16,7 @@ spec:
     - name: certificate-manager-configuration-dev
     - name: metallb-configuration-dev
     - name: traefik-dev
-    - name: longhorn-dev
+    - name: longhorn-configuration-dev
   prune: true
   wait: true
   decryption:
