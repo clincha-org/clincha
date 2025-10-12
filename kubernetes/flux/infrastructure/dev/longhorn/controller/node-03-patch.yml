@@ -2,5 +2,15 @@
   path: /metadata/name
   value: dev-m03
 - op: replace
-  path: /metadata/labels/node.longhorn.io~1create-default-disk # ~1 represents /
-  value: [ { "name": "fast", "path": "/var/lib/longhorn", "allowScheduling": true, "tags": [ "fast" ] } ]
+  path: /metadata/annotations/node.longhorn.io~1create-default-disk # ~1 represents /
+  value: |-
+    [
+      {
+        "name": "fast",
+        "path": "/var/lib/longhorn",
+        "allowScheduling": true,
+        "tags": [
+          "fast"
+        ]
+      }
+    ]
