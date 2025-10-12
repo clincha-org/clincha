@@ -9,3 +9,5 @@ configMapGenerator:
     namespace: elastic-finance
     files:
       - values.yml
+generatorOptions:
+  disableNameSuffixHash: true
