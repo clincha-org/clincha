@@ -1,0 +1,6 @@
+- op: replace
+  path: /spec/rules/0/host
+  value: dev.clincha.co.uk
+- op: replace
+  path: /spec/rules/1/host
+  value: www.dev.clincha.co.uk

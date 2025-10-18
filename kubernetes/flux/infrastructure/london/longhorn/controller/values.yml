@@ -1,0 +1,9 @@
+---
+service:
+  ui:
+    type: LoadBalancer
+persistence:
+  defaultClass: true
+defaultSettings:
+  createDefaultDiskLabeledNodes: true
+  storageReservedPercentageForDefaultDisk: 0

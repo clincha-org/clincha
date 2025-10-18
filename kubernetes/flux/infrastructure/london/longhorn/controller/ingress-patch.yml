@@ -1,0 +1,6 @@
+- op: replace
+  path: /spec/rules/0/host
+  value: longhorn.dev.clinch-home.com
+- op: replace
+  path: /spec/rules/1/host
+  value: longhorn.dev.clincha.co.uk
