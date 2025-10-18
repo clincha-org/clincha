@@ -46,3 +46,27 @@ variable "ip_address" {
   default     = "10.1.2.101"
   type        = string
 }
+
+variable "gateway" {
+  description = "The gateway for the node"
+  default     = "10.1.2.1"
+  type        = string
+}
+
+variable "boot_disk_size" {
+  description = "The size of the boot disk"
+  default     = "50G"
+  type        = string
+}
+
+variable "data_disk_size" {
+  description = "The size of the data disk"
+  default     = "100G"
+  type        = string
+}
+
+variable "network_bridge" {
+  description = "The network bridge to attach to"
+  default     = "vmbr1"
+  type        = string
+}
