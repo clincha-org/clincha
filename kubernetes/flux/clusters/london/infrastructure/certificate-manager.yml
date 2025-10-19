@@ -10,7 +10,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./kubernetes/flux/infrastructure/dev/certificate-manager/controller
+  path: ./kubernetes/flux/infrastructure/london/certificate-manager/controller
   prune: true
   wait: true
   decryption:
@@ -28,7 +28,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./kubernetes/flux/infrastructure/dev/certificate-manager/configuration
+  path: ./kubernetes/flux/infrastructure/london/certificate-manager/configuration
   dependsOn:
     - name: certificate-manager-controller
   prune: true

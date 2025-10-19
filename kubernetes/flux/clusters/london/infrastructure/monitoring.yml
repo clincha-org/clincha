@@ -10,7 +10,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./kubernetes/flux/infrastructure/dev/monitoring
+  path: ./kubernetes/flux/infrastructure/london/monitoring
   dependsOn:
     - name: certificate-manager-configuration
     - name: metallb-configuration

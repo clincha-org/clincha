@@ -10,7 +10,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./kubernetes/flux/infrastructure/dev/traefik
+  path: ./kubernetes/flux/infrastructure/london/traefik
   dependsOn:
     - name: certificate-manager-configuration
     - name: metallb-configuration
