@@ -1,0 +1,80 @@
+---
+- name: "Deploy cluster with Flux"
+  hosts: kube_control_plane
+  become: true
+  tasks:
+    - name: "Check if Flux CLI is already installed"
+      ansible.builtin.shell: |
+        flux --version
+      register: flux_check
+      ignore_errors: yes
+
+    - name: "Install and configure Flux CLI"
+      when: flux_check.rc != 0
+      block:
+        - name: "Download Flux CLI"
+          ansible.builtin.get_url:
+            url: "https://github.com/fluxcd/flux2/releases/download/v2.7.2/flux_2.7.2_linux_amd64.tar.gz"
+            dest: /tmp/flux.tar.gz
+
+        - name: "Extract Flux CLI"
+          ansible.builtin.unarchive:
+            src: /tmp/flux.tar.gz
+            dest: /usr/local/bin/
+            remote_src: yes
+            mode: '0755'
+
+        - name: "Ensure bash completion for flux"
+          ansible.builtin.lineinfile:
+            path: /home/kubernetes/.bashrc
+            line: "source <(flux completion bash)"
+            regexp: "^source <(flux completion bash)$"
+            state: present
+
+    - name: "Deploy SOPS GPG key for Flux"
+      ansible.builtin.copy:
+        dest: /home/kubernetes/flux-sops.asc
+        content: "{{ flux_gpg_key }}"
+        mode: '0600'
+        owner: kubernetes
+        group: kubernetes
+
+    - name: "Create SOPS Kubernetes secret"
+      ansible.builtin.shell: |
+        gpg --import /home/kubernetes/flux-sops.asc
+        gpg --export-secret-keys --armor "${KEY_FP}" |
+        kubectl create secret generic sops-gpg \
+        --namespace=flux-system \
+        --from-file=sops.asc=/dev/stdin
+      environment:
+        KEY_NAME: "hawkfield.clinch-home.com"
+        KEY_COMMENT: "flux secrets"
+        KEY_FP: "76AF39813C2297E8F98C542D42436A07A9BA1DE0"
+      run_once: true
+      failed_when: false
+
+    - name: "Ensure .ssh directory exists for kubernetes user"
+      ansible.builtin.file:
+        path: /home/kubernetes/.ssh
+        state: directory
+        mode: '0700'
+        owner: kubernetes
+        group: kubernetes
+
+    - name: "Download Flux SSH private key"
+      ansible.builtin.copy:
+        dest: /home/kubernetes/.ssh/flux
+        content: "{{ flux_private_key }}"
+        mode: '0600'
+        owner: kubernetes
+        group: kubernetes
+
+    - name: "Bootstrap Flux to the cluster"
+      ansible.builtin.shell: |
+        flux bootstrap git --silent \
+        --url=ssh://git@github.com/clincha-org/clincha \
+        --branch=master \
+        --private-key-file=/home/kubernetes/.ssh/flux \
+        --path=kubernetes/flux/clusters/{{ k8s_cluster_name }} \
+        --cluster-domain={{ k8s_dns_domain }}
+      run_once: true

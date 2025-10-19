@@ -4,11 +4,3 @@ metadata:
   name: longhorn-configuration
 resources:
   - ../../../base/longhorn/configuration
-patches:
-  - target:
-      group: storage.k8s.io
-      version: v1
-      kind: StorageClass
-      name: fast
-      namespace: longhorn
-    path: storage-class-patch.yml
