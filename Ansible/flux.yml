@@ -8,6 +8,7 @@
         flux --version
       register: flux_check
       ignore_errors: yes
+      changed_when: false
 
     - name: "Install and configure Flux CLI"
       when: flux_check.rc != 0
@@ -55,14 +56,16 @@
       run_once: true
 
     - name: "Create SOPS Kubernetes secret"
-      ansible.builtin.shell: |
-        gpg --import /home/kubernetes/flux-sops.asc
-        gpg --export-secret-keys --armor "${KEY_FP}" |
-        kubectl create secret generic sops-gpg --namespace=flux-system --from-file=sops.asc=/dev/stdin
-      environment:
-        KEY_NAME: "hawkfield.clinch-home.com"
-        KEY_COMMENT: "flux secrets"
-        KEY_FP: "76AF39813C2297E8F98C542D42436A07A9BA1DE0"
+      kubernetes.core.k8s:
+        state: present
+        namespace: flux-system
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: sops-gpg
+          data:
+            sops.asc: "{{ flux_gpg_key | b64encode }}"
       run_once: true
 
     - name: "Ensure .ssh directory exists for kubernetes user"
