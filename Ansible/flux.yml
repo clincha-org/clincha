@@ -39,19 +39,31 @@
         owner: kubernetes
         group: kubernetes
 
+    - name: "Install Kubernetes Python"
+      ansible.builtin.package:
+          name: python3-kubernetes
+          state: present
+
+    - name: "Create flux-system namespace"
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: flux-system
+      run_once: true
+
     - name: "Create SOPS Kubernetes secret"
       ansible.builtin.shell: |
         gpg --import /home/kubernetes/flux-sops.asc
         gpg --export-secret-keys --armor "${KEY_FP}" |
-        kubectl create secret generic sops-gpg \
-        --namespace=flux-system \
-        --from-file=sops.asc=/dev/stdin
+        kubectl create secret generic sops-gpg --namespace=flux-system --from-file=sops.asc=/dev/stdin
       environment:
         KEY_NAME: "hawkfield.clinch-home.com"
         KEY_COMMENT: "flux secrets"
         KEY_FP: "76AF39813C2297E8F98C542D42436A07A9BA1DE0"
       run_once: true
-      failed_when: false
 
     - name: "Ensure .ssh directory exists for kubernetes user"
       ansible.builtin.file:
