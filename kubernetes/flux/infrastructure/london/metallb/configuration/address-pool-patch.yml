@@ -3,5 +3,6 @@
   value: development
 
 - op: replace
-  path: /spec/addresses/0
-  value: 10.2.0.50 - 10.2.0.100
+  path: /spec/addresses
+  value:
+    - 10.2.0.50-10.2.0.100
