@@ -5,6 +5,9 @@ eck-elasticsearch:
     elasticsearch:
       publicBaseUrl: "https://elastic.dev.clinch-home.com"
   fullnameOverride: elasticsearch
+  auth:
+    fileRealm:
+      - secretName: secret-basic-auth
   nodeSets:
     - name: masters
       count: 1
