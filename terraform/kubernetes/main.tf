@@ -7,7 +7,7 @@ module "k8s-master-1" {
 }
 
 module "k8s-master-2" {
-  source      = "./master"
+  source      = "./master-new"
   name        = "k8s-master-2"
   target_node = "hawk02"
   vmid        = 112

@@ -78,3 +78,13 @@ variable vm_id {
   type = string
   default = 100
 }
+
+variable disk_size {
+  type    = string
+  default = "50G"
+}
+
+variable storage_pool {
+  type    = string
+  default = "local-lvm"
+}

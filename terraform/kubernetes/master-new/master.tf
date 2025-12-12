@@ -28,29 +28,27 @@ resource "proxmox_vm_qemu" "k8s-master-1" {
   tags = "base,kubernetes_master,kubernetes_worker"
 
   scsihw = "virtio-scsi-single"
-  disks {
-    ide {
-      ide3 {
-        cloudinit {
-          storage = "local-lvm"
-        }
-      }
-    }
-    virtio {
-      virtio0 {
-        disk {
-          size     = "50G"
-          storage  = "local-lvm"
-          iothread = "true"
-        }
-      }
-      virtio1 {
-        disk {
-          size     = "100G"
-          storage  = "fast"
-          iothread = "true"
-        }
-      }
-    }
+
+  disk {
+    type    = "cloudinit"
+    storage = "local-lvm"
+    slot    = "ide2"
   }
+
+  disk {
+    size     = "64G"
+    storage  = "local-lvm"
+    type     = "disk"
+    iothread = true
+    slot     = "virtio0"
+  }
+
+  disk {
+    size     = "100G"
+    storage  = "local-lvm"
+    type     = "disk"
+    iothread = true
+    slot     = "virtio1"
+  }
+
 }
