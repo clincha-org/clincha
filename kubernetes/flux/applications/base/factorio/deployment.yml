@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: factorio
+  namespace: factorio
+  labels:
+    name: factorio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: factorio
+  template:
+    metadata:
+      labels:
+        name: factorio
+    spec:
+      initContainers:
+        - name: copy-server-settings
+          image: busybox
+          command: [ "sh", "-c", "cp /settings/*.json /config" ]
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: server-settings
+              mountPath: /settings
+      containers:
+        - name: factorio
+          image: factoriotools/factorio:2.0.69
+          ports:
+            - containerPort: 34197
+              protocol: UDP
+            - containerPort: 27015
+              protocol: TCP
+          env:
+            - name: DLC_SPACE_AGE
+              value: "true"
+          resources:
+            requests:
+              cpu: "4"
+              memory: "16Gi"
+          volumeMounts:
+            - mountPath: /factorio/config
+              name: config
+            - mountPath: /factorio/saves
+              name: saves
+      volumes:
+        - name: config
+          emptyDir: { }
+        - name: saves
+          nfs:
+            path: /mnt/data/factorio/runsmart
+            server: 10.1.2.10
+        - name: server-settings
+          configMap:
+            name: factorio-server-settings

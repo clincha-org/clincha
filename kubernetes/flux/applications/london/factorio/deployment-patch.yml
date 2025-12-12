@@ -1,0 +1,13 @@
+- op: remove
+  path: /spec/template/spec/volumes/1
+
+- op: remove
+  path: /spec/template/spec/containers/0/volumeMounts/1
+
+- op: replace
+  path: /spec/template/spec/containers/0/resources/requests/cpu
+  value: "1"
+
+- op: replace
+  path: /spec/template/spec/containers/0/resources/requests/memory
+  value: "2Gi"

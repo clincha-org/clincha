@@ -78,7 +78,9 @@
 - name: "Create cluster"
   ansible.builtin.import_playbook: kubernetes_sigs.kubespray.cluster
   vars:
-    kube_version: "1.32.0"
+    kube_version: "1.33.5"
+    cluster_name: "london"
+    dns_domain: "clinch-home.com"
 
 - name: "Configure kubernetes user"
   hosts: kube_control_plane

@@ -1,0 +1,25 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: elastic-finance-dev
+  namespace: flux-system
+spec:
+  interval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./kubernetes/flux/applications/dev/elastic-finance
+  dependsOn:
+    - name: elastic-operator-dev
+    - name: certificate-manager-configuration-dev
+    - name: metallb-configuration-dev
+    - name: traefik-dev
+    - name: longhorn-configuration-dev
+  prune: true
+  wait: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-gpg

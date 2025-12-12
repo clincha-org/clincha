@@ -13,33 +13,23 @@ Start minikube and install open-iscsi for Longhorn.
 ### Development
 
 ```bash
-minikube start -p dev --nodes 3 --driver=docker --cpus=2 --memory=4gb --disk-size=40gb;
+minikube start -p dev --nodes 3 --driver=docker --cpus=2 --memory=4gb --subnet=10.2.1.0/24;
 ```
 
 ```bash
-minikube ssh --profile dev -n dev "sudo apt-get update;sudo apt-get install -y open-iscsi";
-minikube ssh --profile dev -n dev-m02 "sudo apt-get update;sudo apt-get install -y open-iscsi";
-minikube ssh --profile dev -n dev-m03 "sudo apt-get update;sudo apt-get install -y open-iscsi";
+minikube ssh --profile dev -n dev "sudo apt-get update;sudo apt-get install -y open-iscsi nfs-common";
+minikube ssh --profile dev -n dev-m02 "sudo apt-get update;sudo apt-get install -y open-iscsi nfs-common";
+minikube ssh --profile dev -n dev-m03 "sudo apt-get update;sudo apt-get install -y open-iscsi nfs-common";
 ```
 
 ```bash
 kubectl config use-context dev
 ```
 
-### Staging
+Open a tunnel to the minikube cluster so we can access services like the Longhorn UI
 
 ```bash
-minikube start -p staging --nodes 3 --driver=docker --cpus=2 --memory=4gb --disk-size=40gb
-```
-
-```bash
-minikube ssh --profile staging -n staging "sudo apt-get update;sudo apt-get install -y open-iscsi"
-minikube ssh --profile staging -n staging-m02 "sudo apt-get update;sudo apt-get install -y open-iscsi"
-minikube ssh --profile staging -n staging-m03 "sudo apt-get update;sudo apt-get install -y open-iscsi"
-```
-
-```bash
-kubectl config use-context staging
+minikube --profile dev tunnel
 ```
 
 ### Create the decryption secret
@@ -80,17 +70,6 @@ kubectl create secret generic sops-gpg \
 flux check --pre
 ```
 
-#### Staging
-
-```bash
-flux bootstrap git --silent \
-  --url=ssh://git@github.com/clincha-org/clincha \
-  --context=staging \
-  --branch=master \
-  --private-key-file=/home/clincha/.ssh/flux \
-  --path=kubernetes/flux/clusters/staging
-```
-
 #### dev
 
 ```bash
@@ -123,13 +102,6 @@ kubectl config use-context dev
 flux uninstall --namespace=flux-system --silent
 ```
 
-staging
-
-```bash
-kubectl config use-context staging
-flux uninstall --namespace=flux-system --silent
-```
-
 hawkfield
 
 ```bash
@@ -143,12 +115,6 @@ flux uninstall --namespace=flux-system --silent
 
 ```bash
 minikube delete --profile dev
-```
-
-#### Staging
-
-```bash
-minikube delete --profile staging
 ```
 
 ## Secrets

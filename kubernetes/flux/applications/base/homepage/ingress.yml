@@ -1,0 +1,32 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: homepage
+  namespace: homepage
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+spec:
+  tls:
+    - secretName: homepage-certificate-secret
+  rules:
+    - host: clincha.co.uk
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: homepage
+                port:
+                  number: 80
+    - host: www.clincha.co.uk
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: homepage
+                port:
+                  number: 80

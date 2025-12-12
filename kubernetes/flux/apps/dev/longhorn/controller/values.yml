@@ -1,8 +1,0 @@
----
-service:
-  ui:
-    type: LoadBalancer
-persistence:
-  defaultClass: true
-defaultSettings:
-  storageReservedPercentageForDefaultDisk: 0

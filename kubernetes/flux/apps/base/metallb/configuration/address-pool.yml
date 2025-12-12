@@ -1,9 +1,0 @@
----
-apiVersion: metallb.io/v1beta1
-kind: IPAddressPool
-metadata:
-  name: production
-  namespace: metallb
-spec:
-  addresses:
-    - 10.1.2.200-10.1.2.250

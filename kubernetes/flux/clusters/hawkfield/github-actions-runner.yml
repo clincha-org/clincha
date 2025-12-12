@@ -9,7 +9,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./kubernetes/flux/apps/dev/hawkfield/controller
+  path: ./kubernetes/flux/infrastructure/dev/hawkfield/controller
   prune: true
   wait: true
   decryption:
@@ -27,7 +27,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./kubernetes/flux/apps/dev/hawkfield/configuration
+  path: ./kubernetes/flux/infrastructure/dev/hawkfield/configuration
   dependsOn:
     - name: github-actions-runner-controller
   prune: true

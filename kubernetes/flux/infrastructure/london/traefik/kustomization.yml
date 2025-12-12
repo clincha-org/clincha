@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: traefik
+resources:
+  - ../../base/traefik
+patches:
+  - target:
+      kind: Certificate
+      group: cert-manager.io
+      version: v1
+      name: traefik-certificate
+      namespace: traefik
+    path: certificate-patch.yml
+configMapGenerator:
+  - name: traefik-values
+    namespace: traefik
+    files:
+      - values.yml
+    options:
+      disableNameSuffixHash: true

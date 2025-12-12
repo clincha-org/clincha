@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: homepage
+resources:
+  - ../../base/homepage
+patches:
+  - target:
+      kind: Certificate
+      group: cert-manager.io
+      version: v1
+      name: homepage-certificate
+      namespace: homepage
+    path: certificate-patch.yml
+  - target:
+      kind: Ingress
+      group: networking.k8s.io
+      version: v1
+      name: homepage
+      namespace: homepage
+    path: ingress-patch.yml
