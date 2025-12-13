@@ -8,7 +8,7 @@ spec:
     email: angus.clinch@gmail.com
     server: https://acme-staging-v02.api.letsencrypt.org./directory
     privateKeySecretRef:
-      name: letsencrypt-issuer-account-key
+      name: letsencrypt-production-issuer-account-key
     solvers:
     - dns01:
         cloudflare:
