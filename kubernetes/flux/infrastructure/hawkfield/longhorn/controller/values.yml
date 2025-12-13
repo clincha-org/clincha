@@ -7,3 +7,5 @@ persistence:
 defaultSettings:
   createDefaultDiskLabeledNodes: true
   storageReservedPercentageForDefaultDisk: 0
+defaultBackupStore:
+  backupTarget: "nfs://10.1.2.10:/mnt/data/backups/longhorn"
