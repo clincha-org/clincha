@@ -1,4 +1,4 @@
-resource "proxmox_vm_qemu" "k8s-master-1" {
+resource "proxmox_vm_qemu" "k8s-hawk-1" {
   name        = var.name
   target_node = var.target_node
   vmid        = var.vmid

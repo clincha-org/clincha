@@ -1,7 +1,7 @@
 # NODE
 variable "name" {
   description = "The name of the node"
-  default     = "k8s-master-01"
+  default     = "k8s-hawk-01"
   type        = string
 }
 variable "target_node" {

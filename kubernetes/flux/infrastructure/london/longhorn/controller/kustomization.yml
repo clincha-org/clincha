@@ -8,17 +8,17 @@ patches:
   - target:
       kind: Node
       version: v1
-      name: k8s-master-1
+      name: k8s-hawk-1
     path: node-01-patch.yml
   - target:
       kind: Node
       version: v1
-      name: k8s-master-2
+      name: k8s-hawk-2
     path: node-02-patch.yml
   - target:
       kind: Node
       version: v1
-      name: k8s-master-3
+      name: k8s-hawk-3
     path: node-03-patch.yml
   - target:
       kind: Ingress

@@ -6,9 +6,9 @@ Storage provider for Kubernetes
 
 1. Annotate the nodes so that default disks are created
    ```bash
-   kubectl patch node k8s-master-1 --type merge --patch-file ./node-disks.yml
-   kubectl patch node k8s-master-2 --type merge --patch-file ./node-disks.yml
-   kubectl patch node k8s-master-3 --type merge --patch-file ./node-disks.yml
+   kubectl patch node k8s-hawk-1 --type merge --patch-file ./node-disks.yml
+   kubectl patch node k8s-hawk-2 --type merge --patch-file ./node-disks.yml
+   kubectl patch node k8s-hawk-3 --type merge --patch-file ./node-disks.yml
    ```
 
 2. Add the helm repository & install
