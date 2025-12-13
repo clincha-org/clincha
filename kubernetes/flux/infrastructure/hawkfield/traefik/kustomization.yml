@@ -1,13 +1,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 metadata:
-  name: longhorn-controller
+  name: traefik
 resources:
-  - ../../../base/longhorn/controller
+  - ../../base/traefik
 configMapGenerator:
-  - namespace: longhorn
-    name: longhorn-values
+  - name: traefik-values
+    namespace: traefik
     files:
-      - values.yaml=values.yml
+      - values.yml
     options:
       disableNameSuffixHash: true

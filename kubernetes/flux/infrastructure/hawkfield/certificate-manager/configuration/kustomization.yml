@@ -5,10 +5,3 @@ metadata:
   namespace: flux-system
 resources:
   - ../../../base/certificate-manager/configuration
-patches:
-  - target:
-      group: cert-manager.io
-      version: v1
-      kind: ClusterIssuer
-      name: letsencrypt-staging
-    path: issuers-patch.yml
