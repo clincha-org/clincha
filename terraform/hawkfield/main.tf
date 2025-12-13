@@ -6,12 +6,13 @@ module "k8s-hawk-1" {
   ip_address  = "10.1.2.101"
 }
 
-module "k8s-master-2" {
-  source      = "../master-new"
-  name        = "k8s-master-2"
-  target_node = "hawk02"
-  vmid        = 112
-  ip_address  = "10.1.2.102"
+module "k8s-hawk-2" {
+  source            = "../master"
+  name              = "k8s-master-2"
+  target_node       = "hawk02"
+  vmid              = 112
+  ip_address        = "10.1.2.102"
+  data_disk_storage = "local-lvm"
 }
 
 module "k8s-hawk-3" {

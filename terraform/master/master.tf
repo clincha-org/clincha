@@ -21,36 +21,34 @@ resource "proxmox_vm_qemu" "k8s-master-1" {
     mtu    = 1 # Inherit from bridge
   }
 
-  os_type   = "ubuntu"
-  ipconfig0 = "ip=${var.ip_address}/24,gw=${var.gateway}"
-  onboot    = true
+  os_type            = "ubuntu"
+  ipconfig0          = "ip=${var.ip_address}/24,gw=${var.gateway}"
+  start_at_node_boot = true
 
   tags = "base,kubernetes_master,kubernetes_worker"
 
   scsihw = "virtio-scsi-single"
-  disks {
-    ide {
-      ide3 {
-        cloudinit {
-          storage = "local-lvm"
-        }
-      }
-    }
-    virtio {
-      virtio0 {
-        disk {
-          size     = var.boot_disk_size
-          storage  = "local-lvm"
-          iothread = "true"
-        }
-      }
-      virtio1 {
-        disk {
-          size     = var.data_disk_size
-          storage  = "fast"
-          iothread = "true"
-        }
-      }
-    }
+
+  disk {
+    type    = "cloudinit"
+    storage = "local-lvm"
+    slot    = "ide2"
   }
+
+  disk {
+    size     = var.boot_disk_size
+    storage  = var.data_boot_storage
+    type     = "disk"
+    iothread = true
+    slot     = "virtio0"
+  }
+
+  disk {
+    size     = var.data_disk_size
+    storage  = var.data_disk_storage
+    type     = "disk"
+    iothread = true
+    slot     = "virtio1"
+  }
+
 }
