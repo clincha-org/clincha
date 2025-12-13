@@ -84,7 +84,7 @@ flux bootstrap git --silent \
 #### Hawkfield
 
 ```bash
-flux bootstrap git \
+flux bootstrap git --silent \
   --url=ssh://git@github.com/clincha-org/clincha \
   --branch=master \
   --private-key-file=/home/clincha/.ssh/flux \
