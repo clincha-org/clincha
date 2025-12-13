@@ -10,5 +10,4 @@ spec:
     name: letsencrypt
     kind: ClusterIssuer
   dnsNames:
-    - traefik.clincha.co.uk
     - traefik.clinch-home.com
