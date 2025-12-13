@@ -10,5 +10,5 @@ spec:
     name: letsencrypt
     kind: ClusterIssuer
   dnsNames:
-    - longhorn.clincha.co.uk
     - longhorn.clinch-home.com
+    - longhorn.clincha.co.uk
