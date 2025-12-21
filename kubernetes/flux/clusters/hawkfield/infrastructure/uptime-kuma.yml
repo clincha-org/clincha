@@ -14,7 +14,7 @@ spec:
   dependsOn:
     - name: certificate-manager-configuration
     - name: metallb-configuration
-    - name: traefik-configuration
+    - name: traefik
   prune: true
   wait: true
   decryption:
