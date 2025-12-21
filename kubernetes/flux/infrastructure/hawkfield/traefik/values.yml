@@ -8,6 +8,15 @@ ports:
         to: websecure
         scheme: https
         permanent: true
+    transport:
+      respondingTimeouts:
+        tcp:
+          lingeringTimeout: 0
+  websecure:
+    transport:
+      respondingTimeouts:
+        tcp:
+          lingeringTimeout: 0
 ingressRoute:
   dashboard:
     enabled: true
@@ -18,3 +27,5 @@ ingressRoute:
 providers:
   kubernetesIngress:
     allowExternalNameServices: true
+global:
+  sendAnonymousUsage: true
