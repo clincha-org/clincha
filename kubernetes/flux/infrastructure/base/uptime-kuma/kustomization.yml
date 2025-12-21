@@ -6,4 +6,3 @@ resources:
   - helm-repository.yml
   - ingress.yml
   - namespace.yml
-  - service.yml
