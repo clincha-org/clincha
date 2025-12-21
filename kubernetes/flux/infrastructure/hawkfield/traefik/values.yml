@@ -12,7 +12,7 @@ ports:
     transport:
       lifeCycle:
         requestAcceptGraceTimeout: 10s
-      forwardingTimeouts:
+      respondingTimeouts:
         idleTimeout: 0s
 ingressRoute:
   dashboard:
