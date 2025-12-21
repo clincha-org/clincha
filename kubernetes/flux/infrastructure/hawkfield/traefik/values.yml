@@ -9,7 +9,6 @@ ports:
         scheme: https
         permanent: true
   websecure:
-    address: ":443/tcp"
     transport:
       lifeCycle:
         requestAcceptGraceTimeout: 10s
