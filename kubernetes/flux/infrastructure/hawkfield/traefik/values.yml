@@ -8,6 +8,13 @@ ports:
         to: websecure
         scheme: https
         permanent: true
+  websecure:
+    address: ":443/tcp"
+    transport:
+      lifeCycle:
+        requestAcceptGraceTimeout: 10s
+      forwardingTimeouts:
+        idleTimeout: 0s
 ingressRoute:
   dashboard:
     enabled: true
