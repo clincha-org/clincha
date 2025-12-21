@@ -11,3 +11,4 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - status.clinch-home.com
+    - status.clincha.co.uk

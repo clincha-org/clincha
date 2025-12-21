@@ -30,3 +30,23 @@ spec:
                 name: uptime-kuma
                 port:
                   number: 3001
+    - host: status.clinch-home.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: uptime-kuma
+                port:
+                  number: 3001
+    - host: www.status.clinch-home.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: uptime-kuma
+                port:
+                  number: 3001
