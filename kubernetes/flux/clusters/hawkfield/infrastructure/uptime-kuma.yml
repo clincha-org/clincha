@@ -1,0 +1,23 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: uptime-kuma
+  namespace: flux-system
+spec:
+  interval: 1m
+  timeout: 3m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./kubernetes/flux/infrastructure/hawkfield/uptime-kuma
+  dependsOn:
+    - name: certificate-manager-configuration
+    - name: metallb-configuration
+    - name: traefik-configuration
+  prune: true
+  wait: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-gpg

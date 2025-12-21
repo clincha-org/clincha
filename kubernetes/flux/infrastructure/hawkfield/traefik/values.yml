@@ -8,13 +8,6 @@ ports:
         to: websecure
         scheme: https
         permanent: true
-    transport:
-      respondingTimeouts:
-        readTimeout: 0
-  websecure:
-    transport:
-      respondingTimeouts:
-        readTimeout: 0
 ingressRoute:
   dashboard:
     enabled: true
