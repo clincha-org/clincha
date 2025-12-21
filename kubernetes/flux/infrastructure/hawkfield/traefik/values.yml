@@ -10,13 +10,11 @@ ports:
         permanent: true
     transport:
       respondingTimeouts:
-        tcp:
-          lingeringTimeout: 0
+        readTimeout: 0
   websecure:
     transport:
       respondingTimeouts:
-        tcp:
-          lingeringTimeout: 0
+        readTimeout: 0
 ingressRoute:
   dashboard:
     enabled: true
