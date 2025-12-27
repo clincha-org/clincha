@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: traefik
+  name: nginx-ingress
   namespace: flux-system
 spec:
   interval: 1m
@@ -10,9 +10,8 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./kubernetes/flux/infrastructure/hawkfield/traefik
+  path: ./kubernetes/flux/infrastructure/hawkfield/nginx-ingress
   dependsOn:
-    - name: certificate-manager-configuration
     - name: metallb-configuration
   prune: true
   wait: true
