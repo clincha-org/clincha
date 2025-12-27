@@ -2,6 +2,8 @@
 ansible_user: ansible
 ansible_python_interpreter: /usr/bin/python3
 
+flux_version: 2.7.5
+
 flux_private_key: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   38376531373835653633313034613731393331643264613339383335633064316136353964633236

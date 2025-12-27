@@ -120,6 +120,17 @@
         regexp: "^complete -o default -F __start_kubectl k$"
         state: present
 
+    - name: "Install Flux"
+      ansible.builtin.unarchive:
+        src: "https://github.com/fluxcd/flux2/releases/download/v{{ flux_version }}/flux_{{ flux_version }}_linux_amd64.tar.gz"
+        dest: "/usr/local/bin"
+        extra_opts:
+          - flux
+        remote_src: yes
+        owner: "kubernetes"
+        group: "kubernetes"
+        mode: "0775"
+
 - name: "Install Helm"
   hosts: kube_control_plane
   become: true

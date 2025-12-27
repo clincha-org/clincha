@@ -14,7 +14,7 @@ spec:
   dependsOn:
     - name: certificate-manager-configuration
     - name: metallb-configuration
-    - name: traefik
+    - name: nginx-ingress
   prune: true
   wait: true
   decryption:

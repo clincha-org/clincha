@@ -24,9 +24,18 @@ echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.pro
 echo 'eval "$(pyenv init - bash)"' >> ~/.profile
 ```
 
+Install compilers
+
+```bash
+sudo apt update; sudo apt install make build-essential libssl-dev zlib1g-dev \
+libbz2-dev libreadline-dev libsqlite3-dev curl git \
+libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+```
+
 ### Virtual environment
 
 ```bash
+pyenv install 3.13
 pyenv virtualenv 3.13 ansible
 pyenv activate ansible
 ```
@@ -51,7 +60,7 @@ ssh-add ~/.ssh/ansible
 ### Run Ansible
 
 ```bash
-ansible-playbook kubernetes.yml -i inventory/london.proxmox.yml --vault-password-file vault --become
+ansible-playbook kubernetes.yml -i inventory/hawkfield.proxmox.yml --vault-password-file vault --become
 ```
 
 ## Proxmox hosts
