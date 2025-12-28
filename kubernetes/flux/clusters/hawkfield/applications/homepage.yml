@@ -14,7 +14,7 @@ spec:
   dependsOn:
     - name: certificate-manager-configuration
     - name: metallb-configuration
-    - name: nginx-ingress
+    - name: ingress-nginx
   prune: true
   wait: true
   decryption:
