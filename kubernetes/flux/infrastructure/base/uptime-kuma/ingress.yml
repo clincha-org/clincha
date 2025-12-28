@@ -4,6 +4,8 @@ kind: Ingress
 metadata:
   name: uptime-kuma
   namespace: uptime-kuma
+  annotations:
+    kubernetes.io/ingress.class: nginx
 spec:
   ingressClassName: nginx
   tls:
