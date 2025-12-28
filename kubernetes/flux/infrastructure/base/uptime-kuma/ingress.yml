@@ -4,9 +4,8 @@ kind: Ingress
 metadata:
   name: uptime-kuma
   namespace: uptime-kuma
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
 spec:
+  ingressClassName: nginx
   tls:
     - secretName: uptime-kuma-certificate-secret
   rules:
