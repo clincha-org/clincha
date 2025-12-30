@@ -1,0 +1,4 @@
+controller:
+  service:
+    annotations:
+      metallb.io/loadBalancerIPs: 10.1.2.205
