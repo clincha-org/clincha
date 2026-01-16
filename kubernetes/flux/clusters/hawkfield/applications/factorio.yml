@@ -1,0 +1,19 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: factorio
+  namespace: flux-system
+spec:
+  interval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./kubernetes/flux/applications/hawkfield/factorio
+  prune: true
+  wait: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-gpg

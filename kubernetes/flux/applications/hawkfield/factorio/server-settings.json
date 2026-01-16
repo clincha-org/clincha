@@ -1,0 +1,19 @@
+{
+  "name": "2026",
+  "description": "clincha & blaze get 2026 underway",
+  "tags": [
+    "rad"
+  ],
+  "max_players": 2,
+  "visibility": {
+    "public": false,
+    "lan": true
+  },
+  "autosave_interval": 5,
+  "autosave_slots": 15,
+  "afk_autokick_interval": 0,
+  "auto_pause": true,
+  "auto_pause_when_players_connect": false,
+  "only_admins_can_pause_the_game": true,
+  "autosave_only_on_server": true
+}
