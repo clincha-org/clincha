@@ -4,14 +4,6 @@ metadata:
   name: factorio
 resources:
   - ../../base/factorio
-patches:
-  - target:
-      group: apps
-      kind: Deployment
-      version: v1
-      namespace: factorio
-      name: factorio
-    path: deployment-patch.yml
 configMapGenerator:
   - name: factorio-server-settings
     namespace: factorio
