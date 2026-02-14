@@ -1,0 +1,29 @@
+users_list:
+  - {
+    name: "root",
+    shell: "/bin/bash",
+    password: "{{ lookup('env', 'ROOT_PASSWORD') | password_hash('sha512', 'salty') }}"
+  }
+  - {
+    name: "ansible",
+    uid: "1000",
+    gid: "1000",
+    shell: "/bin/bash",
+    password: "{{ lookup('env', 'ANSIBLE_PASSWORD') | password_hash('sha512', 'salty') }}",
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL0PsOw/7B9Qr16/iKa2h3j5Nr0jZtrj+JI8qKgYSWep ansible"
+  }
+  - {
+    name: "clincha",
+    uid: "1002",
+    gid: "1002",
+    shell: "/bin/bash",
+    password: "{{ lookup('env', 'CLINCHA_PASSWORD') | password_hash('sha512', 'salty') }}",
+    key: "https://github.com/clincha.keys"
+  }
+  - {
+    name: "openclaw",
+    uid: "1004",
+    gid: "1004",
+    shell: "/bin/bash",
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILA/+4o14AChCi0e3/BeAe8Nj658WMUNnayBhapYgw9t openclaw@clinch-home.com"
+  }
