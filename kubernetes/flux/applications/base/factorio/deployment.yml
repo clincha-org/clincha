@@ -27,7 +27,7 @@ spec:
               mountPath: /settings
       containers:
         - name: factorio
-          image: factoriotools/factorio:2.0.69
+          image: factoriotools/factorio:2.0.73
           ports:
             - containerPort: 34197
               protocol: UDP
@@ -50,7 +50,7 @@ spec:
           emptyDir: { }
         - name: saves
           nfs:
-            path: /mnt/data/factorio/runsmart
+            path: /mnt/data/factorio/2026
             server: 10.1.2.10
         - name: server-settings
           configMap:
