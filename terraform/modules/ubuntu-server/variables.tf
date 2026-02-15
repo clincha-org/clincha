@@ -1,17 +1,14 @@
 # NODE
 variable "name" {
   description = "The name of the node"
-  default     = "k8s-hawk-01"
   type        = string
 }
 variable "target_node" {
   description = "The physical server to deploy to"
-  default     = "hawk01"
   type        = string
 }
 variable "vmid" {
   description = "The ID of the virtual machine"
-  default     = "201"
   type        = string
 }
 
@@ -39,7 +36,7 @@ variable "memory" {
   type        = number
 }
 variable "agent" {
-  description = "Run the Promox agent on the guest"
+  description = "Run the Proxmox agent on the guest"
   default     = 1
   type        = number
 }
@@ -47,7 +44,6 @@ variable "agent" {
 # NET
 variable "ip_address" {
   description = "The IP address of the node"
-  default     = "10.1.2.101"
   type        = string
 }
 variable "gateway" {
@@ -61,7 +57,6 @@ variable "network_bridge" {
   type        = string
 }
 
-
 # DISKS
 variable "boot_disk_size" {
   description = "The size of the boot disk"
@@ -73,7 +68,6 @@ variable "data_boot_storage" {
   default     = "local-lvm"
   type        = string
 }
-
 variable "data_disk_size" {
   description = "The size of the data disk"
   default     = "100G"
@@ -85,8 +79,9 @@ variable "data_disk_storage" {
   type        = string
 }
 
+# TAGS
 variable "tags" {
-    description = "Comma-separated list of tags to apply to the VM"
-    default     = "base,claw"
-    type        = string
+  description = "Comma-separated list of tags to apply to the VM"
+  default     = "base"
+  type        = string
 }
