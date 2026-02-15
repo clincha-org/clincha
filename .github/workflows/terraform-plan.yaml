@@ -26,33 +26,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup WireGuard VPN
-        run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq wireguard-tools
-          
-          # Write WireGuard config
-          cat <<EOF | sudo tee /etc/wireguard/wg0.conf > /dev/null
-          [Interface]
-          PrivateKey = ${{ secrets.WG_PRIVATE_KEY }}
-          Address = ${{ secrets.WG_ADDRESS }}
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
 
-          [Peer]
-          PublicKey = ${{ secrets.WG_PEER_PUBLIC_KEY }}
-          Endpoint = ${{ secrets.WG_ENDPOINT }}
-          AllowedIPs = ${{ secrets.WG_ALLOWED_IPS }}
-          PersistentKeepalive = 25
-          EOF
-          
-          sudo chmod 600 /etc/wireguard/wg0.conf
-          sudo wg-quick up wg0
-          
-          # Verify connectivity to MinIO
+      - name: Verify network connectivity
+        run: |
           echo "Checking connectivity to MinIO..."
-          curl -sf --connect-timeout 10 http://10.1.2.10:9000/minio/health/live || {
-            echo "::error::Cannot reach MinIO at 10.1.2.10:9000 — VPN tunnel may not be working"
+          curl -sf --connect-timeout 15 http://10.1.2.10:9000/minio/health/live || {
+            echo "::error::Cannot reach MinIO at 10.1.2.10:9000 — check Tailscale subnet routes"
             exit 1
           }
-          echo "VPN connected and MinIO reachable ✓"
+          echo "MinIO reachable ✓"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -71,8 +59,6 @@ jobs:
             -var-file=providers.tfvars \
             -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}" \
             -out=tfplan 2>&1 | tee plan_output.txt
-          
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
 
       - name: Save plan output
         if: always()
@@ -80,10 +66,6 @@ jobs:
         with:
           name: plan-${{ matrix.site }}
           path: terraform/${{ matrix.site }}/plan_output.txt
-
-      - name: Teardown VPN
-        if: always()
-        run: sudo wg-quick down wg0 || true
 
   comment:
     name: "Post PR Comment"
