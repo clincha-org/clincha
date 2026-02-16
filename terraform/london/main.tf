@@ -1,5 +1,5 @@
 module "k8s-lon-1" {
-  source         = "../master"
+  source         = "../modules/ubuntu-server"
   name           = "k8s-lon-1"
   target_node    = "lon01"
   vmid           = 111
@@ -9,10 +9,11 @@ module "k8s-lon-1" {
   memory         = 4096
   boot_disk_size = "50"
   network_bridge = "vmbr0"
+  tags           = "base,kubernetes_master,kubernetes_worker"
 }
 
 module "k8s-lon-2" {
-  source         = "../master"
+  source         = "../modules/ubuntu-server"
   name           = "k8s-lon-2"
   target_node    = "lon01"
   vmid           = 112
@@ -22,10 +23,11 @@ module "k8s-lon-2" {
   memory         = 4096
   boot_disk_size = "50"
   network_bridge = "vmbr0"
+  tags           = "base,kubernetes_master,kubernetes_worker"
 }
 
 module "k8s-lon-3" {
-  source         = "../master"
+  source         = "../modules/ubuntu-server"
   name           = "k8s-lon-3"
   target_node    = "lon01"
   vmid           = 113
@@ -35,4 +37,5 @@ module "k8s-lon-3" {
   memory         = 4096
   boot_disk_size = "50"
   network_bridge = "vmbr0"
+  tags           = "base,kubernetes_master,kubernetes_worker"
 }
