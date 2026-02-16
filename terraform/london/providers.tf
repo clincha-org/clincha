@@ -7,7 +7,7 @@ terraform {
       s3 = "http://10.1.2.10:9000"
     }
     key        = "clinch-home-kubernetes.tfstate"
-    access_key = "clincha"
+    access_key = "terraform"
 
     region                      = "main"
     skip_credentials_validation = true
