@@ -35,5 +35,5 @@ module "claw-hawk-1" {
   cores             = 4
   memory            = 8192
   data_disk_storage = "local-lvm"
-  tags              = "base,claw"
+  tags              = "base,openclaw"
 }
