@@ -1,9 +1,17 @@
-resource "proxmox_vm_qemu" "k8s-hawk-1" {
+terraform {
+  required_providers {
+    proxmox = {
+      source = "Telmate/proxmox"
+    }
+  }
+}
+
+resource "proxmox_vm_qemu" "ubuntu_server" {
   name        = var.name
   target_node = var.target_node
   vmid        = var.vmid
 
-  clone = "ubuntu2404"
+  clone = var.clone
 
   cpu {
     cores   = var.cores
@@ -25,7 +33,7 @@ resource "proxmox_vm_qemu" "k8s-hawk-1" {
   ipconfig0          = "ip=${var.ip_address}/24,gw=${var.gateway}"
   start_at_node_boot = true
 
-  tags = "base,kubernetes_master,kubernetes_worker"
+  tags = var.tags
 
   scsihw = "virtio-scsi-single"
 
@@ -50,5 +58,4 @@ resource "proxmox_vm_qemu" "k8s-hawk-1" {
     iothread = true
     slot     = "virtio1"
   }
-
 }
