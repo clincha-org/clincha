@@ -1,11 +1,11 @@
 output "vm_id" {
   description = "The Proxmox VM ID"
-  value       = proxmox_vm_qemu.this.vmid
+  value       = proxmox_vm_qemu.ubuntu_server.vmid
 }
 
 output "name" {
   description = "The VM name"
-  value       = proxmox_vm_qemu.this.name
+  value       = proxmox_vm_qemu.ubuntu_server.name
 }
 
 output "ip_address" {
