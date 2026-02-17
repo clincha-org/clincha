@@ -1,0 +1,22 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homepage
+  namespace: homepage
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: homepage
+  template:
+    metadata:
+      labels:
+        name: homepage
+    spec:
+      containers:
+        - name: homepage
+          image: docker.io/clincha/homepage:0.0.3
+          ports:
+            - containerPort: 80
+              protocol: TCP
