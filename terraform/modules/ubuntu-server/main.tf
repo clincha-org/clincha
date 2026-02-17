@@ -6,7 +6,7 @@ terraform {
   }
 }
 
-resource "proxmox_vm_qemu" "this" {
+resource "proxmox_vm_qemu" "ubuntu_server" {
   name        = var.name
   target_node = var.target_node
   vmid        = var.vmid
