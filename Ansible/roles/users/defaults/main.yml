@@ -31,5 +31,6 @@ users_list:
     name: "openclaw",
     uid: "1004",
     gid: "1004",
-    shell: "/bin/bash"
+    shell: "/bin/bash",
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILA/+4o14AChCi0e3/BeAe8Nj658WMUNnayBhapYgw9t openclaw@clinch-home.com"
   }
