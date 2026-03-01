@@ -27,3 +27,9 @@ users_list:
     gid: "1003",
     shell: "/bin/bash"
   }
+  - {
+    name: "openclaw",
+    uid: "1004",
+    gid: "1004",
+    shell: "/bin/bash"
+  }
