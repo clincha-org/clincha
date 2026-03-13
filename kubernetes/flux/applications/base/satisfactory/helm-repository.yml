@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: naj98
+  namespace: satisfactory
+spec:
+  interval: 1m
+  url: https://naj98.github.io/helm-charts

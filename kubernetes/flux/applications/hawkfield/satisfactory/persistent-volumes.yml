@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: satisfactory-config
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: 10.1.2.10
+    path: /mnt/data/satisfactory/2026/config
+  claimRef:
+    namespace: satisfactory
+    name: satisfactory-config
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: satisfactory-server-cache
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: 10.1.2.10
+    path: /mnt/data/satisfactory/2026/server-cache
+  claimRef:
+    namespace: satisfactory
+    name: satisfactory-server-cache
