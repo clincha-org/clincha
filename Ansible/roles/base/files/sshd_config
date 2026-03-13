@@ -6,8 +6,8 @@ PermitRootLogin no
 AuthorizedKeysFile	.ssh/authorized_keys
 PasswordAuthentication no
 ChallengeResponseAuthentication no
-GSSAPIAuthentication yes
-GSSAPICleanupCredentials no
+GSSAPIAuthentication no
+UseDNS no
 UsePAM yes
 X11Forwarding yes
 PrintMotd no
