@@ -1,0 +1,22 @@
+resources:
+  requests:
+    cpu: "4"
+    memory: "16Gi"
+
+service:
+  type: NodePort
+  port: 7777
+
+persistence:
+  - name: config
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    storageClass: ""
+    size: 1Gi
+  - name: server-cache
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    storageClass: ""
+    size: 20Gi
