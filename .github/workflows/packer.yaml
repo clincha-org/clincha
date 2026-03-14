@@ -21,10 +21,13 @@ jobs:
         include:
           - host: hawk01
             proxmox_url: "https://10.1.2.11:8006"
+            vm_id: 101
           - host: hawk02
             proxmox_url: "https://10.1.2.12:8006"
+            vm_id: 102
           - host: hawk03
             proxmox_url: "https://10.1.2.13:8006"
+            vm_id: 103
     concurrency:
       group: "packer-${{ matrix.host }}"
     steps:
@@ -58,10 +61,41 @@ jobs:
         working-directory: packer/ubuntu2404
         run: packer init .
 
+      - name: Clean up existing VM and ISOs
+        run: |
+          API="${{ matrix.proxmox_url }}/api2/json"
+          TOKEN="packer@pam!packer:${{ secrets.PACKER_PROXMOX_TOKEN }}"
+
+          # Stop and destroy existing VM if present
+          echo "Checking for existing VM ${{ matrix.vm_id }} on ${{ matrix.host }}..."
+          if curl -sfk -H "Authorization: PVEAPIToken=$TOKEN" "$API/nodes/${{ matrix.host }}/qemu/${{ matrix.vm_id }}/status/current" >/dev/null 2>&1; then
+            echo "VM ${{ matrix.vm_id }} exists, stopping and destroying..."
+            curl -sfk -X POST -H "Authorization: PVEAPIToken=$TOKEN" "$API/nodes/${{ matrix.host }}/qemu/${{ matrix.vm_id }}/status/stop" || true
+            sleep 5
+            curl -sfk -X DELETE -H "Authorization: PVEAPIToken=$TOKEN" "$API/nodes/${{ matrix.host }}/qemu/${{ matrix.vm_id }}?purge=1&destroy-unreferenced-disks=1" || true
+            sleep 3
+          else
+            echo "No existing VM found"
+          fi
+
+          # Clean up leftover cidata ISOs from local storage
+          echo "Checking for leftover cidata ISOs..."
+          curl -sfk -H "Authorization: PVEAPIToken=$TOKEN" "$API/nodes/${{ matrix.host }}/storage/local/content" | \
+            python3 -c "
+          import sys, json
+          data = json.load(sys.stdin).get('data', [])
+          for item in data:
+              if 'cidata' in item.get('volid', ''):
+                  print(item['volid'])
+          " | while read volid; do
+            echo "Deleting $volid..."
+            curl -sfk -X DELETE -H "Authorization: PVEAPIToken=$TOKEN" "$API/nodes/${{ matrix.host }}/storage/local/content/$volid"
+          done
+
       - name: Packer Build
         working-directory: packer/ubuntu2404
         run: |
-          packer build -force \
+          packer build \
             -var-file="${{ matrix.host }}.pkrvars.hcl" \
             -var "proxmox_token=${{ secrets.PACKER_PROXMOX_TOKEN }}" \
             -var "ssh_password=${{ secrets.PACKER_SSH_PASSWORD }}" \
