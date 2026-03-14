@@ -61,12 +61,28 @@ jobs:
         working-directory: packer/ubuntu2404
         run: packer init .
 
-      - name: Clean up existing VM and ISOs
+      - name: Build and upload cloud-init ISO
         run: |
           API="${{ matrix.proxmox_url }}/api2/json"
           TOKEN="packer@pam!packer:${{ secrets.PACKER_PROXMOX_TOKEN }}"
 
-          # Stop and destroy existing VM if present
+          # Build the cloud-init ISO locally
+          xorriso -as mkisofs -o /tmp/cidata.iso -V cidata -J -R packer/cloud-init/meta-data packer/cloud-init/user-data
+
+          # Delete existing cidata.iso from Proxmox if present
+          curl -sfk -X DELETE -H "Authorization: PVEAPIToken=$TOKEN" \
+            "$API/nodes/${{ matrix.host }}/storage/local/content/local:iso/cidata.iso" || true
+
+          # Upload the new ISO
+          curl -sfk -X POST -H "Authorization: PVEAPIToken=$TOKEN" \
+            -F "content=iso" -F "filename=@/tmp/cidata.iso" \
+            "$API/nodes/${{ matrix.host }}/storage/local/upload"
+
+      - name: Clean up existing VM
+        run: |
+          API="${{ matrix.proxmox_url }}/api2/json"
+          TOKEN="packer@pam!packer:${{ secrets.PACKER_PROXMOX_TOKEN }}"
+
           echo "Checking for existing VM ${{ matrix.vm_id }} on ${{ matrix.host }}..."
           if curl -sfk -H "Authorization: PVEAPIToken=$TOKEN" "$API/nodes/${{ matrix.host }}/qemu/${{ matrix.vm_id }}/status/current" >/dev/null 2>&1; then
             echo "VM ${{ matrix.vm_id }} exists, stopping and destroying..."
@@ -77,20 +93,6 @@ jobs:
           else
             echo "No existing VM found"
           fi
-
-          # Clean up leftover cidata ISOs from local storage
-          echo "Checking for leftover cidata ISOs..."
-          curl -sfk -H "Authorization: PVEAPIToken=$TOKEN" "$API/nodes/${{ matrix.host }}/storage/local/content" | \
-            python3 -c "
-          import sys, json
-          data = json.load(sys.stdin).get('data', [])
-          for item in data:
-              if 'cidata' in item.get('volid', ''):
-                  print(item['volid'])
-          " | while read volid; do
-            echo "Deleting $volid..."
-            curl -sfk -X DELETE -H "Authorization: PVEAPIToken=$TOKEN" "$API/nodes/${{ matrix.host }}/storage/local/content/$volid"
-          done
 
       - name: Packer Build
         working-directory: packer/ubuntu2404
