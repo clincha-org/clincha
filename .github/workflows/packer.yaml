@@ -48,6 +48,9 @@ jobs:
           }
           echo "Proxmox reachable on ${{ matrix.host }}"
 
+      - name: Install xorriso
+        run: sudo apt-get install -y xorriso
+
       - name: Setup Packer
         uses: hashicorp/setup-packer@main
 
