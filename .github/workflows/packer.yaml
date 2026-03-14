@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - "master"
+      - "ci/packer-*"
     paths:
       - "packer/**"
       - ".github/workflows/packer.yaml"
@@ -51,9 +52,6 @@ jobs:
           }
           echo "Proxmox reachable on ${{ matrix.host }}"
 
-      - name: Install xorriso
-        run: sudo apt-get install -y xorriso
-
       - name: Setup Packer
         uses: hashicorp/setup-packer@main
 
@@ -63,55 +61,10 @@ jobs:
           PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: packer init .
 
-      - name: Build and upload cloud-init ISO
-        env:
-          PVE_PASSWORD: ${{ secrets.PROXMOX_PASSWORD }}
-        run: |
-          API="${{ matrix.proxmox_url }}/api2/json"
-          TOKEN="packer@pam!packer:${{ secrets.PACKER_PROXMOX_TOKEN }}"
-
-          # Build the cloud-init ISO locally
-          xorriso -as mkisofs -o /tmp/cidata.iso -V cidata -J -R packer/cloud-init/meta-data packer/cloud-init/user-data
-
-          # Get ticket (Proxmox upload/delete require cookie auth)
-          echo "Authenticating to Proxmox..."
-          TICKET_DATA=$(curl -fk --data-urlencode "username=root@pam" --data-urlencode "password=${PVE_PASSWORD}" "$API/access/ticket")
-          PVE_TICKET=$(echo "$TICKET_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['data']['ticket'])")
-          PVE_CSRF=$(echo "$TICKET_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['data']['CSRFPreventionToken'])")
-          echo "Authenticated successfully"
-
-          # Delete existing cidata.iso from Proxmox if present
-          echo "Deleting existing cidata.iso if present..."
-          curl -fk -X DELETE -b "PVEAuthCookie=$PVE_TICKET" -H "CSRFPreventionToken: $PVE_CSRF" \
-            "$API/nodes/${{ matrix.host }}/storage/local/content/local:iso/cidata.iso" || true
-
-          # Upload the new ISO
-          echo "Uploading cidata.iso..."
-          curl -fk -b "PVEAuthCookie=$PVE_TICKET" -H "CSRFPreventionToken: $PVE_CSRF" \
-            -F "content=iso" -F "filename=@/tmp/cidata.iso" \
-            "$API/nodes/${{ matrix.host }}/storage/local/upload"
-          echo "Upload complete"
-
-      - name: Clean up existing VM
-        run: |
-          API="${{ matrix.proxmox_url }}/api2/json"
-          TOKEN="packer@pam!packer:${{ secrets.PACKER_PROXMOX_TOKEN }}"
-
-          echo "Checking for existing VM ${{ matrix.vm_id }} on ${{ matrix.host }}..."
-          if curl -sfk -H "Authorization: PVEAPIToken=$TOKEN" "$API/nodes/${{ matrix.host }}/qemu/${{ matrix.vm_id }}/status/current" >/dev/null 2>&1; then
-            echo "VM ${{ matrix.vm_id }} exists, stopping and destroying..."
-            curl -sfk -X POST -H "Authorization: PVEAPIToken=$TOKEN" "$API/nodes/${{ matrix.host }}/qemu/${{ matrix.vm_id }}/status/stop" || true
-            sleep 5
-            curl -sfk -X DELETE -H "Authorization: PVEAPIToken=$TOKEN" "$API/nodes/${{ matrix.host }}/qemu/${{ matrix.vm_id }}?purge=1&destroy-unreferenced-disks=1" || true
-            sleep 3
-          else
-            echo "No existing VM found"
-          fi
-
       - name: Packer Build
         working-directory: packer/ubuntu2404
         run: |
-          packer build \
+          packer build -force \
             -var-file="${{ matrix.host }}.pkrvars.hcl" \
             -var "proxmox_token=${{ secrets.PACKER_PROXMOX_TOKEN }}" \
             -var "ssh_password=${{ secrets.PACKER_SSH_PASSWORD }}" \
