@@ -13,7 +13,7 @@ source "proxmox-iso" "ubuntu2404" {
 
   proxmox_url              = var.proxmox_url
   username                 = var.proxmox_username
-  password                 = var.proxmox_password
+  token                    = var.proxmox_token
   insecure_skip_tls_verify = var.proxmox_insecure_skip_tls_verify
 
   iso_file     = var.iso_file

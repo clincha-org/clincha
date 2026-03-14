@@ -25,8 +25,6 @@ jobs:
             proxmox_url: "https://10.1.2.12:8006"
           - host: hawk03
             proxmox_url: "https://10.1.2.13:8006"
-          - host: lon01
-            proxmox_url: "https://10.2.0.11:8006"
     concurrency:
       group: "packer-${{ matrix.host }}"
     steps:
@@ -62,6 +60,6 @@ jobs:
         run: |
           packer build -force \
             -var-file="${{ matrix.host }}.pkrvars.hcl" \
-            -var "proxmox_password=${{ secrets.PROXMOX_PASSWORD }}" \
+            -var "proxmox_token=${{ secrets.PACKER_PROXMOX_TOKEN }}" \
             -var "ssh_password=${{ secrets.PACKER_SSH_PASSWORD }}" \
             .
