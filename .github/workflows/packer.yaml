@@ -73,8 +73,13 @@ jobs:
           curl -sfk -X DELETE -H "Authorization: PVEAPIToken=$TOKEN" \
             "$API/nodes/${{ matrix.host }}/storage/local/content/local:iso/cidata.iso" || true
 
+          # Get ticket for upload (Proxmox upload API requires cookie auth)
+          TICKET_DATA=$(curl -sfk -d "username=root@pam&password=${{ secrets.PROXMOX_PASSWORD }}" "$API/access/ticket")
+          PVE_TICKET=$(echo "$TICKET_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['data']['ticket'])")
+          PVE_CSRF=$(echo "$TICKET_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['data']['CSRFPreventionToken'])")
+
           # Upload the new ISO
-          curl -sfk -X POST -H "Authorization: PVEAPIToken=$TOKEN" \
+          curl -sfk -b "PVEAuthCookie=$PVE_TICKET" -H "CSRFPreventionToken: $PVE_CSRF" \
             -F "content=iso" -F "filename=@/tmp/cidata.iso" \
             "$API/nodes/${{ matrix.host }}/storage/local/upload"
 
