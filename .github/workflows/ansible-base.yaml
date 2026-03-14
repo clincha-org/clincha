@@ -10,15 +10,23 @@ on:
       - 'Ansible/**'
   workflow_dispatch:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 * * * *"
 concurrency:
   group: "${{github.workflow}}"
 jobs:
   base:
-    runs-on: github-runners-clincha
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+          args: --accept-routes
 
       - uses: actions/setup-python@v6
         with:
