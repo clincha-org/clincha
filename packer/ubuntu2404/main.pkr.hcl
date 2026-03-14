@@ -1,7 +1,7 @@
 packer {
   required_plugins {
     proxmox = {
-      version = "1.2.3"
+      version = "1.1.8"
       source  = "github.com/hashicorp/proxmox"
     }
   }
@@ -44,8 +44,12 @@ source "proxmox-iso" "ubuntu2404" {
   cloud_init              = true
   cloud_init_storage_pool = "local-lvm"
 
-  cd_files = ["../cloud-init/meta-data", "../cloud-init/user-data"]
-  cd_label = "cidata"
+  additional_iso_files {
+    iso_storage_pool = "local"
+    cd_files = ["../cloud-init/meta-data", "../cloud-init/user-data"]
+    cd_label         = "cidata"
+    unmount          = true
+  }
 
   boot_wait = var.boot_wait
   boot_command = var.boot_command
