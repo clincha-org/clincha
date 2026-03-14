@@ -126,7 +126,7 @@
         dest: "/usr/local/bin"
         extra_opts:
           - flux
-        remote_src: yes
+        remote_src: true
         owner: "kubernetes"
         group: "kubernetes"
         mode: "0775"
