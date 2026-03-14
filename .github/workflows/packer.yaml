@@ -59,6 +59,8 @@ jobs:
 
       - name: Packer Init
         working-directory: packer/ubuntu2404
+        env:
+          PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: packer init .
 
       - name: Build and upload cloud-init ISO
@@ -69,14 +71,14 @@ jobs:
           # Build the cloud-init ISO locally
           xorriso -as mkisofs -o /tmp/cidata.iso -V cidata -J -R packer/cloud-init/meta-data packer/cloud-init/user-data
 
-          # Delete existing cidata.iso from Proxmox if present
-          curl -sfk -X DELETE -H "Authorization: PVEAPIToken=$TOKEN" \
-            "$API/nodes/${{ matrix.host }}/storage/local/content/local:iso/cidata.iso" || true
-
-          # Get ticket for upload (Proxmox upload API requires cookie auth)
+          # Get ticket (Proxmox upload/delete require cookie auth)
           TICKET_DATA=$(curl -sfk -d "username=root@pam&password=${{ secrets.PROXMOX_PASSWORD }}" "$API/access/ticket")
           PVE_TICKET=$(echo "$TICKET_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['data']['ticket'])")
           PVE_CSRF=$(echo "$TICKET_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['data']['CSRFPreventionToken'])")
+
+          # Delete existing cidata.iso from Proxmox if present
+          curl -sfk -X DELETE -b "PVEAuthCookie=$PVE_TICKET" -H "CSRFPreventionToken: $PVE_CSRF" \
+            "$API/nodes/${{ matrix.host }}/storage/local/content/local:iso/cidata.iso" || true
 
           # Upload the new ISO
           curl -sfk -b "PVEAuthCookie=$PVE_TICKET" -H "CSRFPreventionToken: $PVE_CSRF" \
