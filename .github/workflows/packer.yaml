@@ -1,0 +1,67 @@
+name: Packer Build
+permissions:
+  contents: read
+on:
+  push:
+    branches:
+      - "master"
+    paths:
+      - "packer/**"
+      - ".github/workflows/packer.yaml"
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * 0"
+jobs:
+  build:
+    name: "Build (${{ matrix.host }})"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - host: hawk01
+            proxmox_url: "https://10.1.2.11:8006"
+          - host: hawk02
+            proxmox_url: "https://10.1.2.12:8006"
+          - host: hawk03
+            proxmox_url: "https://10.1.2.13:8006"
+          - host: lon01
+            proxmox_url: "https://10.2.0.11:8006"
+    concurrency:
+      group: "packer-${{ matrix.host }}"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+          args: --accept-routes
+
+      - name: Verify network connectivity
+        run: |
+          echo "Checking connectivity to Proxmox on ${{ matrix.host }}..."
+          curl -sk --connect-timeout 15 "${{ matrix.proxmox_url }}" || {
+            echo "::error::Cannot reach Proxmox at ${{ matrix.proxmox_url }} — check Tailscale subnet routes"
+            exit 1
+          }
+          echo "Proxmox reachable on ${{ matrix.host }}"
+
+      - name: Setup Packer
+        uses: hashicorp/setup-packer@main
+
+      - name: Packer Init
+        working-directory: packer/ubuntu2404
+        run: packer init .
+
+      - name: Packer Build
+        working-directory: packer/ubuntu2404
+        run: |
+          packer build -force \
+            -var-file="${{ matrix.host }}.pkrvars.hcl" \
+            -var "proxmox_password=${{ secrets.PROXMOX_PASSWORD }}" \
+            -var "ssh_password=${{ secrets.PACKER_SSH_PASSWORD }}" \
+            .
