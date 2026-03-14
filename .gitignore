@@ -1,9 +1,25 @@
+# Secrets and credentials
+/id_rsa
+/kubernetes/flux/sops.asc
+Ansible/vault
+*.auto.pkrvars.hcl
+*.auto.tfvars
+terraform/**/backend.conf
 /packer/credentials.auto.pkrvars.hcl
+/terraform/credentials.auto.tfvars.hcl
+/terraform/development.auto.tfvars
+
+# Terraform
+terraform/**/.terraform/
+terraform/**/.terraform.lock.hcl
+
+# IDE
+.idea/
+
+# Packer/legacy
 /packer/legacy/files/ansible
 /terraform/modules/rocky8/rocky8.tf
-/id_rsa
-/terraform/credentials.auto.tfvars.hcl
-/terraform/.terraform
-/terraform/.terraform.lock.hcl
-/terraform/development.auto.tfvars
-/kubernetes/flux/sops.asc
+
+# Vagrant
+vagrant/**/.vagrant/
+vagrant/iso/
