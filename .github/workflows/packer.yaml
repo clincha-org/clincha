@@ -72,18 +72,23 @@ jobs:
           xorriso -as mkisofs -o /tmp/cidata.iso -V cidata -J -R packer/cloud-init/meta-data packer/cloud-init/user-data
 
           # Get ticket (Proxmox upload/delete require cookie auth)
-          TICKET_DATA=$(curl -sfk -d "username=root@pam&password=${{ secrets.PROXMOX_PASSWORD }}" "$API/access/ticket")
+          echo "Authenticating to Proxmox..."
+          TICKET_DATA=$(curl -fk -d "username=root@pam&password=${{ secrets.PROXMOX_PASSWORD }}" "$API/access/ticket")
           PVE_TICKET=$(echo "$TICKET_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['data']['ticket'])")
           PVE_CSRF=$(echo "$TICKET_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['data']['CSRFPreventionToken'])")
+          echo "Authenticated successfully"
 
           # Delete existing cidata.iso from Proxmox if present
-          curl -sfk -X DELETE -b "PVEAuthCookie=$PVE_TICKET" -H "CSRFPreventionToken: $PVE_CSRF" \
+          echo "Deleting existing cidata.iso if present..."
+          curl -fk -X DELETE -b "PVEAuthCookie=$PVE_TICKET" -H "CSRFPreventionToken: $PVE_CSRF" \
             "$API/nodes/${{ matrix.host }}/storage/local/content/local:iso/cidata.iso" || true
 
           # Upload the new ISO
-          curl -sfk -b "PVEAuthCookie=$PVE_TICKET" -H "CSRFPreventionToken: $PVE_CSRF" \
+          echo "Uploading cidata.iso..."
+          curl -fk -b "PVEAuthCookie=$PVE_TICKET" -H "CSRFPreventionToken: $PVE_CSRF" \
             -F "content=iso" -F "filename=@/tmp/cidata.iso" \
             "$API/nodes/${{ matrix.host }}/storage/local/upload"
+          echo "Upload complete"
 
       - name: Clean up existing VM
         run: |
