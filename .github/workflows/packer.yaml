@@ -64,6 +64,8 @@ jobs:
         run: packer init .
 
       - name: Build and upload cloud-init ISO
+        env:
+          PVE_PASSWORD: ${{ secrets.PROXMOX_PASSWORD }}
         run: |
           API="${{ matrix.proxmox_url }}/api2/json"
           TOKEN="packer@pam!packer:${{ secrets.PACKER_PROXMOX_TOKEN }}"
@@ -73,7 +75,7 @@ jobs:
 
           # Get ticket (Proxmox upload/delete require cookie auth)
           echo "Authenticating to Proxmox..."
-          TICKET_DATA=$(curl -fk --data-urlencode "username=root@pam" --data-urlencode "password=${{ secrets.PROXMOX_PASSWORD }}" "$API/access/ticket")
+          TICKET_DATA=$(curl -fk --data-urlencode "username=root@pam" --data-urlencode "password=${PVE_PASSWORD}" "$API/access/ticket")
           PVE_TICKET=$(echo "$TICKET_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['data']['ticket'])")
           PVE_CSRF=$(echo "$TICKET_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['data']['CSRFPreventionToken'])")
           echo "Authenticated successfully"
