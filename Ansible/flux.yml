@@ -7,7 +7,7 @@
       ansible.builtin.shell: |
         flux --version
       register: flux_check
-      ignore_errors: yes
+      ignore_errors: true
       changed_when: false
 
     - name: "Install and configure Flux CLI"
@@ -17,12 +17,13 @@
           ansible.builtin.get_url:
             url: "https://github.com/fluxcd/flux2/releases/download/v2.7.2/flux_2.7.2_linux_amd64.tar.gz"
             dest: /tmp/flux.tar.gz
+            mode: '0644'
 
         - name: "Extract Flux CLI"
           ansible.builtin.unarchive:
             src: /tmp/flux.tar.gz
             dest: /usr/local/bin/
-            remote_src: yes
+            remote_src: true
             mode: '0755'
 
         - name: "Ensure bash completion for flux"
@@ -42,8 +43,8 @@
 
     - name: "Install Kubernetes Python"
       ansible.builtin.package:
-          name: python3-kubernetes
-          state: present
+        name: python3-kubernetes
+        state: present
 
     - name: "Create flux-system namespace"
       kubernetes.core.k8s:
@@ -93,3 +94,4 @@
         --path=kubernetes/flux/clusters/{{ k8s_cluster_name }} \
         --cluster-domain={{ k8s_dns_domain }}
       run_once: true
+      changed_when: true
