@@ -5,11 +5,11 @@ variable proxmox_url {
 }
 variable proxmox_username {
   type    = string
-  default = "root@pam"
+  default = "packer@pam!packer"
 }
-variable proxmox_password {
+variable proxmox_token {
   type    = string
-  default = "vagrant"
+  default = ""
 }
 variable proxmox_insecure_skip_tls_verify {
   type    = bool
