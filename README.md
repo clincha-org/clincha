@@ -2,33 +2,44 @@
 
 This is my personal cloud. Two sites — Hawkfield (Bristol) and London — running physical servers that I built myself. The full stack goes Proxmox → Packer → Terraform → Ansible → Kubernetes → Flux CD. It's more than a home lab but probably less than a cloud. I want to be the ultimate full stack developer, not just understanding the code that runs but the complete environment it runs in, right down to the electrons leaving the plug.
 
+## Tech
+
+<p align="center">
+  <a href="https://www.ui.com"><img src="https://img.shields.io/badge/UniFi-0559C9?style=for-the-badge&logo=ubiquiti&logoColor=white" alt="UniFi"></a>
+  <a href="https://tailscale.com"><img src="https://img.shields.io/badge/Tailscale-242424?style=for-the-badge&logo=tailscale&logoColor=white" alt="Tailscale"></a>
+  <a href="https://www.proxmox.com"><img src="https://img.shields.io/badge/Proxmox-E57000?style=for-the-badge&logo=proxmox&logoColor=white" alt="Proxmox"></a>
+  <a href="https://www.packer.io"><img src="https://img.shields.io/badge/Packer-02A8EF?style=for-the-badge&logo=packer&logoColor=white" alt="Packer"></a>
+  <a href="https://www.terraform.io"><img src="https://img.shields.io/badge/Terraform-7B42BC?style=for-the-badge&logo=terraform&logoColor=white" alt="Terraform"></a>
+  <a href="https://www.ansible.com"><img src="https://img.shields.io/badge/Ansible-EE0000?style=for-the-badge&logo=ansible&logoColor=white" alt="Ansible"></a>
+  <a href="https://kubernetes.io"><img src="https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white" alt="Kubernetes"></a>
+  <a href="https://fluxcd.io"><img src="https://img.shields.io/badge/Flux_CD-5468FF?style=for-the-badge&logo=flux&logoColor=white" alt="Flux CD"></a>
+</p>
+
 ## Infrastructure
 
 ```mermaid
-graph LR
-    subgraph "GitHub Actions"
-        gha[CI/CD] --> ts[Tailscale]
-    end
-
+graph TB
     subgraph "Hawkfield (Bristol)"
-        hawk01[hawk01] --> kh1[k8s-hawk-1]
-        hawk02[hawk02] --> kh2[k8s-hawk-2]
-        hawk03[hawk03] --> kh3[k8s-hawk-3]
+        udm_h[UDM Pro] --> hawk01[hawk01]
+        udm_h --> hawk02[hawk02]
+        udm_h --> hawk03[hawk03]
+        hawk01 --> kh1[k8s-hawk-1]
+        hawk02 --> kh2[k8s-hawk-2]
+        hawk03 --> kh3[k8s-hawk-3]
         hawk02 --> claw[claw-hawk-1]
     end
 
+    udm_h -. Tailscale .- udm_l
+
     subgraph "London"
-        lon01[lon01] --> kl1[k8s-lon-1]
+        udm_l[UDM Pro] --> lon01[lon01]
+        lon01 --> kl1[k8s-lon-1]
         lon01 --> kl2[k8s-lon-2]
         lon01 --> kl3[k8s-lon-3]
     end
-
-    ts --> hawk01
-    ts --> lon01
-
-    flux[Flux CD] --> kh1
-    flux --> kl1
 ```
+
+Everything is deployed as code: Packer builds VM templates, Terraform provisions them, Ansible configures them, and Flux CD continuously reconciles Kubernetes workloads from this repo.
 
 ### Site Details
 
