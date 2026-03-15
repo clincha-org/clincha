@@ -47,7 +47,7 @@ source "proxmox-iso" "ubuntu2404" {
   additional_iso_files {
     iso_storage_pool = "local"
     cd_files = ["../cloud-init/meta-data", "../cloud-init/user-data"]
-    cd_label         = "cidata"
+    cd_label         = "CIDATA"
     unmount          = true
   }
 
