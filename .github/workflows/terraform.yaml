@@ -36,7 +36,7 @@ jobs:
           echo "MinIO reachable"
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
 
       - name: Terraform Init
         working-directory: terraform/hawkfield
@@ -82,7 +82,7 @@ jobs:
           echo "MinIO reachable"
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
 
       - name: Download Terraform Plan
         uses: actions/download-artifact@v7
