@@ -2,15 +2,12 @@ name: Ansible lint
 permissions:
   contents: read
 on:
-  push:
-    branches:
-      - "*"
-    paths:
-      - '.github/workflows/ansible-lint.yaml'
-      - 'Ansible/**'
   pull_request:
     branches:
       - master
+    paths:
+      - '.github/workflows/ansible-lint.yaml'
+      - 'Ansible/**'
   workflow_dispatch:
 jobs:
   lint:

@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - "master"
-      - "ci/packer-*"
     paths:
       - "packer/**"
       - ".github/workflows/packer.yaml"
@@ -33,7 +32,7 @@ jobs:
       group: "packer-${{ matrix.host }}"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Connect to Tailscale
         uses: tailscale/github-action@v3
@@ -56,7 +55,7 @@ jobs:
         run: sudo apt-get install -y xorriso
 
       - name: Setup Packer
-        uses: hashicorp/setup-packer@main
+        uses: hashicorp/setup-packer@v3
 
       - name: Packer Init
         working-directory: packer/ubuntu2404
