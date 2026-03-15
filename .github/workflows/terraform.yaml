@@ -25,7 +25,7 @@ jobs:
           sudo apt-get install -y terraform
 
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Terraform Init
         working-directory: terraform/kubernetes
@@ -60,7 +60,7 @@ jobs:
           sudo apt-get install -y terraform
 
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Download Terraform Plan
         uses: actions/download-artifact@v6
