@@ -2,8 +2,6 @@
 
 This is my personal cloud. Two sites — Hawkfield (Bristol) and London — running physical servers that I built myself. The full stack goes Proxmox → Packer → Terraform → Ansible → Kubernetes → Flux CD. It's more than a home lab but probably less than a cloud. I want to be the ultimate full stack developer, not just understanding the code that runs but the complete environment it runs in, right down to the electrons leaving the plug.
 
-## Tech
-
 <p align="center">
   <a href="https://www.ui.com"><img src="https://img.shields.io/badge/UniFi-0559C9?style=for-the-badge&logo=ubiquiti&logoColor=white" alt="UniFi"></a>
   <a href="https://tailscale.com"><img src="https://img.shields.io/badge/Tailscale-242424?style=for-the-badge&logo=tailscale&logoColor=white" alt="Tailscale"></a>
@@ -18,8 +16,9 @@ This is my personal cloud. Two sites — Hawkfield (Bristol) and London — runn
 ## Infrastructure
 
 ```mermaid
-graph TB
+graph LR
     subgraph "Hawkfield (Bristol)"
+        direction TB
         udm_h[UDM Pro] --> hawk01[hawk01]
         udm_h --> hawk02[hawk02]
         udm_h --> hawk03[hawk03]
@@ -32,6 +31,7 @@ graph TB
     udm_h -. Tailscale .- udm_l
 
     subgraph "London"
+        direction TB
         udm_l[UDM Pro] --> lon01[lon01]
         lon01 --> kl1[k8s-lon-1]
         lon01 --> kl2[k8s-lon-2]
