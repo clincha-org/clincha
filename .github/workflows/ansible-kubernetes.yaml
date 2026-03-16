@@ -59,4 +59,8 @@ jobs:
         run: |
           ansible-playbook kubernetes.yml \
             --inventory inventory/hawkfield.proxmox.yml \
-            --vault-password-file vault
+            --vault-password-file vault \
+            --user ansible \
+            --become \
+            --become-user=root \
+            --limit k8s_cluster
