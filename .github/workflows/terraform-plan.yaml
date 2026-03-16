@@ -63,7 +63,7 @@ jobs:
 
       - name: Save plan output
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: plan-${{ matrix.site }}
           path: terraform/${{ matrix.site }}/plan_output.txt
