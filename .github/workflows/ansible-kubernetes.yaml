@@ -2,6 +2,12 @@ name: Ansible Kubernetes
 permissions:
   contents: read
 on:
+  push:
+    branches:
+      - "master"
+    paths:
+      - '.github/workflows/ansible-kubernetes.yaml'
+      - 'Ansible/**'
   workflow_dispatch:
 concurrency:
   group: "${{github.workflow}}"
