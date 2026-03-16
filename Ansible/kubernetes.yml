@@ -131,8 +131,105 @@
         group: "kubernetes"
         mode: "0775"
 
+    - name: "Autocomplete flux"
+      ansible.builtin.lineinfile:
+        path: /home/kubernetes/.bashrc
+        line: "source <(flux completion bash)"
+        regexp: "^source <(flux completion bash)$"
+        state: present
+
 - name: "Install Helm"
   hosts: kube_control_plane
   become: true
   roles:
     - role: helm
+
+- name: "Configure kube-proxy strictARP"
+  hosts: kube_control_plane
+  become: true
+  run_once: true
+  tasks:
+    - name: "Enable strictARP in kube-proxy configmap"
+      ansible.builtin.shell:
+        cmd: |
+          set -o pipefail
+          kubectl get configmap kube-proxy -n kube-system -o yaml | \
+          sed 's/strictARP: false/strictARP: true/' | \
+          kubectl apply -f -
+        executable: /bin/bash
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      changed_when: true
+
+- name: "Bootstrap Flux"
+  hosts: kube_control_plane
+  become: true
+  tasks:
+    - name: "Deploy SOPS GPG key for Flux"
+      ansible.builtin.copy:
+        dest: /home/kubernetes/flux-sops.asc
+        content: "{{ flux_gpg_key }}"
+        mode: "0600"
+        owner: kubernetes
+        group: kubernetes
+
+    - name: "Install Kubernetes Python"
+      ansible.builtin.package:
+        name: python3-kubernetes
+        state: present
+
+    - name: "Create flux-system namespace"
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: flux-system
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      run_once: true
+
+    - name: "Create SOPS Kubernetes secret"
+      kubernetes.core.k8s:
+        state: present
+        namespace: flux-system
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: sops-gpg
+          data:
+            sops.asc: "{{ flux_gpg_key | b64encode }}"
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      run_once: true
+
+    - name: "Ensure .ssh directory exists for kubernetes user"
+      ansible.builtin.file:
+        path: /home/kubernetes/.ssh
+        state: directory
+        mode: "0700"
+        owner: kubernetes
+        group: kubernetes
+
+    - name: "Copy Flux SSH private key"
+      ansible.builtin.copy:
+        dest: /home/kubernetes/.ssh/flux
+        content: "{{ flux_private_key }}"
+        mode: "0600"
+        owner: kubernetes
+        group: kubernetes
+
+    - name: "Bootstrap Flux to the cluster"
+      ansible.builtin.shell: |
+        flux bootstrap git --silent \
+        --url=ssh://git@github.com/clincha-org/clincha \
+        --branch=master \
+        --private-key-file=/home/kubernetes/.ssh/flux \
+        --path=kubernetes/flux/clusters/{{ k8s_cluster_name }} \
+        --cluster-domain={{ k8s_dns_domain }}
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      run_once: true
+      changed_when: true
