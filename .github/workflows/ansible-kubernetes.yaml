@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - "master"
+      - "feat/integrate-flux-bootstrap"
     paths:
       - '.github/workflows/ansible-kubernetes.yaml'
       - 'Ansible/**'
