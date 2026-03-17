@@ -79,7 +79,6 @@
   ansible.builtin.import_playbook: kubernetes_sigs.kubespray.cluster
   vars:
     kube_version: "1.33.5"
-    dns_domain: "{{ k8s_dns_domain }}"
 
 - name: "Configure kubernetes user"
   hosts: kube_control_plane
@@ -229,7 +228,7 @@
         --branch=master \
         --private-key-file=/home/kubernetes/.ssh/flux \
         --path=kubernetes/flux/clusters/{{ k8s_cluster_name }} \
-        --cluster-domain={{ k8s_dns_domain }} \
+        --cluster-domain={{ dns_domain }} \
         --timeout=15m
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
