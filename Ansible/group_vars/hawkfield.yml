@@ -1,5 +1,6 @@
 k8s_cluster_name: "hawkfield"
 k8s_dns_domain: "hawkfield.clinch-home.com"
+dns_domain: "hawkfield.clinch-home.com"
 
 ansible_ssh_pass: !vault |
   $ANSIBLE_VAULT;1.1;AES256
