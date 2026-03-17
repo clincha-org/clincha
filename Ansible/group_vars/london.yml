@@ -1,5 +1,5 @@
 k8s_cluster_name: "london"
-dns_domain: "london.clinch-home.com"
+site_dns_domain: "london.clinch-home.com"
 
 user_list:
   - {
