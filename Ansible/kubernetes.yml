@@ -228,7 +228,7 @@
         --branch=master \
         --private-key-file=/home/kubernetes/.ssh/flux \
         --path=kubernetes/flux/clusters/{{ k8s_cluster_name }} \
-        --cluster-domain={{ k8s_dns_domain }} \
+        --cluster-domain={{ dns_domain }} \
         --timeout=15m
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
