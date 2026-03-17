@@ -79,7 +79,8 @@
   ansible.builtin.import_playbook: kubernetes_sigs.kubespray.cluster
   vars:
     kube_version: "1.33.5"
-    dns_domain: "{{ site_dns_domain }}"
+    cluster_name: "hawkfield"
+    dns_domain: "hawkfield.clinch-home.com"
 
 - name: "Configure kubernetes user"
   hosts: kube_control_plane
@@ -228,8 +229,8 @@
         --url=ssh://git@github.com/clincha-org/clincha \
         --branch=master \
         --private-key-file=/home/kubernetes/.ssh/flux \
-        --path=kubernetes/flux/clusters/{{ k8s_cluster_name }} \
-        --cluster-domain={{ site_dns_domain }} \
+        --path=kubernetes/flux/clusters/hawkfield \
+        --cluster-domain='hawkfield.clinch-home.com' \
         --timeout=15m
       environment:
         KUBECONFIG: /etc/kubernetes/admin.conf
