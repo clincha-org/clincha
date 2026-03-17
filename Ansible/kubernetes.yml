@@ -79,6 +79,7 @@
   ansible.builtin.import_playbook: kubernetes_sigs.kubespray.cluster
   vars:
     kube_version: "1.33.5"
+    dns_domain: "{{ k8s_dns_domain }}"
 
 - name: "Configure kubernetes user"
   hosts: kube_control_plane
