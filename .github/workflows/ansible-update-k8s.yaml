@@ -6,7 +6,7 @@ on:
   schedule:
     - cron: "0 4 * * *"
 concurrency:
-  group: "${{github.workflow}}"
+  group: "cluster-hawkfield"
 jobs:
   update:
     runs-on: ubuntu-latest

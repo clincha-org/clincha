@@ -12,7 +12,7 @@ on:
           - hawkfield
           - london
 concurrency:
-  group: "cluster-rebuild-${{ inputs.cluster }}"
+  group: "cluster-${{ inputs.cluster }}"
 jobs:
   destroy:
     runs-on: ubuntu-latest

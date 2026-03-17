@@ -11,7 +11,7 @@ on:
       - 'Ansible/**'
   workflow_dispatch:
 concurrency:
-  group: "${{github.workflow}}"
+  group: "cluster-hawkfield"
 jobs:
   kubernetes:
     runs-on: ubuntu-latest

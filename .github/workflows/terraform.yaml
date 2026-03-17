@@ -10,7 +10,7 @@ on:
       - 'terraform/**'
   workflow_dispatch:
 concurrency:
-  group: "${{github.workflow}}"
+  group: "cluster-hawkfield"
 jobs:
   plan:
     runs-on: ubuntu-latest
