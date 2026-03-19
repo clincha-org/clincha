@@ -1,14 +1,12 @@
-name: Ansible update Proxmox
+name: Ansible Proxmox
 permissions:
   contents: read
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 3 * * *"
 concurrency:
   group: "${{github.workflow}}"
 jobs:
-  update:
+  proxmox:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -52,13 +50,13 @@ jobs:
       - name: Run Ansible playbook (Hawkfield)
         working-directory: Ansible
         run: |
-          ansible-playbook update-proxmox.yml \
+          ansible-playbook proxmox.yml \
             --inventory inventory/hawkfield.proxmox.yml \
             --vault-password-file vault
 
       - name: Run Ansible playbook (London)
         working-directory: Ansible
         run: |
-          ansible-playbook update-proxmox.yml \
+          ansible-playbook proxmox.yml \
             --inventory inventory/london.proxmox.yml \
             --vault-password-file vault
