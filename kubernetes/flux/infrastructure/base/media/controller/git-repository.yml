@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: media
+  namespace: flux-system
+spec:
+  interval: 5m
+  ref:
+    branch: main
+  secretRef:
+    name: media-ssh-key
+  url: ssh://git@github.com/clincha/media.git

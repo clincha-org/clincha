@@ -5,4 +5,6 @@ rules:
   empty-lines: disable
   comments: disable
   line-length:
-    ignore: 'Ansible/roles/users/defaults/main.yml'
+    ignore:
+      - 'Ansible/roles/users/defaults/main.yml'
+      - 'kubernetes/flux/infrastructure/base/media/controller/secret.yml'
