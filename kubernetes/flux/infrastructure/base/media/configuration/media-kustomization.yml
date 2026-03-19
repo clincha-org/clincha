@@ -13,7 +13,6 @@ spec:
   path: /
   prune: true
   wait: true
-  healthCheckTimeout: 1m
   decryption:
     provider: sops
     secretRef:
