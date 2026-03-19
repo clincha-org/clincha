@@ -1,6 +1,6 @@
 ---
 plugin: "community.proxmox.proxmox"
-url: "https://10.2.0.11:8006"
+url: "https://10.2.2.11:8006"
 user: "ansible@pam"
 token_id: "ansible"
 token_secret: !vault |

@@ -18,3 +18,64 @@
         owner: root
         group: root
         mode: "0644"
+
+    - name: "Create Packer role"
+      ansible.builtin.command:
+        cmd: >-
+          pveum role add Packer --privs
+          Datastore.Allocate,Datastore.AllocateSpace,Datastore.AllocateTemplate,Datastore.Audit,Pool.Allocate,Pool.Audit,SDN.Use,Sys.Audit,Sys.Console,Sys.Modify,VM.Allocate,VM.Audit,VM.Clone,VM.Config.CDROM,VM.Config.CPU,VM.Config.Cloudinit,VM.Config.Disk,VM.Config.HWType,VM.Config.Memory,VM.Config.Network,VM.Config.Options,VM.Console,VM.Migrate,VM.Monitor,VM.PowerMgmt
+      register: packer_role_result
+      changed_when: packer_role_result.rc == 0
+      failed_when: packer_role_result.rc != 0 and 'already exists' not in packer_role_result.stderr
+
+    - name: "Create Terraform role"
+      ansible.builtin.command:
+        cmd: >-
+          pveum role add Terraform --privs
+          Datastore.AllocateSpace,Datastore.AllocateTemplate,Datastore.Audit,Pool.Allocate,Pool.Audit,SDN.Use,Sys.Audit,Sys.Console,Sys.Modify,VM.Allocate,VM.Audit,VM.Clone,VM.Config.CDROM,VM.Config.CPU,VM.Config.Cloudinit,VM.Config.Disk,VM.Config.HWType,VM.Config.Memory,VM.Config.Network,VM.Config.Options,VM.Console,VM.Migrate,VM.Monitor,VM.PowerMgmt
+      register: terraform_role_result
+      changed_when: terraform_role_result.rc == 0
+      failed_when: terraform_role_result.rc != 0 and 'already exists' not in terraform_role_result.stderr
+
+    - name: "Create API users"
+      ansible.builtin.command:
+        cmd: "pveum user add {{ item }}@pam"
+      loop:
+        - ansible
+        - packer
+        - terraform
+      register: user_result
+      changed_when: user_result.rc == 0
+      failed_when: user_result.rc != 0 and 'already exists' not in user_result.stderr
+
+    - name: "Assign ansible user Administrator role"
+      ansible.builtin.command:
+        cmd: "pveum acl modify / --users ansible@pam --roles Administrator"
+      changed_when: true
+
+    - name: "Assign packer user Packer role"
+      ansible.builtin.command:
+        cmd: "pveum acl modify / --users packer@pam --roles Packer"
+      changed_when: true
+
+    - name: "Assign terraform user Terraform role"
+      ansible.builtin.command:
+        cmd: "pveum acl modify / --users terraform@pam --roles Terraform"
+      changed_when: true
+
+    - name: "Create API tokens"
+      ansible.builtin.command:
+        cmd: "pveum user token add {{ item.user }}@pam {{ item.token }} --privsep 0"
+      loop:
+        - {user: ansible, token: ansible}
+        - {user: packer, token: packer}
+        - {user: terraform, token: terraform}
+      register: token_result
+      changed_when: token_result.rc == 0
+      failed_when: token_result.rc != 0 and 'already exists' not in token_result.stderr
+
+    - name: "Display created tokens"
+      ansible.builtin.debug:
+        msg: "{{ item.stdout }}"
+      loop: "{{ token_result.results }}"
+      when: item.rc == 0
