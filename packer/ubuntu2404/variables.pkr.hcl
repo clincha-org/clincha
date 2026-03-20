@@ -23,7 +23,7 @@ variable iso_file {
 }
 variable iso_checksum {
   type    = string
-  default = "sha256:d6dab0c3a657988501b4bd76f1297c053df710e06e0c3aece60dead24f270b4d"
+  default = "none"
 }
 variable unmount_iso {
   type    = bool

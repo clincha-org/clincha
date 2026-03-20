@@ -10,11 +10,31 @@
         name: sudo
         state: present
 
-    - name: "Ensure Ubuntu iso is available"
+    - name: "Fetch Ubuntu SHA256SUMS"
+      ansible.builtin.uri:
+        url: "https://releases.ubuntu.com/noble/SHA256SUMS"
+        return_content: true
+      register: sha256sums
+
+    - name: "Parse latest live-server ISO entry"
+      vars:
+        filename_pattern: '\S+\s+\*?(ubuntu-.*-live-server-amd64\.iso)$'
+        checksum_pattern: '(\S+)\s+\*?ubuntu-.*-live-server-amd64\.iso$'
+      ansible.builtin.set_fact:
+        iso_filename: >-
+          {{ sha256sums.content |
+             regex_search(filename_pattern, '\1', multiline=True) |
+             last }}
+        iso_checksum: >-
+          {{ sha256sums.content |
+             regex_search(checksum_pattern, '\1', multiline=True) |
+             last }}
+
+    - name: "Download Ubuntu ISO"
       ansible.builtin.get_url:
-        url: "https://releases.ubuntu.com/24.04/ubuntu-24.04.2-live-server-amd64.iso"
+        url: "https://releases.ubuntu.com/noble/{{ iso_filename }}"
         dest: "/var/lib/vz/template/iso/ubuntu.iso"
-        checksum: "sha256:d6dab0c3a657988501b4bd76f1297c053df710e06e0c3aece60dead24f270b4d"
+        checksum: "sha256:{{ iso_checksum }}"
         owner: root
         group: root
         mode: "0644"
