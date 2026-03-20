@@ -18,16 +18,16 @@
 
     - name: "Parse latest live-server ISO entry"
       vars:
-        re: '\S+\s+\*?(ubuntu-.*-live-server-amd64\.iso)$'
-        cs: '(\S+)\s+\*?ubuntu-.*-live-server-amd64\.iso$'
+        filename_pattern: '\S+\s+\*?(ubuntu-.*-live-server-amd64\.iso)$'
+        checksum_pattern: '(\S+)\s+\*?ubuntu-.*-live-server-amd64\.iso$'
       ansible.builtin.set_fact:
         iso_filename: >-
           {{ sha256sums.content |
-             regex_search(re, '\1', multiline=True) |
+             regex_search(filename_pattern, '\1', multiline=True) |
              last }}
         iso_checksum: >-
           {{ sha256sums.content |
-             regex_search(cs, '\1', multiline=True) |
+             regex_search(checksum_pattern, '\1', multiline=True) |
              last }}
 
     - name: "Download Ubuntu ISO"
