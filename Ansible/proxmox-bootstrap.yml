@@ -34,16 +34,41 @@
   hosts: proxmox_api_primary
   become: true
   tasks:
+    - name: "Get current Proxmox roles"
+      ansible.builtin.command: pveum role list --output-format json
+      register: pveum_roles
+      changed_when: false
+
     - name: "Create Ansible role"
       ansible.builtin.command:
         cmd: >-
           pveum role add Ansible
           --privs Sys.Audit,VM.Audit,Pool.Audit
-      register: ansible_role_result
-      changed_when: ansible_role_result.rc == 0
-      failed_when: >-
-        ansible_role_result.rc != 0 and
-        'already exists' not in ansible_role_result.stderr
+      changed_when: true
+      when: >-
+        pveum_roles.stdout | from_json |
+        selectattr('roleid', 'eq', 'Ansible') |
+        list | length == 0
+
+    - name: "Ensure Ansible role privileges"
+      vars:
+        existing_privs: >-
+          {{ (pveum_roles.stdout | from_json |
+              selectattr('roleid', 'eq', 'Ansible')
+              | first).privs | default('')
+              | split(',') | sort | join(',') }}
+        desired_privs: "Pool.Audit,Sys.Audit,VM.Audit"
+      ansible.builtin.command:
+        cmd: >-
+          pveum role modify Ansible
+          --privs Sys.Audit,VM.Audit,Pool.Audit
+      changed_when: true
+      when:
+        - >-
+          pveum_roles.stdout | from_json
+          | selectattr('roleid', 'eq', 'Ansible')
+          | list | length > 0
+        - existing_privs != desired_privs
 
     - name: "Create ansible API user"
       ansible.builtin.command:
@@ -54,10 +79,23 @@
         user_result.rc != 0 and
         'already exists' not in user_result.stderr
 
+    - name: "Get current Proxmox ACLs"
+      ansible.builtin.command: pveum acl list --output-format json
+      register: pveum_acls
+      changed_when: false
+
     - name: "Assign ansible user Ansible role"
       ansible.builtin.command:
-        cmd: "pveum acl modify / --users ansible@pam --roles Ansible"
+        cmd: >-
+          pveum acl modify /
+          --users ansible@pam --roles Ansible
       changed_when: true
+      when: >-
+        pveum_acls.stdout | from_json |
+        selectattr('path', 'eq', '/') |
+        selectattr('ugid', 'eq', 'ansible@pam') |
+        selectattr('roleid', 'eq', 'Ansible') |
+        list | length == 0
 
     - name: "Create ansible API token"
       ansible.builtin.command:

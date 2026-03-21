@@ -2,6 +2,64 @@
 - name: "Proxmox host configuration"
   hosts: proxmox_nodes
   become: true
+  vars:
+    proxmox_roles:
+      - name: Ansible
+        privs:
+          - Pool.Audit
+          - Sys.Audit
+          - VM.Audit
+      - name: Packer
+        privs:
+          - Datastore.Allocate
+          - Datastore.AllocateSpace
+          - Datastore.AllocateTemplate
+          - Datastore.Audit
+          - Pool.Allocate
+          - Pool.Audit
+          - SDN.Use
+          - Sys.Audit
+          - Sys.Console
+          - Sys.Modify
+          - VM.Allocate
+          - VM.Audit
+          - VM.Clone
+          - VM.Config.CDROM
+          - VM.Config.CPU
+          - VM.Config.Cloudinit
+          - VM.Config.Disk
+          - VM.Config.HWType
+          - VM.Config.Memory
+          - VM.Config.Network
+          - VM.Config.Options
+          - VM.Console
+          - VM.Migrate
+          - VM.PowerMgmt
+      - name: Terraform
+        privs:
+          - Datastore.AllocateSpace
+          - Datastore.AllocateTemplate
+          - Datastore.Audit
+          - Pool.Allocate
+          - Pool.Audit
+          - SDN.Use
+          - Sys.Audit
+          - Sys.Console
+          - Sys.Modify
+          - VM.Allocate
+          - VM.Audit
+          - VM.Clone
+          - VM.Config.CDROM
+          - VM.Config.CPU
+          - VM.Config.Cloudinit
+          - VM.Config.Disk
+          - VM.Config.HWType
+          - VM.Config.Memory
+          - VM.Config.Network
+          - VM.Config.Options
+          - VM.Console
+          - VM.Migrate
+          - VM.PowerMgmt
   tasks:
     - name: "Install sudo"
       ansible.builtin.package:
@@ -37,71 +95,102 @@
         group: root
         mode: "0644"
 
-    - name: "Create Ansible role"
-      ansible.builtin.command:
-        cmd: >-
-          pveum role add Ansible
-          --privs Sys.Audit,VM.Audit,Pool.Audit
-      register: ansible_role_result
-      changed_when: ansible_role_result.rc == 0
-      failed_when: >-
-        ansible_role_result.rc != 0 and
-        'already exists' not in ansible_role_result.stderr
+    - name: "Get current Proxmox roles"
+      ansible.builtin.command: pveum role list --output-format json
+      register: pveum_roles
+      changed_when: false
 
-    - name: "Create Packer role"
+    - name: "Create Proxmox roles"
       ansible.builtin.command:
         cmd: >-
-          pveum role add Packer --privs
-          Datastore.Allocate,Datastore.AllocateSpace,Datastore.AllocateTemplate,Datastore.Audit,Pool.Allocate,Pool.Audit,SDN.Use,Sys.Audit,Sys.Console,Sys.Modify,VM.Allocate,VM.Audit,VM.Clone,VM.Config.CDROM,VM.Config.CPU,VM.Config.Cloudinit,VM.Config.Disk,VM.Config.HWType,VM.Config.Memory,VM.Config.Network,VM.Config.Options,VM.Console,VM.Migrate,VM.PowerMgmt
-      register: packer_role_result
-      changed_when: packer_role_result.rc == 0
-      failed_when: packer_role_result.rc != 0 and 'already exists' not in packer_role_result.stderr
+          pveum role add {{ item.name }}
+          --privs {{ item.privs | join(',') }}
+      loop: "{{ proxmox_roles }}"
+      loop_control:
+        label: "{{ item.name }}"
+      changed_when: true
+      when: >-
+        pveum_roles.stdout | from_json |
+        selectattr('roleid', 'eq', item.name) |
+        list | length == 0
 
-    - name: "Create Terraform role"
+    - name: "Ensure Proxmox role privileges"
+      vars:
+        existing_privs: >-
+          {{ (pveum_roles.stdout | from_json |
+              selectattr('roleid', 'eq', item.name)
+              | first).privs | default('')
+              | split(',') | sort | join(',') }}
       ansible.builtin.command:
         cmd: >-
-          pveum role add Terraform --privs
-          Datastore.AllocateSpace,Datastore.AllocateTemplate,Datastore.Audit,Pool.Allocate,Pool.Audit,SDN.Use,Sys.Audit,Sys.Console,Sys.Modify,VM.Allocate,VM.Audit,VM.Clone,VM.Config.CDROM,VM.Config.CPU,VM.Config.Cloudinit,VM.Config.Disk,VM.Config.HWType,VM.Config.Memory,VM.Config.Network,VM.Config.Options,VM.Console,VM.Migrate,VM.PowerMgmt
-      register: terraform_role_result
-      changed_when: terraform_role_result.rc == 0
-      failed_when: terraform_role_result.rc != 0 and 'already exists' not in terraform_role_result.stderr
+          pveum role modify {{ item.name }}
+          --privs {{ item.privs | join(',') }}
+      loop: "{{ proxmox_roles }}"
+      loop_control:
+        label: "{{ item.name }}"
+      changed_when: true
+      when:
+        - >-
+          pveum_roles.stdout | from_json
+          | selectattr('roleid', 'eq', item.name)
+          | list | length > 0
+        - >-
+          existing_privs !=
+          (item.privs | sort | join(','))
 
     - name: "Create API users"
       ansible.builtin.command:
-        cmd: "pveum user add {{ item }}@pam"
+        cmd: >-
+          pveum user add {{ item }}@pam
       loop:
         - ansible
         - packer
         - terraform
       register: user_result
       changed_when: user_result.rc == 0
-      failed_when: user_result.rc != 0 and 'already exists' not in user_result.stderr
+      failed_when: >-
+        user_result.rc != 0 and
+        'already exists' not in user_result.stderr
 
-    - name: "Assign ansible user Ansible role"
-      ansible.builtin.command:
-        cmd: "pveum acl modify / --users ansible@pam --roles Ansible"
-      changed_when: true
+    - name: "Get current Proxmox ACLs"
+      ansible.builtin.command: pveum acl list --output-format json
+      register: pveum_acls
+      changed_when: false
 
-    - name: "Assign packer user Packer role"
+    - name: "Assign user roles"
       ansible.builtin.command:
-        cmd: "pveum acl modify / --users packer@pam --roles Packer"
+        cmd: >-
+          pveum acl modify /
+          --users {{ item.user }}@pam
+          --roles {{ item.role }}
+      loop:
+        - {user: ansible, role: Ansible}
+        - {user: packer, role: Packer}
+        - {user: terraform, role: Terraform}
+      loop_control:
+        label: "{{ item.user }} -> {{ item.role }}"
       changed_when: true
-
-    - name: "Assign terraform user Terraform role"
-      ansible.builtin.command:
-        cmd: "pveum acl modify / --users terraform@pam --roles Terraform"
-      changed_when: true
+      when: >-
+        pveum_acls.stdout | from_json |
+        selectattr('path', 'eq', '/') |
+        selectattr('ugid', 'eq', item.user ~ '@pam') |
+        selectattr('roleid', 'eq', item.role) |
+        list | length == 0
 
     - name: "Create API tokens"
       ansible.builtin.command:
-        cmd: "pveum user token add {{ item.user }}@pam {{ item.token }} --privsep 0"
+        cmd: >-
+          pveum user token add {{ item.user }}@pam
+          {{ item.token }} --privsep 0
       loop:
         - {user: ansible, token: ansible}
         - {user: packer, token: packer}
         - {user: terraform, token: terraform}
       register: token_result
       changed_when: token_result.rc == 0
-      failed_when: token_result.rc != 0 and 'already exists' not in token_result.stderr
+      failed_when: >-
+        token_result.rc != 0 and
+        'already exists' not in token_result.stderr
 
     - name: "Display created tokens"
       ansible.builtin.debug:
