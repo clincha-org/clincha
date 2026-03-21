@@ -2,7 +2,15 @@ name: Ansible Proxmox
 permissions:
   contents: read
 on:
+  push:
+    branches:
+      - "master"
+    paths:
+      - '.github/workflows/ansible-proxmox.yaml'
+      - 'Ansible/proxmox.yml'
   workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"
 concurrency:
   group: "${{github.workflow}}"
 jobs:

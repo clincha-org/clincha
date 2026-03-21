@@ -15,7 +15,7 @@ When setting up a new site from scratch, run workflows in this order:
 6. cluster-rebuild             (deploy Kubernetes via Kubespray + bootstrap Flux CD)
 ```
 
-Steps 1–2 are manual one-time setup. Steps 3–5 run automatically on merge to master. Step 6 is manual.
+Step 1 is manual one-time setup. Steps 2–5 run automatically on merge to master. Step 6 is manual.
 
 After initial setup, day-to-day changes flow through PRs: lint and terraform plan run on the PR, then deploy workflows trigger on merge.
 
@@ -39,12 +39,13 @@ These run when changes are pushed to `master` (i.e. a PR is merged).
 | **Packer Build** | `packer.yaml` | Push to master (paths: `packer/**`), weekly Sunday 04:00 UTC, manual | hawk01–03, lon01 | Builds Ubuntu 24.04 VM templates on all Proxmox nodes (matrix build, one per host) |
 | **Terraform Apply** | `terraform.yaml` | Push to master (paths: `terraform/**`), manual | Hawkfield only | Plans then applies Terraform. Apply job requires `production` environment approval |
 | **Ansible Base** | `ansible-base.yaml` | Push to master (paths: `Ansible/**`), hourly, manual | Hawkfield only | Runs `base.yml` playbook — user accounts, sudoers, base packages |
+| **Proxmox Config** | `ansible-proxmox.yaml` | Push to master (paths: `Ansible/proxmox.yml`), hourly, manual | Hawkfield, London (parallel) | Configures Proxmox API roles, ACLs, and tokens via `proxmox.yml` playbook |
 
 ### Scheduled Maintenance
 
 | Workflow | File | Schedule | Sites | What it does |
 |----------|------|----------|-------|-------------|
-| **Update Proxmox** | `ansible-update-proxmox.yaml` | Daily 03:00 UTC, manual | Hawkfield then London | Runs `update-proxmox.yml` — apt upgrades on Proxmox hosts (both sites sequentially) |
+| **Update Proxmox** | `ansible-update-proxmox.yaml` | Daily 03:00 UTC, manual | Hawkfield, London (parallel) | Runs `update-proxmox.yml` — apt upgrades on Proxmox hosts (independent per site) |
 
 ### Manual Operations
 
@@ -53,7 +54,6 @@ These are triggered via `workflow_dispatch` only (Actions tab > Run workflow).
 | Workflow | File | Sites | What it does |
 |----------|------|-------|-------------|
 | **Proxmox Bootstrap** | `ansible-proxmox-bootstrap.yaml` | Per `inventory/bootstrap.yml` | Initial Proxmox setup. Uses root password (not SSH key). Run once per new node |
-| **Proxmox Config** | `ansible-proxmox.yaml` | Hawkfield, London (parallel) | Configures Proxmox API roles, ACLs, and tokens via `proxmox.yml` playbook |
 | **Cluster Rebuild** | `cluster-rebuild.yaml` | Choose: hawkfield or london | Full cluster teardown and rebuild: `terraform destroy` → `terraform apply` → `ansible-playbook kubernetes.yml`. Destroy requires `production` approval |
 
 ## Concurrency Groups
