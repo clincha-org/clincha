@@ -67,7 +67,8 @@
 
     - name: "Parse token value"
       vars:
-        token_pattern: 'value\s+│\s+(\S+)'
+        token_pattern: >-
+          ([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})
       ansible.builtin.set_fact:
         proxmox_token_value: >-
           {{ token_result.stdout |

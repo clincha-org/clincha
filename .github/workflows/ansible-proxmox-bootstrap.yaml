@@ -40,5 +40,4 @@ jobs:
         working-directory: Ansible
         run: |
           ansible-playbook proxmox-bootstrap.yml \
-            --inventory inventory/bootstrap.yml \
-            -vvv
+            --inventory inventory/bootstrap.yml
