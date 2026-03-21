@@ -90,6 +90,8 @@ All secrets are stored in GitHub repository settings.
 
 ## Known Gaps
 
-- **Terraform apply is hawkfield-only** — `terraform.yaml` only applies to the hawkfield site. London terraform changes must be applied manually.
-- **ansible-base is hawkfield-only** — the hourly base config reconciliation only targets hawkfield. London base config must be applied manually.
-- **Boilerplate repetition** — Tailscale setup, Ansible setup (Python, pip, galaxy, vault, SSH key) are copy-pasted across workflows. These could be extracted into composite actions.
+Tracked in the [CI/CD Improvements](https://github.com/clincha-org/clincha/milestone/6) milestone:
+
+- **Terraform apply is hawkfield-only** — `terraform.yaml` only applies to the hawkfield site. London terraform changes must be applied manually. [#213](https://github.com/clincha-org/clincha/issues/213)
+- **ansible-base is hawkfield-only** — the hourly base config reconciliation only targets hawkfield. London base config must be applied manually. [#214](https://github.com/clincha-org/clincha/issues/214)
+- **Boilerplate repetition** — Tailscale setup, Ansible setup (Python, pip, galaxy, vault, SSH key) are copy-pasted across workflows. These could be extracted into composite actions. [#215](https://github.com/clincha-org/clincha/issues/215)
