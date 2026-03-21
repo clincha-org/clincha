@@ -8,8 +8,7 @@ want_facts: true
 want_proxmox_nodes_ansible_host: true
 compose:
   ansible_host: >-
-    (proxmox_ipconfig0.ip | default('') | replace('/24', ''))
-    or (ansible_host | default(inventory_hostname))
+    proxmox_ipconfig0.ip | default(ansible_host) | replace('/24', '')
   site: "'london'"
 groups:
   london: "true"
