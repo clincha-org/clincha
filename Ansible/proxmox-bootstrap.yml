@@ -1,0 +1,92 @@
+---
+- name: "Create ansible Linux user on all Proxmox nodes"
+  hosts: proxmox_nodes
+  become: true
+  tasks:
+    - name: "Create ansible user"
+      ansible.builtin.user:
+        name: ansible
+        uid: 1000
+        shell: /bin/bash
+
+    - name: "Set SSH authorized key for ansible"
+      ansible.posix.authorized_key:
+        user: ansible
+        key: >-
+          ssh-ed25519
+          AAAAC3NzaC1lZDI1NTE5AAAAIL0PsOw/7B9Qr16/iKa2h3j5Nr0jZtrj+JI8qKgYSWep
+          ansible
+
+    - name: "Grant ansible passwordless sudo"
+      ansible.builtin.copy:
+        content: "ansible ALL=(ALL) NOPASSWD: ALL\n"
+        dest: /etc/sudoers.d/ansible
+        owner: root
+        group: root
+        mode: "0440"
+
+- name: "Create Proxmox API user and token"
+  hosts: proxmox_api_primary
+  become: true
+  tasks:
+    - name: "Create Ansible role"
+      ansible.builtin.command:
+        cmd: >-
+          pveum role add Ansible
+          --privs Sys.Audit,VM.Audit,Pool.Audit
+      register: ansible_role_result
+      changed_when: ansible_role_result.rc == 0
+      failed_when: >-
+        ansible_role_result.rc != 0 and
+        'already exists' not in ansible_role_result.stderr
+
+    - name: "Create ansible API user"
+      ansible.builtin.command:
+        cmd: "pveum user add ansible@pam"
+      register: user_result
+      changed_when: user_result.rc == 0
+      failed_when: >-
+        user_result.rc != 0 and
+        'already exists' not in user_result.stderr
+
+    - name: "Assign ansible user Ansible role"
+      ansible.builtin.command:
+        cmd: "pveum acl modify / --users ansible@pam --roles Ansible"
+      changed_when: true
+
+    - name: "Create ansible API token"
+      ansible.builtin.command:
+        cmd: >-
+          pveum user token add ansible@pam ansible
+          --privsep 0
+      register: token_result
+      changed_when: token_result.rc == 0
+      failed_when: >-
+        token_result.rc != 0 and
+        'already exists' not in token_result.stderr
+
+    - name: "Parse token value"
+      vars:
+        token_pattern: 'value\s+│\s+(\S+)'
+      ansible.builtin.set_fact:
+        proxmox_token_value: >-
+          {{ token_result.stdout |
+             regex_search(token_pattern, '\1') |
+             first }}
+      when: token_result.rc == 0
+
+- name: "Update GitHub secrets with Proxmox tokens"
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: "Set GitHub secret for each site"
+      ansible.builtin.command:
+        cmd: >-
+          gh secret set
+          {{ hostvars[item].proxmox_token_secret_name }}
+          --repo clincha-org/clincha
+        stdin: >-
+          {{ hostvars[item].proxmox_token_value }}
+      loop: "{{ groups['proxmox_api_primary'] }}"
+      when: hostvars[item].proxmox_token_value is defined
+      changed_when: true
