@@ -84,12 +84,16 @@ Flux CD GitOps structure:
 
 ### CI/CD (`.github/workflows/`)
 
-GitHub Actions workflows use Tailscale to connect to internal infrastructure. Key workflows:
-- `ansible-lint.yaml` — lint on ubuntu-latest
-- `ansible-base.yaml` — base config deployment via Tailscale
-- `ansible-update-k8s.yaml` — hourly K8s updates
+GitHub Actions workflows use Tailscale to connect to internal infrastructure. See [`.github/workflows/README.md`](.github/workflows/README.md) for full documentation. Key workflows:
+- `ansible-lint.yaml` — lint on PRs
+- `ansible-base.yaml` — base config deployment (hourly + on merge)
 - `ansible-update-proxmox.yaml` — daily Proxmox updates (3 AM)
-- `terraform.yaml` — plan/apply for K8s infra
+- `ansible-proxmox.yaml` — Proxmox role/ACL/token config (manual)
+- `ansible-proxmox-bootstrap.yaml` — initial Proxmox setup (manual)
+- `packer.yaml` — VM template builds (weekly + on merge)
+- `terraform-plan.yaml` — plan on PRs for hawkfield + london
+- `terraform.yaml` — plan/apply for hawkfield
+- `cluster-rebuild.yaml` — full destroy/provision/configure (manual)
 
 ## Conventions
 

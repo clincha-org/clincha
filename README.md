@@ -64,7 +64,6 @@ Everything is deployed as code: Packer builds VM templates, Terraform provisions
 
 ### Maintenance
 
-[![Ansible Update Kubernetes](https://github.com/clincha-org/clincha/actions/workflows/ansible-update-k8s.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/ansible-update-k8s.yaml)
 [![Ansible Update Proxmox](https://github.com/clincha-org/clincha/actions/workflows/ansible-update-proxmox.yaml/badge.svg)](https://github.com/clincha-org/clincha/actions/workflows/ansible-update-proxmox.yaml)
 
 ### CI/CD
