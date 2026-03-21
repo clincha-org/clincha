@@ -1,21 +1,29 @@
 ---
 all:
-  vars:
-    ansible_user: root
-    ansible_ssh_pass: "{{ lookup('env', 'PROXMOX_PASSWORD') }}"
-    ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
   children:
     proxmox_nodes:
       hosts:
         hawk01:
           ansible_host: 10.1.2.11
+          ansible_user: root
+          ansible_ssh_pass: "{{ lookup('env', 'PROXMOX_PASSWORD') }}"
+          ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
           proxmox_token_secret_name: HAWKFIELD_PROXMOX_TOKEN_SECRET
         hawk02:
           ansible_host: 10.1.2.12
+          ansible_user: root
+          ansible_ssh_pass: "{{ lookup('env', 'PROXMOX_PASSWORD') }}"
+          ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
         hawk03:
           ansible_host: 10.1.2.13
+          ansible_user: root
+          ansible_ssh_pass: "{{ lookup('env', 'PROXMOX_PASSWORD') }}"
+          ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
         london01:
           ansible_host: 10.2.2.11
+          ansible_user: root
+          ansible_ssh_pass: "{{ lookup('env', 'PROXMOX_PASSWORD') }}"
+          ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
           proxmox_token_secret_name: LONDON_PROXMOX_TOKEN_SECRET
     proxmox_api_primary:
       hosts:
