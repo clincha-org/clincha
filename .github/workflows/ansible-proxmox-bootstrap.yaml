@@ -1,0 +1,43 @@
+name: Ansible Proxmox Bootstrap
+permissions:
+  contents: read
+on:
+  workflow_dispatch:
+concurrency:
+  group: "${{github.workflow}}"
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    env:
+      PROXMOX_PASSWORD: ${{ secrets.PROXMOX_PASSWORD }}
+      GH_TOKEN: ${{ secrets.GH_PAT }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Set up Ansible
+        working-directory: Ansible
+        run: |
+          pip install -r requirements.txt
+
+      - name: Install Ansible collections
+        working-directory: Ansible
+        run: |
+          ansible-galaxy collection install -r galaxy-requirements.yml
+
+      - name: Run bootstrap playbook
+        working-directory: Ansible
+        run: |
+          ansible-playbook proxmox-bootstrap.yml \
+            --inventory inventory/bootstrap.yml
