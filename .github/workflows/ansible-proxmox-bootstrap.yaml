@@ -9,7 +9,7 @@ jobs:
   bootstrap:
     runs-on: ubuntu-latest
     env:
-      PROXMOX_PASSWORD: ${{ secrets.PROXMOX_PASSWORD }}
+      PROXMOX_PASSWORD: ${{ secrets.PROXMOX_ROOT_PASSWORD }}
       GH_TOKEN: ${{ secrets.GH_PAT }}
     steps:
       - name: Checkout code
