@@ -3,6 +3,11 @@
   hosts: proxmox_nodes
   become: true
   tasks:
+    - name: "Install sudo"
+      ansible.builtin.package:
+        name: sudo
+        state: present
+
     - name: "Create ansible user"
       ansible.builtin.user:
         name: ansible
