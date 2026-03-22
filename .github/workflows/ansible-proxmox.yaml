@@ -58,7 +58,7 @@ jobs:
       - name: Run Ansible playbook (Hawkfield)
         working-directory: Ansible
         env:
-          PROXMOX_TOKEN_SECRET: ${{ secrets.HAWKFIELD_PROXMOX_TOKEN_SECRET }}
+          PROXMOX_TOKEN_SECRET: ${{ secrets.PROXMOX_TOKEN_HAWKFIELD_ANSIBLE }}
         run: |
           ansible-playbook proxmox.yml \
             --inventory inventory/hawkfield.proxmox.yml \
@@ -108,7 +108,7 @@ jobs:
       - name: Run Ansible playbook (London)
         working-directory: Ansible
         env:
-          PROXMOX_TOKEN_SECRET: ${{ secrets.LONDON_PROXMOX_TOKEN_SECRET }}
+          PROXMOX_TOKEN_SECRET: ${{ secrets.PROXMOX_TOKEN_LONDON_ANSIBLE }}
         run: |
           ansible-playbook proxmox.yml \
             --inventory inventory/london.proxmox.yml \

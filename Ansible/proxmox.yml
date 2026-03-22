@@ -176,24 +176,3 @@
         selectattr('ugid', 'eq', item.user ~ '@pam') |
         selectattr('roleid', 'eq', item.role) |
         list | length == 0
-
-    - name: "Create API tokens"
-      ansible.builtin.command:
-        cmd: >-
-          pveum user token add {{ item.user }}@pam
-          {{ item.token }} --privsep 0
-      loop:
-        - {user: ansible, token: ansible}
-        - {user: packer, token: packer}
-        - {user: terraform, token: terraform}
-      register: token_result
-      changed_when: token_result.rc == 0
-      failed_when: >-
-        token_result.rc != 0 and
-        'already exists' not in token_result.stderr
-
-    - name: "Display created tokens"
-      ansible.builtin.debug:
-        msg: "{{ item.stdout }}"
-      loop: "{{ token_result.results }}"
-      when: item.rc == 0

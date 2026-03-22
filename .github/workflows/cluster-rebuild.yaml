@@ -49,7 +49,7 @@ jobs:
       - name: Terraform Destroy
         working-directory: terraform/${{ inputs.cluster }}
         run: |
-          terraform destroy -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}"
+          terraform destroy -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ inputs.cluster == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM || secrets.PROXMOX_TOKEN_LONDON_TERRAFORM }}"
 
   provision:
     runs-on: ubuntu-latest
@@ -85,12 +85,12 @@ jobs:
       - name: Terraform Plan
         working-directory: terraform/${{ inputs.cluster }}
         run: |
-          terraform plan -out=tfplan -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}"
+          terraform plan -out=tfplan -var-file=providers.tfvars -var="pm_api_token_secret=${{ inputs.cluster == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM || secrets.PROXMOX_TOKEN_LONDON_TERRAFORM }}"
 
       - name: Terraform Apply
         working-directory: terraform/${{ inputs.cluster }}
         run: |
-          terraform apply -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}" tfplan
+          terraform apply -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ inputs.cluster == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM || secrets.PROXMOX_TOKEN_LONDON_TERRAFORM }}" tfplan
 
   configure:
     runs-on: ubuntu-latest

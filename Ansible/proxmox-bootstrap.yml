@@ -30,9 +30,16 @@
         group: root
         mode: "0440"
 
-- name: "Create Proxmox API user and token"
+- name: "Create Proxmox API users, tokens, and roles"
   hosts: proxmox_api_primary
   become: true
+  vars:
+    token_pattern: >-
+      ([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})
+    api_users:
+      - {user: ansible, role: Ansible}
+      - {user: packer, role: Packer}
+      - {user: terraform, role: Terraform}
   tasks:
     - name: "Get current Proxmox roles"
       ansible.builtin.command: pveum role list --output-format json
@@ -70,9 +77,12 @@
           | list | length > 0
         - existing_privs != desired_privs
 
-    - name: "Create ansible API user"
+    - name: "Create API users"
       ansible.builtin.command:
-        cmd: "pveum user add ansible@pam"
+        cmd: "pveum user add {{ item.user }}@pam"
+      loop: "{{ api_users }}"
+      loop_control:
+        label: "{{ item.user }}"
       register: user_result
       changed_when: user_result.rc == 0
       failed_when: >-
@@ -84,53 +94,75 @@
       register: pveum_acls
       changed_when: false
 
-    - name: "Assign ansible user Ansible role"
+    - name: "Assign user roles"
       ansible.builtin.command:
         cmd: >-
           pveum acl modify /
-          --users ansible@pam --roles Ansible
+          --users {{ item.user }}@pam
+          --roles {{ item.role }}
+      loop: "{{ api_users }}"
+      loop_control:
+        label: "{{ item.user }} -> {{ item.role }}"
       changed_when: true
       when: >-
         pveum_acls.stdout | from_json |
         selectattr('path', 'eq', '/') |
-        selectattr('ugid', 'eq', 'ansible@pam') |
-        selectattr('roleid', 'eq', 'Ansible') |
+        selectattr('ugid', 'eq', item.user ~ '@pam') |
+        selectattr('roleid', 'eq', item.role) |
         list | length == 0
 
-    - name: "Create ansible API token"
+    - name: "Create API tokens"
       ansible.builtin.command:
         cmd: >-
-          pveum user token add ansible@pam ansible
-          --privsep 0
-      register: token_result
-      changed_when: token_result.rc == 0
+          pveum user token add {{ item.user }}@pam
+          {{ item.user }} --privsep 0
+      loop: "{{ api_users }}"
+      loop_control:
+        label: "{{ item.user }}"
+      register: token_results
+      changed_when: token_results.rc == 0
       failed_when: >-
-        token_result.rc != 0 and
-        'already exists' not in token_result.stderr
+        token_results.rc != 0 and
+        'already exists' not in token_results.stderr
 
-    - name: "Parse token value"
-      vars:
-        token_pattern: >-
-          ([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})
+    - name: "Parse token values"
       ansible.builtin.set_fact:
-        proxmox_token_value: >-
-          {{ token_result.stdout |
-             regex_search(token_pattern, '\1') |
-             first }}
-      when: token_result.rc == 0
+        created_tokens: >-
+          {{ created_tokens | default({}) | combine({
+               item.item.user: item.stdout
+               | regex_search(token_pattern, '\1')
+               | first
+             }) }}
+      loop: "{{ token_results.results }}"
+      loop_control:
+        label: "{{ item.item.user }}"
+      when: item.rc == 0
 
 - name: "Update GitHub secrets with Proxmox tokens"
   hosts: localhost
   connection: local
+  vars:
+    api_users:
+      - ansible
+      - packer
+      - terraform
   tasks:
-    - name: "Set GitHub secret for each site"
+    - name: "Set GitHub secrets for each site and token type"
       ansible.builtin.command:
         cmd: >-
           gh secret set
-          {{ hostvars[item].proxmox_token_secret_name }}
+          PROXMOX_TOKEN_{{ hostvars[item.0].site | upper }}_{{ item.1 | upper }}
           --repo clincha-org/clincha
         stdin: >-
-          {{ hostvars[item].proxmox_token_value }}
-      loop: "{{ groups['proxmox_api_primary'] }}"
-      when: hostvars[item].proxmox_token_value is defined
+          {{ hostvars[item.0].created_tokens[item.1] }}
+      loop: >-
+        {{ groups['proxmox_api_primary']
+           | product(api_users) | list }}
+      loop_control:
+        label: >-
+          PROXMOX_TOKEN_{{ hostvars[item.0].site | upper
+          }}_{{ item.1 | upper }}
+      when: >-
+        hostvars[item.0].created_tokens is defined and
+        item.1 in hostvars[item.0].created_tokens
       changed_when: true

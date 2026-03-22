@@ -45,7 +45,7 @@ jobs:
       - name: Terraform Plan
         working-directory: terraform/hawkfield
         run: |
-          terraform plan -out=tfplan -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}"
+          terraform plan -out=tfplan -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM }}"
 
       - name: Artifact Upload
         uses: actions/upload-artifact@v7
@@ -96,4 +96,4 @@ jobs:
       - name: Terraform Apply
         working-directory: terraform/hawkfield
         run: |
-          terraform apply -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}" tfplan/tfplan
+          terraform apply -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM }}" tfplan/tfplan
