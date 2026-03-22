@@ -15,7 +15,7 @@ autoinstall:
       - name: ansible
         ssh_authorized_keys:
           - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL0PsOw/7B9Qr16/iKa2h3j5Nr0jZtrj+JI8qKgYSWep ansible
-        passwd: $6$xyz$.bXYjhSn2SsBtxwmQJomOr0gA7PrxqnIk2Bl.ArVu1Lai.609G3k0xstrdVf2B9oHqtacxv82r/MODvi.ifpO.
+        passwd: $6$9dcYQMfDEAP40swm$G7XvCpZpjllCgG9WwHzIqqgAbTLOgKswgfIirSP4o8F1OTOtYFVsMySP/U3.GKWJwn9Y9cHj/DUSK1R4f/wn.1
         groups: [sudo]
         lock-passwd: false
         sudo: ALL=(ALL) NOPASSWD:ALL
