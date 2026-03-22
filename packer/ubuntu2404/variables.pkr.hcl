@@ -49,7 +49,7 @@ variable ssh_password {
 }
 variable ssh_timeout {
   type    = string
-  default = "20m"
+  default = "10m"
 }
 
 # Boot details
