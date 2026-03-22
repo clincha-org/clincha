@@ -25,6 +25,8 @@ source "proxmox-iso" "ubuntu2404" {
   cores   = 2
   memory = 4096
 
+  qemu_agent = true
+
   # cpu_type = "host"
   os   = "l26"
   numa = false
