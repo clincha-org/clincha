@@ -111,6 +111,20 @@
         selectattr('roleid', 'eq', item.role) |
         list | length == 0
 
+    - name: "Delete existing API tokens"
+      ansible.builtin.command:
+        cmd: >-
+          pveum user token remove {{ item.user }}@pam
+          {{ item.user }}
+      loop: "{{ api_users }}"
+      loop_control:
+        label: "{{ item.user }}"
+      register: token_delete
+      changed_when: token_delete.rc == 0
+      failed_when: >-
+        token_delete.rc != 0 and
+        'does not exist' not in token_delete.stderr
+
     - name: "Create API tokens"
       ansible.builtin.command:
         cmd: >-
@@ -120,10 +134,7 @@
       loop_control:
         label: "{{ item.user }}"
       register: token_results
-      changed_when: token_results.rc == 0
-      failed_when: >-
-        token_results.rc != 0 and
-        'already exists' not in token_results.stderr
+      changed_when: true
 
     - name: "Parse token values"
       ansible.builtin.set_fact:
