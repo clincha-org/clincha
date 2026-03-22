@@ -39,7 +39,7 @@ These run when changes are pushed to `master` (i.e. a PR is merged).
 | **Packer Build** | `packer.yaml` | Push to master (paths: `packer/**`), weekly Sunday 04:00 UTC, manual | hawk01–03, lon01 | Builds Ubuntu 24.04 VM templates on all Proxmox nodes (matrix build, one per host) |
 | **Terraform Apply** | `terraform.yaml` | Push to master (paths: `terraform/**`), manual | Hawkfield only | Plans then applies Terraform. Apply job requires `production` environment approval |
 | **Ansible Base** | `ansible-base.yaml` | Push to master (paths: `Ansible/**`), hourly, manual | Hawkfield only | Runs `base.yml` playbook — user accounts, sudoers, base packages |
-| **Proxmox Config** | `ansible-proxmox.yaml` | Push to master (paths: `Ansible/proxmox.yml`), hourly, manual | Hawkfield, London (parallel) | Configures Proxmox API roles, ACLs, and tokens via `proxmox.yml` playbook |
+| **Proxmox Config** | `ansible-proxmox.yaml` | Push to master (paths: `Ansible/proxmox.yml`), hourly, manual | Hawkfield, London (parallel) | Configures Proxmox API roles, users, and ACLs via `proxmox.yml` playbook |
 
 ### Scheduled Maintenance
 
@@ -79,12 +79,13 @@ All secrets are stored in GitHub repository settings.
 | `ANSIBLE_VAULT_PASSWORD` | Decrypts Ansible Vault-encrypted vars | ansible-base, ansible-update-proxmox, ansible-proxmox, cluster-rebuild |
 | `ANSIBLE_PRIVATE_KEY` | SSH private key (ed25519) for Ansible | ansible-base, ansible-update-proxmox, ansible-proxmox, cluster-rebuild |
 | `MINIO_SECRET_KEY` | Terraform state backend (MinIO/S3) | terraform, terraform-plan, cluster-rebuild |
-| `PM_TF_API_TOKEN_SECRET` | Proxmox API token for Terraform | terraform, terraform-plan, cluster-rebuild |
-| `PACKER_PROXMOX_TOKEN_HAWKFIELD` | Proxmox API token for Packer (Bristol) | packer |
-| `PACKER_PROXMOX_TOKEN_LONDON` | Proxmox API token for Packer (London) | packer |
+| `PROXMOX_TOKEN_HAWKFIELD_ANSIBLE` | Proxmox API token for Ansible (Bristol) | ansible-proxmox |
+| `PROXMOX_TOKEN_LONDON_ANSIBLE` | Proxmox API token for Ansible (London) | ansible-proxmox |
+| `PROXMOX_TOKEN_HAWKFIELD_PACKER` | Proxmox API token for Packer (Bristol) | packer |
+| `PROXMOX_TOKEN_LONDON_PACKER` | Proxmox API token for Packer (London) | packer |
+| `PROXMOX_TOKEN_HAWKFIELD_TERRAFORM` | Proxmox API token for Terraform (Bristol) | terraform, terraform-plan, cluster-rebuild |
+| `PROXMOX_TOKEN_LONDON_TERRAFORM` | Proxmox API token for Terraform (London) | terraform-plan, cluster-rebuild |
 | `PACKER_SSH_PASSWORD` | SSH password for Packer VM provisioning | packer |
-| `HAWKFIELD_PROXMOX_TOKEN_SECRET` | Proxmox API token for Ansible (Bristol) | ansible-proxmox |
-| `LONDON_PROXMOX_TOKEN_SECRET` | Proxmox API token for Ansible (London) | ansible-proxmox |
 | `PROXMOX_ROOT_PASSWORD` | Root password for bootstrap | ansible-proxmox-bootstrap |
 | `GH_PAT` | GitHub Personal Access Token | ansible-proxmox-bootstrap |
 

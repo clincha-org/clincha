@@ -8,7 +8,7 @@ all:
           ansible_user: root
           ansible_ssh_pass: "{{ lookup('env', 'PROXMOX_PASSWORD') }}"
           ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
-          proxmox_token_secret_name: HAWKFIELD_PROXMOX_TOKEN_SECRET
+          site: hawkfield
         hawk02:
           ansible_host: 10.1.2.12
           ansible_user: root
@@ -24,7 +24,7 @@ all:
           ansible_user: root
           ansible_ssh_pass: "{{ lookup('env', 'PROXMOX_PASSWORD') }}"
           ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
-          proxmox_token_secret_name: LONDON_PROXMOX_TOKEN_SECRET
+          site: london
     proxmox_api_primary:
       hosts:
         hawk01:

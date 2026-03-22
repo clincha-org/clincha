@@ -72,7 +72,7 @@ jobs:
       - name: Packer Build
         working-directory: packer/ubuntu2404
         env:
-          PROXMOX_TOKEN: ${{ matrix.proxmox_token_secret == 'HAWKFIELD' && secrets.HAWKFIELD_PROXMOX_TOKEN_SECRET || secrets.LONDON_PROXMOX_TOKEN_SECRET }}
+          PROXMOX_TOKEN: ${{ matrix.proxmox_token_secret == 'HAWKFIELD' && secrets.PROXMOX_TOKEN_HAWKFIELD_PACKER || secrets.PROXMOX_TOKEN_LONDON_PACKER }}
         run: |
           packer build -force \
             -var-file="${{ matrix.host }}.pkrvars.hcl" \

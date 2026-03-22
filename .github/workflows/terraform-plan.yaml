@@ -58,7 +58,7 @@ jobs:
         run: |
           terraform plan -no-color \
             -var-file=providers.tfvars \
-            -var="pm_api_token_secret=${{ secrets.PM_TF_API_TOKEN_SECRET }}" \
+            -var="pm_api_token_secret=${{ matrix.site == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM || secrets.PROXMOX_TOKEN_LONDON_TERRAFORM }}" \
             -out=tfplan 2>&1 | tee plan_output.txt
 
       - name: Save plan output
