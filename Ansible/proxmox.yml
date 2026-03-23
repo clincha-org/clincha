@@ -80,6 +80,13 @@
         state: present
         key: "https://github.com/clincha.keys"
 
+    - name: "Sudoers rule for clincha"
+      ansible.builtin.copy:
+        content: "clincha ALL=(ALL) NOPASSWD:ALL\n"
+        dest: /etc/sudoers.d/clincha
+        validate: "visudo -cf %s"
+        mode: "0440"
+
     - name: "Fetch Ubuntu SHA256SUMS"
       ansible.builtin.uri:
         url: "https://releases.ubuntu.com/noble/SHA256SUMS"
