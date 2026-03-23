@@ -67,6 +67,19 @@
         name: sudo
         state: present
 
+    - name: "Ensure clincha user exists"
+      ansible.builtin.user:
+        name: clincha
+        shell: /bin/bash
+        groups: sudo
+        append: true
+
+    - name: "Install SSH key for clincha"
+      ansible.posix.authorized_key:
+        user: clincha
+        state: present
+        key: "https://github.com/clincha.keys"
+
     - name: "Fetch Ubuntu SHA256SUMS"
       ansible.builtin.uri:
         url: "https://releases.ubuntu.com/noble/SHA256SUMS"
