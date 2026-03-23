@@ -3,6 +3,10 @@
   hosts: proxmox_nodes
   become: true
   vars:
+    # VM.Monitor (PVE 8) was split into VM.GuestAgent.* in PVE 9
+    pve_monitor_privs: >-
+      {{ (ansible_facts['distribution_major_version'] | int >= 13)
+         | ternary(['VM.GuestAgent.Audit'], ['VM.Monitor']) }}
     proxmox_roles:
       - name: Ansible
         privs:
@@ -10,32 +14,17 @@
           - Sys.Audit
           - VM.Audit
       - name: Packer
-        privs:
-          - Datastore.Allocate
-          - Datastore.AllocateSpace
-          - Datastore.AllocateTemplate
-          - Datastore.Audit
-          - Pool.Allocate
-          - Pool.Audit
-          - SDN.Use
-          - Sys.Audit
-          - Sys.Console
-          - Sys.Modify
-          - VM.Allocate
-          - VM.Audit
-          - VM.Clone
-          - VM.Config.CDROM
-          - VM.Config.CPU
-          - VM.Config.Cloudinit
-          - VM.Config.Disk
-          - VM.Config.HWType
-          - VM.Config.Memory
-          - VM.Config.Network
-          - VM.Config.Options
-          - VM.Console
-          - VM.Migrate
-          - VM.Monitor
-          - VM.PowerMgmt
+        privs: >-
+          {{ ['Datastore.Allocate', 'Datastore.AllocateSpace',
+              'Datastore.AllocateTemplate', 'Datastore.Audit',
+              'Pool.Allocate', 'Pool.Audit', 'SDN.Use',
+              'Sys.Audit', 'Sys.Console', 'Sys.Modify',
+              'VM.Allocate', 'VM.Audit', 'VM.Clone',
+              'VM.Config.CDROM', 'VM.Config.CPU', 'VM.Config.Cloudinit',
+              'VM.Config.Disk', 'VM.Config.HWType', 'VM.Config.Memory',
+              'VM.Config.Network', 'VM.Config.Options', 'VM.Console',
+              'VM.Migrate', 'VM.PowerMgmt']
+             + pve_monitor_privs }}
       - name: Terraform
         privs:
           - Datastore.AllocateSpace
