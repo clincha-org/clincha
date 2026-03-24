@@ -136,6 +136,8 @@ jobs:
 
       - name: Run Ansible playbook
         working-directory: Ansible
+        env:
+          PROXMOX_TOKEN_SECRET: ${{ inputs.cluster == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_ANSIBLE || secrets.PROXMOX_TOKEN_LONDON_ANSIBLE }}
         run: |
           ansible-playbook kubernetes.yml \
             --inventory inventory/${{ inputs.cluster }}.proxmox.yml \

@@ -57,6 +57,8 @@ jobs:
 
       - name: Run Ansible playbook
         working-directory: Ansible
+        env:
+          PROXMOX_TOKEN_SECRET: ${{ secrets.PROXMOX_TOKEN_HAWKFIELD_ANSIBLE }}
         run: |
           ansible-playbook base.yml \
             --inventory inventory/hawkfield.proxmox.yml \
