@@ -1,3 +1,8 @@
+import {
+  to = module.k8s-lon-1.proxmox_vm_qemu.ubuntu_server
+  id = "lon01/qemu/111"
+}
+
 module "k8s-lon-1" {
   source         = "../modules/ubuntu-server"
   name           = "k8s-lon-1"
