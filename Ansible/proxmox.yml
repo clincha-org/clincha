@@ -3,10 +3,17 @@
   hosts: proxmox_nodes
   become: true
   vars:
+    debian_codename: >-
+      {{ ansible_facts['distribution_release'] }}
+    ceph_flavour: >-
+      {{ (debian_codename == 'trixie')
+         | ternary('ceph-squid', 'ceph-reef') }}
     # VM.Monitor (PVE 8) was split into VM.GuestAgent.* in PVE 9
     pve_monitor_privs: >-
-      {{ (ansible_facts['distribution_major_version'] | int >= 13)
-         | ternary(['VM.GuestAgent.Audit'], ['VM.Monitor']) }}
+      {{ (ansible_facts['distribution_major_version']
+          | int >= 13)
+         | ternary(['VM.GuestAgent.Audit'],
+                   ['VM.Monitor']) }}
     proxmox_roles:
       - name: Ansible
         privs:
@@ -15,14 +22,23 @@
           - VM.Audit
       - name: Packer
         privs: >-
-          {{ ['Datastore.Allocate', 'Datastore.AllocateSpace',
-              'Datastore.AllocateTemplate', 'Datastore.Audit',
-              'Pool.Allocate', 'Pool.Audit', 'SDN.Use',
-              'Sys.Audit', 'Sys.Console', 'Sys.Modify',
-              'VM.Allocate', 'VM.Audit', 'VM.Clone',
-              'VM.Config.CDROM', 'VM.Config.CPU', 'VM.Config.Cloudinit',
-              'VM.Config.Disk', 'VM.Config.HWType', 'VM.Config.Memory',
-              'VM.Config.Network', 'VM.Config.Options', 'VM.Console',
+          {{ ['Datastore.Allocate',
+              'Datastore.AllocateSpace',
+              'Datastore.AllocateTemplate',
+              'Datastore.Audit',
+              'Pool.Allocate', 'Pool.Audit',
+              'SDN.Use',
+              'Sys.Audit', 'Sys.Console',
+              'Sys.Modify',
+              'VM.Allocate', 'VM.Audit',
+              'VM.Clone',
+              'VM.Config.CDROM', 'VM.Config.CPU',
+              'VM.Config.Cloudinit',
+              'VM.Config.Disk',
+              'VM.Config.HWType',
+              'VM.Config.Memory',
+              'VM.Config.Network',
+              'VM.Config.Options', 'VM.Console',
               'VM.Migrate', 'VM.PowerMgmt']
              + pve_monitor_privs }}
       - name: Terraform
@@ -76,29 +92,72 @@
         validate: "visudo -cf %s"
         mode: "0440"
 
+    - name: "Remove PVE enterprise repo"
+      ansible.builtin.file:
+        path: >-
+          /etc/apt/sources.list.d/pve-enterprise.{{
+          item }}
+        state: absent
+      loop:
+        - list
+        - sources
+
+    - name: "Remove Ceph enterprise repo"
+      ansible.builtin.file:
+        path: >-
+          /etc/apt/sources.list.d/ceph.{{ item }}
+        state: absent
+      loop:
+        - list
+        - sources
+
+    - name: "Add PVE no-subscription repo"
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb http://download.proxmox.com/debian/pve
+          {{ debian_codename }} pve-no-subscription
+        filename: pve-no-subscription
+        state: present
+
+    - name: "Add Ceph no-subscription repo"
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb http://download.proxmox.com/debian/{{
+          ceph_flavour }} {{ debian_codename }}
+          no-subscription
+        filename: ceph-no-subscription
+        state: present
+
     - name: "Fetch Ubuntu SHA256SUMS"
       ansible.builtin.uri:
-        url: "https://releases.ubuntu.com/noble/SHA256SUMS"
+        url: >-
+          https://releases.ubuntu.com/noble/SHA256SUMS
         return_content: true
       register: sha256sums
 
     - name: "Parse latest live-server ISO entry"
       vars:
-        filename_pattern: '\S+\s+\*?(ubuntu-.*-live-server-amd64\.iso)$'
-        checksum_pattern: '(\S+)\s+\*?ubuntu-.*-live-server-amd64\.iso$'
+        filename_pattern: >-
+          \S+\s+\*?(ubuntu-.*-live-server-amd64\.iso)$
+        checksum_pattern: >-
+          (\S+)\s+\*?ubuntu-.*-live-server-amd64\.iso$
       ansible.builtin.set_fact:
         iso_filename: >-
           {{ sha256sums.content |
-             regex_search(filename_pattern, '\1', multiline=True) |
+             regex_search(filename_pattern, '\1',
+             multiline=True) |
              last }}
         iso_checksum: >-
           {{ sha256sums.content |
-             regex_search(checksum_pattern, '\1', multiline=True) |
+             regex_search(checksum_pattern, '\1',
+             multiline=True) |
              last }}
 
     - name: "Download Ubuntu ISO"
       ansible.builtin.get_url:
-        url: "https://releases.ubuntu.com/noble/{{ iso_filename }}"
+        url: >-
+          https://releases.ubuntu.com/noble/{{
+          iso_filename }}
         dest: "/var/lib/vz/template/iso/ubuntu.iso"
         checksum: "sha256:{{ iso_checksum }}"
         owner: root
@@ -106,7 +165,8 @@
         mode: "0644"
 
     - name: "Get current Proxmox roles"
-      ansible.builtin.command: pveum role list --output-format json
+      ansible.builtin.command: >-
+        pveum role list --output-format json
       register: pveum_roles
       changed_when: false
 
@@ -163,7 +223,8 @@
         'already exists' not in user_result.stderr
 
     - name: "Get current Proxmox ACLs"
-      ansible.builtin.command: pveum acl list --output-format json
+      ansible.builtin.command: >-
+        pveum acl list --output-format json
       register: pveum_acls
       changed_when: false
 
