@@ -6,7 +6,7 @@ terraform {
     endpoints = {
       s3 = "http://10.1.2.10:9000"
     }
-    key        = "clinch-home-kubernetes.tfstate"
+    key        = "hawkfield.tfstate"
     access_key = "terraform"
 
     region                      = "main"
