@@ -1,23 +1,3 @@
-import {
-  to = module.k8s-hawk-1.proxmox_vm_qemu.ubuntu_server
-  id = "hawk01/qemu/111"
-}
-
-import {
-  to = module.k8s-hawk-2.proxmox_vm_qemu.ubuntu_server
-  id = "hawk02/qemu/112"
-}
-
-import {
-  to = module.k8s-hawk-3.proxmox_vm_qemu.ubuntu_server
-  id = "hawk03/qemu/113"
-}
-
-import {
-  to = module.claw-hawk-1.proxmox_vm_qemu.ubuntu_server
-  id = "hawk02/qemu/122"
-}
-
 module "k8s-hawk-1" {
   source      = "../modules/ubuntu-server"
   name        = "k8s-hawk-1"
