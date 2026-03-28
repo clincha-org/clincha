@@ -192,7 +192,7 @@ data:
       echo "$targets" | python3 -c '
     import json, sys
     for t in json.load(sys.stdin):
-        print(f"{t[\"pvc_name\"]}|{t[\"namespace\"]}|{t[\"size\"]}|{t[\"access_mode\"]}|{t[\"last_backup\"]}")
+        print(t["pvc_name"] + "|" + t["namespace"] + "|" + t["size"] + "|" + t["access_mode"] + "|" + t["last_backup"])
     ' | while IFS='|' read -r pvc_name namespace size access_mode last_backup; do
 
         log "Processing ${namespace}/${pvc_name}"
