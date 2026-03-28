@@ -236,3 +236,26 @@
         KUBECONFIG: /etc/kubernetes/admin.conf
       run_once: true
       changed_when: true
+
+- name: "Upload kubeconfig to MinIO"
+  hosts: kube_control_plane
+  become: true
+  tasks:
+    - name: "Fetch admin.conf from control plane"
+      ansible.builtin.fetch:
+        src: /etc/kubernetes/admin.conf
+        dest: /tmp/kubeconfig
+        flat: true
+      run_once: true
+
+    - name: "Upload kubeconfig to MinIO"
+      amazon.aws.s3_object:
+        endpoint_url: "http://10.1.2.10:9000"
+        bucket: kubeconfigs
+        object: "{{ k8s_cluster_name }}.conf"
+        src: /tmp/kubeconfig
+        mode: put
+        access_key: "{{ lookup('env', 'MINIO_KUBECONFIG_ACCESS_KEY') }}"
+        secret_key: "{{ lookup('env', 'MINIO_KUBECONFIG_SECRET_KEY') }}"
+      delegate_to: localhost
+      run_once: true
