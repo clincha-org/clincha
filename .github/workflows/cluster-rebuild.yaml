@@ -211,3 +211,24 @@ jobs:
         run: |
           kubectl wait kustomization/media \
             -n flux-system --for=condition=Ready --timeout=10m
+
+      - name: Debug media failure
+        if: failure()
+        run: |
+          echo "=== Media Kustomization status ==="
+          kubectl get kustomization media -n flux-system -o yaml 2>&1 || true
+          echo ""
+          echo "=== Media GitRepository ==="
+          kubectl get gitrepository media -n flux-system -o yaml 2>&1 || true
+          echo ""
+          echo "=== All kustomizations ==="
+          kubectl get kustomizations -n flux-system 2>&1 || true
+          echo ""
+          echo "=== PVCs in media namespace ==="
+          kubectl get pvc -A 2>&1 || true
+          echo ""
+          echo "=== PVs ==="
+          kubectl get pv 2>&1 || true
+          echo ""
+          echo "=== Pods in media namespace ==="
+          kubectl get pods -n media 2>&1 || true
