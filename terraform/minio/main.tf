@@ -10,9 +10,7 @@ resource "minio_iam_policy" "kubeconfig_rw" {
       {
         Effect = "Allow"
         Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:ListBucket",
+          "s3:*",
         ]
         Resource = [
           "arn:aws:s3:::${minio_s3_bucket.kubeconfigs.bucket}",
