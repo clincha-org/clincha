@@ -138,6 +138,8 @@ jobs:
         working-directory: Ansible
         env:
           PROXMOX_TOKEN_SECRET: ${{ inputs.cluster == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_ANSIBLE || secrets.PROXMOX_TOKEN_LONDON_ANSIBLE }}
+          MINIO_KUBECONFIG_ACCESS_KEY: ${{ secrets.MINIO_KUBECONFIG_ACCESS_KEY }}
+          MINIO_KUBECONFIG_SECRET_KEY: ${{ secrets.MINIO_KUBECONFIG_SECRET_KEY }}
         run: |
           ansible-playbook kubernetes.yml \
             --inventory inventory/${{ inputs.cluster }}.proxmox.yml \
