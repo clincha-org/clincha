@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  timeout: 2m
+  timeout: 5m
   sourceRef:
     kind: GitRepository
     name: media

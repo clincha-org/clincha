@@ -210,4 +210,4 @@ jobs:
       - name: Wait for media deployments
         run: |
           kubectl wait kustomization/media \
-            -n flux-system --for=condition=Ready --timeout=5m
+            -n flux-system --for=condition=Ready --timeout=10m
