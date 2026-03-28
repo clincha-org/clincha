@@ -248,6 +248,14 @@
         flat: true
       run_once: true
 
+    - name: "Replace localhost with node IP in kubeconfig"
+      ansible.builtin.replace:
+        path: /tmp/kubeconfig
+        regexp: 'https://127\.0\.0\.1:'
+        replace: "https://{{ ansible_host }}:"
+      delegate_to: localhost
+      run_once: true
+
     - name: "Upload kubeconfig to MinIO"
       amazon.aws.s3_object:
         endpoint_url: "http://10.1.2.10:9000"
