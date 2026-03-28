@@ -4,3 +4,4 @@ requests==2.32.5 # Required for Proxmox dynamic inventory
 passlib==1.7.4
 netaddr
 jmespath
+boto3 # Required for amazon.aws.s3_object (kubeconfig upload to MinIO)
