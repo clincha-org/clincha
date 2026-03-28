@@ -255,6 +255,7 @@
         object: "{{ k8s_cluster_name }}.conf"
         src: /tmp/kubeconfig
         mode: put
+        encrypt: false
         access_key: "{{ lookup('env', 'MINIO_KUBECONFIG_ACCESS_KEY') }}"
         secret_key: "{{ lookup('env', 'MINIO_KUBECONFIG_SECRET_KEY') }}"
       delegate_to: localhost
