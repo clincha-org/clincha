@@ -11,6 +11,8 @@ spec:
     kind: GitRepository
     name: media
   path: /
+  dependsOn:
+    - name: longhorn-restore
   prune: true
   wait: true
   decryption:
