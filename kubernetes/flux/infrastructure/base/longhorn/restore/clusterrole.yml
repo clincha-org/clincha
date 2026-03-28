@@ -6,10 +6,10 @@ metadata:
 rules:
   - apiGroups: ["longhorn.io"]
     resources: ["backupvolumes", "backups", "volumes"]
-    verbs: ["get", "list", "watch", "create", "delete"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
   - apiGroups: [""]
     resources: ["persistentvolumes"]
-    verbs: ["get", "list", "create"]
+    verbs: ["get", "list", "create", "update", "patch"]
   - apiGroups: [""]
     resources: ["persistentvolumeclaims"]
     verbs: ["get", "list"]

@@ -10,7 +10,7 @@ data:
     set -euo pipefail
 
     RESTORE_TIMEOUT=${RESTORE_TIMEOUT:-300}
-    DISCOVERY_TIMEOUT=${DISCOVERY_TIMEOUT:-60}
+    DISCOVERY_TIMEOUT=${DISCOVERY_TIMEOUT:-300}
     REPLICAS=${REPLICAS:-3}
 
     log() { echo "[$(date -u '+%Y-%m-%d %H:%M:%S')] $*"; }
