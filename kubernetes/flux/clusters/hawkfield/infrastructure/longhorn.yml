@@ -15,7 +15,6 @@ spec:
     - name: certificate-manager-configuration
     - name: metallb-configuration
   prune: true
-  wait: true
   decryption:
     provider: sops
     secretRef:
@@ -35,7 +34,6 @@ spec:
   dependsOn:
     - name: longhorn-controller
   prune: true
-  wait: true
   decryption:
     provider: sops
     secretRef:
