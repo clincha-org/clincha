@@ -183,6 +183,30 @@ jobs:
           kubectl wait kustomization/longhorn-restore \
             -n flux-system --for=condition=Ready --timeout=15m
 
+      - name: Debug restore failure
+        if: failure()
+        run: |
+          echo "=== Flux Kustomization status ==="
+          kubectl get kustomization longhorn-restore -n flux-system -o yaml 2>&1 || true
+          echo ""
+          echo "=== Jobs in longhorn namespace ==="
+          kubectl get jobs -n longhorn 2>&1 || true
+          echo ""
+          echo "=== Restore Job logs ==="
+          kubectl logs job/longhorn-restore -n longhorn --tail=100 2>&1 || true
+          echo ""
+          echo "=== Restore Job describe ==="
+          kubectl describe job/longhorn-restore -n longhorn 2>&1 || true
+          echo ""
+          echo "=== Backup volumes ==="
+          kubectl get backupvolumes.longhorn.io -n longhorn 2>&1 || true
+          echo ""
+          echo "=== Longhorn volumes ==="
+          kubectl get volumes.longhorn.io -n longhorn 2>&1 || true
+          echo ""
+          echo "=== Events in longhorn namespace ==="
+          kubectl get events -n longhorn --sort-by='.lastTimestamp' --field-selector reason!=Pulling 2>&1 | tail -30 || true
+
       - name: Wait for media deployments
         run: |
           kubectl wait kustomization/media \
