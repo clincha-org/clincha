@@ -53,7 +53,5 @@ spec:
     kind: GitRepository
     name: flux-system
   path: ./kubernetes/flux/infrastructure/hawkfield/longhorn/restore
-  dependsOn:
-    - name: longhorn-controller
   prune: true
   wait: true
