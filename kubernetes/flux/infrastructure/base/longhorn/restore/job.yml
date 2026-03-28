@@ -1,0 +1,27 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: longhorn-restore
+  namespace: longhorn
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 900
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      serviceAccountName: longhorn-restore
+      restartPolicy: OnFailure
+      containers:
+        - name: restore
+          image: alpine/k8s:1.31.4
+          command: ["/bin/bash", "/scripts/restore.sh"]
+          volumeMounts:
+            - name: restore-script
+              mountPath: /scripts
+              readOnly: true
+      volumes:
+        - name: restore-script
+          configMap:
+            name: restore-script
+            defaultMode: 0755
