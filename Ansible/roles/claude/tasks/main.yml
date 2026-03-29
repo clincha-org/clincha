@@ -76,12 +76,12 @@
       Wants=network-online.target
 
       [Service]
-      Type=forking
+      Type=simple
       User=claude
       Group=claude
       Environment=HOME=/home/claude
-      ExecStart=/usr/bin/tmux new-session -d -s claude "/home/claude/.local/bin/claude remote-control --name claude-hawk-1"
-      ExecStop=/usr/bin/tmux kill-session -t claude
+      WorkingDirectory=/home/claude
+      ExecStart=/home/claude/.local/bin/claude remote-control --name claude-hawk-1
       Restart=on-failure
       RestartSec=10
 
@@ -93,14 +93,9 @@
     mode: "0644"
   notify: "Restart claude-remote-control"
 
-- name: "Install tmux"
-  ansible.builtin.apt:
-    name: tmux
-    state: present
-    update_cache: true
-
-- name: "Enable claude-remote-control service"
+- name: "Enable and start claude-remote-control service"
   ansible.builtin.systemd:
     name: claude-remote-control
     enabled: true
+    state: started
     daemon_reload: true
