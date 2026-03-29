@@ -53,15 +53,9 @@
     mode: "0644"
 
 - name: "Trust home workspace"
-  ansible.builtin.command:
-    cmd: >-
-      python3 -c "
-      import json;
-      f='/home/claude/.claude.json';
-      d=json.load(open(f)) if __import__('os').path.exists(f) else {};
-      d.setdefault('projects',{}).setdefault('/home/claude',{})['hasTrustDialogAccepted']=True;
-      json.dump(d,open(f,'w'))
-      "
+  ansible.builtin.shell:
+    cmd: |
+      python3 -c "import json,os;f='/home/claude/.claude.json';d=json.load(open(f)) if os.path.exists(f) else {};d.setdefault('projects',{}).setdefault('/home/claude',{})['hasTrustDialogAccepted']=True;json.dump(d,open(f,'w'))"
   become: true
   become_user: claude
   changed_when: true
