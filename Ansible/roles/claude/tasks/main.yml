@@ -28,16 +28,43 @@
   become: true
   become_user: claude
 
-- name: "Set ANTHROPIC_API_KEY in claude user environment"
-  ansible.builtin.lineinfile:
-    path: /home/claude/.bashrc
-    line: >-
-      export ANTHROPIC_API_KEY="{{ lookup('env', 'ANTHROPIC_API_KEY') }}"
-    regexp: "^export ANTHROPIC_API_KEY="
-    state: present
+- name: "Ensure .claude directory exists"
+  ansible.builtin.file:
+    path: /home/claude/.claude
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0755"
+
+- name: "Deploy OAuth credentials"
+  ansible.builtin.copy:
+    content: "{{ lookup('env', 'CLAUDE_OAUTH_CREDENTIALS') }}"
+    dest: /home/claude/.claude/.credentials.json
     owner: claude
     group: claude
     mode: "0600"
+
+- name: "Deploy Claude Code settings"
+  ansible.builtin.copy:
+    content: '{"permissions":{"defaultMode":"bypassPermissions"}}'
+    dest: /home/claude/.claude/settings.json
+    owner: claude
+    group: claude
+    mode: "0644"
+
+- name: "Trust home workspace"
+  ansible.builtin.command:
+    cmd: >-
+      python3 -c "
+      import json;
+      f='/home/claude/.claude.json';
+      d=json.load(open(f)) if __import__('os').path.exists(f) else {};
+      d.setdefault('projects',{}).setdefault('/home/claude',{})['hasTrustDialogAccepted']=True;
+      json.dump(d,open(f,'w'))
+      "
+  become: true
+  become_user: claude
+  changed_when: true
 
 - name: "Verify Claude Code installation"
   ansible.builtin.command:

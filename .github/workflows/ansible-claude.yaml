@@ -59,6 +59,7 @@ jobs:
           PROXMOX_TOKEN_SECRET: ${{ secrets.PROXMOX_TOKEN_HAWKFIELD_ANSIBLE }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CLAUDE_SSH_PRIVATE_KEY: ${{ secrets.CLAUDE_SSH_PRIVATE_KEY }}
+          CLAUDE_OAUTH_CREDENTIALS: ${{ secrets.CLAUDE_OAUTH_CREDENTIALS }}
         run: |
           ansible-playbook claude.yml \
             --inventory inventory/hawkfield.proxmox.yml \
