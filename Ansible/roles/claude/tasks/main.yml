@@ -1,12 +1,19 @@
 ---
-- name: "Generate SSH keypair for claude user"
-  ansible.builtin.command:
-    cmd: >-
-      ssh-keygen -t ed25519 -f /home/claude/.ssh/id_ed25519
-      -N "" -C "claude@clinch-home.com"
-    creates: /home/claude/.ssh/id_ed25519
-  become: true
-  become_user: claude
+- name: "Ensure .ssh directory exists for claude user"
+  ansible.builtin.file:
+    path: /home/claude/.ssh
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0700"
+
+- name: "Deploy SSH private key for claude user"
+  ansible.builtin.copy:
+    content: "{{ lookup('env', 'CLAUDE_SSH_PRIVATE_KEY') }}\n"
+    dest: /home/claude/.ssh/id_ed25519
+    owner: claude
+    group: claude
+    mode: "0600"
 
 - name: "Download Claude Code installer"
   ansible.builtin.get_url:
