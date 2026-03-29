@@ -21,3 +21,10 @@ users_list:
     password: "{{ lookup('env', 'CLINCHA_PASSWORD') | password_hash('sha512', 'salty') }}",
     key: "https://github.com/clincha.keys"
   }
+  - {
+    name: "claude",
+    uid: "1004",
+    gid: "1004",
+    shell: "/bin/bash",
+    key: "https://github.com/open-dave.keys"
+  }

@@ -28,3 +28,4 @@ users_list:
     uid: "1004"
     gid: "1004"
     shell: "/bin/bash"
+    key: "https://github.com/open-dave.keys"
