@@ -72,3 +72,41 @@
   become: true
   become_user: claude
   changed_when: false
+
+- name: "Deploy claude-remote-control systemd service"
+  ansible.builtin.copy:
+    content: |
+      [Unit]
+      Description=Claude Code Remote Control
+      After=network-online.target
+      Wants=network-online.target
+
+      [Service]
+      Type=forking
+      User=claude
+      Group=claude
+      Environment=HOME=/home/claude
+      ExecStart=/usr/bin/tmux new-session -d -s claude "/home/claude/.local/bin/claude remote-control --name claude-hawk-1"
+      ExecStop=/usr/bin/tmux kill-session -t claude
+      Restart=on-failure
+      RestartSec=10
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: /etc/systemd/system/claude-remote-control.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: "Restart claude-remote-control"
+
+- name: "Install tmux"
+  ansible.builtin.apt:
+    name: tmux
+    state: present
+    update_cache: true
+
+- name: "Enable claude-remote-control service"
+  ansible.builtin.systemd:
+    name: claude-remote-control
+    enabled: true
+    daemon_reload: true

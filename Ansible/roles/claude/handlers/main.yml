@@ -1,0 +1,6 @@
+---
+- name: "Restart claude-remote-control"
+  ansible.builtin.systemd:
+    name: claude-remote-control
+    state: restarted
+    daemon_reload: true
