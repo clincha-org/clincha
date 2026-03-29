@@ -26,14 +26,14 @@ module "k8s-hawk-3" {
   tags        = "base,kubernetes_master,kubernetes_worker"
 }
 
-module "claw-hawk-1" {
+module "claude-hawk-1" {
   source            = "../modules/ubuntu-server"
-  name              = "claw-hawk-1"
+  name              = "claude-hawk-1"
   target_node       = "hawk02"
   vmid              = 122
   ip_address        = "10.1.2.122"
   cores             = 4
   memory            = 8192
   data_disk_storage = "local-lvm"
-  tags              = "base,openclaw"
+  tags              = "base,claude"
 }

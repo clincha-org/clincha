@@ -1,0 +1,9 @@
+---
+- name: Configure Claude Code server
+  hosts: claude
+  become: true
+  roles:
+    - role: users
+    - role: sudoers
+    - role: base
+    - role: claude
