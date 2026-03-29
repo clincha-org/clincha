@@ -17,4 +17,4 @@ groups:
   etcd: "'kubernetes_master' in (proxmox_tags_parsed|list)"
   kube_node: "'kubernetes_worker' in (proxmox_tags_parsed|list)"
   k8s_cluster: "'kubernetes_worker' in (proxmox_tags_parsed|list) or 'kubernetes_master' in (proxmox_tags_parsed|list)"
-  openclaw: "'openclaw' in (proxmox_tags_parsed|list)"
+  claude: "'claude' in (proxmox_tags_parsed|list)"

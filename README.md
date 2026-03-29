@@ -25,7 +25,7 @@ graph LR
         hawk01 --> kh1[k8s-hawk-1]
         hawk02 --> kh2[k8s-hawk-2]
         hawk03 --> kh3[k8s-hawk-3]
-        hawk02 --> claw[claw-hawk-1]
+        hawk02 --> claude[claude-hawk-1]
     end
 
     udm_h -. Tailscale .- udm_l
@@ -51,7 +51,7 @@ Everything is deployed as code: Packer builds VM templates, Terraform provisions
 | **Infrastructure** | MetalLB, Longhorn, Cert-Manager | MetalLB, Longhorn, Cert-Manager |
 | **Monitoring** | Prometheus, Grafana, Uptime Kuma | Elastic Operator |
 | **Applications** | Homepage, Factorio, Satisfactory | Homepage, Elastic Finance |
-| **Other VMs** | claw-hawk-1 (OpenClaw) | — |
+| **Other VMs** | claude-hawk-1 (Claude Code) | — |
 
 ## Workflow Status
 

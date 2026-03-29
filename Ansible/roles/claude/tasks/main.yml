@@ -1,0 +1,47 @@
+---
+- name: "Ensure .ssh directory exists for claude user"
+  ansible.builtin.file:
+    path: /home/claude/.ssh
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0700"
+
+- name: "Deploy SSH private key for claude user"
+  ansible.builtin.copy:
+    content: "{{ lookup('env', 'CLAUDE_SSH_PRIVATE_KEY') }}\n"
+    dest: /home/claude/.ssh/id_ed25519
+    owner: claude
+    group: claude
+    mode: "0600"
+
+- name: "Download Claude Code installer"
+  ansible.builtin.get_url:
+    url: "https://claude.ai/install.sh"
+    dest: /tmp/claude-install.sh
+    mode: "0755"
+
+- name: "Install Claude Code"
+  ansible.builtin.command:
+    cmd: "bash /tmp/claude-install.sh"
+    creates: /home/claude/.claude/bin/claude
+  become: true
+  become_user: claude
+
+- name: "Set ANTHROPIC_API_KEY in claude user environment"
+  ansible.builtin.lineinfile:
+    path: /home/claude/.bashrc
+    line: >-
+      export ANTHROPIC_API_KEY="{{ lookup('env', 'ANTHROPIC_API_KEY') }}"
+    regexp: "^export ANTHROPIC_API_KEY="
+    state: present
+    owner: claude
+    group: claude
+    mode: "0600"
+
+- name: "Verify Claude Code installation"
+  ansible.builtin.command:
+    cmd: /home/claude/.claude/bin/claude --version
+  become: true
+  become_user: claude
+  changed_when: false
