@@ -24,7 +24,7 @@
 - name: "Install Claude Code"
   ansible.builtin.command:
     cmd: "bash /tmp/claude-install.sh"
-    creates: /home/claude/.claude/bin/claude
+    creates: /home/claude/.local/bin/claude
   become: true
   become_user: claude
 
@@ -41,7 +41,7 @@
 
 - name: "Verify Claude Code installation"
   ansible.builtin.command:
-    cmd: /home/claude/.claude/bin/claude --version
+    cmd: /home/claude/.local/bin/claude --version
   become: true
   become_user: claude
   changed_when: false
