@@ -15,7 +15,7 @@ variable "vmid" {
 
 variable "ostemplate" {
   description = "The OS template to use"
-  default     = "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
+  default     = "local:vztmpl/debian-12-standard_12.12-1_amd64.tar.zst"
   type        = string
 }
 
