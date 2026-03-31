@@ -164,6 +164,14 @@
         group: root
         mode: "0644"
 
+    - name: "Download Debian 12 LXC template"
+      ansible.builtin.command:
+        cmd: >-
+          pveam download local
+          debian-12-standard_12.7-1_amd64.tar.zst
+        creates: >-
+          /var/lib/vz/template/cache/debian-12-standard_12.7-1_amd64.tar.zst
+
     - name: "Get current Proxmox roles"
       ansible.builtin.command: >-
         pveum role list --output-format json

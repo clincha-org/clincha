@@ -37,3 +37,12 @@ module "claude-hawk-1" {
   data_disk_storage = "local-lvm"
   tags              = "base,claude"
 }
+
+module "dns-hawk-1" {
+  source      = "../modules/lxc-container"
+  hostname    = "dns-hawk-1"
+  target_node = "hawk01"
+  vmid        = 131
+  ip_address  = "10.1.2.131"
+  tags        = "base;pihole"
+}
