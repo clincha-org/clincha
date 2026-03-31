@@ -8,10 +8,9 @@ want_facts: true
 want_proxmox_nodes_ansible_host: true
 compose:
   ansible_host: >-
-    proxmox_ipconfig0.ip |
+    (proxmox_ipconfig0.ip |
     default(proxmox_net0.ip | default('')) |
-    default(ansible_host) |
-    regex_replace('/\\d+$', '')
+    default(ansible_host)).split('/') | first
   site: "'hawkfield'"
 groups:
   hawkfield: true
