@@ -172,11 +172,13 @@
     - name: "Find latest Debian 12 LXC template"
       ansible.builtin.shell:
         cmd: >-
+          set -o pipefail &&
           pveam available --section system |
           grep 'debian-12-standard' |
           awk '{print $2}' |
           sort -V |
           tail -1
+        executable: /bin/bash
       register: debian_template
       changed_when: false
 
