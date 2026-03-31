@@ -744,3 +744,17 @@ flux_gpg_key: !vault |
   34306265633235633233643137303230396334393934343537353336366461643430633230343030
   63343561633534616539396463653230323439643964343264633766333832663263666131366133
   376261366462353336656432633662653337
+
+pihole_dns_records:
+  - ip: "10.1.2.11"
+    hostname: "hawk01.clinch-home.com"
+  - ip: "10.1.2.12"
+    hostname: "hawk02.clinch-home.com"
+  - ip: "10.1.2.13"
+    hostname: "hawk03.clinch-home.com"
+  - ip: "10.2.2.11"
+    hostname: "lon01.clinch-home.com"
+  - ip: "10.1.2.131"
+    hostname: "dns-hawk-1.clinch-home.com"
+  - ip: "10.2.2.131"
+    hostname: "dns-lon-1.clinch-home.com"

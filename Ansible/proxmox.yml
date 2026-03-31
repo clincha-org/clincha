@@ -164,6 +164,35 @@
         group: root
         mode: "0644"
 
+    - name: "Update LXC template catalogue"
+      ansible.builtin.command:
+        cmd: pveam update
+      changed_when: false
+
+    - name: "Find latest Debian 12 LXC template"
+      ansible.builtin.shell:
+        cmd: >-
+          set -o pipefail &&
+          pveam available --section system |
+          grep 'debian-12-standard' |
+          awk '{print $2}' |
+          sort -V |
+          tail -1
+        executable: /bin/bash
+      register: debian_template
+      changed_when: false
+
+    - name: "Download Debian 12 LXC template"
+      ansible.builtin.command:
+        cmd: >-
+          pveam download local
+          {{ debian_template.stdout }}
+      register: template_download
+      changed_when: "'already exists' not in template_download.stderr"
+      failed_when:
+        - template_download.rc != 0
+        - "'already exists' not in template_download.stderr"
+
     - name: "Get current Proxmox roles"
       ansible.builtin.command: >-
         pveum role list --output-format json

@@ -1,0 +1,8 @@
+---
+- name: Template custom DNS records
+  ansible.builtin.template:
+    src: custom.list.j2
+    dest: /etc/pihole/custom.list
+    mode: "0644"
+  notify: Restart pihole-FTL
+  when: pihole_dns_records | length > 0

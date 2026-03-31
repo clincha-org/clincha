@@ -12,3 +12,14 @@ module "k8s-lon-1" {
   network_bridge    = "vmbr0"
   tags           = "base,kubernetes_master,kubernetes_worker"
 }
+
+module "dns-lon-1" {
+  source         = "../modules/lxc-container"
+  hostname       = "dns-lon-1"
+  target_node    = "lon01"
+  vmid           = 131
+  ip_address     = "10.2.2.131"
+  gateway        = "10.2.2.1"
+  network_bridge = "vmbr0"
+  tags           = "base;pihole"
+}
