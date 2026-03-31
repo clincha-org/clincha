@@ -8,7 +8,10 @@ want_facts: true
 want_proxmox_nodes_ansible_host: true
 compose:
   ansible_host: >-
-    proxmox_ipconfig0.ip | default('10.2.2.11') | replace('/24', '')
+    proxmox_ipconfig0.ip |
+    default(proxmox_net0.ip | default('')) |
+    default('10.2.2.11') |
+    regex_replace('/\\d+$', '')
   site: "'london'"
 groups:
   london: "true"
