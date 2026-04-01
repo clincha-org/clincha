@@ -1,1 +1,2 @@
+Defaults:ansible !use_pty
 ansible ALL=(ALL) NOPASSWD:ALL
