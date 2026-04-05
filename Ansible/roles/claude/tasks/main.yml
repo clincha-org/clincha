@@ -59,12 +59,30 @@
     global: true
     state: present
 
+- name: "Ensure Bitwarden CLI config directory exists"
+  ansible.builtin.file:
+    path: "/home/claude/.config/Bitwarden CLI"
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0755"
+
 - name: "Configure Bitwarden EU server"
-  ansible.builtin.command:
-    cmd: bw config server https://vault.bitwarden.eu
-  become: true
-  become_user: claude
-  changed_when: true
+  ansible.builtin.copy:
+    content: |
+      {
+        "global_environment_environment": {
+          "region": "Self-hosted",
+          "urls": {
+            "base": "https://vault.bitwarden.eu"
+          }
+        }
+      }
+    dest: "/home/claude/.config/Bitwarden CLI/data.json"
+    owner: claude
+    group: claude
+    mode: "0600"
+    force: false
 
 - name: "Ensure .claude directory exists"
   ansible.builtin.file:
