@@ -15,18 +15,30 @@
     group: claude
     mode: "0600"
 
+- name: "Download NodeSource setup script"
+  ansible.builtin.get_url:
+    url: https://deb.nodesource.com/setup_22.x
+    dest: /tmp/nodesource_setup.sh
+    mode: "0755"
+
 - name: "Install NodeSource repository"
-  ansible.builtin.shell:
-    cmd: curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+  ansible.builtin.command:
+    cmd: bash /tmp/nodesource_setup.sh
     creates: /etc/apt/sources.list.d/nodesource.list
 
 - name: "Install GitHub CLI repository"
   ansible.builtin.shell:
     cmd: |
+      set -o pipefail
       mkdir -p -m 755 /etc/apt/keyrings
-      wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+      wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+        | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
       chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
-      echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+      ARCH=$(dpkg --print-architecture)
+      KEYRING=/etc/apt/keyrings/githubcli-archive-keyring.gpg
+      echo "deb [arch=${ARCH} signed-by=${KEYRING}] \
+        https://cli.github.com/packages stable main" \
+        | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
     creates: /etc/apt/sources.list.d/github-cli.list
 
 - name: "Install Node.js and GitHub CLI"
@@ -88,6 +100,7 @@
 - name: "Add GitHub to known hosts"
   ansible.builtin.known_hosts:
     name: github.com
+    # yamllint disable-line rule:line-length
     key: "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl"
     path: /home/claude/.ssh/known_hosts
     state: present
@@ -98,6 +111,7 @@
   ansible.builtin.git:
     repo: "git@github.com:open-dave/dave.git"
     dest: /home/claude
+    version: main
     force: true
     accept_hostkey: true
     key_file: /home/claude/.ssh/id_ed25519
@@ -112,8 +126,8 @@
   become: true
   become_user: claude
   loop:
-    - { name: "user.email", value: "dave.clinch.claw@gmail.com" }
-    - { name: "user.name", value: "Dave" }
+    - {name: "user.email", value: "dave.clinch.claw@gmail.com"}
+    - {name: "user.name", value: "Dave"}
 
 - name: "Download Claude Code installer"
   ansible.builtin.get_url:
@@ -131,7 +145,14 @@
 - name: "Trust home workspace"
   ansible.builtin.shell:
     cmd: |
-      python3 -c "import json,os;f='/home/claude/.claude.json';d=json.load(open(f)) if os.path.exists(f) else {};d.setdefault('projects',{}).setdefault('/home/claude',{})['hasTrustDialogAccepted']=True;json.dump(d,open(f,'w'))"
+      python3 << 'PYEOF'
+      import json, os
+      f = '/home/claude/.claude.json'
+      d = json.load(open(f)) if os.path.exists(f) else {}
+      p = d.setdefault('projects', {}).setdefault('/home/claude', {})
+      p['hasTrustDialogAccepted'] = True
+      json.dump(d, open(f, 'w'))
+      PYEOF
   become: true
   become_user: claude
   changed_when: true
@@ -139,10 +160,12 @@
 - name: "Authenticate GitHub CLI"
   ansible.builtin.shell:
     cmd: |
+      set -o pipefail
       export BW_CLIENTID="{{ lookup('env', 'BW_CLIENT_ID') }}"
       export BW_CLIENTSECRET="{{ lookup('env', 'BW_CLIENT_SECRET') }}"
       bw login --apikey --raw
-      export BW_SESSION=$(echo "{{ lookup('env', 'BW_MASTER_PASSWORD') }}" | bw unlock --raw)
+      MASTER="{{ lookup('env', 'BW_MASTER_PASSWORD') }}"
+      export BW_SESSION=$(echo "${MASTER}" | bw unlock --raw)
       bw get password "GitHub PAT" | gh auth login --with-token
   become: true
   become_user: claude
@@ -156,6 +179,7 @@
   become_user: claude
   changed_when: false
 
+# yamllint disable rule:line-length
 - name: "Deploy claude-remote-control systemd service"
   ansible.builtin.copy:
     content: |
@@ -181,6 +205,7 @@
     group: root
     mode: "0644"
   notify: "Restart claude-remote-control"
+# yamllint enable rule:line-length
 
 - name: "Enable and start claude-remote-control service"
   ansible.builtin.systemd:
