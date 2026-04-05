@@ -104,6 +104,17 @@
   become: true
   become_user: claude
 
+- name: "Configure git user identity"
+  community.general.git_config:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    scope: global
+  become: true
+  become_user: claude
+  loop:
+    - { name: "user.email", value: "dave.clinch.claw@gmail.com" }
+    - { name: "user.name", value: "Dave" }
+
 - name: "Download Claude Code installer"
   ansible.builtin.get_url:
     url: "https://claude.ai/install.sh"
