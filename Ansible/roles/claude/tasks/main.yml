@@ -15,22 +15,37 @@
     group: claude
     mode: "0600"
 
-- name: "Download NodeSource setup script"
-  ansible.builtin.get_url:
-    url: https://deb.nodesource.com/setup_22.x
-    dest: /tmp/nodesource_setup.sh
-    mode: "0755"
-
-- name: "Install NodeSource repository"
-  ansible.builtin.command:
-    cmd: bash /tmp/nodesource_setup.sh
-    creates: /etc/apt/sources.list.d/nodesource.list
-
 - name: "Ensure apt keyrings directory exists"
   ansible.builtin.file:
     path: /etc/apt/keyrings
     state: directory
     mode: "0755"
+
+- name: "Download NodeSource GPG key"
+  ansible.builtin.get_url:
+    # yamllint disable-line rule:line-length
+    url: https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key
+    dest: /tmp/nodesource-repo.gpg.key
+    mode: "0644"
+
+- name: "Dearmor NodeSource GPG key"
+  ansible.builtin.command:
+    cmd: >-
+      gpg --dearmor
+      -o /etc/apt/keyrings/nodesource.gpg
+      /tmp/nodesource-repo.gpg.key
+    creates: /etc/apt/keyrings/nodesource.gpg
+
+- name: "Set NodeSource GPG key permissions"
+  ansible.builtin.file:
+    path: /etc/apt/keyrings/nodesource.gpg
+    mode: "0644"
+
+- name: "Add NodeSource apt repository"
+  ansible.builtin.apt_repository:
+    # yamllint disable-line rule:line-length
+    repo: "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main"
+    filename: nodesource
 
 - name: "Download GitHub CLI GPG key"
   ansible.builtin.get_url:
