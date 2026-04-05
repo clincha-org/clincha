@@ -128,14 +128,6 @@
   become: true
   become_user: claude
 
-- name: "Deploy OAuth credentials"
-  ansible.builtin.copy:
-    content: "{{ lookup('env', 'CLAUDE_OAUTH_CREDENTIALS') }}"
-    dest: /home/claude/.claude/.credentials.json
-    owner: claude
-    group: claude
-    mode: "0600"
-
 - name: "Trust home workspace"
   ansible.builtin.shell:
     cmd: |
