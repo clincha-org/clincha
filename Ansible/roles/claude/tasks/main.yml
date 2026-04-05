@@ -23,7 +23,6 @@
 
 - name: "Download NodeSource GPG key"
   ansible.builtin.get_url:
-    # yamllint disable-line rule:line-length
     url: https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key
     dest: /etc/apt/keyrings/nodesource.asc
     mode: "0644"
