@@ -3,16 +3,8 @@ permissions:
   contents: read
 on:
   workflow_dispatch:
-    inputs:
-      cluster:
-        description: 'Cluster to rebuild'
-        required: true
-        type: choice
-        options:
-          - hawkfield
-          - london
 concurrency:
-  group: "cluster-${{ inputs.cluster }}"
+  group: "cluster-hawkfield"
 jobs:
   destroy:
     runs-on: ubuntu-latest
@@ -42,14 +34,14 @@ jobs:
         uses: hashicorp/setup-terraform@v4
 
       - name: Terraform Init
-        working-directory: terraform/${{ inputs.cluster }}
+        working-directory: terraform/hawkfield-kubernetes
         run: |
           terraform init -backend-config="secret_key=${{ secrets.MINIO_SECRET_KEY }}"
 
       - name: Terraform Destroy
-        working-directory: terraform/${{ inputs.cluster }}
+        working-directory: terraform/hawkfield-kubernetes
         run: |
-          terraform destroy -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ inputs.cluster == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM || secrets.PROXMOX_TOKEN_LONDON_TERRAFORM }}"
+          terraform destroy -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM }}"
 
   provision:
     runs-on: ubuntu-latest
@@ -78,19 +70,19 @@ jobs:
         uses: hashicorp/setup-terraform@v4
 
       - name: Terraform Init
-        working-directory: terraform/${{ inputs.cluster }}
+        working-directory: terraform/hawkfield-kubernetes
         run: |
           terraform init -backend-config="secret_key=${{ secrets.MINIO_SECRET_KEY }}"
 
       - name: Terraform Plan
-        working-directory: terraform/${{ inputs.cluster }}
+        working-directory: terraform/hawkfield-kubernetes
         run: |
-          terraform plan -out=tfplan -var-file=providers.tfvars -var="pm_api_token_secret=${{ inputs.cluster == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM || secrets.PROXMOX_TOKEN_LONDON_TERRAFORM }}"
+          terraform plan -out=tfplan -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM }}"
 
       - name: Terraform Apply
-        working-directory: terraform/${{ inputs.cluster }}
+        working-directory: terraform/hawkfield-kubernetes
         run: |
-          terraform apply -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ inputs.cluster == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM || secrets.PROXMOX_TOKEN_LONDON_TERRAFORM }}" tfplan
+          terraform apply -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM }}" tfplan
 
   configure:
     runs-on: ubuntu-latest
@@ -137,15 +129,14 @@ jobs:
       - name: Run Ansible playbook
         working-directory: Ansible
         env:
-          PROXMOX_TOKEN_SECRET: ${{ inputs.cluster == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_ANSIBLE || secrets.PROXMOX_TOKEN_LONDON_ANSIBLE }}
+          PROXMOX_TOKEN_SECRET: ${{ secrets.PROXMOX_TOKEN_HAWKFIELD_ANSIBLE }}
           MINIO_KUBECONFIG_ACCESS_KEY: ${{ secrets.MINIO_KUBECONFIG_ACCESS_KEY }}
           MINIO_KUBECONFIG_SECRET_KEY: ${{ secrets.MINIO_KUBECONFIG_SECRET_KEY }}
         run: |
           ansible-playbook kubernetes.yml \
-            --inventory inventory/${{ inputs.cluster }}.proxmox.yml \
+            --inventory inventory/hawkfield.proxmox.yml \
             --vault-password-file vault \
             --user ansible \
             --become \
             --become-user=root \
             --limit k8s_cluster
-
