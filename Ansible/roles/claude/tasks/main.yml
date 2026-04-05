@@ -15,6 +15,95 @@
     group: claude
     mode: "0600"
 
+- name: "Install NodeSource repository"
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+    creates: /etc/apt/sources.list.d/nodesource.list
+
+- name: "Install GitHub CLI repository"
+  ansible.builtin.shell:
+    cmd: |
+      mkdir -p -m 755 /etc/apt/keyrings
+      wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+      chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    creates: /etc/apt/sources.list.d/github-cli.list
+
+- name: "Install Node.js and GitHub CLI"
+  ansible.builtin.apt:
+    name:
+      - nodejs
+      - gh
+    state: present
+    update_cache: true
+
+- name: "Install Bitwarden CLI"
+  community.general.npm:
+    name: "@bitwarden/cli"
+    global: true
+    state: present
+
+- name: "Configure Bitwarden EU server"
+  ansible.builtin.command:
+    cmd: bw config server https://vault.bitwarden.eu
+  become: true
+  become_user: claude
+  changed_when: true
+
+- name: "Ensure .claude directory exists"
+  ansible.builtin.file:
+    path: /home/claude/.claude
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0755"
+
+- name: "Deploy Bitwarden master password"
+  ansible.builtin.copy:
+    content: "{{ lookup('env', 'BW_MASTER_PASSWORD') }}"
+    dest: /home/claude/.claude/.bw-master
+    owner: claude
+    group: claude
+    mode: "0600"
+
+- name: "Ensure session-env directory exists"
+  ansible.builtin.file:
+    path: /home/claude/.claude/session-env/shared
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0700"
+
+- name: "Deploy Bitwarden session env"
+  ansible.builtin.template:
+    src: bw-env.sh.j2
+    dest: /home/claude/.claude/session-env/shared/env.sh
+    owner: claude
+    group: claude
+    mode: "0600"
+  vars:
+    bw_client_id: "{{ lookup('env', 'BW_CLIENT_ID') }}"
+    bw_client_secret: "{{ lookup('env', 'BW_CLIENT_SECRET') }}"
+
+- name: "Add GitHub to known hosts"
+  ansible.builtin.known_hosts:
+    name: github.com
+    key: "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl"
+    path: /home/claude/.ssh/known_hosts
+    state: present
+  become: true
+  become_user: claude
+
+- name: "Clone dave repository into home directory"
+  ansible.builtin.git:
+    repo: "git@github.com:open-dave/dave.git"
+    dest: /home/claude
+    force: true
+    accept_hostkey: true
+    key_file: /home/claude/.ssh/id_ed25519
+  become: true
+  become_user: claude
+
 - name: "Download Claude Code installer"
   ansible.builtin.get_url:
     url: "https://claude.ai/install.sh"
@@ -28,14 +117,6 @@
   become: true
   become_user: claude
 
-- name: "Ensure .claude directory exists"
-  ansible.builtin.file:
-    path: /home/claude/.claude
-    state: directory
-    owner: claude
-    group: claude
-    mode: "0755"
-
 - name: "Deploy OAuth credentials"
   ansible.builtin.copy:
     content: "{{ lookup('env', 'CLAUDE_OAUTH_CREDENTIALS') }}"
@@ -44,14 +125,6 @@
     group: claude
     mode: "0600"
 
-- name: "Deploy Claude Code settings"
-  ansible.builtin.copy:
-    content: '{"permissions":{"defaultMode":"bypassPermissions"}}'
-    dest: /home/claude/.claude/settings.json
-    owner: claude
-    group: claude
-    mode: "0644"
-
 - name: "Trust home workspace"
   ansible.builtin.shell:
     cmd: |
@@ -59,6 +132,19 @@
   become: true
   become_user: claude
   changed_when: true
+
+- name: "Authenticate GitHub CLI"
+  ansible.builtin.shell:
+    cmd: |
+      export BW_CLIENTID="{{ lookup('env', 'BW_CLIENT_ID') }}"
+      export BW_CLIENTSECRET="{{ lookup('env', 'BW_CLIENT_SECRET') }}"
+      bw login --apikey --raw
+      export BW_SESSION=$(echo "{{ lookup('env', 'BW_MASTER_PASSWORD') }}" | bw unlock --raw)
+      bw get password "GitHub PAT" | gh auth login --with-token
+  become: true
+  become_user: claude
+  changed_when: true
+  no_log: true
 
 - name: "Verify Claude Code installation"
   ansible.builtin.command:

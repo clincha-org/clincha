@@ -60,6 +60,9 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CLAUDE_SSH_PRIVATE_KEY: ${{ secrets.CLAUDE_SSH_PRIVATE_KEY }}
           CLAUDE_OAUTH_CREDENTIALS: ${{ secrets.CLAUDE_OAUTH_CREDENTIALS }}
+          BW_CLIENT_ID: ${{ secrets.BW_CLIENT_ID }}
+          BW_CLIENT_SECRET: ${{ secrets.BW_CLIENT_SECRET }}
+          BW_MASTER_PASSWORD: ${{ secrets.BW_MASTER_PASSWORD }}
         run: |
           ansible-playbook claude.yml \
             --inventory inventory/hawkfield.proxmox.yml \
