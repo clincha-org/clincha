@@ -9,9 +9,9 @@ want_proxmox_nodes_ansible_host: true
 strict: true
 compose:
   ansible_host: >-
-    ((proxmox_ipconfig0.ip | default('')) or
-    (proxmox_net0.ip | default('')) or
-    ansible_host | default('')).split('/') | first
+    ((proxmox_ipconfig0.ip | default('', true)) or
+    (proxmox_net0.ip | default('', true)) or
+    ansible_host | default('', true)).split('/') | first
   site: "'hawkfield'"
 groups:
   hawkfield: true
