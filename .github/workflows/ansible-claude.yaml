@@ -61,6 +61,7 @@ jobs:
           BW_CLIENT_ID: ${{ secrets.BW_CLIENT_ID }}
           BW_CLIENT_SECRET: ${{ secrets.BW_CLIENT_SECRET }}
           BW_MASTER_PASSWORD: ${{ secrets.BW_MASTER_PASSWORD }}
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           ansible-playbook claude.yml \
             --inventory inventory/hawkfield.proxmox.yml \

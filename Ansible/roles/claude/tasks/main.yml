@@ -179,19 +179,25 @@
   become_user: claude
   changed_when: true
 
-- name: "Authenticate GitHub CLI"
-  ansible.builtin.shell:
-    cmd: |
-      set -o pipefail
-      export BW_CLIENTID="{{ lookup('env', 'BW_CLIENT_ID') }}"
-      export BW_CLIENTSECRET="{{ lookup('env', 'BW_CLIENT_SECRET') }}"
-      bw login --apikey --raw
-      MASTER="{{ lookup('env', 'BW_MASTER_PASSWORD') }}"
-      export BW_SESSION=$(echo "${MASTER}" | bw unlock --raw)
-      bw get password "GitHub PAT" | gh auth login --with-token
-  become: true
-  become_user: claude
-  changed_when: true
+- name: "Ensure gh config directory exists"
+  ansible.builtin.file:
+    path: /home/claude/.config/gh
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0700"
+
+- name: "Authenticate GitHub CLI via config file"
+  ansible.builtin.copy:
+    content: |
+      github.com:
+          oauth_token: {{ lookup('env', 'GH_PAT') }}
+          git_protocol: ssh
+          user: open-dave
+    dest: /home/claude/.config/gh/hosts.yml
+    owner: claude
+    group: claude
+    mode: "0600"
   no_log: true
 
 - name: "Verify Claude Code installation"
