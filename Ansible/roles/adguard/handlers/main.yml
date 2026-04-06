@@ -1,5 +1,5 @@
 ---
-- name: Restart pihole-FTL
+- name: Restart AdGuardHome
   ansible.builtin.systemd:
-    name: pihole-FTL
+    name: AdGuardHome
     state: restarted

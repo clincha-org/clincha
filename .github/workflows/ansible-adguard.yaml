@@ -1,4 +1,4 @@
-name: Ansible Pi-hole DNS
+name: Ansible AdGuard Home DNS
 permissions:
   contents: read
 on:
@@ -6,13 +6,13 @@ on:
     branches:
       - "master"
     paths:
-      - '.github/workflows/ansible-pihole.yaml'
+      - '.github/workflows/ansible-adguard.yaml'
       - 'Ansible/**'
   workflow_dispatch:
 concurrency:
-  group: "pihole-${{ github.event.inputs.site || 'all' }}"
+  group: "adguard-${{ github.event.inputs.site || 'all' }}"
 jobs:
-  pihole:
+  adguard:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -65,15 +65,15 @@ jobs:
           ansible-playbook base.yml \
             --inventory inventory/${{ matrix.site }}.proxmox.yml \
             --vault-password-file vault \
-            --limit pihole \
+            --limit adguard \
             -e ansible_user=root || true
 
-      - name: Run Pi-hole playbook
+      - name: Run AdGuard Home playbook
         working-directory: Ansible
         env:
           PROXMOX_TOKEN_SECRET: ${{ matrix.site == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_ANSIBLE || secrets.PROXMOX_TOKEN_LONDON_ANSIBLE }}
-          PIHOLE_ADMIN_PASSWORD: ${{ matrix.site == 'hawkfield' && secrets.PIHOLE_ADMIN_PASSWORD_HAWKFIELD || secrets.PIHOLE_ADMIN_PASSWORD_LONDON }}
+          ADGUARD_ADMIN_PASSWORD: ${{ matrix.site == 'hawkfield' && secrets.ADGUARD_ADMIN_PASSWORD_HAWKFIELD || secrets.ADGUARD_ADMIN_PASSWORD_LONDON }}
         run: |
-          ansible-playbook pihole.yml \
+          ansible-playbook adguard.yml \
             --inventory inventory/${{ matrix.site }}.proxmox.yml \
             --vault-password-file vault

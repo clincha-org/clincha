@@ -1,0 +1,9 @@
+---
+- name: Template AdGuard Home configuration
+  ansible.builtin.template:
+    src: AdGuardHome.yaml.j2
+    dest: /opt/AdGuardHome/AdGuardHome.yaml
+    owner: root
+    group: root
+    mode: "0600"
+  notify: Restart AdGuardHome

@@ -1,0 +1,6 @@
+---
+- name: Install AdGuard Home
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configure AdGuard Home
+  ansible.builtin.import_tasks: configure.yml
