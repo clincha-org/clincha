@@ -101,3 +101,8 @@ GitHub Actions workflows use Tailscale to connect to internal infrastructure. Se
 - Be concise in commit messages and PR descriptions
 - Always branch from master for each change; do not reuse branches
 - Secrets managed via Ansible Vault and SOPS — never commit plaintext secrets
+- Prefer native Ansible modules (`get_url`, `apt_repository`, `copy`, `template`) over `shell`/`command` tasks
+- For apt repo setup: download GPG key with `get_url`, add repo with `apt_repository` — no shell piping
+- If a CLI command just writes a config file, write the file declaratively instead
+- Only add `yamllint disable` comments when the line genuinely exceeds limits
+- Remove unused secrets, env vars, and workflow config — don't leave dead references
