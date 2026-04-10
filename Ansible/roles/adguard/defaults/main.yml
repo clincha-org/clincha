@@ -1,0 +1,9 @@
+---
+adguard_version: "v0.107.73"
+adguard_arch: "linux_amd64"
+adguard_upstream_dns:
+  - "1.1.1.1"
+  - "1.0.0.1"
+adguard_admin_username: "admin"
+adguard_admin_password: "{{ lookup('env', 'ADGUARD_ADMIN_PASSWORD') }}"
+adguard_dns_rewrites: []

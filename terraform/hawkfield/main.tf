@@ -17,5 +17,5 @@ module "dns-hawk-1" {
   vmid            = 131
   ip_address      = "10.1.2.131"
   ssh_public_keys = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL0PsOw/7B9Qr16/iKa2h3j5Nr0jZtrj+JI8qKgYSWep ansible"
-  tags            = "base;pihole"
+  tags            = "base;adguard"
 }

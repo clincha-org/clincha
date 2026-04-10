@@ -1,0 +1,6 @@
+---
+- name: Configure AdGuard Home DNS servers
+  hosts: adguard
+  become: true
+  roles:
+    - role: adguard

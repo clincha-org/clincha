@@ -22,5 +22,5 @@ module "dns-lon-1" {
   gateway         = "10.2.2.1"
   network_bridge  = "vmbr0"
   ssh_public_keys = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL0PsOw/7B9Qr16/iKa2h3j5Nr0jZtrj+JI8qKgYSWep ansible"
-  tags            = "base;pihole"
+  tags            = "base;adguard"
 }
