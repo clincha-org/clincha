@@ -1,10 +1,4 @@
 ---
-- name: "Install sudo"
-  ansible.builtin.apt:
-    name: sudo
-    state: present
-    update_cache: true
-
 - name: "Sudoers configuration"
   ansible.builtin.copy:
     src: "{{ item }}"
