@@ -57,17 +57,6 @@ jobs:
           eval `ssh-agent -s`
           ssh-add ~/.ssh/id_ed25519
 
-      - name: Bootstrap base configuration
-        working-directory: Ansible
-        env:
-          PROXMOX_TOKEN_SECRET: ${{ matrix.site == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_ANSIBLE || secrets.PROXMOX_TOKEN_LONDON_ANSIBLE }}
-        run: |
-          ansible-playbook base.yml \
-            --inventory inventory/${{ matrix.site }}.proxmox.yml \
-            --vault-password-file vault \
-            --limit adguard \
-            -e ansible_user=root || true
-
       - name: Run AdGuard Home playbook
         working-directory: Ansible
         env:
