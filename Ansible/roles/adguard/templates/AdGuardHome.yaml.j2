@@ -6,7 +6,7 @@ http:
   session_ttl: 720h
 users:
   - name: {{ adguard_admin_username }}
-    password: {{ adguard_admin_password | password_hash('bcrypt') }}
+    password: {{ adguard_admin_password | password_hash('sha512') }}
 dns:
   bind_hosts:
     - 0.0.0.0
