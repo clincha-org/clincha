@@ -50,7 +50,7 @@
       ansible.builtin.command:
         cmd: >-
           pveum role add Ansible
-          --privs Sys.Audit,VM.Audit,Pool.Audit
+          --privs Sys.Audit,SDN.Audit,VM.Audit,Pool.Audit
       changed_when: true
       when: >-
         pveum_roles.stdout | from_json |
@@ -64,7 +64,7 @@
               selectattr('roleid', 'eq', 'Ansible')
               | first).privs | default('')
               | split(',') | sort | join(',') }}
-        desired_privs: "Pool.Audit,Sys.Audit,VM.Audit"
+        desired_privs: "Pool.Audit,SDN.Audit,Sys.Audit,VM.Audit"
       ansible.builtin.command:
         cmd: >-
           pveum role modify Ansible
