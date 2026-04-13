@@ -1,7 +1,8 @@
 ansible-core==2.17.14 # locked for compatibility with Kubespray
 distlib==0.4.0 # Required to install collections
 requests==2.33.0 # Required for Proxmox dynamic inventory
-bcrypt<5
+passlib # password hashing for adguard
+bcrypt<5 # password hashing for adguard
 netaddr
 jmespath
 boto3 # Required for amazon.aws.s3_object (kubeconfig upload to MinIO)
