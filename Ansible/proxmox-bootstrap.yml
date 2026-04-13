@@ -68,7 +68,7 @@
       ansible.builtin.command:
         cmd: >-
           pveum role modify Ansible
-          --privs Sys.Audit,VM.Audit,Pool.Audit
+          --privs Pool.Audit,SDN.Audit,Sys.Audit,VM.Audit
       changed_when: true
       when:
         - >-
