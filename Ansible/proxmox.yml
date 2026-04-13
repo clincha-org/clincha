@@ -18,6 +18,7 @@
       - name: Ansible
         privs:
           - Pool.Audit
+          - SDN.Audit
           - Sys.Audit
           - VM.Audit
       - name: Packer
