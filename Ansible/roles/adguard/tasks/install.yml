@@ -4,11 +4,6 @@
     path: /opt/AdGuardHome/AdGuardHome
   register: adguard_binary
 
-- name: Install passlib for bcrypt password hashing
-  ansible.builtin.pip:
-    name: passlib[bcrypt]
-    state: present
-
 - name: Download AdGuard Home
   vars:
     base: "https://github.com/AdguardTeam"
