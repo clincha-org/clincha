@@ -1,9 +1,46 @@
 ---
-- name: Template AdGuard Home configuration
+- name: Bootstrap AdGuard Home configuration (first install only)
   ansible.builtin.template:
     src: AdGuardHome.yaml.j2
     dest: /opt/AdGuardHome/AdGuardHome.yaml
     owner: root
     group: root
     mode: "0600"
+    force: false
   notify: Restart AdGuardHome
+
+- name: Template /etc/hosts for local DNS entries
+  ansible.builtin.template:
+    src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Read current AdGuard Home configuration
+  ansible.builtin.slurp:
+    src: /opt/AdGuardHome/AdGuardHome.yaml
+  register: adguard_current_config
+
+- name: Apply hostsfile_enabled to AdGuard config (stop → edit → start)
+  vars:
+    adguard_config_text: "{{ adguard_current_config.content | b64decode }}"
+  when: "'hostsfile_enabled: true' not in adguard_config_text"
+  block:
+    - name: Stop AdGuardHome before editing its config
+      ansible.builtin.systemd:
+        name: AdGuardHome
+        state: stopped
+
+    - name: Ensure hostsfile_enabled is true in AdGuard config
+      ansible.builtin.lineinfile:
+        path: /opt/AdGuardHome/AdGuardHome.yaml
+        regexp: '^  hostsfile_enabled:'
+        line: "  hostsfile_enabled: true"
+        insertafter: '^dns:'
+        state: present
+
+    - name: Start AdGuardHome after editing its config
+      ansible.builtin.systemd:
+        name: AdGuardHome
+        state: started
