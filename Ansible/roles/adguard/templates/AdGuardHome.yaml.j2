@@ -33,6 +33,7 @@ dns:
 {% for rewrite in adguard_dns_rewrites %}
     - domain: {{ rewrite.domain }}
       answer: {{ rewrite.answer }}
+      enabled: true
 {% endfor %}
 filters:
   - enabled: true
