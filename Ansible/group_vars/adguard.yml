@@ -2,7 +2,7 @@
 ansible_user: root
 ansible_ssh_pass: null
 
-adguard_dns_rewrites:
+adguard_local_dns_entries:
   - domain: "hawk01.clinch-home.com"
     answer: "10.1.2.11"
   - domain: "hawk02.clinch-home.com"
