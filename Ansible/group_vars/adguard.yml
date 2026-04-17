@@ -3,6 +3,7 @@ ansible_user: root
 ansible_ssh_pass: null
 
 adguard_local_dns_entries:
+  # Proxmox hosts
   - domain: "hawk01.clinch-home.com"
     answer: "10.1.2.11"
   - domain: "hawk02.clinch-home.com"
@@ -11,10 +12,14 @@ adguard_local_dns_entries:
     answer: "10.1.2.13"
   - domain: "lon01.clinch-home.com"
     answer: "10.2.2.11"
+
+  # DNS servers
   - domain: "dns-hawk-1.clinch-home.com"
     answer: "10.1.2.131"
   - domain: "dns-lon-1.clinch-home.com"
     answer: "10.2.2.131"
+
+  # Kubernetes ingress — clinch-home.com
   - domain: "sonarr.clinch-home.com"
     answer: "10.1.2.205"
   - domain: "radarr.clinch-home.com"
@@ -24,4 +29,26 @@ adguard_local_dns_entries:
   - domain: "sabnzbd.clinch-home.com"
     answer: "10.1.2.205"
   - domain: "plex.clinch-home.com"
+    answer: "10.1.2.205"
+  - domain: "longhorn.clinch-home.com"
+    answer: "10.1.2.205"
+  - domain: "grafana.clinch-home.com"
+    answer: "10.1.2.205"
+  - domain: "status.clinch-home.com"
+    answer: "10.1.2.205"
+  - domain: "www.status.clinch-home.com"
+    answer: "10.1.2.205"
+  - domain: "traefik.clinch-home.com"
+    answer: "10.1.2.205"
+
+  # Kubernetes ingress — clincha.co.uk
+  - domain: "clincha.co.uk"
+    answer: "10.1.2.205"
+  - domain: "www.clincha.co.uk"
+    answer: "10.1.2.205"
+  - domain: "longhorn.clincha.co.uk"
+    answer: "10.1.2.205"
+  - domain: "status.clincha.co.uk"
+    answer: "10.1.2.205"
+  - domain: "www.status.clincha.co.uk"
     answer: "10.1.2.205"
