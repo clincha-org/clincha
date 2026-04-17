@@ -58,5 +58,7 @@ adguard_local_dns_entries:
     answer: "10.1.2.122"
   - domain: "claude.clinch-home.com"
     answer: "10.1.2.122"
+  - domain: "dave.clincha.co.uk"
+    answer: "10.1.2.122"
   - domain: "claude.clincha.co.uk"
     answer: "10.1.2.122"
