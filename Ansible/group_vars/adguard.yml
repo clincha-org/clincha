@@ -52,3 +52,11 @@ adguard_local_dns_entries:
     answer: "10.1.2.205"
   - domain: "www.status.clincha.co.uk"
     answer: "10.1.2.205"
+
+  # Claude server (Dave)
+  - domain: "dave.clinch-home.com"
+    answer: "10.1.2.122"
+  - domain: "claude.clinch-home.com"
+    answer: "10.1.2.122"
+  - domain: "claude.clincha.co.uk"
+    answer: "10.1.2.122"
