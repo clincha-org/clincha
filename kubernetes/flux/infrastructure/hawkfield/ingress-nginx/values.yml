@@ -1,4 +1,16 @@
 controller:
+  replicaCount: 3
+  minAvailable: 2
   service:
+    externalTrafficPolicy: Local
     annotations:
       metallb.io/loadBalancerIPs: 10.1.2.205
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: ingress-nginx
+          app.kubernetes.io/instance: ingress-nginx
+          app.kubernetes.io/component: controller
