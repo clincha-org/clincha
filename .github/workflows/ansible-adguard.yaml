@@ -9,6 +9,19 @@ on:
       - '.github/workflows/ansible-adguard.yaml'
       - 'Ansible/**'
   workflow_dispatch:
+    inputs:
+      site:
+        description: 'Target site (default: both)'
+        type: choice
+        options:
+          - all
+          - hawkfield
+          - london
+        default: all
+      tags:
+        description: 'Ansible --tags (e.g. rotate-password). Leave empty for normal run.'
+        type: string
+        default: ''
 concurrency:
   group: "adguard-${{ github.event.inputs.site || 'all' }}"
 jobs:
@@ -17,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        site: [hawkfield, london]
+        site: ${{ fromJSON(inputs.site == 'hawkfield' && '["hawkfield"]' || inputs.site == 'london' && '["london"]' || '["hawkfield","london"]') }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -62,7 +75,10 @@ jobs:
         env:
           PROXMOX_TOKEN_SECRET: ${{ matrix.site == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_ANSIBLE || secrets.PROXMOX_TOKEN_LONDON_ANSIBLE }}
           ADGUARD_ADMIN_PASSWORD: ${{ matrix.site == 'hawkfield' && secrets.ADGUARD_ADMIN_PASSWORD_HAWKFIELD || secrets.ADGUARD_ADMIN_PASSWORD_LONDON }}
+          ANSIBLE_TAGS: ${{ inputs.tags }}
         run: |
-          ansible-playbook adguard.yml \
-            --inventory inventory/${{ matrix.site }}.proxmox.yml \
-            --vault-password-file vault
+          args=(--inventory inventory/${{ matrix.site }}.proxmox.yml --vault-password-file vault)
+          if [ -n "$ANSIBLE_TAGS" ]; then
+            args+=(--tags "$ANSIBLE_TAGS")
+          fi
+          ansible-playbook adguard.yml "${args[@]}"
