@@ -4,3 +4,6 @@
 
 - name: Configure AdGuard Home
   ansible.builtin.import_tasks: configure.yml
+
+- name: Rotate AdGuard Home admin password (opt-in via tag)
+  ansible.builtin.import_tasks: rotate-password.yml
