@@ -9,3 +9,6 @@
 
     - name: "Tools"
       ansible.builtin.include_tasks: tools.yml
+
+    - name: "Network tuning"
+      ansible.builtin.include_tasks: network-tuning.yml

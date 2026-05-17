@@ -1,0 +1,12 @@
+---
+- name: "Install irqbalance"
+  ansible.builtin.apt:
+    name: irqbalance
+    state: present
+    update_cache: true
+
+- name: "Enable and start irqbalance"
+  ansible.builtin.systemd_service:
+    name: irqbalance
+    enabled: true
+    state: started

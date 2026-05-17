@@ -6,6 +6,10 @@ terraform {
   }
 }
 
+locals {
+  queues = var.queues != null ? var.queues : var.cores
+}
+
 resource "proxmox_vm_qemu" "ubuntu_server" {
   name        = var.name
   target_node = var.target_node
@@ -27,6 +31,7 @@ resource "proxmox_vm_qemu" "ubuntu_server" {
     bridge = var.network_bridge
     model  = "virtio"
     mtu    = 1 # Inherit from bridge
+    queues = local.queues
   }
 
   os_type            = "ubuntu"

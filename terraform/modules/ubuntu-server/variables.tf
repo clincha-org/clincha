@@ -56,6 +56,11 @@ variable "network_bridge" {
   default     = "vmbr1"
   type        = string
 }
+variable "queues" {
+  description = "Number of virtio NIC queues; null means match `cores`"
+  default     = null
+  type        = number
+}
 
 # DISKS
 variable "boot_disk_size" {
