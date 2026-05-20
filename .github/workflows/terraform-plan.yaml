@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        site: [hawkfield, london]
+        site: [hawkfield, hawkfield-kubernetes, london]
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -58,7 +58,7 @@ jobs:
         run: |
           terraform plan -no-color \
             -var-file=providers.tfvars \
-            -var="pm_api_token_secret=${{ matrix.site == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM || secrets.PROXMOX_TOKEN_LONDON_TERRAFORM }}" \
+            -var="pm_api_token_secret=${{ startsWith(matrix.site, 'hawkfield') && secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM || secrets.PROXMOX_TOKEN_LONDON_TERRAFORM }}" \
             -out=tfplan 2>&1 | tee plan_output.txt
 
       - name: Save plan output
@@ -84,7 +84,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const sites = ['hawkfield', 'london'];
+            const sites = ['hawkfield', 'hawkfield-kubernetes', 'london'];
             let body = '## 🏗️ Terraform Plan Results\n\n';
 
             for (const site of sites) {

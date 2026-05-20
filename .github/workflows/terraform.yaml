@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        site: [hawkfield, london]
+        site: [hawkfield, hawkfield-kubernetes, london]
     concurrency:
       group: "cluster-${{ matrix.site }}"
     steps:
@@ -50,7 +50,7 @@ jobs:
       - name: Terraform Plan
         working-directory: terraform/${{ matrix.site }}
         run: |
-          terraform plan -out=tfplan -var-file=providers.tfvars -var="pm_api_token_secret=${{ matrix.site == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM || secrets.PROXMOX_TOKEN_LONDON_TERRAFORM }}"
+          terraform plan -out=tfplan -var-file=providers.tfvars -var="pm_api_token_secret=${{ startsWith(matrix.site, 'hawkfield') && secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM || secrets.PROXMOX_TOKEN_LONDON_TERRAFORM }}"
 
       - name: Artifact Upload
         uses: actions/upload-artifact@v7
@@ -68,7 +68,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        site: [hawkfield, london]
+        site: [hawkfield, hawkfield-kubernetes, london]
     concurrency:
       group: "cluster-${{ matrix.site }}"
     steps:
@@ -108,4 +108,4 @@ jobs:
       - name: Terraform Apply
         working-directory: terraform/${{ matrix.site }}
         run: |
-          terraform apply -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ matrix.site == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM || secrets.PROXMOX_TOKEN_LONDON_TERRAFORM }}" tfplan/tfplan
+          terraform apply -auto-approve -var-file=providers.tfvars -var="pm_api_token_secret=${{ startsWith(matrix.site, 'hawkfield') && secrets.PROXMOX_TOKEN_HAWKFIELD_TERRAFORM || secrets.PROXMOX_TOKEN_LONDON_TERRAFORM }}" tfplan/tfplan
