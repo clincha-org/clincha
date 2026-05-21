@@ -20,6 +20,10 @@ resource "proxmox_lxc" "container" {
   start        = true
   onboot       = true
 
+  features {
+    nesting = true
+  }
+
   password = var.password
 
   rootfs {
