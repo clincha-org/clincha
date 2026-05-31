@@ -32,9 +32,9 @@ spec:
             - mountPath: /prometheus
               name: data
           securityContext:
-            runAsUser: 0
+            runAsUser: 3003
             runAsNonRoot: false
-            runAsGroup: 0
+            runAsGroup: 3004
       volumes:
         - name: data
           nfs:
