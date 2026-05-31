@@ -40,6 +40,8 @@ adguard_local_dns_entries:
     answer: "10.1.2.205"
   - domain: "traefik.clinch-home.com"
     answer: "10.1.2.205"
+  - domain: "prometheus.clinch-home.com"
+    answer: "10.1.2.205"
 
   # Kubernetes ingress — clincha.co.uk
   - domain: "clincha.co.uk"
@@ -65,6 +67,8 @@ adguard_local_dns_entries:
   - domain: "www.status.clincha.co.uk"
     answer: "10.1.2.205"
   - domain: "traefik.clincha.co.uk"
+    answer: "10.1.2.205"
+  - domain: "prometheus.clincha.co.uk"
     answer: "10.1.2.205"
 
   # Claude server (Dave)
