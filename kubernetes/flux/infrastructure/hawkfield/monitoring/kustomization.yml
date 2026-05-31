@@ -8,6 +8,6 @@ configMapGenerator:
   - name: prometheus.yml
     namespace: monitoring
     files:
-      - prometheus-settings.yaml
+      - prometheus.yml
     options:
       disableNameSuffixHash: true
