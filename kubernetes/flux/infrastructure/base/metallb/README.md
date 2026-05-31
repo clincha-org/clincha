@@ -12,6 +12,16 @@ Do the following from a kubernetes master as the user `kubernetes`
    sed -e "s/strictARP: false/strictARP: true/" | \
    kubectl apply -f - -n kube-system
    ```
+
+   > **All-control-plane clusters:** MetalLB v0.15+ will not L2-announce a VIP
+   > from any node carrying the `node.kubernetes.io/exclude-from-external-load-balancers`
+   > label, which kubeadm adds to every control-plane node. On a cluster where
+   > all nodes are control-plane (Hawkfield, London), this leaves no eligible
+   > speaker and every LoadBalancer VIP goes dark. The label is stripped
+   > automatically by the **"Allow LoadBalancer announcement from control-plane
+   > nodes"** play in `Ansible/kubernetes.yml`, which re-runs on every cluster
+   > rebuild / Kubespray upgrade. See [clincha-org/clincha#294](https://github.com/clincha-org/clincha/issues/294).
+
 2. Install using Helm
     ```bash
     helm repo add metallb https://metallb.github.io/metallb
