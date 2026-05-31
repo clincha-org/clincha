@@ -27,7 +27,7 @@ spec:
               cpu: "1"
               memory: "4Gi"
           volumeMounts:
-            - mountPath: /etc/prometheus/config
+            - mountPath: /etc/prometheus
               name: config
             - mountPath: /prometheus
               name: data
@@ -42,7 +42,7 @@ spec:
             server: 10.1.2.10
         - name: config
           configMap:
-            name: prometheus-settings
+            name: prometheus.yml
 ---
 apiVersion: v1
 kind: Service
