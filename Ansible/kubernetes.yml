@@ -163,6 +163,40 @@
         KUBECONFIG: /etc/kubernetes/admin.conf
       changed_when: true
 
+- name: "Allow LoadBalancer announcement from control-plane nodes"
+  hosts: kube_control_plane
+  become: true
+  run_once: true
+  tasks:
+    - name: "Install Kubernetes Python"
+      ansible.builtin.package:
+        name: python3-kubernetes
+        state: present
+
+    - name: "Get control-plane nodes"
+      kubernetes.core.k8s_info:
+        kind: Node
+        label_selectors:
+          - "node-role.kubernetes.io/control-plane"
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      register: cp_nodes
+
+    - name: "Remove exclude-from-external-load-balancers label for MetalLB L2"
+      kubernetes.core.k8s:
+        state: patched
+        merge_type: merge
+        definition:
+          apiVersion: v1
+          kind: Node
+          metadata:
+            name: "{{ item }}"
+            labels:
+              node.kubernetes.io/exclude-from-external-load-balancers: null
+      loop: "{{ cp_nodes.resources | map(attribute='metadata.name') | list }}"
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
 - name: "Bootstrap Flux"
   hosts: kube_control_plane
   become: true
