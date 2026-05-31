@@ -4,11 +4,8 @@ metadata:
   name: monitoring
 resources:
   - ../../base/monitoring
-  - grafana-admin-credentials.yaml
 configMapGenerator:
-  - name: prometheus-values
-    namespace: monitoring
+  - name: prometheus-settings
+    namespace: factorio
     files:
-      - values.yml
-    options:
-      disableNameSuffixHash: true
+      - prometheus-settings.yaml

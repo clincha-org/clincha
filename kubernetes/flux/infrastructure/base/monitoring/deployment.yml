@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: prometheus
+  labels:
+    name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: prometheus
+  template:
+    metadata:
+      labels:
+        name: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v3.12.0
+          ports:
+            - containerPort: 9090
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "1"
+              memory: "4Gi"
+          volumeMounts:
+            - mountPath: /etc/prometheus/config
+              name: config
+            - mountPath: /prometheus
+              name: data
+      volumes:
+        - name: data
+          nfs:
+            path: /mnt/data/prometheus/
+            server: 10.1.2.10
+        - name: config
+          configMap:
+            name: prometheus-settings
