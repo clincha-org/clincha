@@ -108,10 +108,14 @@
     group: claude
     mode: "0700"
 
-- name: "Deploy Bitwarden session env"
+# Writes a dedicated file for CI-managed API credentials. Must NOT target
+# env.sh, which is owned by the running Claude instance at runtime (holds the
+# live BW_SESSION token and GOG_KEYRING_PASSWORD); overwriting it locked the
+# vault and broke gog on every deploy.
+- name: "Deploy Bitwarden API credentials"
   ansible.builtin.template:
-    src: bw-env.sh.j2
-    dest: /home/claude/.claude/session-env/shared/env.sh
+    src: bw-api.sh.j2
+    dest: /home/claude/.claude/session-env/shared/bw-api.sh
     owner: claude
     group: claude
     mode: "0600"
@@ -129,17 +133,7 @@
   become: true
   become_user: claude
 
-- name: "Clone dave repository into home directory"
-  ansible.builtin.git:
-    repo: "git@github.com:open-dave/dave.git"
-    dest: /home/claude
-    version: main
-    force: true
-    accept_hostkey: true
-    key_file: /home/claude/.ssh/id_ed25519
-  become: true
-  become_user: claude
-
+# Identity must be set before the auto-save commit below.
 - name: "Configure git user identity"
   community.general.git_config:
     name: "{{ item.name }}"
@@ -151,15 +145,84 @@
     - {name: "user.email", value: "dave.clinch.claw@gmail.com"}
     - {name: "user.name", value: "Dave"}
 
+# Push-then-reset: the running Claude commits memory into this working copy.
+# Auto-save and push any local work before the clone's reset --hard so nothing
+# is lost. Skipped on first-ever deploy (no .git yet). Gitignored runtime files
+# (env.sh, bw-api.sh, .bw-master) are never staged by "git add -A".
+- name: "Check whether dave repo is already cloned"
+  ansible.builtin.stat:
+    path: /home/claude/.git
+  register: claude_repo_git_dir
+
+# git plumbing on a live working copy; no equivalent module for status/commit/push.
+- name: "Detect uncommitted local changes in dave working copy"
+  ansible.builtin.command:
+    cmd: git status --porcelain
+    chdir: /home/claude
+  become: true
+  become_user: claude
+  register: claude_repo_status
+  changed_when: false
+  when: claude_repo_git_dir.stat.exists
+  # noqa: command-instead-of-module
+
+- name: "Auto-commit local memory before redeploy"
+  ansible.builtin.shell:
+    cmd: 'git add -A && git commit -m "CI: auto-save before redeploy"'
+    chdir: /home/claude
+  become: true
+  become_user: claude
+  changed_when: true
+  when:
+    - claude_repo_git_dir.stat.exists
+    - claude_repo_status.stdout | default('') | length > 0
+  # noqa: command-instead-of-module
+
+- name: "Push local commits to origin/main"
+  ansible.builtin.command:
+    cmd: git push origin HEAD:main
+    chdir: /home/claude
+  become: true
+  become_user: claude
+  register: claude_repo_push
+  # Non-fast-forward push fails loudly here rather than losing work in reset.
+  changed_when: "'up-to-date' not in claude_repo_push.stderr"
+  when: claude_repo_git_dir.stat.exists
+  # noqa: command-instead-of-module
+
+# force:true is a no-op safety net once the push above syncs local to origin.
+- name: "Clone dave repository into home directory"
+  ansible.builtin.git:
+    repo: "git@github.com:open-dave/dave.git"
+    dest: /home/claude
+    version: main
+    force: true
+    accept_hostkey: true
+    key_file: /home/claude/.ssh/id_ed25519
+  become: true
+  become_user: claude
+
+# Persistent cache dir so the installer download is idempotent (/tmp is
+# cleared on reboot, which forced a re-download and a spurious "changed").
+- name: "Ensure claude cache directory exists"
+  ansible.builtin.file:
+    path: /home/claude/.cache
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0755"
+
 - name: "Download Claude Code installer"
   ansible.builtin.get_url:
     url: "https://claude.ai/install.sh"
-    dest: /tmp/claude-install.sh
+    dest: /home/claude/.cache/claude-install.sh
+    owner: claude
+    group: claude
     mode: "0755"
 
 - name: "Install Claude Code"
   ansible.builtin.command:
-    cmd: "bash /tmp/claude-install.sh"
+    cmd: "bash /home/claude/.cache/claude-install.sh"
     creates: /home/claude/.local/bin/claude
   become: true
   become_user: claude
@@ -172,12 +235,17 @@
       f = '/home/claude/.claude.json'
       d = json.load(open(f)) if os.path.exists(f) else {}
       p = d.setdefault('projects', {}).setdefault('/home/claude', {})
-      p['hasTrustDialogAccepted'] = True
-      json.dump(d, open(f, 'w'))
+      if p.get('hasTrustDialogAccepted') is True:
+          print('OK')
+      else:
+          p['hasTrustDialogAccepted'] = True
+          json.dump(d, open(f, 'w'))
+          print('CHANGED')
       PYEOF
   become: true
   become_user: claude
-  changed_when: true
+  register: claude_trust_workspace
+  changed_when: "'CHANGED' in claude_trust_workspace.stdout"
 
 - name: "Ensure gh config directory exists"
   ansible.builtin.file:
