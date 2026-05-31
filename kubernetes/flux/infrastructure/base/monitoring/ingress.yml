@@ -20,7 +20,7 @@ spec:
               service:
                 name: prometheus-frontend
                 port:
-                  number: 80
+                  number: 9090
     - host: prometheus.clincha.co.uk
       http:
         paths:
@@ -30,4 +30,4 @@ spec:
               service:
                 name: prometheus-frontend
                 port:
-                  number: 80
+                  number: 9090
