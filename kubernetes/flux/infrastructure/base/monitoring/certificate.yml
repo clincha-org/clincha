@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prometheus-certificate
+  namespace: monitoring
+spec:
+  secretName: prometheus-certificate-secret
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - prometheus.clinch-home.com
+    - prometheus.clincha.co.uk
