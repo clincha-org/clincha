@@ -12,3 +12,17 @@ spec:
   dnsNames:
     - prometheus.clinch-home.com
     - prometheus.clincha.co.uk
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-certificate
+  namespace: monitoring
+spec:
+  secretName: grafana-certificate-secret
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - grafana.clinch-home.com
+    - grafana.clincha.co.uk
