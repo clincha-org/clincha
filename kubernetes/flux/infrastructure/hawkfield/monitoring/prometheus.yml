@@ -13,3 +13,9 @@ scrape_configs:
   - job_name: clincha-main
     static_configs:
       - targets: ['10.2.0.51:9100']
+  - job_name: kubernetes-hawkfield
+    static_configs:
+      - targets:
+        - '10.1.2.101:9100'
+        - '10.1.2.102:9100'
+        - '10.1.2.103:9100'

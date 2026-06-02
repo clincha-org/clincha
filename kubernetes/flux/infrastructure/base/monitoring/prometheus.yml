@@ -5,7 +5,10 @@ metadata:
   name: prometheus
   namespace: monitoring
   labels:
-    name: prometheus
+    app.kubernetes.io/component: prometheus
+    app.kubernetes.io/instance: k8s
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: kube-prometheus
 spec:
   replicas: 1
   selector:
@@ -50,10 +53,16 @@ metadata:
   name: prometheus
   namespace: monitoring
   labels:
-    name: prometheus
+    app.kubernetes.io/component: prometheus
+    app.kubernetes.io/instance: k8s
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: kube-prometheus
 spec:
   selector:
-    name: prometheus
+    app.kubernetes.io/component: prometheus
+    app.kubernetes.io/instance: k8s
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: kube-prometheus
   ports:
     - name: http
       port: 9090
