@@ -1,7 +1,9 @@
+fullnameOverride: loki
 deploymentMode: SingleBinary
 
 global:
   clusterDomain: "hawkfield.clinch-home.com"
+  dnsService: "coredns"
   extraArgs:
     - "-config.expand-env=true"
   extraEnvFrom:
