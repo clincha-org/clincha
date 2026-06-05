@@ -11,6 +11,7 @@ controller:
           type: Directory
 alloy:
   mounts:
+    varlog: true
     extra:
       - name: host-root
         mountPath: /host/root
