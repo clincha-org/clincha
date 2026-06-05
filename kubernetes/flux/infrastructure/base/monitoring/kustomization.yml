@@ -4,7 +4,7 @@ resources:
   - namespace.yml
   - helm-repository.yml
   - helm-release-alloy.yml
-  - node_exporter.yml
   - prometheus.yml
+  - grafana.yml
   - certificate.yml
   - ingress.yml

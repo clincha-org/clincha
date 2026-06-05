@@ -49,10 +49,7 @@ alloy:
           target_label = "instance"
           replacement  = sys.env("NODE_NAME")
         }
-        rule {
-          target_label = "job"
-          replacement  = "node_exporter_alloy"
-        }
+      
       }
       
       prometheus.remote_write "local" {
