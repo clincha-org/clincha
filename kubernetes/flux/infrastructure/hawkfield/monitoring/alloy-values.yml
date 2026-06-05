@@ -133,6 +133,6 @@ alloy:
 
       loki.write "local" {
         endpoint {
-          url = "http://loki-gateway.monitoring.svc.hawkfield.clinch-home.com/loki/api/v1/push"
+          url = "http://loki-gateway.monitoring.svc/loki/api/v1/push"
         }
       }
