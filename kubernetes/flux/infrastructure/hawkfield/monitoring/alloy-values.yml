@@ -76,16 +76,11 @@ alloy:
 
       discovery.relabel "pod_logs" {
         targets = discovery.kubernetes.pods.targets
-
-        // DaemonSet efficiency: only tail pods on THIS node — their log files
-        // only exist on the local disk anyway.
         rule {
           source_labels = ["__meta_kubernetes_pod_node_name"]
           regex         = sys.env("NODE_NAME")
           action        = "keep"
         }
-
-        // ---- stream labels (keep these low-cardinality) ----
         rule {
           source_labels = ["__meta_kubernetes_namespace"]
           target_label  = "namespace"
@@ -110,10 +105,6 @@ alloy:
           target_label = "job"
           replacement  = "pod-logs"
         }
-
-        // ---- build the on-disk path ----
-        // real layout: /var/log/pods/<ns>_<pod>_<uid>/<container>/0.log
-        // the leading * matches the "<ns>_<pod>_" prefix.
         rule {
           source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
           separator     = "/"
@@ -134,12 +125,7 @@ alloy:
 
       loki.process "pod_logs" {
         forward_to = [loki.write.local.receiver]
-
-        // containerd/CRI line format: "<ts> <stream> <flag> <message>"
-        // this extracts the real timestamp + message and strips the prefix.
         stage.cri {}
-
-        // promote stdout/stderr to a label
         stage.labels {
           values = { stream = "" }
         }
