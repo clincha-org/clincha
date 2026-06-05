@@ -1,3 +1,4 @@
+fullnameOverride: alloy
 namespaceOverride: monitoring
 alloy:
   mounts:
