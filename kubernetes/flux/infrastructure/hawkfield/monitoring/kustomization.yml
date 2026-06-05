@@ -11,3 +11,9 @@ configMapGenerator:
       - prometheus.yml
     options:
       disableNameSuffixHash: true
+  - name: alloy-values
+    namespace: monitoring
+    files:
+      - values.yml=alloy-values.yml
+    options:
+      disableNameSuffixHash: true

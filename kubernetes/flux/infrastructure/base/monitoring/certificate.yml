@@ -26,3 +26,17 @@ spec:
   dnsNames:
     - grafana.clinch-home.com
     - grafana.clincha.co.uk
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: alloy-certificate
+  namespace: monitoring
+spec:
+  secretName: alloy-certificate-secret
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - alloy.clinch-home.com
+    - alloy.clincha.co.uk

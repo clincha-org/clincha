@@ -1,0 +1,61 @@
+namespaceOverride: monitoring
+alloy:
+  mounts:
+    extra:
+      - name: host-root
+        mountPath: /host/root
+        readOnly: true
+  extraEnv:
+    - name: NODE_NAME      # downward API → used to label metrics per node
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+  configMap:
+    content: |-
+      logging {
+        level  = "info"
+        format = "logfmt"
+      }
+      
+      prometheus.exporter.unix "host" {
+        rootfs_path    = "/host/root"
+        procfs_path    = "/host/root/proc"
+        sysfs_path     = "/host/root/sys"
+        udev_data_path = "/host/root/run/udev/data"
+      
+        disable_collectors = ["wifi", "hwmon", "btrfs"]
+      
+        filesystem {
+          mount_points_exclude = "^/(dev|proc|sys|run/k3s/containerd/.+|var/lib/docker/.+|var/lib/kubelet/pods/.+)($|/)"
+        }
+        netclass {
+          ignored_devices = "^(veth.*|[a-f0-9]{15})$"
+        }
+        netdev {
+          device_exclude = "^(veth.*|[a-f0-9]{15})$"
+        }
+      }
+      
+      prometheus.scrape "host" {
+        targets    = prometheus.exporter.unix.host.targets
+        forward_to = [prometheus.relabel.host.receiver]
+        scrape_interval = "15s"
+      }
+      
+      prometheus.relabel "host" {
+        forward_to = [prometheus.remote_write.local.receiver]
+        rule {
+          target_label = "instance"
+          replacement  = sys.env("NODE_NAME")
+        }
+        rule {
+          target_label = "job"
+          replacement  = "node_exporter_alloy"
+        }
+      }
+      
+      prometheus.remote_write "local" {
+        endpoint {
+          url = "http://prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
+        }
+      }
