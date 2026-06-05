@@ -57,7 +57,7 @@ alloy:
       
       prometheus.remote_write "local" {
         endpoint {
-          url = "http://prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
+          url = "http://prometheus.monitoring.svc:9090/api/v1/write"
         }
       }
 controller:
