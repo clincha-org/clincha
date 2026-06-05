@@ -1,5 +1,14 @@
 fullnameOverride: alloy
 namespaceOverride: monitoring
+controller:
+  type: daemonset
+  hostPID: true
+  volumes:
+    extra:
+      - name: host-root
+        hostPath:
+          path: /
+          type: Directory
 alloy:
   mounts:
     extra:
@@ -57,12 +66,86 @@ alloy:
           url = "http://prometheus.monitoring.svc:9090/api/v1/write"
         }
       }
-controller:
-  type: daemonset
-  hostPID: true
-  volumes:
-    extra:
-      - name: host-root
-        hostPath:
-          path: /
-          type: Directory
+      
+      // ============ Pod logs ============
+
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      discovery.relabel "pod_logs" {
+        targets = discovery.kubernetes.pods.targets
+
+        // DaemonSet efficiency: only tail pods on THIS node — their log files
+        // only exist on the local disk anyway.
+        rule {
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          regex         = sys.env("NODE_NAME")
+          action        = "keep"
+        }
+
+        // ---- stream labels (keep these low-cardinality) ----
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+        rule {  
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+          target_label  = "app"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          target_label  = "node"
+        }
+        rule {
+          target_label = "job"
+          replacement  = "pod-logs"
+        }
+
+        // ---- build the on-disk path ----
+        // real layout: /var/log/pods/<ns>_<pod>_<uid>/<container>/0.log
+        // the leading * matches the "<ns>_<pod>_" prefix.
+        rule {
+          source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+          separator     = "/"
+          action        = "replace" 
+          replacement   = "/var/log/pods/*$1/*.log"
+          target_label  = "__path__"
+        }
+      }
+
+      local.file_match "pod_logs" {
+        path_targets = discovery.relabel.pod_logs.output
+      }
+
+      loki.source.file "pod_logs" {
+        targets    = local.file_match.pod_logs.targets
+        forward_to = [loki.process.pod_logs.receiver]
+      }
+
+      loki.process "pod_logs" {
+        forward_to = [loki.write.local.receiver]
+
+        // containerd/CRI line format: "<ts> <stream> <flag> <message>"
+        // this extracts the real timestamp + message and strips the prefix.
+        stage.cri {}
+
+        // promote stdout/stderr to a label
+        stage.labels {
+          values = { stream = "" }
+        }
+      }
+
+      loki.write "local" {
+        endpoint {
+          url = "http://loki-gateway.monitoring.svc.hawkfield.clinch-home.com/loki/api/v1/push"
+        }
+      }

@@ -4,6 +4,7 @@ resources:
   - namespace.yml
   - helm-repository.yml
   - helm-release-alloy.yml
+  - helm-release-loki.yml
   - prometheus.yml
   - grafana.yml
   - certificate.yml
