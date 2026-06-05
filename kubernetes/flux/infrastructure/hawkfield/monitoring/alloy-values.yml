@@ -59,3 +59,12 @@ alloy:
           url = "http://prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
         }
       }
+controller:
+  type: daemonset
+  hostPID: true
+  volumes:
+    extra:
+      - name: host-root
+        hostPath:
+          path: /
+          type: Directory
