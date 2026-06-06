@@ -4,11 +4,6 @@ deploymentMode: SingleBinary
 global:
   clusterDomain: "hawkfield.clinch-home.com"
   dnsService: "coredns"
-  extraArgs:
-    - "-config.expand-env=true"
-  extraEnvFrom:
-    - secretRef:
-        name: loki-minio-creds
 
 loki:
   auth_enabled: false
@@ -45,6 +40,14 @@ loki:
 
 singleBinary:
   replicas: 1
+  # The single-binary StatefulSet template only reads singleBinary.extraArgs /
+  # singleBinary.extraEnvFrom; it does NOT concat global.extraArgs/extraEnvFrom
+  # like every other component does. So these must live here, not under global.
+  extraArgs:
+    - "-config.expand-env=true"
+  extraEnvFrom:
+    - secretRef:
+        name: loki-minio-creds
   persistence:
     enabled: true
     size: 10Gi
