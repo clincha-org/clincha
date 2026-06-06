@@ -38,6 +38,8 @@ adguard_local_dns_entries:
     answer: "10.1.2.205"
   - domain: "prometheus.clinch-home.com"
     answer: "10.1.2.205"
+  - domain: "loki.clinch-home.com"
+    answer: "10.1.2.205"
   - domain: "grafana.clinch-home.com"
     answer: "10.1.2.205"
   - domain: "alloy.clinch-home.com"

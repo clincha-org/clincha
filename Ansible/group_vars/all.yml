@@ -1,3 +1,6 @@
 ---
 ansible_user: ansible
 ansible_python_interpreter: /usr/bin/python3
+
+metrics_remote_write_url: "https://prometheus.clinch-home.com/api/v1/write"
+logs_push_url: "https://loki.clinch-home.com/loki/api/v1/push"

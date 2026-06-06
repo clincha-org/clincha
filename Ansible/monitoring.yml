@@ -1,0 +1,6 @@
+---
+- name: Install host metrics & logs collector
+  hosts: proxmox_nodes:base:adguard:claude
+  become: true
+  roles:
+    - role: monitoring

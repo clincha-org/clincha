@@ -1,0 +1,8 @@
+---
+monitoring_alloy_version: "1.16.2-1"
+monitoring_scrape_interval: "15s"
+monitoring_disabled_collectors:
+  - wifi
+  - hwmon
+  - btrfs
+monitoring_journal_path: /var/log/journal

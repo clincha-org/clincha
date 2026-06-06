@@ -40,3 +40,16 @@ spec:
   dnsNames:
     - alloy.clinch-home.com
     - alloy.clincha.co.uk
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: loki-certificate
+  namespace: monitoring
+spec:
+  secretName: loki-certificate-secret
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - loki.clinch-home.com
