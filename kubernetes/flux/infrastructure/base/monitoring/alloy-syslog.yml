@@ -1,0 +1,93 @@
+---
+# Separate single-replica Deployment, not the Alloy DaemonSet, so the syslog
+# listener has one owner rather than one per node.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alloy-syslog
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: alloy-syslog
+    app.kubernetes.io/component: syslog
+    app.kubernetes.io/part-of: kube-prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: alloy-syslog
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: alloy-syslog
+        app.kubernetes.io/component: syslog
+        app.kubernetes.io/part-of: kube-prometheus
+    spec:
+      containers:
+        - name: alloy
+          image: grafana/alloy:v1.16.1
+          args:
+            - run
+            - /etc/alloy/config-syslog.alloy
+            - --storage.path=/tmp/alloy
+            - --server.http.listen-addr=0.0.0.0:12345
+          ports:
+            - name: syslog-tcp
+              containerPort: 1514
+              protocol: TCP
+            - name: http
+              containerPort: 12345
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: http
+          volumeMounts:
+            - mountPath: /etc/alloy
+              name: config
+              readOnly: true
+            - mountPath: /tmp
+              name: data
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+      volumes:
+        - name: config
+          configMap:
+            name: alloy-syslog-config
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alloy-syslog
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: alloy-syslog
+    app.kubernetes.io/component: syslog
+    app.kubernetes.io/part-of: kube-prometheus
+  annotations:
+    metallb.io/loadBalancerIPs: 10.1.2.210
+    metallb.io/allow-shared-ip: truenas-ingest
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  selector:
+    app.kubernetes.io/name: alloy-syslog
+  ports:
+    - name: syslog-tcp
+      port: 514
+      targetPort: syslog-tcp
+      protocol: TCP

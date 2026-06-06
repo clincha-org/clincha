@@ -1,0 +1,114 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: graphite-exporter
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: graphite-exporter
+    app.kubernetes.io/component: graphite-exporter
+    app.kubernetes.io/part-of: kube-prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: graphite-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: graphite-exporter
+        app.kubernetes.io/component: graphite-exporter
+        app.kubernetes.io/part-of: kube-prometheus
+    spec:
+      containers:
+        - name: graphite-exporter
+          image: prom/graphite-exporter:v0.16.0
+          args:
+            - --graphite.mapping-config=/etc/graphite/mapping.conf
+            - --web.listen-address=:9108
+            - --graphite.listen-address=:9109
+          ports:
+            - name: metrics
+              containerPort: 9108
+              protocol: TCP
+            - name: graphite-tcp
+              containerPort: 9109
+              protocol: TCP
+            - name: graphite-udp
+              containerPort: 9109
+              protocol: UDP
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+          volumeMounts:
+            - mountPath: /etc/graphite
+              name: mapping
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+      volumes:
+        - name: mapping
+          configMap:
+            name: graphite-mapping
+            items:
+              - key: graphite_mapping.conf
+                path: mapping.conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: graphite-exporter
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: graphite-exporter
+    app.kubernetes.io/component: graphite-exporter
+    app.kubernetes.io/part-of: kube-prometheus
+spec:
+  selector:
+    app.kubernetes.io/name: graphite-exporter
+  ports:
+    - name: metrics
+      port: 9108
+      targetPort: metrics
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: graphite-exporter-ingest
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: graphite-exporter
+    app.kubernetes.io/component: graphite-exporter
+    app.kubernetes.io/part-of: kube-prometheus
+  annotations:
+    metallb.io/loadBalancerIPs: 10.1.2.210
+    metallb.io/allow-shared-ip: truenas-ingest
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  selector:
+    app.kubernetes.io/name: graphite-exporter
+  ports:
+    - name: graphite-tcp
+      port: 9109
+      targetPort: graphite-tcp
+      protocol: TCP
+    - name: graphite-udp
+      port: 9109
+      targetPort: graphite-udp
+      protocol: UDP

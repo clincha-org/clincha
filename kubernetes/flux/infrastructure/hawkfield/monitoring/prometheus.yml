@@ -19,3 +19,8 @@ scrape_configs:
         - '10.1.2.101:9100'
         - '10.1.2.102:9100'
         - '10.1.2.103:9100'
+  # TrueNAS (hawkstore) metrics: pushed via Graphite to the graphite_exporter,
+  # re-exposed in Prometheus format and scraped here. Single scrape point.
+  - job_name: truenas-hawkstore
+    static_configs:
+      - targets: ['graphite-exporter.monitoring.svc:9108']
