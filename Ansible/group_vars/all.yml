@@ -4,3 +4,11 @@ ansible_python_interpreter: /usr/bin/python3
 
 metrics_remote_write_url: "https://prometheus.clinch-home.com/api/v1/write"
 logs_push_url: "https://loki.clinch-home.com/loki/api/v1/push"
+
+# AdGuard resolvers per site: own-site first, other-site fallback (no SPOF).
+# Keyed on `site` (set per host by the inventory) so it resolves for both
+# guests and the proxmox_nodes, which aren't in the per-site group.
+resolver_nameservers_by_site:
+  hawkfield: ["10.1.2.131", "10.2.2.131"]
+  london: ["10.2.2.131", "10.1.2.131"]
+resolver_nameservers: "{{ resolver_nameservers_by_site[site] }}"
