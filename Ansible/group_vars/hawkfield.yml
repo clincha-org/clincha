@@ -1,11 +1,6 @@
 k8s_cluster_name: "hawkfield"
 site_dns_domain: "hawkfield.clinch-home.com"
 
-# AdGuard resolvers: own-site first, other-site fallback (no SPOF).
-resolver_nameservers:
-  - "10.1.2.131"
-  - "10.2.2.131"
-
 ansible_ssh_pass: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   32363733313266333133353239313039393237373930653538343637356366396436616237353935

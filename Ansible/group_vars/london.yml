@@ -1,11 +1,6 @@
 k8s_cluster_name: "london"
 site_dns_domain: "london.clinch-home.com"
 
-# AdGuard resolvers: own-site first, other-site fallback (no SPOF).
-resolver_nameservers:
-  - "10.2.2.131"
-  - "10.1.2.131"
-
 user_list:
   - {
     name: "ansible",
