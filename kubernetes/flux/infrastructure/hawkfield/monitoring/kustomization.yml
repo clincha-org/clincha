@@ -17,6 +17,12 @@ configMapGenerator:
       - values.yml=alloy-values.yml
     options:
       disableNameSuffixHash: true
+  - name: alloy-config
+    namespace: monitoring
+    files:
+      - config.alloy
+    options:
+      disableNameSuffixHash: true
   - name: loki-values
     namespace: monitoring
     files:
