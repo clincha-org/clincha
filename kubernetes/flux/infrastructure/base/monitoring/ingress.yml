@@ -91,3 +91,24 @@ spec:
                 name: alloy
                 port:
                   name: http-metrics
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: loki
+  namespace: monitoring
+spec:
+  ingressClassName: nginx
+  tls:
+    - secretName: loki-certificate-secret
+  rules:
+    - host: loki.clinch-home.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: loki-gateway
+                port:
+                  number: 80

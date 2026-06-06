@@ -1,0 +1,77 @@
+// Managed by Ansible (roles/monitoring) — do not edit on the host.
+
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+// ============ Host metrics ============
+
+prometheus.exporter.unix "host" {
+  disable_collectors = {{ monitoring_disabled_collectors | to_json }}
+
+  filesystem {
+    mount_points_exclude = "^/(dev|proc|sys|run/k3s/containerd/.+|var/lib/docker/.+|var/lib/kubelet/pods/.+)($|/)"
+  }
+  netclass {
+    ignored_devices = "^(veth.*|[a-f0-9]{15})$"
+  }
+  netdev {
+    device_exclude = "^(veth.*|[a-f0-9]{15})$"
+  }
+}
+
+prometheus.scrape "host" {
+  targets         = prometheus.exporter.unix.host.targets
+  forward_to      = [prometheus.relabel.host.receiver]
+  scrape_interval = "{{ monitoring_scrape_interval }}"
+}
+
+prometheus.relabel "host" {
+  forward_to = [prometheus.remote_write.central.receiver]
+  rule {
+    target_label = "instance"
+    replacement  = "{{ inventory_hostname }}"
+  }
+  rule {
+    target_label = "site"
+    replacement  = "{{ site }}"
+  }
+}
+
+prometheus.remote_write "central" {
+  endpoint {
+    url = "{{ metrics_remote_write_url }}"
+  }
+}
+
+// ============ Journald logs ============
+
+discovery.relabel "journal" {
+  targets = []
+  rule {
+    source_labels = ["__journal__systemd_unit"]
+    target_label  = "unit"
+  }
+  rule {
+    target_label = "node"
+    replacement  = "{{ inventory_hostname }}"
+  }
+  rule {
+    target_label = "site"
+    replacement  = "{{ site }}"
+  }
+}
+
+loki.source.journal "journal" {
+  path          = "{{ monitoring_journal_path }}"
+  forward_to    = [loki.write.central.receiver]
+  relabel_rules = discovery.relabel.journal.rules
+  labels        = { job = "journald" }
+}
+
+loki.write "central" {
+  endpoint {
+    url = "{{ logs_push_url }}"
+  }
+}
