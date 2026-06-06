@@ -136,9 +136,6 @@ loki.write "local" {
 }
 
 // ============ Cluster metrics ============
-// Cluster state + container resources + ingress HTTP. All new scrapes forward
-// through prometheus.relabel.cluster (stamps cluster="hawkfield") into the
-// existing remote_write to Prometheus. Host metrics above are untouched.
 
 prometheus.relabel "cluster" {
     forward_to = [prometheus.remote_write.local.receiver]
@@ -148,14 +145,10 @@ prometheus.relabel "cluster" {
     }
 }
 
-// Node role addresses resolve to the kubelet (<node>:10250).
 discovery.kubernetes "nodes" {
     role = "node"
 }
 
-// kubelet's own metrics (node/pod/volume state, runtime). Direct-kubelet over
-// HTTPS using the pod's service-account token — matches the granted
-// nodes/metrics RBAC (apiserver-proxy would need nodes/proxy, not granted).
 prometheus.scrape "kubelet" {
     targets           = discovery.kubernetes.nodes.targets
     forward_to        = [prometheus.relabel.cluster.receiver]
@@ -169,8 +162,6 @@ prometheus.scrape "kubelet" {
     scrape_interval = "30s"
 }
 
-// cAdvisor container metrics (container_cpu_*, container_memory_working_set_bytes,
-// container_network_*, container_fs_*) — same kubelet target, different path.
 prometheus.scrape "cadvisor" {
     targets           = discovery.kubernetes.nodes.targets
     forward_to        = [prometheus.relabel.cluster.receiver]
@@ -185,8 +176,6 @@ prometheus.scrape "cadvisor" {
     scrape_interval = "30s"
 }
 
-// kube-state-metrics — object/state metrics (kube_*). Short svc name resolves
-// via resolv.conf search list, consistent with prometheus.monitoring.svc above.
 prometheus.scrape "kube_state_metrics" {
     targets = [
         {"__address__" = "kube-state-metrics.monitoring.svc:8080"},
@@ -196,9 +185,6 @@ prometheus.scrape "kube_state_metrics" {
     scrape_interval = "30s"
 }
 
-// ingress-nginx controller metrics (nginx_ingress_controller_*) — request rate,
-// status classes, latency histograms, connections. Requires controller.metrics
-// enabled in the ingress-nginx HelmRelease values.
 discovery.kubernetes "ingress_nginx" {
     role = "pod"
     namespaces {
