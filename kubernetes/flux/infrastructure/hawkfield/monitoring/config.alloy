@@ -145,12 +145,26 @@ prometheus.relabel "cluster" {
     }
 }
 
+// This is a DaemonSet: every scrape below is filtered to the LOCAL node
+// (NODE_NAME keep), so each Alloy writes each series exactly once. Without
+// this, all 3 replicas scrape every target and remote_write collides
+// (out-of-order samples).
+
 discovery.kubernetes "nodes" {
     role = "node"
 }
 
+discovery.relabel "kubelet" {
+    targets = discovery.kubernetes.nodes.targets
+    rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        regex         = sys.env("NODE_NAME")
+        action        = "keep"
+    }
+}
+
 prometheus.scrape "kubelet" {
-    targets           = discovery.kubernetes.nodes.targets
+    targets           = discovery.relabel.kubelet.output
     forward_to        = [prometheus.relabel.cluster.receiver]
     job_name          = "kubelet"
     scheme            = "https"
@@ -163,7 +177,7 @@ prometheus.scrape "kubelet" {
 }
 
 prometheus.scrape "cadvisor" {
-    targets           = discovery.kubernetes.nodes.targets
+    targets           = discovery.relabel.kubelet.output
     forward_to        = [prometheus.relabel.cluster.receiver]
     job_name          = "cadvisor"
     scheme            = "https"
@@ -176,10 +190,34 @@ prometheus.scrape "cadvisor" {
     scrape_interval = "30s"
 }
 
+discovery.kubernetes "kube_state_metrics" {
+    role = "pod"
+    namespaces {
+        names = ["monitoring"]
+    }
+}
+
+discovery.relabel "kube_state_metrics" {
+    targets = discovery.kubernetes.kube_state_metrics.targets
+    rule {
+        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+        regex         = "kube-state-metrics"
+        action        = "keep"
+    }
+    rule {
+        source_labels = ["__meta_kubernetes_pod_container_port_name"]
+        regex         = "http-metrics"
+        action        = "keep"
+    }
+    rule {
+        source_labels = ["__meta_kubernetes_pod_node_name"]
+        regex         = sys.env("NODE_NAME")
+        action        = "keep"
+    }
+}
+
 prometheus.scrape "kube_state_metrics" {
-    targets = [
-        {"__address__" = "kube-state-metrics.monitoring.svc:8080"},
-    ]
+    targets         = discovery.relabel.kube_state_metrics.output
     forward_to      = [prometheus.relabel.cluster.receiver]
     job_name        = "kube-state-metrics"
     scrape_interval = "30s"
@@ -197,6 +235,11 @@ discovery.relabel "ingress_nginx" {
     rule {
         source_labels = ["__meta_kubernetes_pod_container_port_name"]
         regex         = "metrics"
+        action        = "keep"
+    }
+    rule {
+        source_labels = ["__meta_kubernetes_pod_node_name"]
+        regex         = sys.env("NODE_NAME")
         action        = "keep"
     }
     rule {
