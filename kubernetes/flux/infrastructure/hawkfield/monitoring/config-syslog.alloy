@@ -1,0 +1,23 @@
+logging {
+    level  = "info"
+    format = "logfmt"
+}
+
+loki.source.syslog "truenas" {
+    listener {
+        // 1514 not 514: unprivileged in-pod bind; the Service maps 514 -> 1514.
+        address  = "0.0.0.0:1514"
+        protocol = "tcp"
+        labels   = {
+            job  = "truenas-syslog",
+            node = "hawkstore",
+        }
+    }
+    forward_to = [loki.write.local.receiver]
+}
+
+loki.write "local" {
+    endpoint {
+        url = "http://loki-gateway.monitoring.svc/loki/api/v1/push"
+    }
+}
