@@ -1,0 +1,76 @@
+name: Ansible host monitoring
+permissions:
+  contents: read
+on:
+  push:
+    branches:
+      - "master"
+    paths:
+      - '.github/workflows/ansible-monitoring.yaml'
+      - 'Ansible/**'
+  workflow_dispatch:
+    inputs:
+      site:
+        description: 'Target site (default: both)'
+        type: choice
+        options:
+          - all
+          - hawkfield
+          - london
+        default: all
+concurrency:
+  group: "monitoring-${{ github.event.inputs.site || 'all' }}"
+jobs:
+  monitoring:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        site: ${{ fromJSON(inputs.site == 'hawkfield' && '["hawkfield"]' || inputs.site == 'london' && '["london"]' || '["hawkfield","london"]') }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Set up Ansible
+        working-directory: Ansible
+        run: |
+          pip install -r requirements.txt
+
+      - name: Install Ansible collections
+        working-directory: Ansible
+        run: |
+          ansible-galaxy collection install -r galaxy-requirements.yml
+
+      - name: Setup vault password
+        working-directory: Ansible
+        run: |
+          echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > vault
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "${{ secrets.ANSIBLE_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          eval `ssh-agent -s`
+          ssh-add ~/.ssh/id_ed25519
+
+      - name: Run host monitoring playbook
+        working-directory: Ansible
+        env:
+          PROXMOX_TOKEN_SECRET: ${{ matrix.site == 'hawkfield' && secrets.PROXMOX_TOKEN_HAWKFIELD_ANSIBLE || secrets.PROXMOX_TOKEN_LONDON_ANSIBLE }}
+        run: |
+          ansible-playbook monitoring.yml \
+            --inventory inventory/${{ matrix.site }}.proxmox.yml \
+            --vault-password-file vault
