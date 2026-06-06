@@ -134,3 +134,87 @@ loki.write "local" {
         url = "http://loki-gateway.monitoring.svc/loki/api/v1/push"
     }
 }
+
+// ============ Cluster metrics ============
+
+prometheus.relabel "cluster" {
+    forward_to = [prometheus.remote_write.local.receiver]
+    rule {
+        target_label = "cluster"
+        replacement  = "hawkfield"
+    }
+}
+
+discovery.kubernetes "nodes" {
+    role = "node"
+}
+
+prometheus.scrape "kubelet" {
+    targets           = discovery.kubernetes.nodes.targets
+    forward_to        = [prometheus.relabel.cluster.receiver]
+    job_name          = "kubelet"
+    scheme            = "https"
+    bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+    tls_config {
+        ca_file              = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+        insecure_skip_verify = true
+    }
+    scrape_interval = "30s"
+}
+
+prometheus.scrape "cadvisor" {
+    targets           = discovery.kubernetes.nodes.targets
+    forward_to        = [prometheus.relabel.cluster.receiver]
+    job_name          = "cadvisor"
+    scheme            = "https"
+    metrics_path      = "/metrics/cadvisor"
+    bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+    tls_config {
+        ca_file              = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+        insecure_skip_verify = true
+    }
+    scrape_interval = "30s"
+}
+
+prometheus.scrape "kube_state_metrics" {
+    targets = [
+        {"__address__" = "kube-state-metrics.monitoring.svc:8080"},
+    ]
+    forward_to      = [prometheus.relabel.cluster.receiver]
+    job_name        = "kube-state-metrics"
+    scrape_interval = "30s"
+}
+
+discovery.kubernetes "ingress_nginx" {
+    role = "pod"
+    namespaces {
+        names = ["ingress-nginx"]
+    }
+}
+
+discovery.relabel "ingress_nginx" {
+    targets = discovery.kubernetes.ingress_nginx.targets
+    rule {
+        source_labels = ["__meta_kubernetes_pod_container_port_name"]
+        regex         = "metrics"
+        action        = "keep"
+    }
+    rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+    }
+    rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+    }
+    rule {
+        target_label = "job"
+        replacement  = "ingress-nginx"
+    }
+}
+
+prometheus.scrape "ingress_nginx" {
+    targets         = discovery.relabel.ingress_nginx.output
+    forward_to      = [prometheus.relabel.cluster.receiver]
+    scrape_interval = "30s"
+}

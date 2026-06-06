@@ -5,6 +5,7 @@ resources:
   - helm-repository.yml
   - helm-release-loki.yml
   - helm-release-alloy.yml
+  - kube-state-metrics.yml
   - prometheus.yml
   - grafana.yml
   - certificate.yml

@@ -1,6 +1,10 @@
 controller:
   replicaCount: 3
   minAvailable: 2
+  metrics:
+    enabled: true
+    service:
+      enabled: true
   service:
     externalTrafficPolicy: Local
     annotations:
