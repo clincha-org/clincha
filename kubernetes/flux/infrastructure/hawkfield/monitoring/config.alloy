@@ -145,11 +145,7 @@ prometheus.relabel "cluster" {
     }
 }
 
-// This is a DaemonSet: every scrape below is filtered to the LOCAL node
-// (NODE_NAME keep), so each Alloy writes each series exactly once. Without
-// this, all 3 replicas scrape every target and remote_write collides
-// (out-of-order samples).
-
+// DaemonSet: keep only local-node targets, else every replica double-writes.
 discovery.kubernetes "nodes" {
     role = "node"
 }
