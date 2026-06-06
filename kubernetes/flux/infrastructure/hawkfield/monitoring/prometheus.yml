@@ -24,3 +24,9 @@ scrape_configs:
   - job_name: truenas-hawkstore
     static_configs:
       - targets: ['graphite-exporter.monitoring.svc:9108']
+  # TrueNAS depth (ZFS pools/datasets/scrub + disk temps) polled from the NAS API
+  # by truenas-api-exporter. Each scrape is a full API roundtrip, so poll gently.
+  - job_name: truenas-api
+    scrape_interval: 60s
+    static_configs:
+      - targets: ['truenas-api-exporter.monitoring.svc:9113']
