@@ -22,6 +22,8 @@ spec:
         app.kubernetes.io/component: syslog
         app.kubernetes.io/part-of: kube-prometheus
     spec:
+      securityContext:
+        fsGroup: 473
       containers:
         - name: alloy
           image: grafana/alloy:v1.16.1
@@ -57,6 +59,8 @@ spec:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
             runAsNonRoot: true
+            runAsUser: 473
+            runAsGroup: 473
             capabilities:
               drop:
                 - ALL
