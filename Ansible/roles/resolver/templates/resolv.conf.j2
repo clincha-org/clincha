@@ -1,0 +1,5 @@
+# Managed by Ansible (roles/resolver) — do not edit on the host.
+search {{ resolver_search_domain }}
+{% for ns in resolver_nameservers %}
+nameserver {{ ns }}
+{% endfor %}

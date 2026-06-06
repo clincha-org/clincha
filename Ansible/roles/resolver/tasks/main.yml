@@ -1,0 +1,21 @@
+---
+- name: Point /etc/resolv.conf at the AdGuard resolvers (Debian / Proxmox)
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: "0644"
+  when: ansible_facts['distribution'] != 'Ubuntu'
+
+- name: Point netplan at the AdGuard resolvers (Ubuntu)
+  vars:
+    addrs: "{% for n in resolver_nameservers %}        - {{ n }}\n{% endfor %}"
+  ansible.builtin.replace:
+    path: /etc/netplan/50-cloud-init.yaml
+    after: 'nameservers:'
+    before: 'set-name:'
+    regexp: '(addresses:\n)(?:\s*-\s*[0-9.]+\n)+'
+    replace: '\g<1>{{ addrs }}'
+  notify: Apply netplan
+  when: ansible_facts['distribution'] == 'Ubuntu'

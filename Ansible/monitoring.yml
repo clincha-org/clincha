@@ -1,4 +1,13 @@
 ---
+# Point fleet resolvers at AdGuard first, so Alloy can resolve the
+# prometheus/loki ingress hostnames. AdGuard hosts are excluded — they
+# resolve via themselves.
+- name: Point fleet resolvers at AdGuard
+  hosts: proxmox_nodes:base:claude
+  become: true
+  roles:
+    - role: resolver
+
 - name: Install host metrics & logs collector
   hosts: proxmox_nodes:base:adguard:claude
   become: true
