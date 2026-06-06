@@ -3,6 +3,9 @@ namespaceOverride: monitoring
 controller:
   type: daemonset
   hostPID: true
+  # hostNetwork: unix exporter needs the node netns for network/NFS stats; dnsPolicy keeps cluster DNS.
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
   volumes:
     extra:
       - name: host-root
