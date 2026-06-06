@@ -1,5 +1,5 @@
 ansible-core==2.17.14 # locked for compatibility with Kubespray
-distlib==0.4.0 # Required to install collections
+distlib==0.4.1 # Required to install collections
 requests==2.34.2 # Required for Proxmox dynamic inventory
 passlib # password hashing
 bcrypt<5 # password hashing for adguard
