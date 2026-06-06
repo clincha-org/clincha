@@ -17,10 +17,10 @@ prometheus.exporter.unix "host" {
         mount_points_exclude = "^/(dev|proc|sys|run/k3s/containerd/.+|var/lib/docker/.+|var/lib/kubelet/pods/.+)($|/)"
     }
     netclass {
-        ignored_devices = "^(veth.*|[a-f0-9]{15})$"
+        ignored_devices = "^(veth.*|cali.*|vxlan\\.calico|kube-ipvs0|nodelocaldns|dummy.*|lxc.*|tap.*|[a-f0-9]{15})$"
     }
     netdev {
-        device_exclude = "^(veth.*|[a-f0-9]{15})$"
+        device_exclude = "^(veth.*|cali.*|vxlan\\.calico|kube-ipvs0|nodelocaldns|dummy.*|lxc.*|tap.*|[a-f0-9]{15})$"
     }
 }
 
