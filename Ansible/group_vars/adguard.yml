@@ -13,6 +13,12 @@ adguard_local_dns_entries:
   - domain: "lon01.clinch-home.com"
     answer: "10.2.2.11"
 
+  # NAS
+  - domain: "hawkstore.clinch-home.com"
+    answer: "10.1.2.10"
+  - domain: "nas.clinch-home.com"
+    answer: "10.1.2.10"
+
   # DNS servers
   - domain: "dns-hawk-1.clinch-home.com"
     answer: "10.1.2.131"
