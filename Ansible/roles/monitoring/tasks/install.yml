@@ -23,5 +23,5 @@
 
 - name: Install Grafana Alloy
   ansible.builtin.apt:
-    name: "alloy={{ monitoring_alloy_version }}"
+    name: alloy
     state: present
