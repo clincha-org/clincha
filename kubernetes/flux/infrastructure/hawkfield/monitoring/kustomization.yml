@@ -5,6 +5,7 @@ metadata:
 resources:
   - ../../base/monitoring
   - truenas-api-key.sops.yaml
+  - loki-minio-creds.sops.yaml
 configMapGenerator:
   - name: prometheus.yml
     namespace: monitoring
