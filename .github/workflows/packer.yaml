@@ -39,7 +39,7 @@ jobs:
       group: "packer-${{ matrix.host }}"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4

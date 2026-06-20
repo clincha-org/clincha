@@ -21,7 +21,7 @@ jobs:
       group: "cluster-${{ matrix.site }}"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
@@ -73,7 +73,7 @@ jobs:
       group: "cluster-${{ matrix.site }}"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
