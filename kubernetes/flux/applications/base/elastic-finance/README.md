@@ -38,4 +38,3 @@ curl -sf -u "$USER:$PASS" \
 Commit the updated `dashboards/dashboards.ndjson`. On the next reconcile the
 import Job restores it; after a cluster rebuild the dashboards come back with no
 manual steps.
-

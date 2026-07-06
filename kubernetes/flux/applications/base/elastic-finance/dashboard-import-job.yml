@@ -45,12 +45,16 @@ spec:
                   continue
                 fi
                 echo "Importing $file"
-                curl -sf -u "$auth" \
+                response=$(curl -s -u "$auth" \
                   -H "kbn-xsrf: true" \
                   -X POST \
                   "$KIBANA_URL/api/saved_objects/_import?overwrite=true" \
-                  --form file=@"$file"
-                echo
+                  --form file=@"$file")
+                echo "$response"
+                echo "$response" | grep -q '"success":true' || {
+                  echo "Import of $file failed"
+                  exit 1
+                }
                 imported=$((imported + 1))
               done
               if [ "$imported" -eq 0 ]; then
