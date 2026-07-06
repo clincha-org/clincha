@@ -5,3 +5,11 @@ resources:
   - helm-release.yml
   - elastic-certificate.yml
   - kibana-certificate.yml
+  - dashboard-import-job.yml
+configMapGenerator:
+  - name: kibana-dashboards
+    namespace: elastic-finance
+    files:
+      - dashboards/dashboards.ndjson
+generatorOptions:
+  disableNameSuffixHash: true

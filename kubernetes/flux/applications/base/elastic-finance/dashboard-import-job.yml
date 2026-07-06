@@ -1,0 +1,66 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kibana-dashboard-import
+  namespace: elastic-finance
+spec:
+  backoffLimit: 10
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: import
+          image: curlimages/curl:8.11.1
+          env:
+            - name: KIBANA_URL
+              value: http://kibana-kb-http.elastic-finance:5601
+            - name: KIBANA_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secret-basic-auth
+                  key: username
+            - name: KIBANA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret-basic-auth
+                  key: password
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              auth="$KIBANA_USERNAME:$KIBANA_PASSWORD"
+              echo "Waiting for Kibana to be available..."
+              until curl -sf -u "$auth" \
+                "$KIBANA_URL/api/status" >/dev/null; do
+                sleep 5
+              done
+              echo "Kibana is up. Importing dashboards..."
+              imported=0
+              for file in /dashboards/*.ndjson; do
+                if [ ! -s "$file" ]; then
+                  echo "Skipping empty $file"
+                  continue
+                fi
+                echo "Importing $file"
+                curl -sf -u "$auth" \
+                  -H "kbn-xsrf: true" \
+                  -X POST \
+                  "$KIBANA_URL/api/saved_objects/_import?overwrite=true" \
+                  --form file=@"$file"
+                echo
+                imported=$((imported + 1))
+              done
+              if [ "$imported" -eq 0 ]; then
+                echo "No dashboards to import."
+              fi
+          volumeMounts:
+            - name: dashboards
+              mountPath: /dashboards
+              readOnly: true
+      volumes:
+        - name: dashboards
+          configMap:
+            name: kibana-dashboards
