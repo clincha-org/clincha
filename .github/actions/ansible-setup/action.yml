@@ -1,0 +1,45 @@
+name: Ansible setup
+description: Set up Python and Ansible, optionally writing vault password and SSH key.
+inputs:
+  vault-password:
+    description: Ansible vault password. When set, written to Ansible/vault.
+    required: false
+    default: ''
+  ssh-private-key:
+    description: SSH private key. When set, written to ~/.ssh/id_ed25519.
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.13'
+
+    - name: Set up Ansible
+      working-directory: Ansible
+      shell: bash
+      run: |
+        pip install -r requirements.txt
+
+    - name: Install Ansible collections
+      working-directory: Ansible
+      shell: bash
+      run: |
+        ansible-galaxy collection install -r galaxy-requirements.yml
+
+    - name: Setup vault password
+      if: inputs.vault-password != ''
+      working-directory: Ansible
+      shell: bash
+      run: |
+        echo "${{ inputs.vault-password }}" > vault
+
+    - name: Setup SSH key
+      if: inputs.ssh-private-key != ''
+      shell: bash
+      run: |
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+        echo "${{ inputs.ssh-private-key }}" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
