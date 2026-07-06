@@ -38,7 +38,7 @@ These run when changes are pushed to `master` (i.e. a PR is merged).
 |----------|------|----------|-------|-------------|
 | **Packer Build** | `packer.yaml` | Push to master (paths: `packer/**`), weekly Sunday 04:00 UTC, manual | hawk01–03, lon01 | Builds Ubuntu 24.04 VM templates on all Proxmox nodes (matrix build, one per host) |
 | **Terraform Apply** | `terraform.yaml` | Push to master (paths: `terraform/**`), manual | Hawkfield, London | Plans then applies Terraform for both sites (matrix). Apply job requires `production` environment approval |
-| **Ansible Base** | `ansible-base.yaml` | Push to master (paths: `Ansible/**`), hourly, manual | Hawkfield only | Runs `base.yml` playbook — user accounts, sudoers, base packages |
+| **Ansible Base** | `ansible-base.yaml` | Push to master (paths: `Ansible/**`), hourly, manual | Hawkfield, London (parallel) | Runs `base.yml` playbook — user accounts, sudoers, base packages |
 | **Proxmox Config** | `ansible-proxmox.yaml` | Push to master (paths: `Ansible/proxmox.yml`), hourly, manual | Hawkfield, London (parallel) | Configures Proxmox API roles, users, and ACLs via `proxmox.yml` playbook |
 
 ### Scheduled Maintenance
@@ -62,8 +62,7 @@ Workflows use concurrency groups to prevent dangerous parallel runs:
 
 | Group | Workflows | Behaviour |
 |-------|-----------|-----------|
-| `cluster-{site}` | terraform.yaml | Per-site — hawkfield and london apply independently |
-| `cluster-hawkfield` | ansible-base.yaml | Serialised with any hawkfield terraform run |
+| `cluster-{site}` | terraform.yaml, ansible-base.yaml | Per-site — each site's job serialises with that site's terraform run |
 | `cluster-{input}` | cluster-rebuild.yaml | Per-cluster — hawkfield and london can run independently |
 | `terraform-plan-{PR}` | terraform-plan.yaml | Per-PR, cancels in-progress — only latest plan matters |
 | `packer-{host}` | packer.yaml | Per-host — prevents parallel builds on the same Proxmox node |
@@ -80,8 +79,8 @@ All secrets are stored in GitHub repository settings.
 | `ANSIBLE_VAULT_PASSWORD` | Decrypts Ansible Vault-encrypted vars | ansible-base, ansible-update-proxmox, ansible-proxmox, cluster-rebuild |
 | `ANSIBLE_PRIVATE_KEY` | SSH private key (ed25519) for Ansible | ansible-base, ansible-update-proxmox, ansible-proxmox, cluster-rebuild |
 | `MINIO_SECRET_KEY` | Terraform state backend (MinIO/S3) | terraform, terraform-plan, cluster-rebuild |
-| `PROXMOX_TOKEN_HAWKFIELD_ANSIBLE` | Proxmox API token for Ansible (Bristol) | ansible-proxmox |
-| `PROXMOX_TOKEN_LONDON_ANSIBLE` | Proxmox API token for Ansible (London) | ansible-proxmox |
+| `PROXMOX_TOKEN_HAWKFIELD_ANSIBLE` | Proxmox API token for Ansible (Bristol) | ansible-base, ansible-proxmox |
+| `PROXMOX_TOKEN_LONDON_ANSIBLE` | Proxmox API token for Ansible (London) | ansible-base, ansible-proxmox |
 | `PROXMOX_TOKEN_HAWKFIELD_PACKER` | Proxmox API token for Packer (Bristol) | packer |
 | `PROXMOX_TOKEN_LONDON_PACKER` | Proxmox API token for Packer (London) | packer |
 | `PROXMOX_TOKEN_HAWKFIELD_TERRAFORM` | Proxmox API token for Terraform (Bristol) | terraform, terraform-plan, cluster-rebuild |
@@ -94,5 +93,4 @@ All secrets are stored in GitHub repository settings.
 
 Tracked in the [CI/CD Improvements](https://github.com/clincha-org/clincha/milestone/6) milestone:
 
-- **ansible-base is hawkfield-only** — the hourly base config reconciliation only targets hawkfield. London base config must be applied manually. [#214](https://github.com/clincha-org/clincha/issues/214)
 - **Boilerplate repetition** — Tailscale setup, Ansible setup (Python, pip, galaxy, vault, SSH key) are copy-pasted across workflows. These could be extracted into composite actions. [#215](https://github.com/clincha-org/clincha/issues/215)

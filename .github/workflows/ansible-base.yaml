@@ -11,11 +11,11 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 * * * *"
-concurrency:
-  group: "cluster-hawkfield"
 jobs:
-  base:
+  hawkfield:
     runs-on: ubuntu-latest
+    concurrency:
+      group: "cluster-hawkfield"
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -55,11 +55,63 @@ jobs:
           eval `ssh-agent -s`
           ssh-add ~/.ssh/id_ed25519
 
-      - name: Run Ansible playbook
+      - name: Run Ansible playbook (Hawkfield)
         working-directory: Ansible
         env:
           PROXMOX_TOKEN_SECRET: ${{ secrets.PROXMOX_TOKEN_HAWKFIELD_ANSIBLE }}
         run: |
           ansible-playbook base.yml \
             --inventory inventory/hawkfield.proxmox.yml \
+            --vault-password-file vault
+
+  london:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: "cluster-london"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Set up Ansible
+        working-directory: Ansible
+        run: |
+          pip install -r requirements.txt
+
+      - name: Install Ansible collections
+        working-directory: Ansible
+        run: |
+          ansible-galaxy collection install -r galaxy-requirements.yml
+
+      - name: Setup vault password
+        working-directory: Ansible
+        run: |
+          echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > vault
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "${{ secrets.ANSIBLE_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          eval `ssh-agent -s`
+          ssh-add ~/.ssh/id_ed25519
+
+      - name: Run Ansible playbook (London)
+        working-directory: Ansible
+        env:
+          PROXMOX_TOKEN_SECRET: ${{ secrets.PROXMOX_TOKEN_LONDON_ANSIBLE }}
+        run: |
+          ansible-playbook base.yml \
+            --inventory inventory/london.proxmox.yml \
             --vault-password-file vault
