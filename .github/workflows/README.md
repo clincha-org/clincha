@@ -95,4 +95,4 @@ All secrets are stored in GitHub repository settings.
 Tracked in the [CI/CD Improvements](https://github.com/clincha-org/clincha/milestone/6) milestone:
 
 - **ansible-base is hawkfield-only** — the hourly base config reconciliation only targets hawkfield. London base config must be applied manually. [#214](https://github.com/clincha-org/clincha/issues/214)
-- **Boilerplate repetition** — Tailscale setup, Ansible setup (Python, pip, galaxy, vault, SSH key) are copy-pasted across workflows. These could be extracted into composite actions. [#215](https://github.com/clincha-org/clincha/issues/215)
+- **Boilerplate repetition** — mostly addressed by the composite actions in [`.github/actions/`](../actions): `ansible-setup` (Python, pip, galaxy, vault, SSH key) and `terraform-setup` (Tailscale, MinIO check, setup-terraform). Ansible workflows still declare their own Tailscale step. [#215](https://github.com/clincha-org/clincha/issues/215)
