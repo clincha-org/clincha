@@ -64,3 +64,5 @@ test: { enabled: false }
 
 gateway:
   enabled: true
+  # Log only non-2xx/3xx responses so successful Alloy pushes stop flooding Loki
+  verboseLogging: false
