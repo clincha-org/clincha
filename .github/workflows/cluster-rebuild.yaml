@@ -12,7 +12,7 @@ jobs:
       name: production
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
@@ -48,7 +48,7 @@ jobs:
     needs: destroy
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
@@ -89,7 +89,7 @@ jobs:
     needs: provision
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
