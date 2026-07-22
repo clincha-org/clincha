@@ -4,6 +4,8 @@ kind: Ingress
 metadata:
   name: prometheus
   namespace: monitoring
+  annotations:
+    nginx.ingress.kubernetes.io/client-body-buffer-size: "64k"
 spec:
   ingressClassName: nginx
   tls:
@@ -35,6 +37,8 @@ kind: Ingress
 metadata:
   name: grafana
   namespace: monitoring
+  annotations:
+    nginx.ingress.kubernetes.io/client-body-buffer-size: "64k"
 spec:
   ingressClassName: nginx
   tls:
