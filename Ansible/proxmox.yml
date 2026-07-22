@@ -134,7 +134,11 @@
         url: >-
           https://releases.ubuntu.com/noble/SHA256SUMS
         return_content: true
+        timeout: 30
       register: sha256sums
+      until: sha256sums is succeeded
+      retries: 5
+      delay: 15
 
     - name: "Parse latest live-server ISO entry"
       vars:
@@ -164,6 +168,11 @@
         owner: root
         group: root
         mode: "0644"
+        timeout: 30
+      register: ubuntu_iso
+      until: ubuntu_iso is succeeded
+      retries: 5
+      delay: 15
 
     - name: "Update LXC template catalogue"
       ansible.builtin.command:
