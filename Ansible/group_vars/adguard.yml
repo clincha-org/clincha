@@ -58,6 +58,10 @@ adguard_local_dns_entries:
     answer: "10.1.2.205"
   - domain: "tdarr.clinch-home.com"
     answer: "10.1.2.205"
+  - domain: "immich.clinch-home.com"
+    answer: "10.1.2.205"
+  - domain: "photos.clinch-home.com"
+    answer: "10.1.2.205"
 
   # Kubernetes ingress — clincha.co.uk
   - domain: "clincha.co.uk"
@@ -93,6 +97,10 @@ adguard_local_dns_entries:
   - domain: "ombi.clincha.co.uk"
     answer: "10.1.2.205"
   - domain: "tdarr.clincha.co.uk"
+    answer: "10.1.2.205"
+  - domain: "immich.clincha.co.uk"
+    answer: "10.1.2.205"
+  - domain: "photos.clincha.co.uk"
     answer: "10.1.2.205"
 
   # Claude server (Dave)
