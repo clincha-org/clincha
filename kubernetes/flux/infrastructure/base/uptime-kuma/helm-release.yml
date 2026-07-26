@@ -32,9 +32,14 @@ spec:
     additionalVolumeMounts:
       - name: storage
         mountPath: /app/data
-    # extra/entrypoint.sh chowns /app/data under `set -e` before dropping to PUID:PGID
-    # with setpriv, so this has to start as root — the chown fails over NFS otherwise
-    # and the container exits. Its export is maproot=root rather than root_squash.
+    # extra/entrypoint.sh chowns /app/data and then drops to PUID:PGID with
+    # `setpriv --clear-groups`, which needs CAP_SETGID. Set root explicitly rather
+    # than by omission: helm leaves a previously-rendered securityContext in place
+    # when the key disappears from values, so the old non-root one would persist.
+    podSecurityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      runAsNonRoot: false
     podEnv:
       - name: PUID
         value: "3019"
