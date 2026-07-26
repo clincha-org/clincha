@@ -32,9 +32,11 @@ spec:
     additionalVolumeMounts:
       - name: storage
         mountPath: /app/data
-    # The export is root_squash and the image defaults to root.
-    podSecurityContext:
-      runAsUser: 3019
-      runAsGroup: 3021
-      fsGroup: 3021
-      runAsNonRoot: true
+    # extra/entrypoint.sh chowns /app/data under `set -e` before dropping to PUID:PGID
+    # with setpriv, so this has to start as root — the chown fails over NFS otherwise
+    # and the container exits. Its export is maproot=root rather than root_squash.
+    podEnv:
+      - name: PUID
+        value: "3019"
+      - name: PGID
+        value: "3021"
