@@ -29,6 +29,17 @@ These run automatically on pull requests to validate changes before merge.
 |----------|------|----------|-------|-------------|
 | **Ansible Lint** | `ansible-lint.yaml` | PR (paths: `Ansible/**`), manual | N/A | Lints all Ansible code with `ansible-lint --strict` |
 | **Terraform Plan (PR)** | `terraform-plan.yaml` | PR (paths: `terraform/**`) | Hawkfield, London | Runs `terraform plan` for both sites and posts results as a PR comment |
+| **Kubernetes Validate** | `k8s-validate.yaml` | PR (paths: `kubernetes/**`), manual | N/A | `kubectl kustomize` + `kubeconform` over every overlay, plus `yamllint` on changed YAML |
+
+`k8s-validate` builds all 62 kustomization directories under `kubernetes/flux/` and
+schema-checks the output. `-ignore-missing-schemas` lets the Flux CRs through and
+`-skip Secret` lets the SOPS blobs through — `-strict` would otherwise reject their
+`sops` key as an extra property.
+
+The `yamllint` job lints only the YAML a PR changed, against the repo `.yamllint`.
+A whole-tree run currently reports ~2,900 errors (the bulk in the generated
+`gotk-components.yaml`), so gating on the full repo would fail every PR regardless of
+its contents.
 
 ### Deploy on Merge
 
