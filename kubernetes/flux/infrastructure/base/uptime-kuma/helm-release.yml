@@ -33,9 +33,10 @@ spec:
       - name: storage
         mountPath: /app/data
     # extra/entrypoint.sh chowns /app/data and then drops to PUID:PGID with
-    # `setpriv --clear-groups`, which needs CAP_SETGID. Set root explicitly rather
-    # than by omission: helm leaves a previously-rendered securityContext in place
-    # when the key disappears from values, so the old non-root one would persist.
+    # `setpriv --clear-groups`, which needs CAP_SETGID. Set root explicitly
+    # rather than by omission: helm leaves a previously-rendered
+    # securityContext in place when the key disappears from values, so the old
+    # non-root one would persist.
     podSecurityContext:
       runAsUser: 0
       runAsGroup: 0

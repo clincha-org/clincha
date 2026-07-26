@@ -19,7 +19,7 @@ spec:
       initContainers:
         - name: copy-server-settings
           image: busybox
-          command: [ "sh", "-c", "cp /settings/*.json /config" ]
+          command: ["sh", "-c", "cp /settings/*.json /config"]
           volumeMounts:
             - name: config
               mountPath: /config
@@ -47,7 +47,7 @@ spec:
               name: saves
       volumes:
         - name: config
-          emptyDir: { }
+          emptyDir: {}
         - name: saves
           nfs:
             path: /mnt/data/factorio/2026
