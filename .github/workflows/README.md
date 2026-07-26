@@ -106,7 +106,13 @@ All secrets are stored in GitHub repository settings.
 | `PACKER_SSH_PASSWORD` | SSH password for Packer VM provisioning | packer |
 | `PROXMOX_ROOT_PASSWORD` | Root password for bootstrap | ansible-proxmox-bootstrap |
 | `GH_PAT` | GitHub Personal Access Token | ansible-proxmox-bootstrap |
-| `RENOVATE_TOKEN` | Fine-grained PAT, this repo only, Contents + Pull requests read/write | renovate |
+| `RENOVATE_TOKEN` | Fine-grained PAT, this repo only, Contents + Pull requests + Issues read/write | renovate |
+
+All three permissions are required. **Issues** is the non-obvious one: Renovate's
+repo-init GraphQL query reads `repository.issues` unconditionally, so without it the
+run dies at startup with an opaque `platform-unknown-error` — the underlying
+`FORBIDDEN` on the `issues` field is only visible at debug log level. Write, not just
+read, because `dependencyDashboard` needs to open and update its issue.
 
 `RENOVATE_TOKEN` is deliberately not `GH_PAT`: that one is a classic token carrying
 `admin:org`, `delete_repo` and `workflow`, far beyond what Renovate needs. It also
