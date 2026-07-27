@@ -12,8 +12,7 @@
   "prConcurrentLimit": 3,
   "prHourlyLimit": 2,
   "ignorePaths": [
-    "**/gotk-components.yaml",
-    "kubernetes/flux/infrastructure/base/traefik/values.example.yml"
+    "**/gotk-components.yaml"
   ],
   "packageRules": [
     {
