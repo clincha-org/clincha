@@ -4,8 +4,6 @@ kind: Ingress
 metadata:
   name: longhorn
   namespace: longhorn
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
 spec:
   ingressClassName: nginx
   tls:
