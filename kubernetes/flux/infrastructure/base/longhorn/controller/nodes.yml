@@ -6,6 +6,7 @@ metadata:
   labels:
     node.longhorn.io/create-default-disk: "config"
   annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
     node.longhorn.io/default-disks-config: |-
       [
         {
@@ -25,6 +26,7 @@ metadata:
   labels:
     node.longhorn.io/create-default-disk: "config"
   annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
     node.longhorn.io/default-disks-config: |-
       [
         {
@@ -44,6 +46,7 @@ metadata:
   labels:
     node.longhorn.io/create-default-disk: "config"
   annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
     node.longhorn.io/default-disks-config: |-
       [
         {
