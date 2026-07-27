@@ -44,3 +44,36 @@
       ansible.builtin.systemd:
         name: AdGuardHome
         state: started
+
+- name: Re-read AdGuard Home configuration before applying filtering rules
+  ansible.builtin.slurp:
+    src: /opt/AdGuardHome/AdGuardHome.yaml
+  register: adguard_config_before_rules
+
+- name: Apply user filtering rules to AdGuard config (stop → edit → start)
+  vars:
+    adguard_config: >-
+      {{ adguard_config_before_rules.content | b64decode | from_yaml }}
+  when: adguard_config.user_rules | default([], true) != adguard_user_rules
+  block:
+    - name: Stop AdGuardHome before editing its filtering rules
+      ansible.builtin.systemd:
+        name: AdGuardHome
+        state: stopped
+
+    - name: Write user filtering rules into AdGuard config
+      ansible.builtin.copy:
+        content: >-
+          {{ adguard_config
+             | combine({'user_rules': adguard_user_rules})
+             | to_nice_yaml(indent=2) }}
+        dest: /opt/AdGuardHome/AdGuardHome.yaml
+        owner: root
+        group: root
+        mode: "0600"
+        backup: true
+  always:
+    - name: Start AdGuardHome after editing its filtering rules
+      ansible.builtin.systemd:
+        name: AdGuardHome
+        state: started

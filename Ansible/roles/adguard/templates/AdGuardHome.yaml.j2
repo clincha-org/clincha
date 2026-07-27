@@ -39,6 +39,7 @@ filters:
     url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt
     name: AdAway Default Blocklist
     id: 2
+user_rules: {{ adguard_user_rules | to_json }}
 querylog:
   enabled: true
   file_enabled: true
