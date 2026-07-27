@@ -8,6 +8,9 @@ metadata:
     name: factorio
 spec:
   replicas: 1
+  # RollingUpdate deadlocks: no node can double-book the 4-CPU request
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       name: factorio
