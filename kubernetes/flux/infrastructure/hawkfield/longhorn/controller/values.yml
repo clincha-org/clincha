@@ -7,5 +7,7 @@ persistence:
 defaultSettings:
   createDefaultDiskLabeledNodes: true
   storageReservedPercentageForDefaultDisk: 0
+  # the chart's pre-delete hook refuses to uninstall without this
+  deletingConfirmationFlag: true
 defaultBackupStore:
   backupTarget: "nfs://10.1.2.10:/mnt/data/backups/longhorn"
