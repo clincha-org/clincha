@@ -10,7 +10,10 @@ updates:
           - "version-update:semver-major"
           - "version-update:semver-minor"
   - package-ecosystem: github-actions
-    directory: "/.github/workflows"
+    directories:
+      - "/.github/workflows"
+      - "/.github/actions/ansible-setup"
+      - "/.github/actions/terraform-setup"
     schedule:
       interval: "weekly"
   - package-ecosystem: terraform

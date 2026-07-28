@@ -22,19 +22,8 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
 
-      - uses: actions/setup-python@v7
-        with:
-          python-version: '3.13'
-
       - name: Set up Ansible
-        working-directory: Ansible
-        run: |
-          pip install -r requirements.txt
-
-      - name: Install Ansible collections
-        working-directory: Ansible
-        run: |
-          ansible-galaxy collection install -r galaxy-requirements.yml
+        uses: ./.github/actions/ansible-setup
 
       - name: Run bootstrap playbook
         working-directory: Ansible
