@@ -49,8 +49,8 @@ Everything is deployed as code: Packer builds VM templates, Terraform provisions
 | **K8s nodes** | 3x 10-core, 64GB (10.1.2.101–103) | 3x 4-core, 4GB (10.2.0.101–103) |
 | **Ingress** | nginx-ingress | Traefik |
 | **Infrastructure** | MetalLB, Longhorn, Cert-Manager | MetalLB, Longhorn, Cert-Manager |
-| **Monitoring** | Prometheus, Grafana, Uptime Kuma | Elastic Operator |
-| **Applications** | Homepage, Factorio, Satisfactory | Homepage, Elastic Finance |
+| **Monitoring** | Prometheus, Grafana, Uptime Kuma | — |
+| **Applications** | Homepage, Factorio, Satisfactory | Homepage |
 | **Other VMs** | claude-hawk-1 (Claude Code) | — |
 
 ## Workflow Status
