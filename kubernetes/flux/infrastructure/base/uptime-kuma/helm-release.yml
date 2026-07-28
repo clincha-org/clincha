@@ -10,13 +10,39 @@ spec:
   chart:
     spec:
       chart: uptime-kuma
-      version: '2.24.0'
+      version: '4.1.0'
       sourceRef:
         kind: HelmRepository
         name: uptime-kuma
         namespace: uptime-kuma
       interval: 1m
-#  valuesFrom:
-#    - kind: ConfigMap
-#      name: uptime-kuma-values
-#      valuesKey: values.yml
+  # Values are inline rather than valuesFrom: helm-controller does not watch the
+  # referenced ConfigMap, so an edit there needs a manual --force reconcile.
+  values:
+    # /app/data is the SQLite database. Mounted from hawkstore NFS rather than a
+    # PVC — a Longhorn journal abort silently wedged two volumes with EIO for 18
+    # days on 2026-07-08.
+    volume:
+      enabled: false
+    additionalVolumes:
+      - name: storage
+        nfs:
+          server: 10.1.2.10
+          path: /mnt/data/uptime-kuma
+    additionalVolumeMounts:
+      - name: storage
+        mountPath: /app/data
+    # extra/entrypoint.sh chowns /app/data and then drops to PUID:PGID with
+    # `setpriv --clear-groups`, which needs CAP_SETGID. Set root explicitly
+    # rather than by omission: helm leaves a previously-rendered
+    # securityContext in place when the key disappears from values, so the old
+    # non-root one would persist.
+    podSecurityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      runAsNonRoot: false
+    podEnv:
+      - name: PUID
+        value: "3019"
+      - name: PGID
+        value: "3021"

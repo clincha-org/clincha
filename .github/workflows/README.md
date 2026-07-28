@@ -29,6 +29,17 @@ These run automatically on pull requests to validate changes before merge.
 |----------|------|----------|-------|-------------|
 | **Ansible Lint** | `ansible-lint.yaml` | PR (paths: `Ansible/**`), manual | N/A | Lints all Ansible code with `ansible-lint --strict` |
 | **Terraform Plan (PR)** | `terraform-plan.yaml` | PR (paths: `terraform/**`) | Hawkfield, London | Runs `terraform plan` for both sites and posts results as a PR comment |
+| **Kubernetes Validate** | `k8s-validate.yaml` | PR (paths: `kubernetes/**`), manual | N/A | `kubectl kustomize` + `kubeconform` over every overlay, plus `yamllint` on changed YAML |
+
+`k8s-validate` builds all 62 kustomization directories under `kubernetes/flux/` and
+schema-checks the output. `-ignore-missing-schemas` lets the Flux CRs through and
+`-skip Secret` lets the SOPS blobs through — `-strict` would otherwise reject their
+`sops` key as an extra property.
+
+The `yamllint` job lints only the YAML a PR changed, against the repo `.yamllint`.
+A whole-tree run currently reports ~2,900 errors (the bulk in the generated
+`gotk-components.yaml`), so gating on the full repo would fail every PR regardless of
+its contents.
 
 ### Deploy on Merge
 
@@ -46,6 +57,23 @@ These run when changes are pushed to `master` (i.e. a PR is merged).
 | Workflow | File | Schedule | Sites | What it does |
 |----------|------|----------|-------|-------------|
 | **Update Proxmox** | `ansible-update-proxmox.yaml` | Daily 03:00 UTC, manual | Hawkfield, London (parallel) | Runs `update-proxmox.yml` — apt upgrades on Proxmox hosts (independent per site) |
+| **Renovate** | `renovate.yaml` | Weekly Monday 06:00 UTC, manual | N/A | Proposes container image and Helm chart updates under `kubernetes/flux/` as PRs |
+
+Renovate is configured by `/renovate.json` at the repo root. Only the `kubernetes`
+and `flux` managers are enabled, so it cannot open a `terraform/**`, `Ansible/**` or
+`.github/**` PR — which matters because `terraform-plan.yaml` guards on
+`github.actor != 'dependabot[bot]'`, a check Renovate would not match. Dependabot
+still owns pip, github-actions and terraform; the two do not overlap.
+
+Nothing auto-merges. Merging a Renovate PR deploys it — Flux reconciles within 1–2
+minutes.
+
+`clincha/media` runs its own copy of this workflow against its own `renovate.json`.
+The two are separate because a fine-grained PAT has a single resource owner and
+cannot span an org-owned and a user-owned repo.
+
+Run manually with **dryRun: true** to see what it would propose without opening
+anything.
 
 ### Manual Operations
 
@@ -88,9 +116,20 @@ All secrets are stored in GitHub repository settings.
 | `PACKER_SSH_PASSWORD` | SSH password for Packer VM provisioning | packer |
 | `PROXMOX_ROOT_PASSWORD` | Root password for bootstrap | ansible-proxmox-bootstrap |
 | `GH_PAT` | GitHub Personal Access Token | ansible-proxmox-bootstrap |
+| `RENOVATE_TOKEN` | Fine-grained PAT, this repo only, Contents + Pull requests + Issues read/write | renovate |
+
+All three permissions are required. **Issues** is the non-obvious one: Renovate's
+repo-init GraphQL query reads `repository.issues` unconditionally, so without it the
+run dies at startup with an opaque `platform-unknown-error` — the underlying
+`FORBIDDEN` on the `issues` field is only visible at debug log level. Write, not just
+read, because `dependencyDashboard` needs to open and update its issue.
+
+`RENOVATE_TOKEN` is deliberately not `GH_PAT`: that one is a classic token carrying
+`admin:org`, `delete_repo` and `workflow`, far beyond what Renovate needs. It also
+omits `workflow` scope, so Renovate cannot write under `.github/workflows/`.
 
 ## Known Gaps
 
 Tracked in the [CI/CD Improvements](https://github.com/clincha-org/clincha/milestone/6) milestone:
 
-- **Boilerplate repetition** — Tailscale setup, Ansible setup (Python, pip, galaxy, vault, SSH key) are copy-pasted across workflows. These could be extracted into composite actions. [#215](https://github.com/clincha-org/clincha/issues/215)
+- **Boilerplate repetition** — mostly addressed by the composite actions in [`.github/actions/`](../actions): `ansible-setup` (Python, pip, galaxy, vault, SSH key) and `terraform-setup` (Tailscale, MinIO check, setup-terraform). Ansible workflows still declare their own Tailscale step. [#215](https://github.com/clincha-org/clincha/issues/215)

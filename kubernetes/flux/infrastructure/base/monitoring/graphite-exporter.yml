@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: graphite-exporter
-          image: prom/graphite-exporter:v0.16.0
+          image: prom/graphite-exporter:v0.17.0
           args:
             - --graphite.mapping-config=/etc/graphite/mapping.conf
             - --web.listen-address=:9108

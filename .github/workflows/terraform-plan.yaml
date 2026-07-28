@@ -25,26 +25,13 @@ jobs:
         site: [hawkfield, hawkfield-kubernetes, london]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
-      - name: Connect to Tailscale
-        uses: tailscale/github-action@v4
+      - name: Set up Terraform
+        uses: ./.github/actions/terraform-setup
         with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:ci
-
-      - name: Verify network connectivity
-        run: |
-          echo "Checking connectivity to MinIO..."
-          curl -sf --connect-timeout 15 http://10.1.2.10:9000/minio/health/live || {
-            echo "::error::Cannot reach MinIO at 10.1.2.10:9000 — check Tailscale subnet routes"
-            exit 1
-          }
-          echo "MinIO reachable ✓"
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v4
+          ts-oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          ts-oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
 
       - name: Terraform Init
         working-directory: terraform/${{ matrix.site }}

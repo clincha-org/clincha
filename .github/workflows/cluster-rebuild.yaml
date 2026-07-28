@@ -12,26 +12,13 @@ jobs:
       name: production
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
-      - name: Connect to Tailscale
-        uses: tailscale/github-action@v4
+      - name: Set up Terraform
+        uses: ./.github/actions/terraform-setup
         with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:ci
-
-      - name: Verify network connectivity
-        run: |
-          echo "Checking connectivity to MinIO..."
-          curl -sf --connect-timeout 15 http://10.1.2.10:9000/minio/health/live || {
-            echo "::error::Cannot reach MinIO at 10.1.2.10:9000 — check Tailscale subnet routes"
-            exit 1
-          }
-          echo "MinIO reachable"
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v4
+          ts-oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          ts-oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
 
       - name: Terraform Init
         working-directory: terraform/hawkfield-kubernetes
@@ -48,26 +35,13 @@ jobs:
     needs: destroy
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
-      - name: Connect to Tailscale
-        uses: tailscale/github-action@v4
+      - name: Set up Terraform
+        uses: ./.github/actions/terraform-setup
         with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:ci
-
-      - name: Verify network connectivity
-        run: |
-          echo "Checking connectivity to MinIO..."
-          curl -sf --connect-timeout 15 http://10.1.2.10:9000/minio/health/live || {
-            echo "::error::Cannot reach MinIO at 10.1.2.10:9000 — check Tailscale subnet routes"
-            exit 1
-          }
-          echo "MinIO reachable"
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v4
+          ts-oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          ts-oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
 
       - name: Terraform Init
         working-directory: terraform/hawkfield-kubernetes
@@ -89,7 +63,7 @@ jobs:
     needs: provision
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
@@ -98,33 +72,11 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
 
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.13'
-
       - name: Set up Ansible
-        working-directory: Ansible
-        run: |
-          pip install -r requirements.txt
-
-      - name: Install Ansible collections
-        working-directory: Ansible
-        run: |
-          ansible-galaxy collection install -r galaxy-requirements.yml
-
-      - name: Setup vault password
-        working-directory: Ansible
-        run: |
-          echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > vault
-
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          echo "${{ secrets.ANSIBLE_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          eval `ssh-agent -s`
-          ssh-add ~/.ssh/id_ed25519
+        uses: ./.github/actions/ansible-setup
+        with:
+          vault-password: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+          ssh-private-key: ${{ secrets.ANSIBLE_PRIVATE_KEY }}
 
       - name: Run Ansible playbook
         working-directory: Ansible

@@ -1,0 +1,78 @@
+name: Kubernetes validate
+permissions:
+  contents: read
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'kubernetes/**'
+      - '.github/workflows/k8s-validate.yaml'
+  workflow_dispatch:
+jobs:
+  kustomize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Install kubeconform
+        env:
+          VERSION: v0.7.0
+        run: |
+          base=https://github.com/yannh/kubeconform/releases/download
+          curl -sSL "$base/$VERSION/kubeconform-linux-amd64.tar.gz" \
+            | sudo tar xz -C /usr/local/bin kubeconform
+
+      # -ignore-missing-schemas passes over the Flux CRs; -skip Secret passes
+      # over the SOPS blobs, whose `sops` key -strict rejects as an extra
+      # property.
+      - name: Build and validate every overlay
+        run: |
+          failed=0
+          total=0
+          while read -r manifest; do
+            dir=$(dirname "$manifest")
+            total=$((total + 1))
+            if ! output=$(kubectl kustomize "$dir" 2>&1 \
+                | kubeconform -strict -ignore-missing-schemas \
+                    -skip Secret -summary -); then
+              echo "::error file=$manifest::$dir failed validation"
+              echo "$output"
+              failed=$((failed + 1))
+            fi
+          done < <(find kubernetes/flux -name 'kustomization.y*ml' | sort)
+          echo "$((total - failed))/$total overlays valid"
+          exit $((failed > 0))
+
+  yamllint:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      # Changed files only — the tree has a pre-existing backlog of lint
+      # errors, so a whole-repo run would fail every PR on contents it did
+      # not touch.
+      - name: Lint changed YAML
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          changed=$(git diff --name-only --diff-filter=d "$BASE...HEAD" \
+            | grep -E '\.ya?ml$' || true)
+          if [ -z "$changed" ]; then
+            echo "No YAML changed"
+            exit 0
+          fi
+          echo "$changed"
+          yamllint -c .yamllint -f github $changed

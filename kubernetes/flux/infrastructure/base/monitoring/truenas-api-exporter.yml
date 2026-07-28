@@ -29,9 +29,9 @@ spec:
               value: "10.1.2.10"
             - name: LISTEN_PORT
               value: "9113"
-            # API key for the least-privilege `nasexporter` TrueNAS user (read-only
-            # roles). REST rejects non-admin keys, so the exporter uses the JSON-RPC
-            # WebSocket API.
+            # API key for the least-privilege `nasexporter` TrueNAS user
+            # (read-only roles). REST rejects non-admin keys, so the exporter
+            # uses the JSON-RPC WebSocket API.
             - name: TRUENAS_API_KEY
               valueFrom:
                 secretKeyRef:

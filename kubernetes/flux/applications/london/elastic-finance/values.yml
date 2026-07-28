@@ -32,8 +32,6 @@ eck-elasticsearch:
         disabled: true
   ingress:
     enabled: true
-    annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
     PathType: Prefix
     hosts:
       - host: elastic.dev.clinch-home.com
@@ -58,8 +56,6 @@ eck-kibana:
         disabled: true
   ingress:
     enabled: true
-    annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
     PathType: Prefix
     hosts:
       - host: kibana.dev.clinch-home.com
