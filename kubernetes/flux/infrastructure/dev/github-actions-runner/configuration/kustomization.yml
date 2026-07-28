@@ -4,7 +4,6 @@ metadata:
   name: github-actions-runner-controller-dev
 resources:
   - ../../../base/github-actions-runner/configuration/clincha
-  - ../../../base/github-actions-runner/configuration/elasticstar
 patches:
   - target:
       group: helm.toolkit.fluxcd.io
@@ -12,11 +11,4 @@ patches:
       kind: HelmRelease
       name: runners-clincha
       namespace: gha-clincha
-    path: helm-release-patch.yml
-  - target:
-      group: helm.toolkit.fluxcd.io
-      version: v2
-      kind: HelmRelease
-      name: runners-elasticstar
-      namespace: gha-elasticstar
     path: helm-release-patch.yml
