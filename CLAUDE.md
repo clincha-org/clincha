@@ -74,7 +74,7 @@ packer build packer/ubuntu2404/main.pkr.hcl
 Flux CD GitOps structure:
 - `clusters/` — per-cluster bootstrap configs (dev, hawkfield, london)
 - `infrastructure/` — shared base + per-site (monitoring, networking, storage)
-- `applications/` — workloads (Factorio, Homepage, Elastic Finance, etc.)
+- `applications/` — workloads (Factorio, Homepage, etc.)
 - Secrets encrypted with SOPS (GPG-based)
 
 ### Terraform (`terraform/`)
