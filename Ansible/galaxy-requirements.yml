@@ -16,7 +16,7 @@ collections:
 
   - name: "https://github.com/kubernetes-sigs/kubespray"
     type: git
-    version: v2.29.0
+    version: v2.29.1  # adds hostendpoints "watch" RBAC (kubespray#11076)
 
   - name: "ansible.netcommon"
     version: "8.1.0"

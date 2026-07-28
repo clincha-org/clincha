@@ -7,6 +7,14 @@ global:
 
 loki:
   auth_enabled: false
+  # The export is root_squash, so run as the hawkstore loki user rather than the
+  # chart default 10001. fsGroupChangePolicy is dropped: recursive chown of the
+  # mount is pointless on NFS and the dataset is already owned 3018:3020.
+  podSecurityContext:
+    runAsUser: 3018
+    runAsGroup: 3020
+    fsGroup: 3020
+    runAsNonRoot: true
   commonConfig:
     replication_factor: 1
   schemaConfig:
@@ -48,10 +56,19 @@ singleBinary:
   extraEnvFrom:
     - secretRef:
         name: loki-minio-creds
+  # /var/loki is WAL + tsdb-shipper index cache only; the durable chunks live in
+  # MinIO. Mounted from hawkstore NFS rather than a PVC — a Longhorn journal abort
+  # silently wedged this volume with EIO for 18 days on 2026-07-08.
   persistence:
-    enabled: true
-    size: 10Gi
-    storageClass: longhorn
+    enabled: false
+  extraVolumes:
+    - name: storage
+      nfs:
+        server: 10.1.2.10
+        path: /mnt/data/loki
+  extraVolumeMounts:
+    - name: storage
+      mountPath: /var/loki
 
 backend: { replicas: 0 }
 read: { replicas: 0 }
@@ -64,3 +81,5 @@ test: { enabled: false }
 
 gateway:
   enabled: true
+  # Log only non-2xx/3xx responses so successful Alloy pushes stop flooding Loki
+  verboseLogging: false

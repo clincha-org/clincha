@@ -7,3 +7,4 @@ adguard_upstream_dns:
 adguard_admin_username: "admin"
 adguard_admin_password: "{{ lookup('env', 'ADGUARD_ADMIN_PASSWORD') }}"
 adguard_local_dns_entries: []
+adguard_user_rules: []

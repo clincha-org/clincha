@@ -1,5 +1,6 @@
 name: Ansible setup
-description: Set up Python and Ansible, optionally writing vault password and SSH key.
+description: >-
+  Set up Python and Ansible, optionally writing vault password and SSH key.
 inputs:
   vault-password:
     description: Ansible vault password. When set, written to Ansible/vault.
@@ -12,7 +13,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/setup-python@v6
+    - uses: actions/setup-python@v7
       with:
         python-version: '3.13'
 

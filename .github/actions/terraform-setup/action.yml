@@ -21,8 +21,10 @@ runs:
       shell: bash
       run: |
         echo "Checking connectivity to MinIO..."
-        curl -sf --connect-timeout 15 http://10.1.2.10:9000/minio/health/live || {
-          echo "::error::Cannot reach MinIO at 10.1.2.10:9000 — check Tailscale subnet routes"
+        health=http://10.1.2.10:9000/minio/health/live
+        curl -sf --connect-timeout 15 "$health" || {
+          echo "::error::Cannot reach MinIO at 10.1.2.10:9000 —" \
+            "check Tailscale subnet routes"
           exit 1
         }
         echo "MinIO reachable"

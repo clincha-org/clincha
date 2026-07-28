@@ -2,6 +2,14 @@
 ansible_user: root
 ansible_ssh_pass: null
 
+# Cloudflare publishes ECH configs (DNS type 65) for proxied hostnames. Local A
+# records come from /etc/hosts, which cannot answer type 65, so LAN browsers get
+# Cloudflare's ECH config and fail TLS against the internal ingress with
+# ERR_ECH_FALLBACK_CERTIFICATE_INVALID.
+adguard_user_rules:
+  - "||clinch-home.com^$dnstype=HTTPS"
+  - "||clincha.co.uk^$dnstype=HTTPS"
+
 adguard_local_dns_entries:
   # Proxmox hosts
   - domain: "hawk01.clinch-home.com"
@@ -36,8 +44,6 @@ adguard_local_dns_entries:
     answer: "10.1.2.205"
   - domain: "plex.clinch-home.com"
     answer: "10.1.2.205"
-  - domain: "longhorn.clinch-home.com"
-    answer: "10.1.2.205"
   - domain: "status.clinch-home.com"
     answer: "10.1.2.205"
   - domain: "www.status.clinch-home.com"
@@ -58,6 +64,10 @@ adguard_local_dns_entries:
     answer: "10.1.2.205"
   - domain: "tdarr.clinch-home.com"
     answer: "10.1.2.205"
+  - domain: "immich.clinch-home.com"
+    answer: "10.1.2.205"
+  - domain: "photos.clinch-home.com"
+    answer: "10.1.2.205"
 
   # Kubernetes ingress — clincha.co.uk
   - domain: "clincha.co.uk"
@@ -73,8 +83,6 @@ adguard_local_dns_entries:
   - domain: "sabnzbd.clincha.co.uk"
     answer: "10.1.2.205"
   - domain: "plex.clincha.co.uk"
-    answer: "10.1.2.205"
-  - domain: "longhorn.clincha.co.uk"
     answer: "10.1.2.205"
   - domain: "status.clincha.co.uk"
     answer: "10.1.2.205"
@@ -93,6 +101,10 @@ adguard_local_dns_entries:
   - domain: "ombi.clincha.co.uk"
     answer: "10.1.2.205"
   - domain: "tdarr.clincha.co.uk"
+    answer: "10.1.2.205"
+  - domain: "immich.clincha.co.uk"
+    answer: "10.1.2.205"
+  - domain: "photos.clincha.co.uk"
     answer: "10.1.2.205"
 
   # Claude server (Dave)

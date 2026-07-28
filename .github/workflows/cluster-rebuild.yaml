@@ -12,7 +12,7 @@ jobs:
       name: production
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up Terraform
         uses: ./.github/actions/terraform-setup
@@ -35,7 +35,7 @@ jobs:
     needs: destroy
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up Terraform
         uses: ./.github/actions/terraform-setup
@@ -63,7 +63,7 @@ jobs:
     needs: provision
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4

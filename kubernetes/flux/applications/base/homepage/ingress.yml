@@ -4,8 +4,6 @@ kind: Ingress
 metadata:
   name: homepage
   namespace: homepage
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
 spec:
   ingressClassName: nginx
   tls:

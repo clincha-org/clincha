@@ -8,6 +8,9 @@ metadata:
     name: factorio
 spec:
   replicas: 1
+  # RollingUpdate deadlocks: no node can double-book the 4-CPU request
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       name: factorio
@@ -19,7 +22,7 @@ spec:
       initContainers:
         - name: copy-server-settings
           image: busybox
-          command: [ "sh", "-c", "cp /settings/*.json /config" ]
+          command: ["sh", "-c", "cp /settings/*.json /config"]
           volumeMounts:
             - name: config
               mountPath: /config
@@ -27,7 +30,7 @@ spec:
               mountPath: /settings
       containers:
         - name: factorio
-          image: factoriotools/factorio:2.0.73
+          image: factoriotools/factorio:2.1.12
           ports:
             - containerPort: 34197
               protocol: UDP
@@ -47,7 +50,7 @@ spec:
               name: saves
       volumes:
         - name: config
-          emptyDir: { }
+          emptyDir: {}
         - name: saves
           nfs:
             path: /mnt/data/factorio/2026
