@@ -140,6 +140,12 @@ loki.process "pod_logs" {
         stage.regex {
             expression = "^\\[(?P<level>Trace|Debug|Info|Warn|Error|Fatal)\\] "
         }
+        // Canonical lowercase, matching what Loki's own detector emits for
+        // every other container so one level is a single series.
+        stage.template {
+            source   = "level"
+            template = "{{ ToLower .Value }}"
+        }
         stage.labels {
             values = { level = "" }
         }
