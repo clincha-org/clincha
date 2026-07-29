@@ -127,6 +127,23 @@ loki.process "pod_logs" {
     stage.labels {
         values = { stream = "" }
     }
+
+    // Sonarr and Radarr prefix console output with [Level]. Loki's own level
+    // detector doesn't recognise that shape and stamps ~97% of their lines
+    // "unknown", which is what a service_name view renders. The casing here
+    // already matches what their file logs carry.
+    stage.match {
+        selector = "{namespace=\"media\", container=~\"sonarr|radarr\"}"
+
+        // Named levels only — the s6 init in these images also emits bracketed
+        // prefixes like "[migrations] started", which \w+ would turn into a level.
+        stage.regex {
+            expression = "^\\[(?P<level>Trace|Debug|Info|Warn|Error|Fatal)\\] "
+        }
+        stage.labels {
+            values = { level = "" }
+        }
+    }
 }
 
 loki.write "local" {
