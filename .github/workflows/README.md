@@ -106,7 +106,7 @@ All secrets are stored in GitHub repository settings.
 | `TS_OAUTH_SECRET` | Tailscale OAuth secret | All workflows except ansible-lint |
 | `ANSIBLE_VAULT_PASSWORD` | Decrypts Ansible Vault-encrypted vars | ansible-base, ansible-update-proxmox, ansible-proxmox, cluster-rebuild |
 | `ANSIBLE_PRIVATE_KEY` | SSH private key (ed25519) for Ansible | ansible-base, ansible-update-proxmox, ansible-proxmox, cluster-rebuild |
-| `MINIO_SECRET_KEY` | Terraform state backend (MinIO/S3) | terraform, terraform-plan, cluster-rebuild |
+| `RUSTFS_SECRET_KEY` | Terraform state backend (RustFS/S3) | terraform, terraform-plan, cluster-rebuild |
 | `PROXMOX_TOKEN_HAWKFIELD_ANSIBLE` | Proxmox API token for Ansible (Bristol) | ansible-base, ansible-proxmox |
 | `PROXMOX_TOKEN_LONDON_ANSIBLE` | Proxmox API token for Ansible (London) | ansible-base, ansible-proxmox |
 | `PROXMOX_TOKEN_HAWKFIELD_PACKER` | Proxmox API token for Packer (Bristol) | packer |
@@ -132,4 +132,4 @@ omits `workflow` scope, so Renovate cannot write under `.github/workflows/`.
 
 Tracked in the [CI/CD Improvements](https://github.com/clincha-org/clincha/milestone/6) milestone:
 
-- **Boilerplate repetition** — mostly addressed by the composite actions in [`.github/actions/`](../actions): `ansible-setup` (Python, pip, galaxy, vault, SSH key) and `terraform-setup` (Tailscale, MinIO check, setup-terraform). Ansible workflows still declare their own Tailscale step. [#215](https://github.com/clincha-org/clincha/issues/215)
+- **Boilerplate repetition** — mostly addressed by the composite actions in [`.github/actions/`](../actions): `ansible-setup` (Python, pip, galaxy, vault, SSH key) and `terraform-setup` (Tailscale, RustFS check, setup-terraform). Ansible workflows still declare their own Tailscale step. [#215](https://github.com/clincha-org/clincha/issues/215)

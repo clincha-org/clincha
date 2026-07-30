@@ -32,7 +32,7 @@ jobs:
       - name: Terraform Init
         working-directory: terraform/${{ matrix.site }}
         run: |
-          terraform init -backend-config="secret_key=${{ secrets.MINIO_SECRET_KEY }}"
+          terraform init -backend-config="secret_key=${{ secrets.RUSTFS_SECRET_KEY }}"
 
       - name: Terraform Plan
         working-directory: terraform/${{ matrix.site }}
@@ -77,7 +77,7 @@ jobs:
       - name: Terraform Init
         working-directory: terraform/${{ matrix.site }}
         run: |
-          terraform init -backend-config="secret_key=${{ secrets.MINIO_SECRET_KEY }}"
+          terraform init -backend-config="secret_key=${{ secrets.RUSTFS_SECRET_KEY }}"
 
       - name: Terraform Apply
         working-directory: terraform/${{ matrix.site }}
