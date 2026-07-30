@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: loki-rustfs-creds
+    namespace: monitoring
+type: Opaque
+stringData:
+    S3_ACCESS_KEY_ID: ENC[AES256_GCM,data:ERd+6Q==,iv:YKAfbiELRY6Q2fJrvj0pF3ySWoN7ZB2pEFjm9bqC8SQ=,tag:H1rogwiZI3e57yn2XEvxQA==,type:str]
+    S3_SECRET_ACCESS_KEY: ENC[AES256_GCM,data:WSgFG1B5ijr+/u2CkUDLoNE4Yk/a3XjXsu032ZASIQENeyHxPOKLzQ==,iv:dP94+u/+SgzxanNtNPlkaZGj2FPqimTT1qcV0Sy8A1U=,tag:2Ry1dL5QMl0gvNfERUX3zw==,type:str]
+sops:
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-07-30T05:55:07Z"
+    mac: ENC[AES256_GCM,data:qLn0+gbVclEZJGyCfTrsg+mah9eIiBhx5kr/KYOr9O34A/Ihu9WlEHMz4oQQO0v4wQcGyb6egbQJuJXUt2OIqJYY0VE6yH+f+fI59uLuuJQThcfSx/PjkWHOGCjCtu6Ds7HUKiHi+GEJGw1MR0+hMdI8EDOjzUKCLB3yxIuPSzo=,iv:mwDqGLBwZ+G6awBIkFM9u1YMLammQ9SVp1hYtiknKGs=,tag:cvWNloSOy1FjsvCuA1185w==,type:str]
+    pgp:
+        - created_at: "2026-07-30T05:55:07Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hQIMA+iIV7UXPYO1AQ/+NVYEA6XRLQ9svzdFTZOFNx/accSTu5r9uKJTLxPNRzA6
+            SHlbb9HN/j8i4YlNgLb/blcwMS8TA8bLQp8nl4O9M2T4JyAThsZOHTt3iY5emp5R
+            ZW7iWdZwglplOZ6AlDquhiWQLylovA949vqJwgOsvKU3JzgLwAQso9LQ22zglH6G
+            t8wujdFbBR05j53kWiCpVfNIkKaPZJpCz25jv/nOngucmHab8X3bgCzirev5hPSz
+            LCvuJF4IGt+9V1VbfRavxX+4suBAzHf3LlsT9UICSHTUczxJ3u04rUboRKVk1msu
+            0xinl/x95CGW3kQCUP61cgP0Jg7FhVNSsboXE04KrFyOk9O+YCyqV09J6aXMnVyy
+            ji4KtxTKSCfDArRhlkfm3xwKVnhg+1KrZPxfmuqAnpPO3x6rb0RW9DBIqBnEvLVb
+            DFMWSQccA6FyNOIJxxXqlPisJCEhRb1OBueE3ebbUFChyVzGnkoW3pIW4nvp3ULk
+            NfAqMvzW4Fc5Wt2ZR4Y38Rr4uw0wDn8cYQ5A/TYpP7srQoR24Z4V7C0OhucMqmM5
+            sORRvAIh6XSLu/YQZIRS4T76/RC+12Fsfvqb9Nc83p/iphspnbPAtAukp6Lhi/j0
+            E6r56iBmZE1UmjN0A8+LNmFg/ZC9eku5388MalDPr0BTQ6Rr3kNeiHGIBOKL+7LS
+            XgGTmVsvgJkgLucS1aR/9jMG3qfK9HgRAcVF8zA3D5SmeNRey9hfGqkNAHY4KA+K
+            zcSnjnNsPBUz4xl8jMBiutL3551rGy/cEpsrV7IYDA8soSWQ0Mvq9aRcJ+HQs54=
+            =682F
+            -----END PGP MESSAGE-----
+          fp: 76AF39813C2297E8F98C542D42436A07A9BA1DE0
+    version: 3.13.1

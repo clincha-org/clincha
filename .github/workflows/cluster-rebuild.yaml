@@ -23,7 +23,7 @@ jobs:
       - name: Terraform Init
         working-directory: terraform/hawkfield-kubernetes
         run: |
-          terraform init -backend-config="secret_key=${{ secrets.MINIO_SECRET_KEY }}"
+          terraform init -backend-config="secret_key=${{ secrets.RUSTFS_SECRET_KEY }}"
 
       - name: Terraform Destroy
         working-directory: terraform/hawkfield-kubernetes
@@ -46,7 +46,7 @@ jobs:
       - name: Terraform Init
         working-directory: terraform/hawkfield-kubernetes
         run: |
-          terraform init -backend-config="secret_key=${{ secrets.MINIO_SECRET_KEY }}"
+          terraform init -backend-config="secret_key=${{ secrets.RUSTFS_SECRET_KEY }}"
 
       - name: Terraform Plan
         working-directory: terraform/hawkfield-kubernetes
@@ -82,8 +82,8 @@ jobs:
         working-directory: Ansible
         env:
           PROXMOX_TOKEN_SECRET: ${{ secrets.PROXMOX_TOKEN_HAWKFIELD_ANSIBLE }}
-          MINIO_KUBECONFIG_ACCESS_KEY: ${{ secrets.MINIO_KUBECONFIG_ACCESS_KEY }}
-          MINIO_KUBECONFIG_SECRET_KEY: ${{ secrets.MINIO_KUBECONFIG_SECRET_KEY }}
+          RUSTFS_KUBECONFIG_ACCESS_KEY: ${{ secrets.RUSTFS_KUBECONFIG_ACCESS_KEY }}
+          RUSTFS_KUBECONFIG_SECRET_KEY: ${{ secrets.RUSTFS_KUBECONFIG_SECRET_KEY }}
         run: |
           ansible-playbook kubernetes.yml \
             --inventory inventory/hawkfield.proxmox.yml \

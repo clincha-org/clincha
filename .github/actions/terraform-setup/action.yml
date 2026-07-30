@@ -1,5 +1,5 @@
 name: Terraform setup
-description: Connect to Tailscale, check MinIO connectivity, install Terraform.
+description: Connect to Tailscale, check RustFS connectivity, install Terraform.
 inputs:
   ts-oauth-client-id:
     description: Tailscale OAuth client ID.
@@ -20,14 +20,14 @@ runs:
     - name: Verify network connectivity
       shell: bash
       run: |
-        echo "Checking connectivity to MinIO..."
-        health=http://10.1.2.10:9000/minio/health/live
+        echo "Checking connectivity to RustFS..."
+        health=http://10.1.2.10:30293/health
         curl -sf --connect-timeout 15 "$health" || {
-          echo "::error::Cannot reach MinIO at 10.1.2.10:9000 —" \
+          echo "::error::Cannot reach RustFS at 10.1.2.10:30293 —" \
             "check Tailscale subnet routes"
           exit 1
         }
-        echo "MinIO reachable"
+        echo "RustFS reachable"
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v4

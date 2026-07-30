@@ -5,4 +5,4 @@ passlib # password hashing
 bcrypt<5 # password hashing for adguard
 netaddr
 jmespath
-boto3 # Required for amazon.aws.s3_object (kubeconfig upload to MinIO)
+boto3 # Required for amazon.aws.s3_object (kubeconfig upload to RustFS)

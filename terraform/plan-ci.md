@@ -11,7 +11,7 @@ GitHub-hosted runners join the tailnet via an OAuth client and ephemeral nodes. 
 ### Network Requirements
 
 Terraform needs to reach two internal services:
-- **MinIO** (10.1.2.10:9000) — S3 backend for state
+- **RustFS** (10.1.2.10:30293) — S3 backend for state
 - **Proxmox** (10.1.2.11:8006) — provider API for planning
 
 These sit on the home network (10.1.2.0/24). A **subnet router** on the tailnet must advertise this range so the GitHub runner can reach them without installing Tailscale on each service directly.
@@ -31,7 +31,7 @@ Add a `tag:ci` tag and allow it to access the internal services:
     {
       "action": "accept",
       "src": ["tag:ci"],
-      "dst": ["10.1.2.10:9000", "10.1.2.11:8006"]
+      "dst": ["10.1.2.10:30293", "10.1.2.11:8006"]
     }
   ]
 }
@@ -64,7 +64,7 @@ Then approve the route in the Tailscale admin console.
 |--------|---------|
 | `TS_OAUTH_CLIENT_ID` | Tailscale OAuth client ID |
 | `TS_OAUTH_SECRET` | Tailscale OAuth client secret |
-| `MINIO_SECRET_KEY` | MinIO secret for S3 backend (already exists) |
+| `RUSTFS_SECRET_KEY` | RustFS secret for S3 backend |
 | `PM_TF_API_TOKEN_SECRET` | Proxmox API token secret (already exists) |
 
 ### Workflow Design
@@ -72,10 +72,10 @@ Then approve the route in the Tailscale admin console.
 ```
 PR opened/updated → terraform-plan.yaml triggers
   ├─ Join tailnet (ephemeral node, tag:ci)
-  ├─ Verify connectivity to MinIO
+  ├─ Verify connectivity to RustFS
   ├─ Install Terraform
   ├─ For each site (hawkfield, london):
-  │   ├─ terraform init (with MinIO backend)
+  │   ├─ terraform init (with RustFS backend)
   │   ├─ terraform plan (read-only, no apply)
   │   └─ Capture plan output
   ├─ Post combined plan as PR comment
@@ -86,6 +86,6 @@ PR opened/updated → terraform-plan.yaml triggers
 
 1. **Tailscale ephemeral nodes** — auto-clean up, no stale peers
 2. **OAuth client + tags** — scoped access, no long-lived auth keys
-3. **Subnet router** — no need to install Tailscale on MinIO/Proxmox directly
+3. **Subnet router** — no need to install Tailscale on RustFS/Proxmox directly
 4. **Plan only, never apply** on PRs
 5. **PR comment output** — updates the same comment on re-push (no spam)

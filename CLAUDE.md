@@ -40,7 +40,7 @@ ansible-playbook -i inventory/hawkfield.proxmox.yml Ansible/kubernetes.yml
 
 ### Terraform
 
-Working directories: `terraform/hawkfield/`, `terraform/london/`, `terraform/kubernetes/`. Backend is MinIO (S3-compatible).
+Working directories: `terraform/hawkfield/`, `terraform/london/`, `terraform/kubernetes/`. Backend is RustFS (S3-compatible).
 
 ```bash
 terraform -chdir=terraform/hawkfield init

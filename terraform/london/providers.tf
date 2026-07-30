@@ -4,7 +4,7 @@ terraform {
     # Pass -backend-config=backend.conf to terraform init
     bucket = "terraform"
     endpoints = {
-      s3 = "http://10.1.2.10:9000"
+      s3 = "http://10.1.2.10:30293"
     }
     key        = "london.tfstate"
     access_key = "terraform"
