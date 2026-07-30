@@ -18,7 +18,9 @@ updates:
       interval: "weekly"
   - package-ecosystem: terraform
     directories:
-      - "/terraform/kubernetes"
-      - "/terraform/kubernetes/master"
+      - "/terraform/hawkfield"
+      - "/terraform/hawkfield-kubernetes"
+      - "/terraform/london"
+      - "/terraform/minio"
     schedule:
       interval: "weekly"
