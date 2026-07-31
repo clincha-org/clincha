@@ -1,2 +1,6 @@
 ---
 claude_gogcli_version: "0.33.0"
+claude_deliver_repo: "git@github.com:clincha/Deliver.git"
+claude_deliver_version: "master"
+claude_deliver_dir: /source/Deliver
+claude_orchestrator_state_dir: /home/claude/.local/state/deliver-orchestrator

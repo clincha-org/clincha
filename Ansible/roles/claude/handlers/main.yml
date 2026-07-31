@@ -4,3 +4,9 @@
     name: claude-remote-control
     state: restarted
     daemon_reload: true
+
+- name: "Restart deliver-poller"
+  ansible.builtin.systemd:
+    name: deliver-poller
+    state: restarted
+    daemon_reload: true

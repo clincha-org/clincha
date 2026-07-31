@@ -410,3 +410,94 @@
     enabled: true
     state: started
     daemon_reload: true
+
+- name: "Ensure /source directory exists"
+  ansible.builtin.file:
+    path: /source
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+# /source is root-owned, so the target has to be pre-created for the
+# unprivileged clone below.
+- name: "Ensure Deliver checkout directory exists"
+  ansible.builtin.file:
+    path: "{{ claude_deliver_dir }}"
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0755"
+
+# update:false — clone if absent, never touch a live working copy. Deliver has
+# linked worktrees under /source/Deliver-wt that a reset --hard would break.
+- name: "Clone Deliver repository into /source"
+  ansible.builtin.git:
+    repo: "{{ claude_deliver_repo }}"
+    dest: "{{ claude_deliver_dir }}"
+    version: "{{ claude_deliver_version }}"
+    update: false
+    accept_hostkey: true
+    key_file: /home/claude/.ssh/id_ed25519
+  become: true
+  become_user: claude
+
+- name: "Ensure deliver-orchestrator config directory exists"
+  ansible.builtin.file:
+    path: /home/claude/.config/deliver-orchestrator
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0700"
+
+- name: "Deploy deliver-orchestrator environment file"
+  ansible.builtin.copy:
+    content: "{{ lookup('env', 'DELIVER_ORCHESTRATOR_ENV') }}"
+    dest: /home/claude/.config/deliver-orchestrator/env
+    owner: claude
+    group: claude
+    mode: "0600"
+  no_log: true
+  # Unguarded, a missing secret truncates the live file to 0 bytes and every
+  # orchestrator job then dies on an empty env.
+  when: lookup('env', 'DELIVER_ORCHESTRATOR_ENV') | length > 0
+  notify: "Restart deliver-poller"
+
+- name: "Ensure deliver-orchestrator state directory exists"
+  ansible.builtin.file:
+    path: "{{ claude_orchestrator_state_dir }}"
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0755"
+
+- name: "Deploy deliver-poller systemd service"
+  ansible.builtin.copy:
+    content: |
+      [Unit]
+      Description=Deliver Telegram poller (long-poll daemon)
+      After=network-online.target
+      Wants=network-online.target
+      StartLimitIntervalSec=0
+
+      [Service]
+      User=claude
+      WorkingDirectory={{ claude_deliver_dir }}/orchestrator
+      ExecStart=/usr/bin/python3 poller.py
+      Restart=always
+      RestartSec=2
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: /etc/systemd/system/deliver-poller.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: "Restart deliver-poller"
+
+- name: "Enable and start deliver-poller service"
+  ansible.builtin.systemd:
+    name: deliver-poller
+    enabled: true
+    state: started
+    daemon_reload: true

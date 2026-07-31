@@ -43,6 +43,7 @@ jobs:
           GOG_CREDENTIALS_JSON: ${{ secrets.GOG_CREDENTIALS_JSON }}
           GOG_KEYRING_PASSWORD: ${{ secrets.GOG_KEYRING_PASSWORD }}
           GOG_TOKEN_STORE: ${{ secrets.GOG_TOKEN_STORE }}
+          DELIVER_ORCHESTRATOR_ENV: ${{ secrets.DELIVER_ORCHESTRATOR_ENV }}
         run: |
           ansible-playbook claude.yml \
             --inventory inventory/hawkfield.proxmox.yml \
