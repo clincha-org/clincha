@@ -37,10 +37,19 @@ resource "proxmox_vm_qemu" "ubuntu_server" {
   os_type            = "ubuntu"
   ipconfig0          = "ip=${var.ip_address}/24,gw=${var.gateway}"
   start_at_node_boot = true
+  power_state        = "running"
 
   tags = var.tags
 
   scsihw = "virtio-scsi-single"
+
+  # Telmate marks these Optional without Computed, so leaving them unset diffs
+  # against what the provider reads back from PVE on every plan.
+  startup_shutdown {
+    order            = -1
+    shutdown_timeout = -1
+    startup_delay    = -1
+  }
 
   disk {
     type    = "cloudinit"
@@ -52,6 +61,7 @@ resource "proxmox_vm_qemu" "ubuntu_server" {
     size     = var.boot_disk_size
     storage  = var.data_boot_storage
     type     = "disk"
+    format   = "raw"
     iothread = true
     slot     = "virtio0"
   }
@@ -60,6 +70,7 @@ resource "proxmox_vm_qemu" "ubuntu_server" {
     size     = var.data_disk_size
     storage  = var.data_disk_storage
     type     = "disk"
+    format   = "raw"
     iothread = true
     slot     = "virtio1"
   }
