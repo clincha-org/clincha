@@ -37,7 +37,7 @@ resource "proxmox_vm_qemu" "ubuntu_server" {
   os_type            = "ubuntu"
   ipconfig0          = "ip=${var.ip_address}/24,gw=${var.gateway}"
   start_at_node_boot = true
-  vm_state           = "running"
+  power_state        = "running"
 
   tags = var.tags
 
