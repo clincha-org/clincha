@@ -2,6 +2,6 @@ bucket = "terraform"
 endpoints = {
   s3 = "http://10.1.2.10:30293"
 }
-key        = "clinch-home-kubernetes.tfstate"
+key        = "hawkfield.tfstate"
 access_key = "terraform"
 secret_key = "1234567890"
