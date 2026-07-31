@@ -212,6 +212,88 @@
     group: claude
     mode: "0755"
 
+# gogcli (Google Gmail + Calendar). Restore after the dave clone so the reset
+# can't disturb ~/.config/gogcli. Tokens are password-derived (PBES2) and thus
+# portable, so restoring the keyring store is enough — no manual gog auth login.
+- name: "Download gogcli release tarball"
+  ansible.builtin.get_url:
+    # yamllint disable-line rule:line-length
+    url: "https://github.com/steipete/gogcli/releases/download/v{{ claude_gogcli_version }}/gogcli_{{ claude_gogcli_version }}_linux_amd64.tar.gz"
+    dest: "/home/claude/.cache/gogcli-{{ claude_gogcli_version }}.tar.gz"
+    owner: claude
+    group: claude
+    mode: "0644"
+
+- name: "Install gogcli binary"
+  ansible.builtin.unarchive:
+    src: "/home/claude/.cache/gogcli-{{ claude_gogcli_version }}.tar.gz"
+    dest: /usr/local/bin
+    remote_src: true
+    include:
+      - gog
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: "Ensure gogcli config directory exists"
+  ansible.builtin.file:
+    path: /home/claude/.config/gogcli
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0700"
+
+- name: "Configure gogcli file keyring backend"
+  ansible.builtin.copy:
+    content: |
+      {
+        "keyring_backend": "file"
+      }
+    dest: /home/claude/.config/gogcli/config.json
+    owner: claude
+    group: claude
+    mode: "0600"
+
+- name: "Restore gogcli OAuth client credentials"
+  ansible.builtin.copy:
+    content: "{{ lookup('env', 'GOG_CREDENTIALS_JSON') }}"
+    dest: /home/claude/.config/gogcli/credentials.json
+    owner: claude
+    group: claude
+    mode: "0600"
+  no_log: true
+
+- name: "Restore gogcli keyring password"
+  ansible.builtin.copy:
+    content: "{{ lookup('env', 'GOG_KEYRING_PASSWORD') }}"
+    dest: /home/claude/.config/gogcli/.keyring-password
+    owner: claude
+    group: claude
+    mode: "0600"
+  no_log: true
+
+- name: "Ensure gogcli keyring directory exists"
+  ansible.builtin.file:
+    path: /home/claude/.config/gogcli/keyring
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0700"
+
+- name: "Restore gogcli keyring OAuth token store"
+  ansible.builtin.copy:
+    content: "{{ item.value }}"
+    dest: "/home/claude/.config/gogcli/keyring/{{ item.key }}"
+    owner: claude
+    group: claude
+    mode: "0600"
+  loop: >-
+    {{ (lookup('env', 'GOG_TOKEN_STORE') | default('{}', true))
+       | from_json | dict2items }}
+  loop_control:
+    label: "{{ item.key }}"
+  no_log: true
+
 - name: "Download Claude Code installer"
   ansible.builtin.get_url:
     url: "https://claude.ai/install.sh"

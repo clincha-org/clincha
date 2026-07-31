@@ -40,6 +40,9 @@ jobs:
           BW_CLIENT_SECRET: ${{ secrets.BW_CLIENT_SECRET }}
           BW_MASTER_PASSWORD: ${{ secrets.BW_MASTER_PASSWORD }}
           GH_PAT: ${{ secrets.GH_PAT }}
+          GOG_CREDENTIALS_JSON: ${{ secrets.GOG_CREDENTIALS_JSON }}
+          GOG_KEYRING_PASSWORD: ${{ secrets.GOG_KEYRING_PASSWORD }}
+          GOG_TOKEN_STORE: ${{ secrets.GOG_TOKEN_STORE }}
         run: |
           ansible-playbook claude.yml \
             --inventory inventory/hawkfield.proxmox.yml \
