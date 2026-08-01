@@ -4,6 +4,13 @@ metadata:
   name: factorio
 resources:
   - ../../base/factorio
+patches:
+  - target:
+      kind: Service
+      version: v1
+      namespace: factorio
+      name: factorio
+    path: service-patch.yml
 configMapGenerator:
   - name: factorio-server-settings
     namespace: factorio

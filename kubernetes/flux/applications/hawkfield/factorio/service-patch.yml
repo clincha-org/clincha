@@ -1,0 +1,22 @@
+- op: replace
+  path: /spec/type
+  value: LoadBalancer
+
+# Both of these are needed: a LoadBalancer allocates node ports by default,
+# and any leftover port in the KUBE-NODE-PORT-UDP bitmap ipset masquerades
+# traffic to the VIP, undoing externalTrafficPolicy: Local.
+- op: remove
+  path: /spec/ports/0/nodePort
+
+- op: add
+  path: /spec/allocateLoadBalancerNodePorts
+  value: false
+
+- op: add
+  path: /spec/externalTrafficPolicy
+  value: Local
+
+- op: add
+  path: /metadata/annotations
+  value:
+    metallb.io/loadBalancerIPs: 10.1.2.204
