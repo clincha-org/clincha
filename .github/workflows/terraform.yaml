@@ -17,8 +17,6 @@ jobs:
       fail-fast: false
       matrix:
         site: [hawkfield, hawkfield-kubernetes, london]
-    concurrency:
-      group: "cluster-${{ matrix.site }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -46,12 +44,22 @@ jobs:
           path: terraform/${{ matrix.site }}/tfplan
           name: tfplan-${{ matrix.site }}
 
-  apply:
-    name: "Apply (${{ matrix.site }})"
+  # Gate carries no concurrency group: a job holds its group while waiting for
+  # approval, which would lock every site for as long as nobody approves.
+  approve:
+    name: "Approve"
     runs-on: ubuntu-latest
     needs: plan
     environment:
       name: production
+    steps:
+      - name: Approved
+        run: echo "Apply approved"
+
+  apply:
+    name: "Apply (${{ matrix.site }})"
+    runs-on: ubuntu-latest
+    needs: approve
     strategy:
       fail-fast: false
       matrix:
