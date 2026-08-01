@@ -1,2 +1,36 @@
 ---
 claude_gogcli_version: "0.33.0"
+claude_deliver_repo: "git@github.com:clincha/Deliver.git"
+claude_deliver_version: "master"
+claude_deliver_dir: /source/Deliver
+claude_orchestrator_state_dir: /home/claude/.local/state/deliver-orchestrator
+
+claude_cron_jobs:
+  - name: "email-summaries weekly"
+    minute: "0"
+    hour: "1"
+    weekday: "1"
+    job: /home/claude/email-summaries/weekly/run.sh
+  - name: "email-summaries daily"
+    minute: "30"
+    hour: "5"
+    job: /home/claude/email-summaries/daily/run.sh
+  - name: "email-summaries inbox-watcher"
+    minute: "*/30"
+    job: /home/claude/email-summaries/inbox-watcher/run.sh
+  - name: "deliver-orchestrator autonomy"
+    minute: "15"
+    job: >-
+      flock -n {{ claude_orchestrator_state_dir }}/autonomy.lock
+      {{ claude_deliver_dir }}/orchestrator/cron.sh autonomy
+  - name: "deliver-orchestrator scheduler"
+    minute: "*/30"
+    job: >-
+      flock -n {{ claude_orchestrator_state_dir }}/scheduler.lock
+      {{ claude_deliver_dir }}/orchestrator/cron.sh scheduler
+  - name: "deliver-orchestrator receipt"
+    minute: "0"
+    hour: "18"
+    job: >-
+      flock -n {{ claude_orchestrator_state_dir }}/receipt.lock
+      {{ claude_deliver_dir }}/orchestrator/cron.sh receipt
