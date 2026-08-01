@@ -471,6 +471,16 @@
     group: claude
     mode: "0755"
 
+# flock creates the lock file but not its parent, so the cron entry below would
+# fail every hour without this.
+- name: "Ensure memory autosave state directory exists"
+  ansible.builtin.file:
+    path: "{{ claude_memory_autosave_state_dir }}"
+    state: directory
+    owner: claude
+    group: claude
+    mode: "0755"
+
 - name: "Deploy deliver-poller systemd service"
   ansible.builtin.copy:
     content: |

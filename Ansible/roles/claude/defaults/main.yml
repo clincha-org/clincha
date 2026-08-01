@@ -4,6 +4,7 @@ claude_deliver_repo: "git@github.com:clincha/Deliver.git"
 claude_deliver_version: "master"
 claude_deliver_dir: /source/Deliver
 claude_orchestrator_state_dir: /home/claude/.local/state/deliver-orchestrator
+claude_memory_autosave_state_dir: /home/claude/.local/state/memory-autosave
 
 claude_cron_jobs:
   - name: "email-summaries weekly"
@@ -34,3 +35,8 @@ claude_cron_jobs:
     job: >-
       flock -n {{ claude_orchestrator_state_dir }}/receipt.lock
       {{ claude_deliver_dir }}/orchestrator/cron.sh receipt
+  - name: "memory autosave"
+    minute: "50"
+    job: >-
+      flock -n {{ claude_memory_autosave_state_dir }}/run.lock
+      /home/claude/memory-autosave/run.sh
