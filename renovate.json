@@ -8,7 +8,7 @@
   "flux": {
     "managerFilePatterns": ["/^kubernetes/flux/.+\\.ya?ml$/"]
   },
-  "dependencyDashboard": true,
+  "dependencyDashboard": false,
   "prConcurrentLimit": 3,
   "prHourlyLimit": 2,
   "ignorePaths": [
