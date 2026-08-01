@@ -1,0 +1,20 @@
+- op: replace
+  path: /spec/type
+  value: LoadBalancer
+
+# A node port left in the KUBE-NODE-PORT-UDP ipset masquerades VIP traffic too
+- op: remove
+  path: /spec/ports/0/nodePort
+
+- op: add
+  path: /spec/allocateLoadBalancerNodePorts
+  value: false
+
+- op: add
+  path: /spec/externalTrafficPolicy
+  value: Local
+
+- op: add
+  path: /metadata/annotations
+  value:
+    metallb.io/loadBalancerIPs: 10.1.2.204
