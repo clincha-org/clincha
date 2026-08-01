@@ -2,9 +2,7 @@
   path: /spec/type
   value: LoadBalancer
 
-# Both of these are needed: a LoadBalancer allocates node ports by default,
-# and any leftover port in the KUBE-NODE-PORT-UDP bitmap ipset masquerades
-# traffic to the VIP, undoing externalTrafficPolicy: Local.
+# A node port left in the KUBE-NODE-PORT-UDP ipset masquerades VIP traffic too
 - op: remove
   path: /spec/ports/0/nodePort
 
