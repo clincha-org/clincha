@@ -21,8 +21,8 @@ configMapGenerator:
     namespace: monitoring
     files:
       - config.alloy
-    # Keeps the flag: this name is referenced from inside alloy-values.yml's
-    # file content, which kustomize never rewrites.
+    # Flag kept: the name lives inside alloy-values.yml's file content, which
+    # kustomize can't rewrite. Edits here still need a manual rollout restart.
     options:
       disableNameSuffixHash: true
   - name: loki-values
