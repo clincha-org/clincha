@@ -44,8 +44,7 @@ jobs:
           path: terraform/${{ matrix.site }}/tfplan
           name: tfplan-${{ matrix.site }}
 
-  # Gate carries no concurrency group: a job holds its group while waiting for
-  # approval, which would lock every site for as long as nobody approves.
+  # No concurrency group here: a job holds its group while awaiting approval. See #399.
   approve:
     name: "Approve"
     runs-on: ubuntu-latest

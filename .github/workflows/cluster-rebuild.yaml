@@ -4,8 +4,7 @@ permissions:
 on:
   workflow_dispatch:
 jobs:
-  # Gate carries no concurrency group: a job holds its group while waiting for
-  # approval, which would lock the site for as long as nobody approves.
+  # No concurrency group here: a job holds its group while awaiting approval. See #399.
   approve:
     runs-on: ubuntu-latest
     environment:

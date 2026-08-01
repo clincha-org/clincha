@@ -92,18 +92,27 @@ Workflows use concurrency groups to prevent dangerous parallel runs:
 |-------|-----------|-----------|
 | `cluster-{site}` | terraform.yaml (apply only), ansible-base.yaml | Per-site — each site's job serialises with that site's terraform apply |
 | `cluster-hawkfield` | cluster-rebuild.yaml | Serialises the rebuild against Hawkfield's other cluster work |
-
-Approval-gated jobs (`terraform.yaml` apply, `cluster-rebuild.yaml` destroy) must not
-declare a concurrency group: a job acquires its group *before* it waits on the
-environment gate, so an unapproved deployment holds the group indefinitely and every
-later run in it pends until cancelled. Both workflows therefore isolate the
-`production` gate in a group-less `approve` job that the real work `needs`.
-
-`terraform.yaml`'s plan job has no group either — `terraform plan` is read-only and
-Terraform's own state locking covers an overlapping apply.
 | `terraform-plan-{PR}` | terraform-plan.yaml | Per-PR, cancels in-progress — only latest plan matters |
 | `packer-{host}` | packer.yaml | Per-host — prevents parallel builds on the same Proxmox node |
 | `{workflow name}` | ansible-update-proxmox, ansible-proxmox, ansible-proxmox-bootstrap | Serialised per workflow |
+
+### Concurrency and the `production` gate
+
+A job acquires its concurrency group *before* it waits on an environment gate, so a job
+that declares both holds the group for as long as nobody approves it — every later run
+in that group pends until it is cancelled ([#399](https://github.com/clincha-org/clincha/issues/399)).
+No job in this repo may declare `environment:` and `concurrency:` together. `terraform.yaml`
+and `cluster-rebuild.yaml` therefore isolate the `production` gate in a group-less
+`approve` job that the real work `needs`, so the lock is taken only once work is authorised.
+
+`cluster-rebuild.yaml` holds `cluster-hawkfield` per job rather than for the whole run, so
+the group is briefly free between `destroy`, `provision` and `configure`. An hourly
+`ansible-base` run can slip into those gaps and fail against half-rebuilt hosts; that is
+preferred over the workflow-level group, which reintroduces the wedge above.
+
+`terraform.yaml`'s plan job has no group — `terraform plan` is read-only, so an overlapping
+apply cannot be corrupted by it. These backends configure no state locking
+(no `dynamodb_table`, no `use_lockfile`), so the plan output may be stale instead.
 
 ## Secrets
 
