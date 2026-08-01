@@ -1,0 +1,10 @@
+---
+# Kustomize's built-in nameReference transformer doesn't know the HelmRelease
+# CRD, so without this a hashed ConfigMap leaves valuesFrom pointing at the
+# bare name. Copied per overlay — Flux loads with LoadRestrictionsRootOnly.
+nameReference:
+  - kind: ConfigMap
+    version: v1
+    fieldSpecs:
+      - path: spec/valuesFrom/name
+        kind: HelmRelease
