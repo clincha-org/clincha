@@ -11,8 +11,6 @@ configMapGenerator:
     namespace: monitoring
     files:
       - prometheus.yml
-    options:
-      disableNameSuffixHash: true
   - name: alloy-values
     namespace: monitoring
     files:
@@ -35,17 +33,11 @@ configMapGenerator:
     namespace: monitoring
     files:
       - graphite_mapping.conf
-    options:
-      disableNameSuffixHash: true
   - name: alloy-syslog-config
     namespace: monitoring
     files:
       - config-syslog.alloy
-    options:
-      disableNameSuffixHash: true
   - name: truenas-exporter-script
     namespace: monitoring
     files:
       - truenas_exporter.py
-    options:
-      disableNameSuffixHash: true

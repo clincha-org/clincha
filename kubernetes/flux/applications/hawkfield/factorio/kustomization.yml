@@ -13,5 +13,3 @@ configMapGenerator:
       - server-adminlist.json
       - map-gen-settings.json
       - map-settings.json
-    options:
-      disableNameSuffixHash: true

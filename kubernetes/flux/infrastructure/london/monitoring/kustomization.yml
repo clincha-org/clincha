@@ -25,5 +25,3 @@ configMapGenerator:
     namespace: monitoring
     files:
       - values.yml
-    options:
-      disableNameSuffixHash: true
