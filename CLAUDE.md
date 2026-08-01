@@ -21,7 +21,7 @@ ansible-inventory -i inventory/london.proxmox.yml --list
 
 ### Ansible
 
-All Ansible commands run from the `Ansible/` directory. Python 3.13, ansible-core 2.17.14 (pinned for Kubespray compatibility).
+All Ansible commands run from the `Ansible/` directory. Python 3.13, ansible-core 2.18.18 (pinned for Kubespray compatibility).
 
 ```bash
 # Install Python dependencies
@@ -67,7 +67,7 @@ packer build packer/ubuntu2404/main.pkr.hcl
 - **Roles**: `base/`, `users/`, `sudoers/`, `helm/`
 - **Inventory**: Dynamic Proxmox-based (`inventory/hawkfield.proxmox.yml`, `inventory/london.proxmox.yml`)
 - **Group vars**: `group_vars/all.yml`, `group_vars/hawkfield.yml`, `group_vars/london.yml`
-- Kubespray v2.29.1 (installed via Galaxy as a collection)
+- Kubespray v2.31.0 (installed via Galaxy as a collection)
 
 ### Kubernetes (`kubernetes/flux/`)
 
