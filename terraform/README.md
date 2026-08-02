@@ -25,7 +25,11 @@ not by hand — Uptime Kuma has no env-based bootstrap, so the Job calls the
 Socket.IO `setup` event. Re-running is safe; the server rejects a second setup
 once a user exists.
 
-Credentials live in Bitwarden (`Uptime Kuma admin`,
+Credentials live in Bitwarden (`uptime kuma (clincha)`,
 `Uptime Kuma Telegram notification`) and as repository secrets
 `UPTIME_KUMA_ADMIN_PASSWORD`, `UPTIME_KUMA_TELEGRAM_BOT_TOKEN` and
 `UPTIME_KUMA_TELEGRAM_CHAT_ID`.
+
+Rotating that password means three places at once: the running instance via
+the `changePassword` socket event, the `UPTIME_KUMA_ADMIN_PASSWORD` secret, and
+the bootstrap SOPS secret. Changing it in the UI alone breaks Terraform auth.
