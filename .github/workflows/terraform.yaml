@@ -50,8 +50,6 @@ jobs:
     name: "Apply (${{ matrix.site }})"
     runs-on: ubuntu-latest
     needs: plan
-    environment:
-      name: production
     strategy:
       fail-fast: false
       matrix:
