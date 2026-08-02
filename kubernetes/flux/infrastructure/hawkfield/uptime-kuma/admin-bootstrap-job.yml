@@ -20,7 +20,7 @@ spec:
         # The uptime-kuma image already carries socket.io-client, so the
         # bootstrap always speaks the same protocol version as the server.
         - name: bootstrap
-          image: louislam/uptime-kuma:2.3.0
+          image: louislam/uptime-kuma:2.4.0
           command:
             - node
             - /script/admin-bootstrap.js
