@@ -46,3 +46,17 @@ spec:
         value: "3019"
       - name: PGID
         value: "3021"
+    # SQLite fsync on that NFS mount runs 58-105ms against 7ms on local disk, so
+    # a single WAL insert takes ~558ms. The chart's 1s/2s probe timeouts expire
+    # whenever the stat_hourly aggregation holds the Knex pool, and the restart
+    # re-runs the aggregation: 228 restarts in 5 days.
+    readinessProbe:
+      timeoutSeconds: 5
+      failureThreshold: 6
+    livenessProbe:
+      timeoutSeconds: 10
+      failureThreshold: 6
+    # RollingUpdate surges a second pod (25% of 1 rounds up), which would put
+    # two writers on the one SQLite file.
+    strategy:
+      type: Recreate
