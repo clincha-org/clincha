@@ -53,6 +53,8 @@ Everything is deployed as code: Packer builds VM templates, Terraform provisions
 | **Applications** | Homepage, Factorio, Satisfactory | Homepage |
 | **Other VMs** | claude-hawk-1 (Claude Code) | — |
 
+Per-machine hardware spec sheets — board, CPU, memory, drives, free slots and upgrade paths — are in [Documentation/hardware](Documentation/hardware/README.md).
+
 ## Workflow Status
 
 ### Infrastructure
