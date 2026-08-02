@@ -18,7 +18,8 @@ It has its own workflow rather than joining the matrix in `terraform.yaml`:
 that workflow passes `-var="pm_api_token_secret"` to every stack, and Terraform
 errors on a `-var` it has no declaration for.
 
-The admin user it authenticates as is created by a Flux Job
+Uptime Kuma is single-user: the account Terraform authenticates as (`clincha`) is
+also the one you log in with. It is created by a Flux Job
 (`kubernetes/flux/infrastructure/hawkfield/uptime-kuma/admin-bootstrap-job.yml`),
 not by hand — Uptime Kuma has no env-based bootstrap, so the Job calls the
 Socket.IO `setup` event. Re-running is safe; the server rejects a second setup

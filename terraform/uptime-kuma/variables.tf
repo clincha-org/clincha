@@ -3,9 +3,11 @@ variable "endpoint" {
   default = "https://status.clincha.co.uk"
 }
 
+# Uptime Kuma is single-user, so this is both Angus's login and the account
+# Terraform authenticates as. Keep it in step with the bootstrap secret.
 variable "username" {
   type    = string
-  default = "admin"
+  default = "clincha"
 }
 
 variable "password" {
