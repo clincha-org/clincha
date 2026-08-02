@@ -9,7 +9,13 @@ const done = (code, msg) => {
     process.exit(code);
 };
 
-const socket = io(url, { transports: [ "websocket" ], timeout: 10000 });
+// Leave transports at the default. Forcing ["websocket"] gets as far as an
+// accepted connection server-side but never completes the Socket.IO handshake,
+// so the client sits waiting for a "connect" that never arrives. The default
+// polling-then-upgrade path lands on websocket anyway.
+const socket = io(url, { timeout: 10000 });
+
+setTimeout(() => done(1, "timed out waiting for uptime-kuma"), 60000);
 
 socket.on("connect_error", (err) => done(1, `connect failed: ${err.message}`));
 

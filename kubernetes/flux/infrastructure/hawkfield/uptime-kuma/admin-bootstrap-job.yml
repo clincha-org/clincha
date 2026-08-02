@@ -21,11 +21,15 @@ spec:
         # bootstrap always speaks the same protocol version as the server.
         - name: bootstrap
           image: louislam/uptime-kuma:2.3.0
-          workingDir: /app
           command:
             - node
             - /script/admin-bootstrap.js
           env:
+            # Node resolves modules against the script's own directory, so the
+            # ConfigMap mount cannot see /app/node_modules without this.
+            # workingDir has no effect on resolution.
+            - name: NODE_PATH
+              value: /app/node_modules
             - name: KUMA_URL
               value: http://uptime-kuma-uptime-kuma:3001
             - name: KUMA_USERNAME
