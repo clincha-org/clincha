@@ -19,6 +19,12 @@ spec:
   # Values are inline rather than valuesFrom: helm-controller does not watch the
   # referenced ConfigMap, so an edit there needs a manual --force reconcile.
   values:
+    # Ahead of the chart's appVersion (2.3.0) to match what
+    # breml/uptimekuma tests against. 2.3.0 has no `bearer_token` column on
+    # `monitor`, so every Terraform-created HTTP monitor fails on INSERT.
+    # Drop this once the chart ships an appVersion of 2.4.0 or later.
+    image:
+      tag: "2.4.0"
     # The monitoring data lives in MariaDB on hawkstore (the TrueNAS `mariadb`
     # app, on local ZFS). SQLite on the NFS mount below could not keep up: fsync
     # there costs 58-105ms against 7ms locally, so a WAL insert took ~558ms and
