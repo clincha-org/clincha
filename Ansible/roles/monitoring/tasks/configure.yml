@@ -16,6 +16,13 @@
     line: 'CONFIG_FILE="/etc/alloy/config.alloy"'
   notify: Restart alloy
 
+- name: Ensure Alloy does not phone home
+  ansible.builtin.lineinfile:
+    path: /etc/default/alloy
+    regexp: '^CUSTOM_ARGS='
+    line: 'CUSTOM_ARGS="--disable-reporting"'
+  notify: Restart alloy
+
 - name: Ensure Alloy service is enabled and started
   ansible.builtin.systemd_service:
     name: alloy
