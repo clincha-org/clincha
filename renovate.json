@@ -1,13 +1,25 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
-  "enabledManagers": ["kubernetes", "flux"],
+  "enabledManagers": ["kubernetes", "flux", "custom.regex"],
   "kubernetes": {
     "managerFilePatterns": ["/^kubernetes/flux/.+\\.ya?ml$/"]
   },
   "flux": {
     "managerFilePatterns": ["/^kubernetes/flux/.+\\.ya?ml$/"]
   },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Grafana Alloy apt pin in the monitoring role",
+      "managerFilePatterns": ["/^Ansible/roles/monitoring/defaults/main\\.yml$/"],
+      "matchStrings": ["monitoring_alloy_version: \"(?<currentValue>.+?)\""],
+      "depNameTemplate": "alloy",
+      "datasourceTemplate": "deb",
+      "versioningTemplate": "deb",
+      "registryUrlTemplate": "https://apt.grafana.com?suite=stable&components=main&binaryArch=amd64"
+    }
+  ],
   "dependencyDashboard": false,
   "prConcurrentLimit": 3,
   "prHourlyLimit": 2,
