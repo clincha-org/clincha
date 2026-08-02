@@ -4,3 +4,4 @@ metadata:
   name: uptime-kuma
 resources:
   - ../../base/uptime-kuma
+  - mariadb-credentials.sops.yaml

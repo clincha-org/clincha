@@ -9,6 +9,7 @@ rules:
       - 'Ansible/roles/users/defaults/main.yml'
       - 'kubernetes/flux/infrastructure/base/media/controller/secret.yml'
       - 'kubernetes/flux/infrastructure/hawkfield/monitoring/loki-rustfs-creds.sops.yaml'
+      - 'kubernetes/flux/infrastructure/hawkfield/uptime-kuma/mariadb-credentials.sops.yaml'
       # Long ${{ secrets.* }} expressions and release URLs. Pre-existing; the
       # linter only sees these files when something in them changes.
       - 'Ansible/kubernetes.yml'

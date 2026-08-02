@@ -19,9 +19,24 @@ spec:
   # Values are inline rather than valuesFrom: helm-controller does not watch the
   # referenced ConfigMap, so an edit there needs a manual --force reconcile.
   values:
-    # /app/data is the SQLite database. Mounted from hawkstore NFS rather than a
-    # PVC — a Longhorn journal abort silently wedged two volumes with EIO for 18
-    # days on 2026-07-08.
+    # The monitoring data lives in MariaDB on hawkstore (the TrueNAS `mariadb`
+    # app, on local ZFS). SQLite on the NFS mount below could not keep up: fsync
+    # there costs 58-105ms against 7ms locally, so a WAL insert took ~558ms and
+    # the pod restarted 228 times in 5 days. Env wins over db-config.json and
+    # rewrites it, so this switch needs no manual file surgery.
+    externalDatabase:
+      enabled: true
+      type: mariadb
+      hostname: 10.1.2.10
+      port: 3306
+      database: uptime_kuma
+      existingSecret: uptime-kuma-mariadb-credentials
+      existingSecretUsernameKey: username
+      existingSecretPasswordKey: password
+    # /app/data still holds db-config.json, uploads, screenshots and docker-tls
+    # — all low-traffic. Mounted from hawkstore NFS rather than a PVC because a
+    # Longhorn journal abort silently wedged two volumes with EIO for 18 days on
+    # 2026-07-08.
     volume:
       enabled: false
     additionalVolumes:
@@ -46,17 +61,16 @@ spec:
         value: "3019"
       - name: PGID
         value: "3021"
-    # SQLite fsync on that NFS mount runs 58-105ms against 7ms on local disk, so
-    # a single WAL insert takes ~558ms. The chart's 1s/2s probe timeouts expire
-    # whenever the stat_hourly aggregation holds the Knex pool, and the restart
-    # re-runs the aggregation: 228 restarts in 5 days.
+    # Kept from the SQLite-on-NFS era. MariaDB removes the stall that used to
+    # trip these, but the chart's 1s/2s defaults leave no room for a slow query
+    # either, and a killed pod is a worse outcome than a slow one.
     readinessProbe:
       timeoutSeconds: 5
       failureThreshold: 6
     livenessProbe:
       timeoutSeconds: 10
       failureThreshold: 6
-    # RollingUpdate surges a second pod (25% of 1 rounds up), which would put
-    # two writers on the one SQLite file.
+    # RollingUpdate surges a second pod (25% of 1 rounds up). Harmless against
+    # MariaDB, but /app/data is still a shared RWX mount.
     strategy:
       type: Recreate
