@@ -63,16 +63,27 @@ jobs:
             ${{ secrets.UPTIME_KUMA_TELEGRAM_BOT_TOKEN }}
           TF_VAR_telegram_chat_id:
             ${{ secrets.UPTIME_KUMA_TELEGRAM_CHAT_ID }}
-        run: terraform plan -no-color -out=tfplan | tee plan_output.txt
+        # continue-on-error so a failed plan still gets posted to the PR; the
+        # gate below turns it back into a job failure. pipefail because the
+        # exit code of a pipeline is tee's, which would hide the failure.
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          terraform plan -no-color -out=tfplan | tee plan_output.txt
 
       - name: Post plan to the PR
-        if: github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
             const path = 'terraform/uptime-kuma/plan_output.txt';
-            const plan = fs.readFileSync(path, 'utf8');
+            let plan = 'plan output not available';
+            try {
+              plan = fs.readFileSync(path, 'utf8');
+            } catch (e) {
+              // plan may have failed before writing anything
+            }
             const body = '### Terraform plan — uptime-kuma\n\n'
               + '<details><summary>Show plan</summary>\n\n'
               + '```terraform\n' + plan.slice(-60000) + '\n```\n\n'
@@ -83,6 +94,12 @@ jobs:
               repo: context.repo.repo,
               body,
             });
+
+      - name: Fail if the plan failed
+        if: steps.plan.outcome == 'failure'
+        run: |
+          echo "::error::terraform plan failed — see the step above"
+          exit 1
 
       - name: Terraform Apply
         if: github.event_name != 'pull_request'
