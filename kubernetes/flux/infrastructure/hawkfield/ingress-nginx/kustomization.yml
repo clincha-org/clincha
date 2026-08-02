@@ -4,10 +4,10 @@ metadata:
   name: ingress-nginx
 resources:
   - ../../base/ingress-nginx
+configurations:
+  - nameref-helmrelease.yml
 configMapGenerator:
   - namespace: ingress-nginx
     name: ingress-nginx-values
     files:
       - values.yml
-    options:
-      disableNameSuffixHash: true

@@ -6,46 +6,38 @@ resources:
   - ../../base/monitoring
   - truenas-api-key.sops.yaml
   - loki-rustfs-creds.sops.yaml
+configurations:
+  - nameref-helmrelease.yml
 configMapGenerator:
   - name: prometheus.yml
     namespace: monitoring
     files:
       - prometheus.yml
-    options:
-      disableNameSuffixHash: true
   - name: alloy-values
     namespace: monitoring
     files:
       - values.yml=alloy-values.yml
-    options:
-      disableNameSuffixHash: true
   - name: alloy-config
     namespace: monitoring
     files:
       - config.alloy
+    # Flag kept: the name lives inside alloy-values.yml's file content, which
+    # kustomize can't rewrite. Edits here still need a manual rollout restart.
     options:
       disableNameSuffixHash: true
   - name: loki-values
     namespace: monitoring
     files:
       - values.yml=loki-values.yml
-    options:
-      disableNameSuffixHash: true
   - name: graphite-mapping
     namespace: monitoring
     files:
       - graphite_mapping.conf
-    options:
-      disableNameSuffixHash: true
   - name: alloy-syslog-config
     namespace: monitoring
     files:
       - config-syslog.alloy
-    options:
-      disableNameSuffixHash: true
   - name: truenas-exporter-script
     namespace: monitoring
     files:
       - truenas_exporter.py
-    options:
-      disableNameSuffixHash: true
