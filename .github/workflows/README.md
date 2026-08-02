@@ -1,6 +1,6 @@
 # CI/CD Workflows
 
-All workflows run on GitHub Actions and connect to internal infrastructure via [Tailscale](https://tailscale.com/). Destructive operations (terraform apply, cluster rebuild) require approval through the `production` GitHub environment.
+All workflows run on GitHub Actions and connect to internal infrastructure via [Tailscale](https://tailscale.com/). Cluster rebuild requires approval through the `production` GitHub environment. Terraform apply does not — its plan is reviewed on the PR, and merging to `master` is the approval.
 
 ## Infrastructure Lifecycle
 
@@ -48,7 +48,7 @@ These run when changes are pushed to `master` (i.e. a PR is merged).
 | Workflow | File | Triggers | Sites | What it does |
 |----------|------|----------|-------|-------------|
 | **Packer Build** | `packer.yaml` | Push to master (paths: `packer/**`), weekly Sunday 04:00 UTC, manual | hawk01–03, lon01 | Builds Ubuntu 24.04 VM templates on all Proxmox nodes (matrix build, one per host) |
-| **Terraform Apply** | `terraform.yaml` | Push to master (paths: `terraform/**`), manual | Hawkfield, London | Plans then applies Terraform for both sites (matrix). Apply waits on an `approve` job gated by the `production` environment |
+| **Terraform Apply** | `terraform.yaml` | Push to master (paths: `terraform/**`), manual | Hawkfield, London | Plans then applies Terraform for both sites (matrix). Applies unattended — `terraform-plan.yaml` already posted the plan on the PR |
 | **Ansible Base** | `ansible-base.yaml` | Push to master (paths: `Ansible/**`), hourly, manual | Hawkfield, London (parallel) | Runs `base.yml` playbook — user accounts, sudoers, base packages |
 | **Proxmox Config** | `ansible-proxmox.yaml` | Push to master (paths: `Ansible/proxmox.yml`), hourly, manual | Hawkfield, London (parallel) | Configures Proxmox API roles, users, and ACLs via `proxmox.yml` playbook |
 
@@ -90,7 +90,7 @@ Workflows use concurrency groups to prevent dangerous parallel runs:
 
 | Group | Workflows | Behaviour |
 |-------|-----------|-----------|
-| `cluster-{site}` | terraform.yaml (apply only), ansible-base.yaml | Per-site — each site's job serialises with that site's terraform apply |
+| `cluster-{site}` | terraform.yaml, ansible-base.yaml | Per-site — each site's job serialises with that site's terraform run |
 | `cluster-hawkfield` | cluster-rebuild.yaml | Serialises the rebuild against Hawkfield's other cluster work |
 | `terraform-plan-{PR}` | terraform-plan.yaml | Per-PR, cancels in-progress — only latest plan matters |
 | `packer-{host}` | packer.yaml | Per-host — prevents parallel builds on the same Proxmox node |
@@ -101,18 +101,19 @@ Workflows use concurrency groups to prevent dangerous parallel runs:
 A job acquires its concurrency group *before* it waits on an environment gate, so a job
 that declares both holds the group for as long as nobody approves it — every later run
 in that group pends until it is cancelled ([#399](https://github.com/clincha-org/clincha/issues/399)).
-No job in this repo may declare `environment:` and `concurrency:` together. `terraform.yaml`
-and `cluster-rebuild.yaml` therefore isolate the `production` gate in a group-less
-`approve` job that the real work `needs`, so the lock is taken only once work is authorised.
+No job in this repo may declare `environment:` and `concurrency:` together.
 
-`cluster-rebuild.yaml` holds `cluster-hawkfield` per job rather than for the whole run, so
-the group is briefly free between `destroy`, `provision` and `configure`. An hourly
-`ansible-base` run can slip into those gaps and fail against half-rebuilt hosts; that is
-preferred over the workflow-level group, which reintroduces the wedge above.
+`terraform.yaml` has no gate at all. `terraform-plan.yaml` posts the plan on the PR, so
+approving the merge approves the apply; a second click per run only earned unattended
+runs a lock they held for days.
 
-`terraform.yaml`'s plan job has no group — `terraform plan` is read-only, so an overlapping
-apply cannot be corrupted by it. These backends configure no state locking
-(no `dynamodb_table`, no `use_lockfile`), so the plan output may be stale instead.
+`cluster-rebuild.yaml` keeps the `production` gate — it destroys a live cluster on a
+manual dispatch, with no reviewed plan behind it. The gate sits in a group-less `approve`
+job that `destroy` `needs`, so an unapproved rebuild holds nothing. The three working jobs
+hold `cluster-hawkfield` individually rather than the whole run, which leaves the group
+briefly free between them: an hourly `ansible-base` run can slip into a gap and fail
+against half-rebuilt hosts. That is preferred over a workflow-level group, which puts the
+gate and the lock back in the same run.
 
 ## Secrets
 
