@@ -8,6 +8,8 @@ on:
   pull_request:
     paths:
       - "terraform/**"
+      # Has its own workflow; this one would plan three Proxmox sites for nothing.
+      - "!terraform/uptime-kuma/**"
       - ".github/workflows/terraform-plan.yaml"
 
 concurrency:
