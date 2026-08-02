@@ -8,6 +8,8 @@ on:
     paths:
       - '.github/workflows/terraform.yaml'
       - 'terraform/**'
+      # Has its own workflow; this one would apply three Proxmox sites for nothing.
+      - '!terraform/uptime-kuma/**'
   workflow_dispatch:
 jobs:
   plan:

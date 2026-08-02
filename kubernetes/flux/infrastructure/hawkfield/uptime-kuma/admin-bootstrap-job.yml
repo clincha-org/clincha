@@ -1,0 +1,51 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uptime-kuma-admin-bootstrap
+  namespace: uptime-kuma
+  annotations:
+    # A Job spec is immutable, and editing the script rewrites the generated
+    # ConfigMap name into it. Let Flux delete and recreate rather than fail the
+    # apply. Re-running is safe: the script is idempotent.
+    kustomize.toolkit.fluxcd.io/force: "enabled"
+spec:
+  # No ttlSecondsAfterFinished on purpose — the completed Job is the record
+  # that bootstrap ran, and letting it expire would just have Flux recreate it.
+  backoffLimit: 10
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        # The uptime-kuma image already carries socket.io-client, so the
+        # bootstrap always speaks the same protocol version as the server.
+        - name: bootstrap
+          image: louislam/uptime-kuma:2.3.0
+          command:
+            - node
+            - /script/admin-bootstrap.js
+          env:
+            # Node resolves modules against the script's own directory, so the
+            # ConfigMap mount cannot see /app/node_modules without this.
+            # workingDir has no effect on resolution.
+            - name: NODE_PATH
+              value: /app/node_modules
+            - name: KUMA_URL
+              value: http://uptime-kuma-uptime-kuma:3001
+            - name: KUMA_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: uptime-kuma-admin-credentials
+                  key: username
+            - name: KUMA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: uptime-kuma-admin-credentials
+                  key: password
+          volumeMounts:
+            - name: script
+              mountPath: /script
+      volumes:
+        - name: script
+          configMap:
+            name: uptime-kuma-admin-bootstrap

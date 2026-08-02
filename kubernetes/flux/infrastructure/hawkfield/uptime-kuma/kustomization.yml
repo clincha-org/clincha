@@ -5,3 +5,10 @@ metadata:
 resources:
   - ../../base/uptime-kuma
   - mariadb-credentials.sops.yaml
+  - admin-credentials.sops.yaml
+  - admin-bootstrap-job.yml
+configMapGenerator:
+  - name: uptime-kuma-admin-bootstrap
+    namespace: uptime-kuma
+    files:
+      - admin-bootstrap.js
