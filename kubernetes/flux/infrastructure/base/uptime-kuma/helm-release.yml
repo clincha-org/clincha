@@ -66,7 +66,7 @@ spec:
       - name: PUID
         value: "3019"
       - name: PGID
-        value: "3021"
+        value: "3019"
     # Kept from the SQLite-on-NFS era. MariaDB removes the stall that used to
     # trip these, but the chart's 1s/2s defaults leave no room for a slow query
     # either, and a killed pod is a worse outcome than a slow one.
