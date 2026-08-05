@@ -78,8 +78,17 @@ new coverage is not a space concern. Revisit if the pool passes ~50%.
 | dataset | size | why |
 |---|---|---|
 | `data/media` | 14.4 TB | Re-acquirable. Would not fit on a 5.44 TB `backups` pool in any case. Snapshot-only was considered and rejected — the point of a snapshot here would be to survive an accidental mass delete, and the media library is exactly the thing we are willing to re-acquire. |
-| `data/satisfactory` | 0 bytes | Stale, no workload. Slated for removal in #408. |
-| `data/backups/longhorn` | 25.9 GB | Longhorn was decommissioned 2026-07-27. Its snapshot and replication tasks were retired as part of #406; the datasets and their existing snapshots are left in place pending #408. |
+
+## Removed 2026-08-05
+
+Cleared as part of #408, on the same day the policy above was applied. Recorded here because the
+dataset list in older notes still mentions them:
+
+| what | reclaimed | why |
+|---|---|---|
+| `data/backups/longhorn` + `backups/longhorn` + the `data/backups` parent | 38.9 GB on `data`, 4.3 GB on `backups` | Longhorn was decommissioned 2026-07-27. Most of it was pinned by 29 snapshots rather than live data. |
+| `/mnt/userstore/minio` and `userstore@pre-minio-decommission-20260730` | 2.4 GB | MinIO was replaced by RustFS 2026-07-30. The three live terraform state keys and the hawkfield kubeconfig were confirmed present in `userstore/s3` first; the only objects unique to the old store were three superseded state keys (`clinch-home-kubernetes`, `k8s-london`, `minio`) that nothing in this repo references. |
+| `data/satisfactory` and its NFS export | 0 bytes | No Kubernetes workload, idle since 2026-03-13. |
 
 ## The off-box gap
 
