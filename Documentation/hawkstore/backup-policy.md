@@ -99,9 +99,9 @@ in exactly one building.
 ## The ix-apps exception
 
 TrueNAS hides `ix-apps` datasets from the periodic-snapshot-task API — `pool.snapshottask`
-answers `Dataset not found` for `userstore/ix-apps/...`, even though `zfs` itself is perfectly
-happy to snapshot it and `pool.snapshot` creates one on request. They are also filtered out of
-`pool.snapshot` list queries, though a direct lookup by id works.
+answers `Dataset not found` for `userstore/ix-apps/...`, and so does `pool.dataset.query`, even
+though `zfs` itself is perfectly happy to snapshot it and `pool.snapshot` both creates and lists
+snapshots on it normally.
 
 So the MariaDB dataset is snapshotted by a **cron job** (`root`, daily 22:45) rather than a
 periodic task:
