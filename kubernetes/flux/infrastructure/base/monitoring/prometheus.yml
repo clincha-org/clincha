@@ -43,7 +43,7 @@ spec:
           securityContext:
             runAsUser: 3003
             runAsNonRoot: false
-            runAsGroup: 3004
+            runAsGroup: 3003
           args:
             - --web.enable-remote-write-receiver
             - --config.file=/etc/prometheus/prometheus.yml

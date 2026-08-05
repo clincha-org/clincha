@@ -9,11 +9,11 @@ loki:
   auth_enabled: false
   # The export is root_squash, so run as the hawkstore loki user rather than the
   # chart default 10001. fsGroupChangePolicy is dropped: recursive chown of the
-  # mount is pointless on NFS and the dataset is already owned 3018:3020.
+  # mount is pointless on NFS and the dataset is already owned 3018:3018.
   podSecurityContext:
     runAsUser: 3018
-    runAsGroup: 3020
-    fsGroup: 3020
+    runAsGroup: 3018
+    fsGroup: 3018
     runAsNonRoot: true
   commonConfig:
     replication_factor: 1
