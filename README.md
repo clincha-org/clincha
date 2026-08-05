@@ -55,6 +55,8 @@ Everything is deployed as code: Packer builds VM templates, Terraform provisions
 
 Per-machine hardware spec sheets — board, CPU, memory, drives, free slots and upgrade paths — are in [Documentation/hardware](Documentation/hardware/README.md).
 
+What the NAS backs up, what it deliberately does not, and why — [Documentation/hawkstore/backup-policy.md](Documentation/hawkstore/backup-policy.md).
+
 ## Workflow Status
 
 ### Infrastructure
