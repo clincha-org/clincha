@@ -41,11 +41,25 @@ replicate, with the single exception of `data/media` — see below.
 | `data/tdarr` | 700 MB | daily 22:30 | `backups/apps/tdarr` |
 | `data/ombi` | small | daily 22:30 | `backups/apps/ombi` |
 | `data/uptime-kuma` | small | daily 22:30 | `backups/apps/uptime-kuma` |
+| `data/family-archive` | 112 GB | daily 22:45 | `backups/family-archive` |
 | `userstore/ix-apps/app_mounts/mariadb/data` | small | daily 22:45 (cron) | `backups/apps/mariadb` |
 
 The two that actually matter are **Immich** (the family photo library — irreplaceable, and the
 only copy) and **userhome**. `userstore/s3` is small but holds the terraform state and the
 cluster kubeconfigs. `data/grafana` is only 60 MB but is every dashboard ever built here.
+
+`data/family-archive` was pulled off Backblaze B2 on 2026-08-06 (#420) and the source buckets
+`clinch-family-files` / `clinch-family-media` deleted, so this pool is now its only on-site
+copy — treat it with the same care as Immich. It holds `files/aclinch/{Pictures,Phone Backup}`,
+`files/cclinch/Documents` and the whole of the old `clinch-family-media` bucket: 28,039 files,
+104 GiB, SHA1-verified against B2 before the buckets were removed.
+
+Parts of `clinch-family-files` were **deliberately not kept** — `aclinch/Ammerdown` (54.9 GB),
+`aclinch/Documents` (11.4 GB), `aclinch/Kieran`, `aclinch/TOR`, and nine orphaned
+`duplicati-*.zip` chunks with no accompanying dlist. That was a decision, not an oversight.
+`_manifest/` in the dataset holds the path, size, modtime and SHA1 of every object in both
+buckets as they stood immediately before deletion, so what was discarded is at least on record.
+Note that `cclinch/Documents` was kept while `aclinch/Documents` was not.
 
 `userstore/ix-apps/app_mounts/mariadb/data` is the MariaDB behind uptime-kuma. Its monitor
 definitions come from terraform, but the monitoring *history* only exists here.
@@ -81,20 +95,77 @@ new coverage is not a space concern. Revisit if the pool passes ~50%.
 | `data/satisfactory` | 0 bytes | Stale, no workload. Slated for removal in #408. |
 | `data/backups/longhorn` | 25.9 GB | Longhorn was decommissioned 2026-07-27. Its snapshot and replication tasks were retired as part of #406; the datasets and their existing snapshots are left in place pending #408. |
 
-## The off-box gap
+## Off-box copy
 
-**Every replication is `LOCAL` `PUSH`, `data`/`userstore` → `backups`, all three pools in the
-same chassis.** That protects against accidental deletion, app-level corruption and a single
-pool failing. It does **not** protect against losing the box — fire, theft, a PSU taking the
-backplane with it, or a filesystem-level catastrophe.
+Every *ZFS replication* is still `LOCAL` `PUSH`, `data`/`userstore` → `backups`, all three pools
+in the same chassis. That protects against accidental deletion, app-level corruption and a single
+pool failing, but not against losing the box.
 
-This is a **known, accepted gap**, not an oversight. Off-box replication for Immich and
-userhome was considered as part of #406 and deliberately deferred: it needs a provider
-decision, a credential and an ongoing cost, none of which should hold up closing the
-zero-coverage problem. Tracked separately.
+Since **2026-08-06** (#420) the four datasets with no other copy are also pushed to Backblaze B2,
+encrypted client-side:
 
-If you only ever fix one thing on this page, make it this one — 137 GB of family photos exist
-in exactly one building.
+| dataset | remote directory |
+|---|---|
+| `data/immich` | `offsite:immich` |
+| `userstore/userhome` | `offsite:userhome` |
+| `userstore/s3` | `offsite:s3` |
+| `data/family-archive` | `offsite:family-archive` |
+
+`systemd` unit `offsite-backup.service`, timer daily at **09:00** with a 15-minute jitter — clear
+of both the 02:00–07:00 NAS load window and the 22:00–23:30 replication band. Script at
+`/root/offsite-backup.sh`, logs in `/root/offsite-backup-logs/` (pruned at 30 days).
+
+The job snapshots each dataset as `@offsite-<timestamp>`, syncs from
+`.zfs/snapshot/<tag>/`, then destroys the snapshot. Syncing the snapshot rather than the live
+mount is what makes the upload a consistent point-in-time; a stale `@offsite-*` snapshot means a
+previous run was killed mid-flight, and the next run clears it.
+
+### What B2 sees
+
+Nothing readable. The remote is an `rclone crypt` wrapping
+`b2backup:clincha-hawkstore-offsite`, so **file contents and filenames are both encrypted**
+before leaving the house. In the raw bucket a photo looks like
+`rmoa87bl476m7njs1ponpjdeek/56ga422gc8kie1h6mvgtprfk44`. SSE-B2 is enabled underneath as well,
+but that protects nothing we are not already protecting ourselves.
+
+**The two crypt values exist only in Bitwarden**, item `Backblaze - hawkstore offsite backup`
+(`crypt password` and `crypt password2`). This is the whole point: a key stored on hawkstore
+would be worthless in exactly the scenario the off-box copy is for. If that vault item is lost,
+the bucket is unrecoverable ciphertext — there is no recovery path and no support ticket that
+fixes it.
+
+### The application key is deliberately weak
+
+The key the NAS holds is scoped to the one bucket and carries only
+`listBuckets, listFiles, readFiles, writeFiles`. It has **no `deleteFiles`**, so a compromised
+or misbehaving hawkstore can hide objects but never hard-delete them, and the bucket lifecycle
+rule keeps hidden versions for **30 days**. Verified by trying: a hard-delete against the bucket
+with this key returns `401 unauthorized` and the object survives.
+
+Admin operations that genuinely need to destroy things use the account-wide `backblaze` vault
+item instead, which the NAS does not have.
+
+### Restoring
+
+The restore path deliberately does not involve hawkstore. From any machine with `rclone`, using
+only the Bitwarden item:
+
+```sh
+rclone config create b2raw b2 account <keyID> key <applicationKey>
+rclone config create arch crypt remote b2raw:clincha-hawkstore-offsite \
+    password  "$(rclone obscure '<crypt password>')" \
+    password2 "$(rclone obscure '<crypt password2>')"
+rclone ls arch:
+```
+
+This was exercised end-to-end on 2026-08-06 from a machine that is not hawkstore, rebuilding the
+config from the vault alone. Re-test it whenever the credential changes — an untested off-box
+backup is a belief, not a backup.
+
+### Cost
+
+~355 GB at B2's $6/TB/month is roughly **$2.15/month**. Egress is free up to 3× stored data per
+month, so a full restore of this set costs nothing; a repeated one would.
 
 ## The ix-apps exception
 
