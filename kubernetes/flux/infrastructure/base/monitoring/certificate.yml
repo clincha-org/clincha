@@ -16,6 +16,20 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  name: alertmanager-certificate
+  namespace: monitoring
+spec:
+  secretName: alertmanager-certificate-secret
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - alertmanager.clinch-home.com
+    - alertmanager.clincha.co.uk
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
   name: grafana-certificate
   namespace: monitoring
 spec:

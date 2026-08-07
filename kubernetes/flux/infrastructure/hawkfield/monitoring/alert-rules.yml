@@ -1,0 +1,22 @@
+groups:
+  - name: pod-restarts
+    rules:
+      # 1h window rather than 15m: CrashLoopBackOff caps its backoff at 5 minutes,
+      # so a 15m window tops out around 3 restarts and makes any threshold marginal.
+      - alert: PodRestartingFrequently
+        expr: increase(kube_pod_container_status_restarts_total[1h]) >= 3
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'restarted {{ $value | printf "%.0f" }} times in the last hour'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/pod-restarts.md
+
+      - alert: PodCrashLooping
+        expr: kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"} == 1
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: 'stuck in CrashLoopBackOff for over 15 minutes'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/pod-restarts.md

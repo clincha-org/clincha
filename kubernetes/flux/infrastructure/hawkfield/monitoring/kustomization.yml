@@ -6,6 +6,7 @@ resources:
   - ../../base/monitoring
   - truenas-api-key.sops.yaml
   - loki-rustfs-creds.sops.yaml
+  - alertmanager-telegram.sops.yaml
 configurations:
   - nameref-helmrelease.yml
 configMapGenerator:
@@ -13,6 +14,14 @@ configMapGenerator:
     namespace: monitoring
     files:
       - prometheus.yml
+  - name: prometheus-rules
+    namespace: monitoring
+    files:
+      - alert-rules.yml
+  - name: alertmanager.yml
+    namespace: monitoring
+    files:
+      - alertmanager.yml
   - name: alloy-values
     namespace: monitoring
     files:

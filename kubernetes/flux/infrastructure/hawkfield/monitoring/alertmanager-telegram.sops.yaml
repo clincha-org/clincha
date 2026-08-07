@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: alertmanager-telegram
+    namespace: monitoring
+type: Opaque
+stringData:
+    bot-token: ENC[AES256_GCM,data:fem+5XXdc6t8WmCP9I4rAGWW4/c2io6Cb3gl26aPW2mLu76CR1N7dwOTUuw08Q==,iv:aokHKowIU/fscsneFnmIG37hb3U/Suck1+bAmuZv7GE=,tag:1eUcCHAJXwigZ9q4sFNO8A==,type:str]
+    chat-id: ENC[AES256_GCM,data:b24b1YWztpzLvA==,iv:7Mg+DRBsA3lTkJyCGcOYw4Xz0ZZ2luedcZRl+KJF/90=,tag:SKWCTZMELvh9FLvDYmOrFw==,type:str]
+sops:
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-08-07T05:57:02Z"
+    mac: ENC[AES256_GCM,data:jfFM/GHZYagpdqpSW1ua2pzhQfBRBGHgQeXi41NP0SFzFe6EvwHXeFXqDQGAsOSBpW+paHXoVB4ommqtfngksYE0ChpK0jBwGFi1x7yoHA9+nndye0oYVLUJS+YEpdmwnPxUYrBGMXOwRJKwGtn1bGGSjdP/WrO57PNdMRzbmzo=,iv:LQ0Z5SirEz3/p/6uFjq27DZvystj9Skd6OKk5eE5P5Q=,tag:CtSN5ArRe1tMrCph7dgM2Q==,type:str]
+    pgp:
+        - created_at: "2026-08-07T05:57:02Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hQIMA+iIV7UXPYO1AQ/+IKhk0oGxCpz+jXFKRjRq2JMKSMvwRUAJ5VakG6Sxn0El
+            dX0mVwSwYoHlNYgXKbJqGU/bQcNuHWseahy4RItm5NHEF00bBsB5MdMCdNpcUJnK
+            AB+l7Zo4+MQGtpT0aXp9hwhoNd0ipwI8NRIHMndwD3RZSn3uHnNmUM42lIWgPya2
+            LBMxPu4NHiALbjYSFEek3nhwkojDm2vzFy0RxI/ymcCvd1p8Zktweotlobndz0TN
+            x+hdVAox4GzfpjVj0iv37Hd3dZMUiaq0OSCU4vrbjwWliUYmd+csW62n/lD9VJLj
+            iCUWjI28DSEGjqGSlAEM7/WTFcIzT6lMX43LPaF/egs5TtlInZHgQaUCQUp58wja
+            YOG6/ZWh0MXsjlmPlkxbVRcuqjuDBmRSUpQbQdNYb6d801M3goY+HEinIUTY0Zcz
+            Fe0cYstYQUkKZV2np88dqGSOg3VVryxIybbfjMZ2zOf5UlhIIM6CqWGaWO2tixbg
+            agiCPt6/mSfhPU8KQWmE2RtY63dgWCHhIYM53ru88EAcFmtfuJ+gPH+yT5QoSnmo
+            MxQFtbvHvcazOju4vqEYadNdGvL7Ij+pQRqk/vbuZCiGcgDVa+lguI0qdxBj9JBq
+            aQK/1RcWWc6oZC/BZGLUVkJ/bMpLOqb6l/tSH+Lq2XKIXSq+NvzqoYflmas4qcjS
+            XgH7LTkBrBtWESl+sRYuEfQZ55R7k6qMFFAteFCD89iotx7tzUJ0zr4PqbyTJYCC
+            MIET0OEhXEb3ZZF9Fp6n6I70Lhywo/GGglCSH0ddln4uLbpyJlB7OhrUwLIUVbw=
+            =shu7
+            -----END PGP MESSAGE-----
+          fp: 76AF39813C2297E8F98C542D42436A07A9BA1DE0
+    version: 3.13.1
