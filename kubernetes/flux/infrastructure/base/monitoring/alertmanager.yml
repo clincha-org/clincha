@@ -1,0 +1,112 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/component: alertmanager
+    app.kubernetes.io/instance: k8s
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/part-of: kube-prometheus
+spec:
+  replicas: 1
+  # Silences and the notification log live on shared NFS — never overlap
+  # two pods.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: alertmanager
+      app.kubernetes.io/instance: k8s
+      app.kubernetes.io/name: alertmanager
+      app.kubernetes.io/part-of: kube-prometheus
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: alertmanager
+        app.kubernetes.io/instance: k8s
+        app.kubernetes.io/name: alertmanager
+        app.kubernetes.io/part-of: kube-prometheus
+    spec:
+      containers:
+        - name: alertmanager
+          image: prom/alertmanager:v0.33.1
+          ports:
+            - containerPort: 9093
+              name: http
+          args:
+            - --config.file=/etc/alertmanager/alertmanager.yml
+            - --storage.path=/alertmanager
+            - --web.external-url=https://alertmanager.clinch-home.com
+            # Single replica: disable gossip so it doesn't wait on a peer
+            # that never arrives.
+            - --cluster.listen-address=
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: http
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+            runAsNonRoot: true
+            runAsUser: 3021
+            runAsGroup: 3021
+          volumeMounts:
+            - mountPath: /etc/alertmanager
+              name: config
+            - mountPath: /etc/alertmanager-secrets
+              name: secrets
+              readOnly: true
+            - mountPath: /alertmanager
+              name: data
+      volumes:
+        - name: config
+          configMap:
+            name: alertmanager.yml
+        - name: secrets
+          secret:
+            secretName: alertmanager-telegram
+            defaultMode: 0400
+        - name: data
+          nfs:
+            path: /mnt/data/alertmanager
+            server: 10.1.2.10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/component: alertmanager
+    app.kubernetes.io/instance: k8s
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/part-of: kube-prometheus
+spec:
+  selector:
+    app.kubernetes.io/component: alertmanager
+    app.kubernetes.io/instance: k8s
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/part-of: kube-prometheus
+  ports:
+    - name: http
+      port: 9093
+      targetPort: http
+      protocol: TCP

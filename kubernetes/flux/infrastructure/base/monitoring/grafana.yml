@@ -11,6 +11,11 @@ metadata:
     app.kubernetes.io/part-of: kube-prometheus
 spec:
   replicas: 1
+  # Recreate, not RollingUpdate: /var/lib/grafana is a shared NFS mount and the
+  # bleve unified-search index takes an exclusive lock, so a surged second pod
+  # crash-loops until the old one goes away.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/component: grafana

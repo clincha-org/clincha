@@ -11,6 +11,10 @@ metadata:
     app.kubernetes.io/part-of: kube-prometheus
 spec:
   replicas: 1
+  # Same shared-NFS constraint as Grafana: the TSDB holds an exclusive
+  # lock file, so two pods must never overlap.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/component: prometheus
@@ -38,6 +42,8 @@ spec:
           volumeMounts:
             - mountPath: /etc/prometheus
               name: config
+            - mountPath: /etc/prometheus/rules
+              name: rules
             - mountPath: /prometheus
               name: data
           securityContext:
@@ -58,6 +64,9 @@ spec:
         - name: config
           configMap:
             name: prometheus.yml
+        - name: rules
+          configMap:
+            name: prometheus-rules
 ---
 apiVersion: v1
 kind: Service

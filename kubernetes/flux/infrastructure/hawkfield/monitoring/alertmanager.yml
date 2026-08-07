@@ -1,0 +1,53 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: telegram
+  group_by: ['alertname', 'namespace']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 6h
+  routes:
+    - receiver: telegram
+      matchers:
+        - severity = "critical"
+    - receiver: telegram
+      matchers:
+        - severity = "warning"
+      mute_time_intervals:
+        - overnight
+      # Retries every 4h, so a warning raised inside the quiet window lands
+      # within an hour or so of it lifting, rather than waiting on the 6h
+      # default.
+      repeat_interval: 4h
+
+time_intervals:
+  - name: overnight
+    time_intervals:
+      - location: Europe/London
+        times:
+          - start_time: '23:00'
+            end_time: '24:00'
+          - start_time: '00:00'
+            end_time: '06:00'
+
+receivers:
+  - name: telegram
+    telegram_configs:
+      - bot_token_file: /etc/alertmanager-secrets/bot-token
+        chat_id_file: /etc/alertmanager-secrets/chat-id
+        parse_mode: HTML
+        send_resolved: true
+        message: |-
+          {{ if eq .Status "firing" }}🔴 <b>FIRING</b>
+          {{- else }}✅ <b>RESOLVED</b>
+          {{- end }} — {{ .CommonLabels.alertname }}
+          {{ range .Alerts -}}
+          <b>{{ .Labels.namespace }}/{{ .Labels.pod }}</b>
+          {{- if .Labels.container }} ({{ .Labels.container }})
+          {{- end }}
+          {{ .Annotations.summary }}
+          {{- if .Annotations.runbook_url }}
+          <a href="{{ .Annotations.runbook_url }}">Runbook</a>
+          {{- end }}
+          {{ end }}
