@@ -93,8 +93,29 @@ new coverage is not a space concern. Revisit if the pool passes ~50%.
 | dataset | size | why |
 |---|---|---|
 | `data/media` | 14.4 TB | Re-acquirable. Would not fit on a 5.44 TB `backups` pool in any case. Snapshot-only was considered and rejected — the point of a snapshot here would be to survive an accidental mass delete, and the media library is exactly the thing we are willing to re-acquire. |
-| `data/satisfactory` | 0 bytes | Stale, no workload. Slated for removal in #408. |
-| `data/backups/longhorn` | 25.9 GB | Longhorn was decommissioned 2026-07-27. Its snapshot and replication tasks were retired as part of #406; the datasets and their existing snapshots are left in place pending #408. |
+
+`data/satisfactory` and the two `longhorn` datasets were listed here until 2026-08-05. All three
+were deleted under #408 along with `data/backups`, so there is nothing left to leave unprotected.
+
+## Kept on purpose
+
+Two things on the box look stale by every automatic measure and are kept anyway. Both were put to
+Angus under #408 on 2026-08-07 and both answers were *keep* — treat them as settled rather than
+re-raising them at the next audit.
+
+**Old Factorio save directories.** The live deployment mounts only `/mnt/data/factorio/2026`.
+Alongside it sit `saves`, `spaceage`, `runsmart`, `speedrun`, `proposal` and `config` — 872 MB
+across worlds last touched between May 2025 and October 2025. Every file except `saves/space.zip`
+is an `_autosaveN.zip`, so for each of those worlds the autosaves are the only copy there is.
+That is 0.002% of a 36 TB pool against a set of game states that cannot be regenerated, and
+`proposal` has sentimental value on top. They ride along in the existing `data/factorio`
+6-hourly snapshot.
+
+**`userstore/scans`.** Empty, mtime 2025-09-27, backed by an enabled SMB share and written to by
+the `hawkprint` account (uid 3002, *clinch-printer*), whose password was set the same day. It is a
+scanner dropbox: **empty is its normal resting state**, so an old mtime and a zero byte count are
+not evidence that anything is unused. The scanner is still in service. Its daily snapshot and
+replication to `backups/scans` stay.
 
 ## Off-box copy
 
