@@ -7,6 +7,7 @@ resources:
   - truenas-api-key.sops.yaml
   - loki-rustfs-creds.sops.yaml
   - alertmanager-telegram.sops.yaml
+  - alertmanager-watchdog.sops.yaml
 configurations:
   - nameref-helmrelease.yml
 configMapGenerator:

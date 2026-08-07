@@ -1,0 +1,43 @@
+name: Ansible watchdog
+permissions:
+  contents: read
+on:
+  push:
+    branches:
+      - "master"
+    paths:
+      - '.github/workflows/ansible-watchdog.yaml'
+      - 'Ansible/roles/watchdog/**'
+      - 'Ansible/watchdog.yml'
+  workflow_dispatch:
+concurrency:
+  group: "watchdog"
+jobs:
+  watchdog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Set up Ansible
+        uses: ./.github/actions/ansible-setup
+        with:
+          vault-password: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+          ssh-private-key: ${{ secrets.ANSIBLE_PRIVATE_KEY }}
+
+      - name: Run watchdog playbook
+        working-directory: Ansible
+        env:
+          PROXMOX_TOKEN_SECRET: ${{ secrets.PROXMOX_TOKEN_LONDON_ANSIBLE }}
+          WATCHDOG_ADMIN_PASSWORD: ${{ secrets.WATCHDOG_ADMIN_PASSWORD }}
+        run: |
+          ansible-playbook watchdog.yml \
+            --inventory inventory/london.proxmox.yml \
+            --vault-password-file vault

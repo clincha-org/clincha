@@ -14,6 +14,8 @@ terraform/**/.terraform/
 terraform/**/.terraform.lock.hcl
 terraform/**/*.tfstate
 terraform/**/*.tfstate.backup
+terraform/**/tfplan
+terraform/**/plan_output.txt
 
 # IDE
 .idea/

@@ -10,6 +10,7 @@ on:
       - "terraform/**"
       # Has its own workflow; this one would plan three Proxmox sites for nothing.
       - "!terraform/uptime-kuma/**"
+      - "!terraform/watchdog/**"
       - ".github/workflows/terraform-plan.yaml"
 
 concurrency:

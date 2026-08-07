@@ -1,0 +1,106 @@
+name: Terraform Watchdog
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    paths:
+      - 'terraform/watchdog/**'
+      - '.github/workflows/terraform-watchdog.yaml'
+  push:
+    branches:
+      - master
+    paths:
+      - 'terraform/watchdog/**'
+      - '.github/workflows/terraform-watchdog.yaml'
+  workflow_dispatch:
+
+concurrency:
+  group: terraform-watchdog
+  cancel-in-progress: false
+
+jobs:
+  terraform:
+    # Separate from terraform.yaml because that workflow passes
+    # -var="pm_api_token_secret" to every stack in its matrix, and Terraform
+    # errors on a -var it has no declaration for.
+    name: Plan and apply
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform/watchdog
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Set up Terraform
+        uses: ./.github/actions/terraform-setup
+        with:
+          ts-oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          ts-oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="secret_key=${{ secrets.RUSTFS_SECRET_KEY }}"
+
+      - name: Terraform Format
+        run: terraform fmt -check -diff
+
+      - name: Terraform Plan
+        id: plan
+        env:
+          TF_VAR_password: ${{ secrets.WATCHDOG_ADMIN_PASSWORD }}
+          TF_VAR_telegram_bot_token:
+            ${{ secrets.UPTIME_KUMA_TELEGRAM_BOT_TOKEN }}
+          TF_VAR_telegram_chat_id:
+            ${{ secrets.UPTIME_KUMA_TELEGRAM_CHAT_ID }}
+        # continue-on-error so a failed plan still gets posted to the PR; the
+        # gate below turns it back into a job failure. pipefail because the
+        # exit code of a pipeline is tee's, which would hide the failure.
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          terraform plan -no-color -out=tfplan | tee plan_output.txt
+
+      - name: Post plan to the PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'terraform/watchdog/plan_output.txt';
+            let plan = 'plan output not available';
+            try {
+              plan = fs.readFileSync(path, 'utf8');
+            } catch (e) {
+              // plan may have failed before writing anything
+            }
+            const body = '### Terraform plan — watchdog\n\n'
+              + '<details><summary>Show plan</summary>\n\n'
+              + '```terraform\n' + plan.slice(-60000) + '\n```\n\n'
+              + '</details>';
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            });
+
+      - name: Fail if the plan failed
+        if: steps.plan.outcome == 'failure'
+        run: |
+          echo "::error::terraform plan failed — see the step above"
+          exit 1
+
+      - name: Terraform Apply
+        if: github.event_name != 'pull_request'
+        env:
+          TF_VAR_password: ${{ secrets.WATCHDOG_ADMIN_PASSWORD }}
+          TF_VAR_telegram_bot_token:
+            ${{ secrets.UPTIME_KUMA_TELEGRAM_BOT_TOKEN }}
+          TF_VAR_telegram_chat_id:
+            ${{ secrets.UPTIME_KUMA_TELEGRAM_CHAT_ID }}
+        run: terraform apply -auto-approve tfplan

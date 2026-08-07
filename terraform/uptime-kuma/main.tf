@@ -37,17 +37,26 @@ locals {
     loki  = { url = "https://loki.clinch-home.com" }
 
     "clincha.co.uk" = { url = "https://clincha.co.uk" }
+
+    # The other half of the mutual watch: London monitors hawkfield, hawkfield
+    # monitors London, so neither site can die quietly. Reached by IP over the
+    # site link — it deliberately has no ingress and no DNS name.
+    watchdog = {
+      url                   = "http://10.2.2.101:3001"
+      accepted_status_codes = ["200-299", "302"]
+    }
   }
 }
 
 resource "uptimekuma_monitor_http" "service" {
   for_each = local.monitors
 
-  name             = each.key
-  url              = each.value.url
-  interval         = 60
-  active           = true
-  notification_ids = [uptimekuma_notification_telegram.alert.id]
+  name                  = each.key
+  url                   = each.value.url
+  accepted_status_codes = try(each.value.accepted_status_codes, ["200-299"])
+  interval              = 60
+  active                = true
+  notification_ids      = [uptimekuma_notification_telegram.alert.id]
 }
 
 resource "uptimekuma_status_page" "all" {

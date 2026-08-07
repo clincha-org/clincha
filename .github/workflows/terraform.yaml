@@ -10,6 +10,7 @@ on:
       - 'terraform/**'
       # Has its own workflow; this one would apply three Proxmox sites for nothing.
       - '!terraform/uptime-kuma/**'
+      - '!terraform/watchdog/**'
   workflow_dispatch:
 jobs:
   plan:

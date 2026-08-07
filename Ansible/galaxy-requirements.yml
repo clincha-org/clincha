@@ -11,13 +11,17 @@ collections:
   - name: "ansible.posix"
     version: "2.1.0"
 
+  - name: "community.docker"
+    version: "5.1.0"
+
   - name: "kubernetes.core"
     version: "6.2.0"
 
   - name: "https://github.com/kubernetes-sigs/kubespray"
     type: git
-    # First release on ansible-core 2.18, required for CVE-2026-11332. Do not go
-    # below v2.29.1 — that added the hostendpoints "watch" RBAC (kubespray#11076).
+    # First release on ansible-core 2.18, required for CVE-2026-11332. Do not
+    # go below v2.29.1 — that added the hostendpoints "watch" RBAC
+    # (kubespray#11076).
     version: v2.31.0
 
   - name: "ansible.netcommon"

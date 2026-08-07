@@ -1,0 +1,9 @@
+---
+- name: Install Docker
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configure uptime-kuma
+  ansible.builtin.import_tasks: configure.yml
+
+- name: Bootstrap the admin user
+  ansible.builtin.import_tasks: bootstrap.yml

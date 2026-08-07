@@ -10,6 +10,7 @@ rules:
       - 'kubernetes/flux/infrastructure/base/media/controller/secret.yml'
       - 'kubernetes/flux/infrastructure/hawkfield/monitoring/loki-rustfs-creds.sops.yaml'
       - 'kubernetes/flux/infrastructure/hawkfield/monitoring/alertmanager-telegram.sops.yaml'
+      - 'kubernetes/flux/infrastructure/hawkfield/monitoring/alertmanager-watchdog.sops.yaml'
       # runbook_url is an 88-char GitHub blob URL that cannot wrap.
       - 'kubernetes/flux/infrastructure/hawkfield/monitoring/alert-rules.yml'
       - 'kubernetes/flux/infrastructure/hawkfield/uptime-kuma/mariadb-credentials.sops.yaml'

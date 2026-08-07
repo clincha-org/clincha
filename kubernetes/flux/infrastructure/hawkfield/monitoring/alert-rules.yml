@@ -1,4 +1,16 @@
 groups:
+  # Fires forever on purpose. It proves Prometheus is evaluating rules and
+  # Alertmanager is delivering; the London watchdog alerts when it stops
+  # arriving. Nothing here can detect its own death, which is the point.
+  - name: watchdog
+    rules:
+      - alert: Watchdog
+        expr: vector(1)
+        labels:
+          severity: none
+        annotations:
+          summary: 'alerting pipeline heartbeat'
+
   - name: pod-restarts
     rules:
       # 1h window rather than 15m: CrashLoopBackOff caps its backoff at

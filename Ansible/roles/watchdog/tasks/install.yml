@@ -1,0 +1,15 @@
+---
+- name: Install Docker and the Python SDK
+  ansible.builtin.apt:
+    name:
+      - docker.io
+      - python3-docker
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Ensure Docker is enabled and started
+  ansible.builtin.systemd:
+    name: docker
+    enabled: true
+    state: started
