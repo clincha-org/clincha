@@ -102,31 +102,39 @@ in the same chassis. That protects against accidental deletion, app-level corrup
 pool failing, but not against losing the box.
 
 Since **2026-08-06** (#420) the four datasets with no other copy are also pushed to Backblaze B2,
-encrypted client-side:
+encrypted client-side, by **native TrueNAS cloud sync tasks**. They appear under Data
+Protection, keep their own job history, and raise a `CloudSyncTaskFailed` alert when they fail.
+Credential `Backblaze B2 - hawkstore offsite` (id 1).
 
-| dataset | remote directory |
-|---|---|
-| `data/immich` | `offsite:immich` |
-| `userstore/userhome` | `offsite:userhome` |
-| `userstore/s3` | `offsite:s3` |
-| `data/family-archive` | `offsite:family-archive` |
+| task | dataset | bucket folder | schedule |
+|---|---|---|---|
+| 1 | `data/family-archive` | `family-archive` | daily 09:00 |
+| 2 | `data/immich` | `immich` | daily 09:15 |
+| 3 | `userstore/userhome` | `userhome` | daily 09:30 |
+| 4 | `userstore/s3` | `s3` | daily 09:45 |
 
-`systemd` unit `offsite-backup.service`, timer daily at **09:00** with a 15-minute jitter — clear
-of both the 02:00–07:00 NAS load window and the 22:00–23:30 replication band. Script at
-`/root/offsite-backup.sh`, logs in `/root/offsite-backup-logs/` (pruned at 30 days).
+All four are `PUSH` / `SYNC` with `snapshot: true`, which makes TrueNAS take a temporary ZFS
+snapshot and upload from that rather than the live mount — so each run is a consistent
+point-in-time. The 09:00 band is clear of both the 02:00–07:00 NAS load window and the
+22:00–23:30 replication band.
 
-The job snapshots each dataset as `@offsite-<timestamp>`, syncs from
-`.zfs/snapshot/<tag>/`, then destroys the snapshot. Syncing the snapshot rather than the live
-mount is what makes the upload a consistent point-in-time; a stale `@offsite-*` snapshot means a
-previous run was killed mid-flight, and the next run clears it.
+An earlier iteration of this used a `systemd` timer running a hand-rolled `rclone` script. It
+was replaced on 2026-08-07 because a script has no failure alerting (it could fail nightly and
+silently for months), no job history, and lived in `/root` on the boot environment, which is
+not a supported home for user files and is outside the TrueNAS config backup.
 
 ### What B2 sees
 
-Nothing readable. The remote is an `rclone crypt` wrapping
-`b2backup:clincha-hawkstore-offsite`, so **file contents and filenames are both encrypted**
-before leaving the house. In the raw bucket a photo looks like
-`rmoa87bl476m7njs1ponpjdeek/56ga422gc8kie1h6mvgtprfk44`. SSE-B2 is enabled underneath as well,
-but that protects nothing we are not already protecting ourselves.
+The four **folder names are plaintext** — `family-archive`, `immich`, `s3`, `userhome`.
+Everything beneath them is encrypted: **file contents and every path segment**. In the raw
+bucket a photo looks like `immich/56ga422gc8kie1h6mvgtprfk44/2p9ktc1r4vhmv0k8h1qbo6qc7g`.
+SSE-B2 is enabled underneath as well, but that protects nothing we are not already protecting
+ourselves.
+
+The plaintext folder level is a consequence of how cloud sync tasks work: `folder` is applied
+to the raw bucket and encryption is rooted *below* it. Leaking four dataset names is a fair
+price for staying on the supported path. Do not try to "fix" it by pointing a task at an
+encrypted directory name — see the trap below.
 
 **The two crypt values exist only in Bitwarden**, item `Backblaze - hawkstore offsite backup`
 (`crypt password` and `crypt password2`). This is the whole point: a key stored on hawkstore
@@ -152,15 +160,38 @@ only the Bitwarden item:
 
 ```sh
 rclone config create b2raw b2 account <keyID> key <applicationKey>
-rclone config create arch crypt remote b2raw:clincha-hawkstore-offsite \
+# crypt is rooted at the FOLDER, not the bucket — one remote per dataset
+rclone config create immich crypt remote b2raw:clincha-hawkstore-offsite/immich \
     password  "$(rclone obscure '<crypt password>')" \
     password2 "$(rclone obscure '<crypt password2>')"
-rclone ls arch:
+rclone ls immich:
 ```
+
+Swap `immich` for `family-archive`, `userhome` or `s3` as needed. All four share the same
+password and salt, so only the remote path changes.
 
 This was exercised end-to-end on 2026-08-06 from a machine that is not hawkstore, rebuilding the
 config from the vault alone. Re-test it whenever the credential changes — an untested off-box
 backup is a belief, not a backup.
+
+### Trap: `folder` sits above the encryption boundary
+
+TrueNAS derives the crypt key exactly as `rclone` does, so a cloud sync task with the same
+password and salt *can* read data written by a bare `rclone crypt` remote — `cloudsync.list_directory`
+will happily return a `Decrypted` name for each entry. That is not sufficient for a task to
+adopt existing data, because `folder` is applied to the **raw** bucket and encryption is rooted
+below it. A crypt remote rooted at the bucket writes `enc(immich)/enc(...)`; a task with
+`folder: immich` writes `immich/enc(...)`. Same key, different tree.
+
+Pointing a task at the encrypted directory name does make it adopt the old tree with no
+re-upload, and it was tested working — but it leaves an opaque string in the task config that
+anyone editing the task in the UI would naturally "correct" to the decrypted name, silently
+starting a fresh 355 GB upload. The plaintext-folder layout was chosen instead.
+
+Note also that the **v2.0 REST endpoint silently drops the encryption fields** on
+`cloudsync/list_directory` — it returns raw encrypted names as if no password were supplied.
+Only `midclt call cloudsync.list_directory` honours them. Do not conclude from a REST response
+that decryption is broken.
 
 ### Cost
 
