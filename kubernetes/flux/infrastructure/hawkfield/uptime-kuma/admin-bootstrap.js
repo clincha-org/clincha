@@ -21,8 +21,10 @@ socket.on("connect_error", (err) => done(1, `connect failed: ${err.message}`));
 
 socket.on("connect", () => {
     socket.emit("setup", username, password, (res) => {
+        // The username comes from the environment; interpolating it into the
+        // log is what CodeQL flags as clear-text logging of sensitive data.
         if (res.ok) {
-            return done(0, `created admin user '${username}'`);
+            return done(0, "created admin user");
         }
         // Server-side guard: re-running against a populated user table is the
         // expected steady state, not a failure.
