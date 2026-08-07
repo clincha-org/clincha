@@ -29,6 +29,10 @@ spec:
         app.kubernetes.io/name: alertmanager
         app.kubernetes.io/part-of: kube-prometheus
     spec:
+      # Secret files land root-owned; fsGroup is what makes them group-readable
+      # by the alertmanager user.
+      securityContext:
+        fsGroup: 3021
       containers:
         - name: alertmanager
           image: prom/alertmanager:v0.33.1
@@ -83,7 +87,7 @@ spec:
         - name: secrets
           secret:
             secretName: alertmanager-telegram
-            defaultMode: 0400
+            defaultMode: 0440
         - name: data
           nfs:
             path: /mnt/data/alertmanager
