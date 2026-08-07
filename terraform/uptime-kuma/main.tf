@@ -13,9 +13,29 @@ locals {
       # /identity answers without auth; the root path redirects to the web app.
       url = "https://plex.clinch-home.com/identity"
     }
-    sonarr          = { url = "https://sonarr.clinch-home.com" }
-    radarr          = { url = "https://radarr.clinch-home.com" }
-    sabnzbd         = { url = "https://sabnzbd.clinch-home.com" }
+    sonarr  = { url = "https://sonarr.clinch-home.com" }
+    radarr  = { url = "https://radarr.clinch-home.com" }
+    sabnzbd = { url = "https://sabnzbd.clinch-home.com" }
+    bazarr  = { url = "https://bazarr.clinch-home.com" }
+    tdarr   = { url = "https://tdarr.clinch-home.com" }
+    immich  = { url = "https://immich.clinch-home.com" }
+    ombi    = { url = "https://ombi.clinch-home.com" }
+    tautulli = {
+      # Root 303s to the login flow; /status is an unauthenticated health payload.
+      url = "https://tautulli.clinch-home.com/status"
+    }
+
+    grafana = {
+      # Root 302s to /login.
+      url = "https://grafana.clinch-home.com/api/health"
+    }
+    prometheus = {
+      # Root 302s to /query.
+      url = "https://prometheus.clinch-home.com/-/healthy"
+    }
+    alloy = { url = "https://alloy.clinch-home.com/-/ready" }
+    loki  = { url = "https://loki.clinch-home.com" }
+
     "clincha.co.uk" = { url = "https://clincha.co.uk" }
   }
 }
