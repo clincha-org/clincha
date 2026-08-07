@@ -9,6 +9,9 @@ rules:
       - 'Ansible/roles/users/defaults/main.yml'
       - 'kubernetes/flux/infrastructure/base/media/controller/secret.yml'
       - 'kubernetes/flux/infrastructure/hawkfield/monitoring/loki-rustfs-creds.sops.yaml'
+      - 'kubernetes/flux/infrastructure/hawkfield/monitoring/alertmanager-telegram.sops.yaml'
+      # runbook_url is an 88-char GitHub blob URL that cannot wrap.
+      - 'kubernetes/flux/infrastructure/hawkfield/monitoring/alert-rules.yml'
       - 'kubernetes/flux/infrastructure/hawkfield/uptime-kuma/mariadb-credentials.sops.yaml'
       - 'kubernetes/flux/infrastructure/hawkfield/uptime-kuma/admin-credentials.sops.yaml'
       # Long ${{ secrets.* }} expressions and release URLs. Pre-existing; the

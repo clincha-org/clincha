@@ -11,8 +11,8 @@ metadata:
     app.kubernetes.io/part-of: kube-prometheus
 spec:
   replicas: 1
-  # Same shared-NFS constraint as Grafana: the TSDB holds an exclusive lock file,
-  # so two pods must never overlap.
+  # Same shared-NFS constraint as Grafana: the TSDB holds an exclusive
+  # lock file, so two pods must never overlap.
   strategy:
     type: Recreate
   selector:

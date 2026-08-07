@@ -1,8 +1,9 @@
 groups:
   - name: pod-restarts
     rules:
-      # 1h window rather than 15m: CrashLoopBackOff caps its backoff at 5 minutes,
-      # so a 15m window tops out around 3 restarts and makes any threshold marginal.
+      # 1h window rather than 15m: CrashLoopBackOff caps its backoff at
+      # 5 minutes, so a 15m window tops out around 3 restarts, which puts
+      # any threshold right on the boundary and makes it flap.
       - alert: PodRestartingFrequently
         expr: increase(kube_pod_container_status_restarts_total[1h]) >= 3
         for: 10m

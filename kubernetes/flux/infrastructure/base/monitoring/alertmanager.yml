@@ -11,7 +11,8 @@ metadata:
     app.kubernetes.io/part-of: kube-prometheus
 spec:
   replicas: 1
-  # Silences and the notification log live on shared NFS — never overlap two pods.
+  # Silences and the notification log live on shared NFS — never overlap
+  # two pods.
   strategy:
     type: Recreate
   selector:
@@ -38,7 +39,8 @@ spec:
             - --config.file=/etc/alertmanager/alertmanager.yml
             - --storage.path=/alertmanager
             - --web.external-url=https://alertmanager.clinch-home.com
-            # Single replica: disable gossip so it doesn't wait on a peer that never arrives.
+            # Single replica: disable gossip so it doesn't wait on a peer
+            # that never arrives.
             - --cluster.listen-address=
           readinessProbe:
             httpGet:

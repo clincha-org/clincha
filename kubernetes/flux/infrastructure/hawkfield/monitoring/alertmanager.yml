@@ -17,7 +17,8 @@ route:
       mute_time_intervals:
         - overnight
       # Retries every 4h, so a warning raised inside the quiet window lands
-      # within an hour or so of it lifting rather than waiting for the 6h default.
+      # within an hour or so of it lifting, rather than waiting on the 6h
+      # default.
       repeat_interval: 4h
 
 time_intervals:
@@ -38,9 +39,15 @@ receivers:
         parse_mode: HTML
         send_resolved: true
         message: |-
-          {{ if eq .Status "firing" }}🔴 <b>FIRING</b>{{ else }}✅ <b>RESOLVED</b>{{ end }} — {{ .CommonLabels.alertname }}
+          {{ if eq .Status "firing" }}🔴 <b>FIRING</b>
+          {{- else }}✅ <b>RESOLVED</b>
+          {{- end }} — {{ .CommonLabels.alertname }}
           {{ range .Alerts -}}
-          <b>{{ .Labels.namespace }}/{{ .Labels.pod }}</b>{{ if .Labels.container }} ({{ .Labels.container }}){{ end }}
+          <b>{{ .Labels.namespace }}/{{ .Labels.pod }}</b>
+          {{- if .Labels.container }} ({{ .Labels.container }})
+          {{- end }}
           {{ .Annotations.summary }}
-          {{ if .Annotations.runbook_url }}<a href="{{ .Annotations.runbook_url }}">Runbook</a>{{ end }}
+          {{- if .Annotations.runbook_url }}
+          <a href="{{ .Annotations.runbook_url }}">Runbook</a>
+          {{- end }}
           {{ end }}
