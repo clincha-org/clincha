@@ -57,6 +57,8 @@ Per-machine hardware spec sheets — board, CPU, memory, drives, free slots and 
 
 What the NAS backs up, what it deliberately does not, and why — [Documentation/hawkstore/backup-policy.md](Documentation/hawkstore/backup-policy.md).
 
+What each app on the NAS is for, and what has been removed — [Documentation/hawkstore/apps.md](Documentation/hawkstore/apps.md).
+
 ## Workflow Status
 
 ### Infrastructure

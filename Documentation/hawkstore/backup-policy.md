@@ -62,7 +62,8 @@ buckets as they stood immediately before deletion, so what was discarded is at l
 Note that `cclinch/Documents` was kept while `aclinch/Documents` was not.
 
 `userstore/ix-apps/app_mounts/mariadb/data` is the MariaDB behind uptime-kuma. Its monitor
-definitions come from terraform, but the monitoring *history* only exists here.
+definitions come from terraform, but the monitoring *history* only exists here. What every app
+on the box is for is in [apps.md](apps.md).
 
 ### Schedules
 
