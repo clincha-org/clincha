@@ -78,6 +78,9 @@ spec:
             - mountPath: /etc/alertmanager-secrets
               name: secrets
               readOnly: true
+            - mountPath: /etc/alertmanager-watchdog
+              name: watchdog
+              readOnly: true
             - mountPath: /alertmanager
               name: data
       volumes:
@@ -87,6 +90,10 @@ spec:
         - name: secrets
           secret:
             secretName: alertmanager-telegram
+            defaultMode: 0440
+        - name: watchdog
+          secret:
+            secretName: alertmanager-watchdog
             defaultMode: 0440
         - name: data
           nfs:

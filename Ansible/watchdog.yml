@@ -1,0 +1,9 @@
+---
+# Deliberately off-site: the watchdog has to outlive whatever it watches, so
+# it runs on its own site with its own internet egress rather than in the
+# hawkfield cluster.
+- name: Install off-site watchdog
+  hosts: watchdog
+  become: true
+  roles:
+    - role: watchdog

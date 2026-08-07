@@ -10,7 +10,7 @@ module "k8s-lon-1" {
   boot_disk_size    = "50"
   data_disk_storage = "local-lvm"
   network_bridge    = "vmbr0"
-  tags           = "base,kubernetes_master,kubernetes_worker"
+  tags           = "base,kubernetes_master,kubernetes_worker,watchdog"
 }
 
 module "dns-lon-1" {

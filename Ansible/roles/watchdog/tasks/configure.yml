@@ -1,0 +1,37 @@
+---
+- name: Create uptime-kuma directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - "{{ watchdog_data_dir }}"
+    - "{{ watchdog_script_dir }}"
+
+- name: Install the admin bootstrap script
+  ansible.builtin.copy:
+    src: admin-bootstrap.js
+    dest: "{{ watchdog_script_dir }}/admin-bootstrap.js"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Run uptime-kuma
+  community.docker.docker_container:
+    name: uptime-kuma
+    image: "{{ watchdog_image }}"
+    state: started
+    restart_policy: unless-stopped
+    env:
+      # Without this a fresh data dir parks on the database-setup wizard and
+      # serves HTML on the Socket.IO endpoint, so bootstrap cannot connect.
+      # SQLite is local disk here, not the NFS that forced hawkfield onto
+      # MariaDB.
+      UPTIME_KUMA_DB_TYPE: "sqlite"
+    published_ports:
+      - "{{ watchdog_bind_address }}:{{ watchdog_port }}:3001"
+    volumes:
+      - "{{ watchdog_data_dir }}:/app/data"
+      - "{{ watchdog_script_dir }}:/scripts:ro"

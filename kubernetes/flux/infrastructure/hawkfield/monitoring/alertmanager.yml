@@ -8,6 +8,16 @@ route:
   group_interval: 5m
   repeat_interval: 6h
   routes:
+    # First, and never muted: this one is the heartbeat, not an alert. It goes
+    # to London rather than to Angus, and must keep flowing through quiet
+    # hours or the watchdog would fire every night at 23:00.
+    - receiver: watchdog
+      matchers:
+        - alertname = "Watchdog"
+      group_wait: 0s
+      group_interval: 1m
+      repeat_interval: 1m
+
     - receiver: telegram
       matchers:
         - severity = "critical"
@@ -32,6 +42,13 @@ time_intervals:
             end_time: '06:00'
 
 receivers:
+  # The URL carries the push token, so it comes from SOPS rather than sitting
+  # in this file — the repo is public.
+  - name: watchdog
+    webhook_configs:
+      - url_file: /etc/alertmanager-watchdog/push-url
+        send_resolved: false
+
   - name: telegram
     telegram_configs:
       - bot_token_file: /etc/alertmanager-secrets/bot-token

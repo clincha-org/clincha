@@ -1,0 +1,10 @@
+---
+# 2.4.0 is the floor for the breml/uptimekuma Terraform provider — see
+# terraform/uptime-kuma.
+watchdog_image: "louislam/uptime-kuma:2.4.0"
+watchdog_data_dir: "/var/lib/uptime-kuma"
+watchdog_script_dir: "/opt/uptime-kuma"
+watchdog_port: 3001
+watchdog_bind_address: "{{ ansible_default_ipv4.address }}"
+watchdog_admin_username: "clincha"
+watchdog_admin_password: "{{ lookup('env', 'WATCHDOG_ADMIN_PASSWORD') }}"

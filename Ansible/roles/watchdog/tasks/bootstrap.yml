@@ -1,0 +1,26 @@
+---
+- name: Wait for uptime-kuma to accept connections
+  ansible.builtin.uri:
+    url: "http://{{ watchdog_bind_address }}:{{ watchdog_port }}/"
+    status_code: [200, 302]
+  register: watchdog_ready
+  retries: 30
+  delay: 2
+  until: watchdog_ready is succeeded
+
+# uptime-kuma has no env-based admin bootstrap, so the account is created over
+# Socket.IO. The server refuses a second setup, which makes this idempotent.
+- name: Create the admin user
+  community.docker.docker_container_exec:
+    container: uptime-kuma
+    command: "node /scripts/admin-bootstrap.js"
+    env:
+      # Node resolves modules against the script's own directory, so /scripts
+      # cannot see /app/node_modules without this.
+      NODE_PATH: /app/node_modules
+      KUMA_URL: "http://localhost:3001"
+      KUMA_USERNAME: "{{ watchdog_admin_username }}"
+      KUMA_PASSWORD: "{{ watchdog_admin_password }}"
+  register: watchdog_bootstrap
+  changed_when: "'created admin user' in watchdog_bootstrap.stdout"
+  no_log: true
