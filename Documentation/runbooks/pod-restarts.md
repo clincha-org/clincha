@@ -41,19 +41,23 @@ Grafana is one of the things being watched.
 
 ## Quiet hours — know the exact behaviour
 
-Warnings are muted 23:00–07:00 Europe/London. Critical alerts are never muted.
+Warnings are muted 23:00–06:00 Europe/London. Critical alerts are never muted.
 
 Muting is **suppression, not queueing**. Alertmanager has no store-and-forward. So:
 
-- A warning that is *still firing* when the window lifts is delivered shortly after 07:00.
+- A warning that is *still firing* when the window lifts is delivered shortly after 06:00.
   The warning route uses `repeat_interval: 4h` so the next delivery attempt lands within an
-  hour or so of 07:00 rather than waiting on the 6h default.
+  hour or so of 06:00 rather than waiting on the 6h default.
 - A warning that fires *and resolves* entirely inside the window is **never announced**. You
   will not hear about it at all.
 
 That second case matters here: the nightly Plex Butler thumbnail run (02:00–07:00) drives NAS
 load and is the most likely source of overnight restarts. If you want a morning record of what
 happened overnight, check Prometheus rather than trusting silence.
+
+Note the overlap: Butler runs until 07:00 but muting stops at 06:00, so Butler-driven restarts
+between 06:00 and 07:00 *will* reach you. If that turns into a recurring morning nuisance, move
+the mute back to 07:00 rather than widening the alert threshold.
 
 ## Triage
 

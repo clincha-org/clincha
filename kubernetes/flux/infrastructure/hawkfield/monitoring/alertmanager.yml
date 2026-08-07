@@ -29,7 +29,7 @@ time_intervals:
           - start_time: '23:00'
             end_time: '24:00'
           - start_time: '00:00'
-            end_time: '07:00'
+            end_time: '06:00'
 
 receivers:
   - name: telegram
