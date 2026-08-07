@@ -123,6 +123,27 @@ file) and Alertmanager (silences + nflog), so all three are set to `Recreate`.
 break the upgrade. Check for this first whenever a crash-loop appears immediately after a
 version bump.
 
+**Switching an existing Deployment to `Recreate` needs a one-time manual patch.** The live
+object carries an API-server-defaulted `spec.strategy.rollingUpdate` block, and that field may
+not coexist with `type: Recreate` — so Flux's server-side apply fails its dry-run:
+
+```
+Deployment/monitoring/grafana dry-run failed (Invalid): spec.strategy.rollingUpdate:
+Forbidden: may not be specified when strategy `type` is 'Recreate'
+```
+
+Git is already correct; it is the *live* object that needs the leftover cleared. Set the type and
+null the block in one patch, then let Flux reconcile:
+
+```bash
+kubectl -n <ns> patch deploy <app> --type=merge \
+  -p '{"spec":{"strategy":{"type":"Recreate","rollingUpdate":null}}}'
+```
+
+Note this is not caught by `kubectl kustomize` or a client-side dry-run, since neither sees the
+live object. Use `kubectl apply --server-side --dry-run=server` if you want to catch it before
+merging.
+
 Useful when you suspect a stuck rollout:
 
 ```bash
