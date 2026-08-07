@@ -41,11 +41,25 @@ replicate, with the single exception of `data/media` — see below.
 | `data/tdarr` | 700 MB | daily 22:30 | `backups/apps/tdarr` |
 | `data/ombi` | small | daily 22:30 | `backups/apps/ombi` |
 | `data/uptime-kuma` | small | daily 22:30 | `backups/apps/uptime-kuma` |
+| `data/family-archive` | 112 GB | daily 22:45 | `backups/family-archive` |
 | `userstore/ix-apps/app_mounts/mariadb/data` | small | daily 22:45 (cron) | `backups/apps/mariadb` |
 
 The two that actually matter are **Immich** (the family photo library — irreplaceable, and the
 only copy) and **userhome**. `userstore/s3` is small but holds the terraform state and the
 cluster kubeconfigs. `data/grafana` is only 60 MB but is every dashboard ever built here.
+
+`data/family-archive` was pulled off Backblaze B2 on 2026-08-06 (#420) and the source buckets
+`clinch-family-files` / `clinch-family-media` deleted, so this pool is now its only on-site
+copy — treat it with the same care as Immich. It holds `files/aclinch/{Pictures,Phone Backup}`,
+`files/cclinch/Documents` and the whole of the old `clinch-family-media` bucket: 28,039 files,
+104 GiB, SHA1-verified against B2 before the buckets were removed.
+
+Parts of `clinch-family-files` were **deliberately not kept** — `aclinch/Ammerdown` (54.9 GB),
+`aclinch/Documents` (11.4 GB), `aclinch/Kieran`, `aclinch/TOR`, and nine orphaned
+`duplicati-*.zip` chunks with no accompanying dlist. That was a decision, not an oversight.
+`_manifest/` in the dataset holds the path, size, modtime and SHA1 of every object in both
+buckets as they stood immediately before deletion, so what was discarded is at least on record.
+Note that `cclinch/Documents` was kept while `aclinch/Documents` was not.
 
 `userstore/ix-apps/app_mounts/mariadb/data` is the MariaDB behind uptime-kuma. Its monitor
 definitions come from terraform, but the monitoring *history* only exists here.
@@ -81,20 +95,108 @@ new coverage is not a space concern. Revisit if the pool passes ~50%.
 | `data/satisfactory` | 0 bytes | Stale, no workload. Slated for removal in #408. |
 | `data/backups/longhorn` | 25.9 GB | Longhorn was decommissioned 2026-07-27. Its snapshot and replication tasks were retired as part of #406; the datasets and their existing snapshots are left in place pending #408. |
 
-## The off-box gap
+## Off-box copy
 
-**Every replication is `LOCAL` `PUSH`, `data`/`userstore` → `backups`, all three pools in the
-same chassis.** That protects against accidental deletion, app-level corruption and a single
-pool failing. It does **not** protect against losing the box — fire, theft, a PSU taking the
-backplane with it, or a filesystem-level catastrophe.
+Every *ZFS replication* is still `LOCAL` `PUSH`, `data`/`userstore` → `backups`, all three pools
+in the same chassis. That protects against accidental deletion, app-level corruption and a single
+pool failing, but not against losing the box.
 
-This is a **known, accepted gap**, not an oversight. Off-box replication for Immich and
-userhome was considered as part of #406 and deliberately deferred: it needs a provider
-decision, a credential and an ongoing cost, none of which should hold up closing the
-zero-coverage problem. Tracked separately.
+Since **2026-08-06** (#420) the four datasets with no other copy are also pushed to Backblaze B2,
+encrypted client-side, by **native TrueNAS cloud sync tasks**. They appear under Data
+Protection, keep their own job history, and raise a `CloudSyncTaskFailed` alert when they fail.
+Credential `Backblaze B2 - hawkstore offsite` (id 1).
 
-If you only ever fix one thing on this page, make it this one — 137 GB of family photos exist
-in exactly one building.
+| task | dataset | bucket folder | schedule |
+|---|---|---|---|
+| 1 | `data/family-archive` | `family-archive` | daily 09:00 |
+| 2 | `data/immich` | `immich` | daily 09:15 |
+| 3 | `userstore/userhome` | `userhome` | daily 09:30 |
+| 4 | `userstore/s3` | `s3` | daily 09:45 |
+
+All four are `PUSH` / `SYNC` with `snapshot: true`, which makes TrueNAS take a temporary ZFS
+snapshot and upload from that rather than the live mount — so each run is a consistent
+point-in-time. The 09:00 band is clear of both the 02:00–07:00 NAS load window and the
+22:00–23:30 replication band.
+
+An earlier iteration of this used a `systemd` timer running a hand-rolled `rclone` script. It
+was replaced on 2026-08-07 because a script has no failure alerting (it could fail nightly and
+silently for months), no job history, and lived in `/root` on the boot environment, which is
+not a supported home for user files and is outside the TrueNAS config backup.
+
+### What B2 sees
+
+The four **folder names are plaintext** — `family-archive`, `immich`, `s3`, `userhome`.
+Everything beneath them is encrypted: **file contents and every path segment**. In the raw
+bucket a photo looks like `immich/56ga422gc8kie1h6mvgtprfk44/2p9ktc1r4vhmv0k8h1qbo6qc7g`.
+SSE-B2 is enabled underneath as well, but that protects nothing we are not already protecting
+ourselves.
+
+The plaintext folder level is a consequence of how cloud sync tasks work: `folder` is applied
+to the raw bucket and encryption is rooted *below* it. Leaking four dataset names is a fair
+price for staying on the supported path. Do not try to "fix" it by pointing a task at an
+encrypted directory name — see the trap below.
+
+**The two crypt values exist only in Bitwarden**, item `Backblaze - hawkstore offsite backup`
+(`crypt password` and `crypt password2`). This is the whole point: a key stored on hawkstore
+would be worthless in exactly the scenario the off-box copy is for. If that vault item is lost,
+the bucket is unrecoverable ciphertext — there is no recovery path and no support ticket that
+fixes it.
+
+### The application key is deliberately weak
+
+The key the NAS holds is scoped to the one bucket and carries only
+`listBuckets, listFiles, readFiles, writeFiles`. It has **no `deleteFiles`**, so a compromised
+or misbehaving hawkstore can hide objects but never hard-delete them, and the bucket lifecycle
+rule keeps hidden versions for **30 days**. Verified by trying: a hard-delete against the bucket
+with this key returns `401 unauthorized` and the object survives.
+
+Admin operations that genuinely need to destroy things use the account-wide `backblaze` vault
+item instead, which the NAS does not have.
+
+### Restoring
+
+The restore path deliberately does not involve hawkstore. From any machine with `rclone`, using
+only the Bitwarden item:
+
+```sh
+rclone config create b2raw b2 account <keyID> key <applicationKey>
+# crypt is rooted at the FOLDER, not the bucket — one remote per dataset
+rclone config create immich crypt remote b2raw:clincha-hawkstore-offsite/immich \
+    password  "$(rclone obscure '<crypt password>')" \
+    password2 "$(rclone obscure '<crypt password2>')"
+rclone ls immich:
+```
+
+Swap `immich` for `family-archive`, `userhome` or `s3` as needed. All four share the same
+password and salt, so only the remote path changes.
+
+This was exercised end-to-end on 2026-08-06 from a machine that is not hawkstore, rebuilding the
+config from the vault alone. Re-test it whenever the credential changes — an untested off-box
+backup is a belief, not a backup.
+
+### Trap: `folder` sits above the encryption boundary
+
+TrueNAS derives the crypt key exactly as `rclone` does, so a cloud sync task with the same
+password and salt *can* read data written by a bare `rclone crypt` remote — `cloudsync.list_directory`
+will happily return a `Decrypted` name for each entry. That is not sufficient for a task to
+adopt existing data, because `folder` is applied to the **raw** bucket and encryption is rooted
+below it. A crypt remote rooted at the bucket writes `enc(immich)/enc(...)`; a task with
+`folder: immich` writes `immich/enc(...)`. Same key, different tree.
+
+Pointing a task at the encrypted directory name does make it adopt the old tree with no
+re-upload, and it was tested working — but it leaves an opaque string in the task config that
+anyone editing the task in the UI would naturally "correct" to the decrypted name, silently
+starting a fresh 355 GB upload. The plaintext-folder layout was chosen instead.
+
+Note also that the **v2.0 REST endpoint silently drops the encryption fields** on
+`cloudsync/list_directory` — it returns raw encrypted names as if no password were supplied.
+Only `midclt call cloudsync.list_directory` honours them. Do not conclude from a REST response
+that decryption is broken.
+
+### Cost
+
+~355 GB at B2's $6/TB/month is roughly **$2.15/month**. Egress is free up to 3× stored data per
+month, so a full restore of this set costs nothing; a repeated one would.
 
 ## The ix-apps exception
 
