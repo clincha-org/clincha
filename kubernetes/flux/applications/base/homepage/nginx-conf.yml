@@ -1,0 +1,19 @@
+---
+# The image is stock nginx:alpine, which listens on 80. Overriding conf.d is
+# what actually moves it to 8080 — changing containerPort alone would leave
+# nginx on 80 and point the Service at nothing.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage-nginx
+  namespace: homepage
+data:
+  default.conf: |
+    server {
+        listen 8080;
+        server_name localhost;
+        location / {
+            root /usr/share/nginx/html;
+            index index.html;
+        }
+    }

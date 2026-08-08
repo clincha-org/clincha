@@ -20,6 +20,8 @@ spec:
         app.kubernetes.io/component: graphite-exporter
         app.kubernetes.io/part-of: kube-prometheus
     spec:
+      serviceAccountName: graphite-exporter
+      automountServiceAccountToken: false
       containers:
         - name: graphite-exporter
           image: prom/graphite-exporter:v0.17.0
@@ -47,6 +49,14 @@ spec:
             httpGet:
               path: /metrics
               port: metrics
+          # The landing page, not /metrics: liveness should not re-render the
+          # whole registry every 30s.
+          livenessProbe:
+            httpGet:
+              path: /
+              port: metrics
+            periodSeconds: 30
+            failureThreshold: 5
           volumeMounts:
             - mountPath: /etc/graphite
               name: mapping

@@ -151,6 +151,12 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/version: 2.19.0
   name: kube-state-metrics
+  annotations:
+    # kube-state-metrics exports kube_secret_* metadata, so listing Secrets is
+    # inherent to what it does. The bound ClusterRole grants list/watch only,
+    # never get, so it never reads a Secret's data.
+    ignore-check.kube-linter.io/access-to-secrets: >-
+      KSM exports kube_secret_* metadata; list/watch only, never get
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

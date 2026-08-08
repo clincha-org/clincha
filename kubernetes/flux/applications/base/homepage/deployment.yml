@@ -14,9 +14,69 @@ spec:
       labels:
         name: homepage
     spec:
+      serviceAccountName: homepage
+      automountServiceAccountToken: false
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    name: homepage
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        runAsGroup: 101
+        # nginx creates its temp paths under /var/cache/nginx at startup, so
+        # the emptyDirs have to be group-writable by the nginx user.
+        fsGroup: 101
       containers:
         - name: homepage
           image: docker.io/clincha/homepage:0.0.3
           ports:
-            - containerPort: 80
+            - containerPort: 8080
+              name: http
               protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-conf
+              readOnly: true
+            - mountPath: /var/cache/nginx
+              name: cache
+            - mountPath: /var/run
+              name: run
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: homepage-nginx
+        - name: cache
+          emptyDir: {}
+        - name: run
+          emptyDir: {}
