@@ -1,0 +1,38 @@
+---
+# A Deployment with an NFS volume must use Recreate. RollingUpdate surges a
+# second pod at replicas: 1, and the two then deadlock on the shared-file lock
+# — Grafana's bleve search index, Prometheus's TSDB lock, Alertmanager's
+# notification log. kube-linter's no-rolling-update-strategy asserts the exact
+# opposite, which is why it is excluded in .kube-linter.yaml.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: nfs-deployment-requires-recreate
+spec:
+  background: false
+  rules:
+    - name: nfs-volume-implies-recreate
+      match:
+        any:
+          - resources:
+              kinds:
+                - Deployment
+      context:
+        - name: podSpec
+          variable:
+            jmesPath: request.object.spec.template.spec
+      preconditions:
+        all:
+          - key: "{{ length(podSpec.volumes[?nfs] || `[]`) }}"
+            operator: GreaterThan
+            value: 0
+      validate:
+        failureAction: Enforce
+        message: >-
+          Deployment {{ request.object.metadata.name }} mounts an NFS volume,
+          so spec.strategy.type must be Recreate. A surged second pod
+          deadlocks on the shared-file lock.
+        pattern:
+          spec:
+            strategy:
+              type: Recreate
