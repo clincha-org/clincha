@@ -2,7 +2,16 @@
 # TrueNAS API -> Prometheus exporter. Talks the 25.10 JSON-RPC WebSocket API
 # (the REST API rejects non-admin keys). Stdlib only: a minimal WS client so the
 # script can run from a stock python image mounted via ConfigMap.
-import base64, hashlib, json, os, socket, ssl, struct, sys, time
+import base64
+import itertools
+import json
+import os
+import socket
+import ssl
+import struct
+import sys
+import time
+import traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 NAS_HOST = os.environ.get("TRUENAS_HOST", "10.1.2.10")
@@ -21,7 +30,7 @@ class WSClient:
 
     def __init__(self, host, port, path, timeout=15):
         raw = socket.create_connection((host, port), timeout=timeout)
-        ctx = ssl._create_unverified_context()
+        ctx = ssl._create_unverified_context()  # noqa: S323 - TrueNAS serves a self-signed cert
         self.s = ctx.wrap_socket(raw, server_hostname=host)
         key = base64.b64encode(os.urandom(16)).decode()
         req = (
@@ -96,13 +105,15 @@ class WSClient:
         try:
             self._send_control(0x8, b"")
             self.s.close()
-        except Exception:
-            pass
+        except OSError as e:
+            sys.stderr.write(f"ws close failed: {e}\n")
 
 
-def rpc(ws, method, params=None, _id=[0]):
-    _id[0] += 1
-    mid = _id[0]
+_rpc_ids = itertools.count(1)
+
+
+def rpc(ws, method, params=None):
+    mid = next(_rpc_ids)
     ws.send(json.dumps({"jsonrpc": "2.0", "id": mid, "method": method, "params": params or []}))
     while True:
         msg = json.loads(ws.recv())
@@ -207,10 +218,12 @@ class Handler(BaseHTTPRequestHandler):
         try:
             body = render(*collect())
             ok = 1
-        except Exception as e:
+        # Deliberately broad: any failure must still serve
+        # truenas_scrape_success 0 rather than 500 the scrape away.
+        except Exception:  # noqa: BLE001
             body = ""
             ok = 0
-            sys.stderr.write(f"scrape error: {e}\n")
+            traceback.print_exc()
         body += (
             "# HELP truenas_scrape_success 1 if the last scrape of the TrueNAS API succeeded\n"
             "# TYPE truenas_scrape_success gauge\n"
@@ -228,4 +241,4 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    ThreadingHTTPServer(("0.0.0.0", LISTEN), Handler).serve_forever()
+    ThreadingHTTPServer(("0.0.0.0", LISTEN), Handler).serve_forever()  # noqa: S104 - scraped across the pod network

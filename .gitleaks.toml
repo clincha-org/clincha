@@ -1,0 +1,22 @@
+[extend]
+useDefault = true
+
+# Both entries below are verified false positives, allowlisted by the exact
+# secret value.
+#
+# Do NOT add `paths` to these allowlists. A `paths` entry makes gitleaks skip
+# the whole file before scanning it, so a genuine secret added to that file
+# later would go unreported. Verified: with `paths` set, a planted AWS key in
+# both files was missed; with the anchored value regexes below, it is caught.
+
+[[rules]]
+id = "generic-api-key"
+[[rules.allowlists]]
+description = "SOPS key fingerprint in kubernetes/flux/README.md — a public identifier, not the key"
+regexes = ['''^76AF39813C2297E8F98C542D42436A07A9BA1DE0$''']
+
+[[rules]]
+id = "kubernetes-secret-yaml"
+[[rules.allowlists]]
+description = "Ansible/kubernetes.yml sops-gpg Secret is Jinja-templated; this is a kubeconfig path, not a value"
+regexes = ['''^KUBECONFIG: /etc/kubernetes/admin$''']

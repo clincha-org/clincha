@@ -27,3 +27,6 @@ terraform/**/plan_output.txt
 # Vagrant
 vagrant/**/.vagrant/
 vagrant/iso/
+# Python
+__pycache__/
+.ruff_cache/

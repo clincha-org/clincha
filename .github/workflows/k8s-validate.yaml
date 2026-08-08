@@ -75,4 +75,5 @@ jobs:
             exit 0
           fi
           echo "$changed"
-          yamllint -c .yamllint -f github $changed
+          printf '%s\n' "$changed" \
+            | xargs -r -d '\n' yamllint -c .yamllint -f github
