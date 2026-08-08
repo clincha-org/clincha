@@ -21,8 +21,11 @@
     }
   ],
   "dependencyDashboard": false,
-  "prConcurrentLimit": 3,
-  "prHourlyLimit": 2,
+  "minimumReleaseAge": "3 days",
+  "platformAutomerge": false,
+  "automergeStrategy": "squash",
+  "prConcurrentLimit": 6,
+  "prHourlyLimit": 4,
   "ignorePaths": [
     "**/gotk-components.yaml"
   ],
@@ -36,6 +39,11 @@
       "description": "busybox is pinned to no tag, python is a deliberate interpreter pin, and homepage is built and pushed by hand",
       "matchPackageNames": ["busybox", "python", "docker.io/clincha/homepage"],
       "enabled": false
+    },
+    {
+      "description": "Routine bumps merge themselves once CI is green and the release is 3 days old; majors are left for review",
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "automerge": true
     }
   ]
 }
