@@ -52,6 +52,28 @@ jobs:
           printf '%s\n' "${files[@]}"
           shellcheck "${files[@]}"
 
+  # Moved here from k8s-validate.yaml, which is path-filtered to kubernetes/**
+  # and so never linted the YAML under Ansible/ or .github/. It also scoped
+  # itself to changed files to dodge a backlog; the backlog is gone, so this
+  # lints the whole tree and coverage stops depending on what a PR touched.
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+
+      - name: Install yamllint
+        run: pip install 'yamllint==1.38.0'
+
+      - name: Run yamllint
+        run: |
+          mapfile -t files < <(git ls-files '*.yml' '*.yaml')
+          yamllint -c .yamllint -f github "${files[@]}"
+
   ruff:
     runs-on: ubuntu-latest
     steps:

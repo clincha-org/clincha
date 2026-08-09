@@ -1,23 +1,33 @@
 extends: default
-ignore: 'README.md'
+
+ignore:
+  - 'README.md'
+  # Written by `flux bootstrap` and marked DO NOT EDIT. Held 2192 findings,
+  # every one of which would have failed the next Flux bump.
+  - 'kubernetes/flux/clusters/*/flux-system/'
+
 rules:
   new-line-at-end-of-file: disable
   empty-lines: disable
   comments: disable
+  # ansible-lint `# noqa` comments have to sit next to the task they apply to,
+  # which is not always where yamllint wants a comment indented.
+  comments-indentation: disable
+  # The tree is mixed and neither convention is wrong.
+  document-start: disable
+  truthy:
+    # `on:` in a workflow is a mapping key, not a YAML 1.1 boolean.
+    check-keys: false
   line-length:
+    # 80 was unreachable for a repo of URLs, checksums and Jinja, which is why
+    # this had grown a per-file ignore list. 120 is a limit that can be met.
+    max: 120
     ignore:
-      - 'Ansible/roles/users/defaults/main.yml'
+      # SOPS-encrypted values are single base64 blobs, up to 653 characters.
+      - '**/*.sops.yaml'
+      - 'kubernetes/flux/infrastructure/*/monitoring/grafana-admin-credentials.yaml'
+      - 'kubernetes/flux/infrastructure/base/certificate-manager/configuration/cloudflare-secret.yml'
       - 'kubernetes/flux/infrastructure/base/media/controller/secret.yml'
-      - 'kubernetes/flux/infrastructure/hawkfield/monitoring/loki-rustfs-creds.sops.yaml'
-      - 'kubernetes/flux/infrastructure/hawkfield/monitoring/alertmanager-telegram.sops.yaml'
-      - 'kubernetes/flux/infrastructure/hawkfield/monitoring/alertmanager-watchdog.sops.yaml'
-      # runbook_url is an 88-char GitHub blob URL that cannot wrap.
-      - 'kubernetes/flux/infrastructure/hawkfield/monitoring/alert-rules.yml'
-      - 'kubernetes/flux/infrastructure/hawkfield/uptime-kuma/mariadb-credentials.sops.yaml'
-      - 'kubernetes/flux/infrastructure/hawkfield/uptime-kuma/admin-credentials.sops.yaml'
-      # Long ${{ secrets.* }} expressions and release URLs. Pre-existing; the
-      # linter only sees these files when something in them changes.
+      # GitHub Actions ${{ }} expressions cannot be wrapped.
+      - '.github/workflows/'
       - 'Ansible/kubernetes.yml'
-      - '.github/workflows/cluster-rebuild.yaml'
-      - '.github/workflows/terraform-plan.yaml'
-      - '.github/workflows/terraform.yaml'

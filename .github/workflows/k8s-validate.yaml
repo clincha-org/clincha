@@ -44,36 +44,3 @@ jobs:
           done < <(find kubernetes/flux -name 'kustomization.y*ml' | sort)
           echo "$((total - failed))/$total overlays valid"
           exit $((failed > 0))
-
-  yamllint:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-python@v7
-        with:
-          python-version: '3.13'
-
-      - name: Install yamllint
-        run: pip install yamllint
-
-      # Changed files only — the tree has a pre-existing backlog of lint
-      # errors, so a whole-repo run would fail every PR on contents it did
-      # not touch.
-      - name: Lint changed YAML
-        env:
-          BASE: ${{ github.event.pull_request.base.sha }}
-        run: |
-          changed=$(git diff --name-only --diff-filter=d "$BASE...HEAD" \
-            | grep -E '\.ya?ml$' || true)
-          if [ -z "$changed" ]; then
-            echo "No YAML changed"
-            exit 0
-          fi
-          echo "$changed"
-          printf '%s\n' "$changed" \
-            | xargs -r -d '\n' yamllint -c .yamllint -f github
