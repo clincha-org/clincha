@@ -1,0 +1,205 @@
+name: Quality
+permissions:
+  contents: read
+# Deliberately unfiltered by path. Renovate automerges routine bumps here, so
+# a check that silently skips is as bad as one that silently fails — every PR
+# gets the full set, and each job runs independently so one failure does not
+# mask the others.
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Install actionlint
+        env:
+          VERSION: 1.7.12
+        run: |
+          base=https://github.com/rhysd/actionlint/releases/download
+          curl -sSL "$base/v$VERSION/actionlint_${VERSION}_linux_amd64.tar.gz" \
+            | sudo tar xz -C /usr/local/bin actionlint
+
+      - name: Run actionlint
+        run: actionlint -color
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      # Pinned rather than taken from the runner image: a runner bump that
+      # ships a stricter shellcheck would fail unrelated PRs.
+      - name: Install shellcheck
+        env:
+          VERSION: 0.11.0
+        run: |
+          base=https://github.com/koalaman/shellcheck/releases/download
+          curl -sSL "$base/v$VERSION/shellcheck-v$VERSION.linux.x86_64.tar.xz" \
+            | sudo tar xJ -C /usr/local/bin --strip-components=1 \
+                "shellcheck-v$VERSION/shellcheck"
+
+      - name: Run shellcheck
+        run: |
+          mapfile -t files < <(git ls-files '*.sh')
+          printf '%s\n' "${files[@]}"
+          shellcheck "${files[@]}"
+
+  ruff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+
+      - name: Install ruff
+        run: pip install 'ruff==0.16.2'
+
+      - name: Run ruff
+        run: |
+          mapfile -t files < <(git ls-files '*.py')
+          printf '%s\n' "${files[@]}"
+          ruff check --output-format github "${files[@]}"
+
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Install gitleaks
+        env:
+          VERSION: 8.28.0
+        run: |
+          base=https://github.com/gitleaks/gitleaks/releases/download
+          curl -sSL "$base/v$VERSION/gitleaks_${VERSION}_linux_x64.tar.gz" \
+            | sudo tar xz -C /usr/local/bin gitleaks
+
+      # Tracked files only. A plain filesystem scan picks up .terraform state
+      # left by other jobs, which is gitignored and never committed.
+      - name: Scan tracked files
+        run: |
+          mkdir -p /tmp/tracked
+          git archive HEAD | tar -x -C /tmp/tracked
+          gitleaks dir --no-banner --redact -v \
+            -c "$GITHUB_WORKSPACE/.gitleaks.toml" /tmp/tracked
+
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+
+      - name: Check formatting
+        run: terraform fmt -check -recursive -diff .
+
+      # Root modules only. terraform/modules/* have no provider constraints of
+      # their own, so validating them standalone resolves the wrong provider
+      # major and fails on syntax the real version supports. They are covered
+      # through the root modules that call them.
+      #
+      # -backend=false so this needs no RustFS credentials or Tailscale.
+      - name: Validate root modules
+        run: |
+          failed=0
+          while read -r dir; do
+            echo "::group::$dir"
+            if ! (cd "$dir" \
+                  && terraform init -backend=false -input=false -no-color \
+                  && terraform validate -no-color); then
+              echo "::error file=$dir::terraform validate failed"
+              failed=$((failed + 1))
+            fi
+            echo "::endgroup::"
+          done < <(git ls-files '*.tf' \
+                     | grep -v '^terraform/modules/' \
+                     | xargs -r -n1 dirname | sort -u)
+          exit $((failed > 0))
+
+  kube-linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Install kube-linter
+        env:
+          VERSION: 0.8.3
+        run: |
+          base=https://github.com/stackrox/kube-linter/releases/download
+          curl -sSL "$base/v$VERSION/kube-linter-linux.tar.gz" \
+            | sudo tar xz -C /usr/local/bin kube-linter
+
+      # The deployed hawkfield overlays only. Linting base/london/dev as well
+      # would report the same finding three or four times over, and there is
+      # no real cluster behind london or dev.
+      - name: Build hawkfield overlays
+        run: |
+          mkdir -p built
+          while read -r manifest; do
+            dir=$(dirname "$manifest")
+            kubectl kustomize "$dir" > "built/${dir//\//_}.yaml"
+          done < <(find kubernetes/flux/applications/hawkfield \
+                        kubernetes/flux/infrastructure/hawkfield \
+                        -name 'kustomization.y*ml' | sort)
+          ls built
+
+      - name: Run kube-linter
+        run: kube-linter lint --config .kube-linter.yaml built/
+
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Install Kyverno CLI
+        env:
+          VERSION: 1.18.2
+        run: |
+          base=https://github.com/kyverno/kyverno/releases/download
+          file="kyverno-cli_v${VERSION}_linux_x86_64.tar.gz"
+          curl -sSL "$base/v$VERSION/$file" \
+            | sudo tar xz -C /usr/local/bin kyverno
+
+      - name: Build every overlay
+        run: |
+          mkdir -p built
+          while read -r manifest; do
+            dir=$(dirname "$manifest")
+            kubectl kustomize "$dir" > "built/${dir//\//_}.yaml"
+          done < <(find kubernetes/flux -name 'kustomization.y*ml' | sort)
+
+      # Runs before the real manifests on purpose. A policy that matches
+      # nothing validates fine and passes everything, so the fixtures are what
+      # prove the policies still bite.
+      - name: Policies must reject the broken fixtures
+        run: |
+          if kyverno apply kubernetes/policy/ \
+               --resource kubernetes/policy-tests/must-fail.yaml; then
+            echo "::error::must-fail.yaml was accepted — the policies are" \
+              "not matching anything. Check kubernetes/policy/ loaded."
+            exit 1
+          fi
+          echo "Broken fixtures rejected as expected"
+
+      - name: Policies must accept the good fixtures
+        run: |
+          kyverno apply kubernetes/policy/ \
+            --resource kubernetes/policy-tests/must-pass.yaml
+
+      - name: Apply policies to every overlay
+        run: kyverno apply kubernetes/policy/ --resource built/
