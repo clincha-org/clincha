@@ -29,6 +29,8 @@ spec:
         app.kubernetes.io/name: alertmanager
         app.kubernetes.io/part-of: kube-prometheus
     spec:
+      serviceAccountName: alertmanager
+      automountServiceAccountToken: false
       # Secret files land root-owned; fsGroup is what makes them group-readable
       # by the alertmanager user.
       securityContext:

@@ -22,6 +22,8 @@ spec:
         app.kubernetes.io/component: syslog
         app.kubernetes.io/part-of: kube-prometheus
     spec:
+      serviceAccountName: alloy-syslog
+      automountServiceAccountToken: false
       securityContext:
         fsGroup: 473
       containers:
@@ -49,6 +51,12 @@ spec:
             httpGet:
               path: /-/ready
               port: http
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: http
+            periodSeconds: 30
+            failureThreshold: 5
           volumeMounts:
             - mountPath: /etc/alloy
               name: config

@@ -8,7 +8,7 @@ set -u
 section() { echo; echo "##### $1"; }
 
 section HOSTNAME; hostname
-section OS; cat /etc/os-release | head -3
+section OS; head -3 /etc/os-release
 section PVE; pveversion 2>/dev/null
 section SYSTEM; dmidecode -t system
 section BASEBOARD; dmidecode -t baseboard
@@ -45,7 +45,9 @@ for d in $(lspci -n | awk '{print $1}'); do
 done
 
 section NET; ip -br link
-for i in $(ls /sys/class/net | grep -Ev 'lo|tap|veth|fw|bonding_masters'); do
+for path in /sys/class/net/*; do
+    i=$(basename "$path")
+    case "$i" in lo|tap*|veth*|fw*|bonding_masters) continue;; esac
     echo "-- $i"
     ethtool "$i" 2>/dev/null | grep -Ei 'speed|duplex|supported link modes'
     ethtool -i "$i" 2>/dev/null | grep -Ei 'driver|bus-info'

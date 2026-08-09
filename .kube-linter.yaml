@@ -1,0 +1,40 @@
+checks:
+  addAllBuiltIn: true
+
+  # Every exclusion below is deliberate. Read the reason before re-enabling one:
+  # several of these checks actively contradict invariants this cluster depends
+  # on, and turning them back on would mean "fixing" manifests into an outage.
+  exclude:
+    # --- Conflicts with cluster invariants -------------------------------
+    # Grafana, Prometheus, Alertmanager and factorio are all NFS-backed and
+    # must stay at one replica; a second pod deadlocks on the shared-file lock.
+    - "minimum-three-replicas"
+    # Demands RollingUpdate and flags Recreate as the violation — the exact
+    # inverse of nfs-deployment-requires-recreate in kubernetes/policy/.
+    - "no-rolling-update-strategy"
+    # Forbids type: LoadBalancer. MetalLB VIPs are the deliberate architecture
+    # here; NodePort poisons a LoadBalancer VIP's source IP.
+    - "exposed-services"
+
+    # --- False positives under static analysis ---------------------------
+    # All hits are SOPS Secrets, whose `sops` key reads as an extra property.
+    # kubeconform needs -skip Secret for the same reason.
+    - "schema-validation"
+    # Reads the unrendered empty default as an invalid policy; the API server
+    # defaults it to Always. Fires on every Deployment.
+    - "restart-policy"
+    # The alloy and loki Ingresses target Services created by HelmReleases,
+    # which Flux renders at runtime and kustomize output cannot contain.
+    - "dangling-ingress"
+
+    # --- Not a linting change --------------------------------------------
+    # Org conventions; single-owner repo.
+    - "required-label-owner"
+    - "required-annotation-email"
+    - "no-node-affinity"
+    - "dnsconfig-options"
+    # Wants a NetworkPolicy per pod. Worth doing, but it is a project.
+    - "non-isolated-pod"
+    # 3 hits (truenas-api-exporter, uptime-kuma bootstrap Job). Legitimate
+    # hardening, but it changes the runtime behaviour of three workloads.
+    - "read-secret-from-env-var"

@@ -20,6 +20,8 @@ spec:
         app.kubernetes.io/component: truenas-api-exporter
         app.kubernetes.io/part-of: kube-prometheus
     spec:
+      serviceAccountName: truenas-api-exporter
+      automountServiceAccountToken: false
       containers:
         - name: exporter
           image: python:3.12-slim
@@ -50,6 +52,13 @@ spec:
           readinessProbe:
             tcpSocket:
               port: metrics
+          # tcpSocket, not /metrics: an HTTP probe would drive a full TrueNAS
+          # API scrape on every check.
+          livenessProbe:
+            tcpSocket:
+              port: metrics
+            periodSeconds: 30
+            failureThreshold: 5
           volumeMounts:
             - mountPath: /app
               name: script

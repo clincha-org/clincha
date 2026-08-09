@@ -1,4 +1,11 @@
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: uptime-kuma-admin-bootstrap
+  namespace: uptime-kuma
+automountServiceAccountToken: false
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -9,6 +16,13 @@ metadata:
     # ConfigMap name into it. Let Flux delete and recreate rather than fail the
     # apply. Re-running is safe: the script is idempotent.
     kustomize.toolkit.fluxcd.io/force: "enabled"
+    ignore-check.kube-linter.io/no-liveness-probe: >-
+      run-to-completion Job, not a served endpoint
+    ignore-check.kube-linter.io/no-readiness-probe: >-
+      run-to-completion Job, not a served endpoint
+    ignore-check.kube-linter.io/job-ttl-seconds-after-finished: >-
+      the completed Job is the record that bootstrap ran
+
 spec:
   # No ttlSecondsAfterFinished on purpose — the completed Job is the record
   # that bootstrap ran, and letting it expire would just have Flux recreate it.
@@ -16,6 +30,12 @@ spec:
   template:
     spec:
       restartPolicy: OnFailure
+      serviceAccountName: uptime-kuma-admin-bootstrap
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
         # The uptime-kuma image already carries socket.io-client, so the
         # bootstrap always speaks the same protocol version as the server.
@@ -42,6 +62,18 @@ spec:
                 secretKeyRef:
                   name: uptime-kuma-admin-credentials
                   key: password
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           volumeMounts:
             - name: script
               mountPath: /script

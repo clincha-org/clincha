@@ -29,16 +29,34 @@ spec:
         app.kubernetes.io/name: prometheus
         app.kubernetes.io/part-of: kube-prometheus
     spec:
+      serviceAccountName: prometheus
+      automountServiceAccountToken: false
       containers:
         - name: prometheus
           image: prom/prometheus:v3.13.2
           ports:
             - containerPort: 9090
+              name: http
               protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: http
+            periodSeconds: 30
+            failureThreshold: 5
           resources:
             requests:
               cpu: "1"
               memory: "4Gi"
+            limits:
+              # Twice the request, ~20x the observed working set. A cap this
+              # far out satisfies the check without inviting an OOMKill mid
+              # compaction.
+              memory: "8Gi"
           volumeMounts:
             - mountPath: /etc/prometheus
               name: config
@@ -50,6 +68,8 @@ spec:
             runAsUser: 3003
             runAsNonRoot: false
             runAsGroup: 3003
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
           args:
             - --web.enable-remote-write-receiver
             - --config.file=/etc/prometheus/prometheus.yml

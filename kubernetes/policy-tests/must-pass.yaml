@@ -1,0 +1,72 @@
+---
+# Fixtures for kubernetes/policy/. Every resource in this file MUST be
+# accepted, so the policies cannot be tightened into rejecting the shapes the
+# cluster actually runs.
+# GOOD: NFS + Recreate
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: good-nfs-recreate, namespace: t}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector: {matchLabels: {app: a}}
+  template:
+    metadata: {labels: {app: a}}
+    spec:
+      containers: [{name: c, image: busybox:1.38.0}]
+      volumes: [{name: d, nfs: {server: 10.1.2.10, path: /mnt/data/x}}]
+---
+# GOOD: no NFS, RollingUpdate is fine
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: good-no-nfs-rolling, namespace: t}
+spec:
+  replicas: 3
+  strategy: {type: RollingUpdate}
+  selector: {matchLabels: {app: a}}
+  template:
+    metadata: {labels: {app: a}}
+    spec:
+      containers: [{name: c, image: busybox:1.38.0}]
+      volumes: [{name: e, emptyDir: {}}]
+---
+# GOOD: non-root + secret + fsGroup
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: good-nonroot-secret-fsgroup, namespace: t}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector: {matchLabels: {app: a}}
+  template:
+    metadata: {labels: {app: a}}
+    spec:
+      securityContext: {runAsNonRoot: true, runAsUser: 1000, fsGroup: 1000}
+      containers: [{name: c, image: busybox:1.38.0}]
+      volumes: [{name: s, secret: {secretName: creds}}]
+---
+# GOOD: root pod + secret, no fsGroup needed
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: good-root-secret-no-fsgroup, namespace: t}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector: {matchLabels: {app: a}}
+  template:
+    metadata: {labels: {app: a}}
+    spec:
+      containers: [{name: c, image: busybox:1.38.0}]
+      volumes: [{name: s, secret: {secretName: creds}}]
+---
+# GOOD: Deployment with no volumes at all (must not error)
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: good-no-volumes, namespace: t}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: a}}
+  template:
+    metadata: {labels: {app: a}}
+    spec:
+      containers: [{name: c, image: busybox:1.38.0}]

@@ -6,6 +6,16 @@ metadata:
   namespace: factorio
   labels:
     name: factorio
+  annotations:
+    # The factoriotools entrypoint runs as root to chown /factorio (including
+    # the NFS saves mount) before dropping to the factorio user, and the image
+    # writes mods and scenarios to paths that are not mounted. Both containers
+    # are root by design; changing that is an NFS ownership migration, not a
+    # lint fix.
+    ignore-check.kube-linter.io/run-as-non-root: >-
+      entrypoint chowns the NFS saves mount as root
+    ignore-check.kube-linter.io/no-read-only-root-fs: >-
+      factorio writes mods and scenarios outside the mounts
 spec:
   replicas: 1
   # RollingUpdate deadlocks: no node can double-book the 4-CPU request
@@ -19,10 +29,26 @@ spec:
       labels:
         name: factorio
     spec:
+      serviceAccountName: factorio
+      automountServiceAccountToken: false
       initContainers:
         - name: copy-server-settings
-          image: busybox
+          # Pinned by hand: busybox is disabled in renovate.json, so nothing
+          # bumps this automatically.
+          image: busybox:1.38.0
           command: ["sh", "-c", "cp /settings/*.json /config"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           volumeMounts:
             - name: config
               mountPath: /config
@@ -33,15 +59,39 @@ spec:
           image: factoriotools/factorio:2.1.14
           ports:
             - containerPort: 34197
+              name: game
               protocol: UDP
             - containerPort: 27015
+              name: rcon
               protocol: TCP
           env:
             - name: DLC_SPACE_AGE
               value: "true"
+          # RCON is served in-process, so a TCP accept is a genuine liveness
+          # signal. Thresholds are deliberately slack: loading a Space Age save
+          # takes minutes, and a restart drops every connected player.
+          startupProbe:
+            tcpSocket:
+              port: rcon
+            periodSeconds: 10
+            failureThreshold: 60
+          readinessProbe:
+            tcpSocket:
+              port: rcon
+            periodSeconds: 30
+            failureThreshold: 3
+          livenessProbe:
+            tcpSocket:
+              port: rcon
+            periodSeconds: 30
+            failureThreshold: 5
           resources:
             requests:
               cpu: "4"
+              memory: "16Gi"
+            limits:
+              # Matches the request rather than capping lower: observed working
+              # set is ~1.2Gi, so this is headroom, not a new OOM risk.
               memory: "16Gi"
           volumeMounts:
             - mountPath: /factorio/config
