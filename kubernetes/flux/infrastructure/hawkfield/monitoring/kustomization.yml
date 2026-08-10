@@ -8,6 +8,7 @@ resources:
   - loki-rustfs-creds.sops.yaml
   - alertmanager-telegram.sops.yaml
   - alertmanager-watchdog.sops.yaml
+  - unifi-poller-credentials.sops.yaml
 configurations:
   - nameref-helmrelease.yml
 configMapGenerator:
@@ -51,3 +52,7 @@ configMapGenerator:
     namespace: monitoring
     files:
       - truenas_exporter.py
+  - name: unpoller-config
+    namespace: monitoring
+    files:
+      - up.conf

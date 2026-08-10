@@ -10,6 +10,7 @@ resources:
   - graphite-exporter.yml
   - alloy-syslog.yml
   - truenas-api-exporter.yml
+  - unpoller.yml
   - prometheus.yml
   - alertmanager.yml
   - grafana.yml

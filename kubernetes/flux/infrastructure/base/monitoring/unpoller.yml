@@ -1,0 +1,99 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unpoller
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: unpoller
+    app.kubernetes.io/component: unpoller
+    app.kubernetes.io/part-of: kube-prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: unpoller
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: unpoller
+        app.kubernetes.io/component: unpoller
+        app.kubernetes.io/part-of: kube-prometheus
+    spec:
+      serviceAccountName: unpoller
+      automountServiceAccountToken: false
+      containers:
+        - name: unpoller
+          image: ghcr.io/unpoller/unpoller:v3.4.1
+          args: ["--config", "/etc/unpoller/up.conf"]
+          env:
+            # Passwords stay out of the ConfigMap: unpoller overlays
+            # UP_UNIFI_CONTROLLER_<n>_* onto the matching [[unifi.controller]]
+            # block, indexed in file order — Bristol 0, London 1.
+            - name: UP_UNIFI_CONTROLLER_0_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: unifi-poller-credentials
+                  key: bristol-password
+            - name: UP_UNIFI_CONTROLLER_1_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: unifi-poller-credentials
+                  key: london-password
+          ports:
+            - name: metrics
+              containerPort: 9130
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          readinessProbe:
+            tcpSocket:
+              port: metrics
+          # tcpSocket, not /metrics: unpoller polls both consoles on every
+          # HTTP scrape, so an HTTP probe would double the load on the UDMs.
+          livenessProbe:
+            tcpSocket:
+              port: metrics
+            periodSeconds: 30
+            failureThreshold: 5
+          volumeMounts:
+            - mountPath: /etc/unpoller
+              name: config
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+      volumes:
+        - name: config
+          configMap:
+            name: unpoller-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unpoller
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: unpoller
+    app.kubernetes.io/component: unpoller
+    app.kubernetes.io/part-of: kube-prometheus
+spec:
+  selector:
+    app.kubernetes.io/name: unpoller
+  ports:
+    - name: metrics
+      port: 9130
+      targetPort: metrics
+      protocol: TCP
