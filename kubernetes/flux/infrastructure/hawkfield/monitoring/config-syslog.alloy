@@ -16,6 +16,50 @@ loki.source.syslog "truenas" {
     forward_to = [loki.write.local.receiver]
 }
 
+// Site comes from the transport source IP, not the device-reported hostname:
+// both consoles are UDMs that may self-report identically, and a rename would
+// silently relabel the stream. The address arrives bare, no :port — verified
+// against alloy v1.18.1. Relabel regexes are fully anchored, so .1 will not
+// match .100.
+loki.relabel "unifi_site" {
+    forward_to = []
+
+    rule {
+        source_labels = ["__syslog_connection_ip_address"]
+        regex         = "10\\.1\\.2\\.1"
+        target_label  = "site"
+        replacement   = "hawkfield"
+    }
+    rule {
+        source_labels = ["__syslog_connection_ip_address"]
+        regex         = "10\\.2\\.2\\.1"
+        target_label  = "site"
+        replacement   = "london"
+    }
+    rule {
+        source_labels = ["site"]
+        regex         = "^$"
+        target_label  = "site"
+        replacement   = "unknown"
+    }
+}
+
+loki.source.syslog "unifi" {
+    listener {
+        // UniFi's remote syslog is UDP-only and BSD-framed: ubios-udapi-server
+        // renders transport("udp") with no flags(syslog-protocol), and exposes
+        // no setting to change either.
+        address       = "0.0.0.0:1514"
+        protocol      = "udp"
+        syslog_format = "rfc3164"
+        labels        = {
+            job = "unifi-syslog",
+        }
+    }
+    relabel_rules = loki.relabel.unifi_site.rules
+    forward_to    = [loki.write.local.receiver]
+}
+
 loki.write "local" {
     endpoint {
         url = "http://loki-gateway.monitoring.svc/loki/api/v1/push"

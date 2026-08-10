@@ -38,6 +38,9 @@ spec:
             - name: syslog-tcp
               containerPort: 1514
               protocol: TCP
+            - name: syslog-udp
+              containerPort: 1514
+              protocol: UDP
             - name: http
               containerPort: 12345
               protocol: TCP
@@ -103,3 +106,30 @@ spec:
       port: 514
       targetPort: syslog-tcp
       protocol: TCP
+---
+# Its own VIP rather than a port on the Service above: the UniFi stream is
+# labelled by source IP, which needs externalTrafficPolicy: Local, and MetalLB
+# only shares an address between services that are all Cluster or select the
+# same pods. 10.1.2.210 is shared with graphite-exporter-ingest, so it is
+# neither.
+apiVersion: v1
+kind: Service
+metadata:
+  name: alloy-syslog-unifi
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: alloy-syslog
+    app.kubernetes.io/component: syslog
+    app.kubernetes.io/part-of: kube-prometheus
+  annotations:
+    metallb.io/loadBalancerIPs: 10.1.2.211
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  selector:
+    app.kubernetes.io/name: alloy-syslog
+  ports:
+    - name: syslog-udp
+      port: 514
+      targetPort: syslog-udp
+      protocol: UDP
