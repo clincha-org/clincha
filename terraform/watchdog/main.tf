@@ -22,6 +22,17 @@ locals {
   tcp_targets = {
     "hawkfield ingress" = { hostname = "10.1.2.205", port = 443 }
     "hawkstore"         = { hostname = "10.1.2.10", port = 443 }
+    # The Bristol gateway itself. Hawkfield cannot alert on the loss of its own
+    # WAN — Prometheus, Alertmanager and the only route to Telegram are all
+    # behind it — so this probe is that alert (clincha#445).
+    #
+    # It targets the LAN address over the site-to-site link rather than the WAN
+    # IP: 185.23.254.226 drops ICMP and opens only 443, which is the ingress
+    # port-forward, so probing it would just duplicate "hawkfield public".
+    # Hawkfield has a single WAN and the VPN rides it, so WAN loss, site-link
+    # loss and a power cut all take this down together. Read it against the
+    # public monitor — both down is the site, public alone is the ingress.
+    "hawkfield gateway" = { hostname = "10.1.2.1", port = 443 }
     # All three control planes individually: hawk-1 carries the VIP and does
     # not fail over, so one node down is not the same event as the cluster
     # being gone.

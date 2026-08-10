@@ -1,0 +1,318 @@
+---
+# Unit tests for the UniFi alert rules (clincha#445).
+#
+# Every threshold in these rules was a guess — #443 had run for three hours when
+# they were written. The most valuable test here is the last one: it replays the
+# real idle values recorded on 2026-08-10 and asserts that nothing fires. A rule
+# that pages at baseline gets muted, and a muted rule is worse than no rule.
+rule_files:
+  - ../flux/infrastructure/hawkfield/monitoring/alert-rules.yml
+
+evaluation_interval: 1m
+
+tests:
+  - interval: 1m
+    name: console goes unreachable
+    input_series:
+      - series: 'unpoller_controller_up{site="hawkfield", source="https://10.1.2.1"}'
+        values: '1 1 1 0 0 0 0 0 0 0 0 0'
+    alert_rule_test:
+      # Down since t=3m. Not yet 5m at t=7m, so it must still be silent.
+      - eval_time: 7m
+        alertname: UniFiConsoleUnreachable
+        exp_alerts: []
+      - eval_time: 9m
+        alertname: UniFiConsoleUnreachable
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              site: hawkfield
+              source: https://10.1.2.1
+            exp_annotations:
+              summary: 'UniFi console unreachable from the poller — console, or the path to it'
+              runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  # The alert the milestone exists for. One member dying halves north-south
+  # capacity while every other panel stays green.
+  - interval: 1m
+    name: an aggregation LAG member drops
+    input_series:
+      - series: >-
+          unpoller_device_port_port_speed_bps{site="hawkfield", name="USW Aggregation", port_num="7",
+          port_name="SFP+ 7"}
+        values: '1e9+0x20'
+      - series: >-
+          unpoller_device_port_port_speed_bps{site="hawkfield", name="USW Aggregation", port_num="8",
+          port_name="SFP+ 8"}
+        values: '1e9 1e9 1e9 0+0x20'
+    alert_rule_test:
+      - eval_time: 2m
+        alertname: UniFiAggregationLagMemberDown
+        exp_alerts: []
+      - eval_time: 15m
+        alertname: UniFiAggregationLagMemberDown
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              site: hawkfield
+              name: USW Aggregation
+            exp_annotations:
+              summary: 'aggregation LAG down to 1 of 2 members — uplink capacity halved'
+              runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  - interval: 1m
+    name: a LAG member negotiates below 1G
+    input_series:
+      - series: >-
+          unpoller_device_port_port_speed_bps{site="hawkfield", name="USW Aggregation", port_num="7",
+          port_name="SFP+ 7"}
+        values: '1e8+0x20'
+      - series: >-
+          unpoller_device_port_port_speed_bps{site="hawkfield", name="USW Aggregation", port_num="8",
+          port_name="SFP+ 8"}
+        values: '1e9+0x20'
+    alert_rule_test:
+      - eval_time: 15m
+        alertname: UniFiAggregationLagMemberSlow
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              site: hawkfield
+              name: USW Aggregation
+              port_num: '7'
+              port_name: SFP+ 7
+            exp_annotations:
+              summary: 'LAG member negotiated 100000000 bps, below the expected 1G'
+              runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+      # Both members still count as live, so the member-down rule stays quiet —
+      # a degraded member is a different event from a missing one.
+      - eval_time: 15m
+        alertname: UniFiAggregationLagMemberDown
+        exp_alerts: []
+
+  - interval: 1m
+    name: an AP disconnects
+    input_series:
+      - series: 'unpoller_site_disconnected{site="hawkfield", subsystem="wlan", status="ok"}'
+        values: '0 0 0 1+0x20'
+    alert_rule_test:
+      - eval_time: 20m
+        alertname: UniFiDevicesDisconnected
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              site: hawkfield
+              subsystem: wlan
+              status: ok
+            exp_annotations:
+              summary: '1 wlan device(s) disconnected'
+              runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  - interval: 1m
+    name: a gateway overheats
+    input_series:
+      - series: >-
+          unpoller_device_temperature_celsius{site="london", name="London", temp_area="Local", temp_type="board"}
+        values: '88+0x30'
+    alert_rule_test:
+      - eval_time: 20m
+        alertname: UniFiDeviceTemperatureHigh
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              site: london
+              name: London
+              temp_area: Local
+              temp_type: board
+            exp_annotations:
+              summary: 'Local at 88.0°C for 15 minutes'
+              runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+      # 88 is over the warning line but under the critical one.
+      - eval_time: 20m
+        alertname: UniFiDeviceTemperatureCritical
+        exp_alerts: []
+
+  # PoE headroom on the USL24P. The aggregation switch is in the series set on
+  # purpose: it has no PoE and reports a budget of 0, which would divide into
+  # +Inf and alert forever if the rule did not filter it out.
+  - interval: 1m
+    name: PoE draw approaches the switch budget
+    input_series:
+      - series: 'unpoller_device_port_poe_watts{site="hawkfield", name="Loft Switch", port_num="1"}'
+        values: '40+0x40'
+      - series: 'unpoller_device_port_poe_watts{site="hawkfield", name="Loft Switch", port_num="2"}'
+        values: '40+0x40'
+      - series: 'unpoller_device_max_power_total{site="hawkfield", name="Loft Switch", type="usw"}'
+        values: '95+0x40'
+      - series: 'unpoller_device_max_power_total{site="hawkfield", name="USW Aggregation", type="usw"}'
+        values: '0+0x40'
+      - series: 'unpoller_device_port_poe_watts{site="hawkfield", name="USW Aggregation", port_num="1"}'
+        values: '0+0x40'
+    alert_rule_test:
+      - eval_time: 35m
+        alertname: UniFiPoeBudgetHigh
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              site: hawkfield
+              name: Loft Switch
+            exp_annotations:
+              summary: 'PoE draw at 84.21% of the switch budget'
+              runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  # 2.4GHz is in the series set to prove the band filter holds: it sits above
+  # the threshold throughout and must never produce an alert.
+  - interval: 1m
+    name: 5GHz saturates but 2.4GHz is ignored
+    input_series:
+      - series: >-
+          unpoller_device_radio_channel_utilization_total_ratio{site="hawkfield", name="Kitchen", band="5", radio="na"}
+        values: '0.85+0x40'
+      - series: >-
+          unpoller_device_radio_channel_utilization_total_ratio{site="hawkfield", name="Paddock", band="2.4",
+          radio="ng"}
+        values: '0.95+0x40'
+    alert_rule_test:
+      - eval_time: 35m
+        alertname: UniFiWifiChannelUtilisationHigh
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              site: hawkfield
+              name: Kitchen
+              band: '5'
+              radio: na
+            exp_annotations:
+              summary: '5GHz channel 85% utilised for 30 minutes'
+              runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  - interval: 1m
+    name: WAN latency climbs
+    input_series:
+      - series: 'unpoller_site_latency_seconds{site="hawkfield", subsystem="www", status="ok"}'
+        values: '0.25+0x20'
+    alert_rule_test:
+      - eval_time: 20m
+        alertname: UniFiWanLatencyHigh
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              site: hawkfield
+              subsystem: www
+              status: ok
+            exp_annotations:
+              summary: 'WAN latency 250ms sustained over 15 minutes'
+              runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  # The one that matters most. Real values recorded from the estate at idle on
+  # 2026-08-10, replayed for 45 minutes. If any rule fires here, its threshold
+  # is wrong and it will be muted within a week.
+  - interval: 1m
+    name: nothing fires at recorded idle
+    input_series:
+      - series: 'unpoller_controller_up{site="hawkfield", source="https://10.1.2.1"}'
+        values: '1+0x50'
+      - series: 'unpoller_controller_up{site="london", source="https://10.2.2.1"}'
+        values: '1+0x50'
+      - series: 'unpoller_site_latency_seconds{site="hawkfield", subsystem="www", status="ok"}'
+        values: '0.004+0x50'
+      - series: 'unpoller_site_latency_seconds{site="london", subsystem="www", status="ok"}'
+        values: '0.003+0x50'
+      - series: 'unpoller_site_disconnected{site="hawkfield", subsystem="wlan", status="ok"}'
+        values: '0+0x50'
+      - series: 'unpoller_site_intenet_drops_total{site="hawkfield", subsystem="www", status="ok"}'
+        values: '1+0x50'
+      - series: >-
+          unpoller_device_temperature_celsius{site="hawkfield", name="Bristol", temp_area="CPU", temp_type="cpu"}
+        values: '66.75+0x50'
+      - series: >-
+          unpoller_device_temperature_celsius{site="hawkfield", name="Bristol", temp_area="Local", temp_type="board"}
+        values: '70+0x50'
+      # The hottest thing in the estate. It must not page at rest.
+      - series: 'unpoller_device_temperature_celsius{site="london", name="London", temp_area="CPU", temp_type="cpu"}'
+        values: '72.375+0x50'
+      - series: >-
+          unpoller_device_temperature_celsius{site="london", name="London", temp_area="Local", temp_type="board"}
+        values: '75+0x50'
+      - series: 'unpoller_device_cpu_utilization_ratio{site="hawkfield", name="Bristol", type="udm"}'
+        values: '0.166+0x50'
+      - series: 'unpoller_device_cpu_utilization_ratio{site="hawkfield", name="Loft Switch", type="usw"}'
+        values: '0.151+0x50'
+      # Kitchen 5GHz peaked at 0.55 in the first three hours of collection —
+      # the closest any idle signal gets to its threshold.
+      - series: >-
+          unpoller_device_radio_channel_utilization_total_ratio{site="hawkfield", name="Kitchen", band="5", radio="na"}
+        values: '0.55+0x50'
+      - series: >-
+          unpoller_device_radio_channel_utilization_total_ratio{site="hawkfield", name="Paddock", band="2.4",
+          radio="ng"}
+        values: '0.51+0x50'
+      - series: 'unpoller_device_port_poe_watts{site="hawkfield", name="Loft Switch", port_num="1"}'
+        values: '35.36+0x50'
+      - series: 'unpoller_device_max_power_total{site="hawkfield", name="Loft Switch", type="usw"}'
+        values: '95+0x50'
+      - series: 'unpoller_device_max_power_total{site="hawkfield", name="USW Aggregation", type="usw"}'
+        values: '0+0x50'
+      - series: >-
+          unpoller_device_port_port_speed_bps{site="hawkfield", name="USW Aggregation", port_num="7",
+          port_name="SFP+ 7"}
+        values: '1e9+0x50'
+      - series: >-
+          unpoller_device_port_port_speed_bps{site="hawkfield", name="USW Aggregation", port_num="8",
+          port_name="SFP+ 8"}
+        values: '1e9+0x50'
+      - series: 'unpoller_device_uptime_seconds{site="hawkfield", name="Bristol", type="udm"}'
+        values: '703403+60x50'
+      - series: >-
+          unpoller_device_port_receive_errors_total{site="hawkfield", name="Loft Switch", port_num="1",
+          port_name="Port 1"}
+        values: '0+0x50'
+      - series: >-
+          unpoller_device_port_transmit_errors_total{site="hawkfield", name="Loft Switch", port_num="1",
+          port_name="Port 1"}
+        values: '0+0x50'
+      - series: 'unpoller_prometheus_refresh_failures_total{site="hawkfield"}'
+        values: '0+0x50'
+    alert_rule_test:
+      - eval_time: 45m
+        alertname: UniFiConsoleUnreachable
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiPollerRefreshFailing
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiWanLatencyHigh
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiInternetDropping
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiAggregationLagMemberDown
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiAggregationLagMemberSlow
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiDevicesDisconnected
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiDeviceRebooting
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiDeviceTemperatureHigh
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiDeviceTemperatureCritical
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiDeviceCpuHigh
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiPoeBudgetHigh
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiSwitchPortErrors
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiWifiChannelUtilisationHigh
+        exp_alerts: []
