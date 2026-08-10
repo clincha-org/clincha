@@ -53,9 +53,8 @@ exposes; the box reads 67°C CPU / 71°C board. Do not treat 83°C as Bristol's 
 ## How the alert reaches you
 
 ```
-UniFi consoles (10.1.2.1, 10.2.2.1) → unpoller (60s cache) → Prometheus (30s scrape)
-       → alert rules → Alertmanager → Telegram (clincha_grafana_bot)
-
+UniFi consoles (10.1.2.1, 10.2.2.1) ┬→ unpoller (60s cache) → Prometheus (30s scrape)
+                                    │      → alert rules → Alertmanager → Telegram (clincha_grafana_bot)
                                     └→ syslog UDP 514 → 10.1.2.211 (alloy-syslog) → Loki
 ```
 
@@ -85,8 +84,15 @@ only console-side detail available without SSH.
 {job="unifi-syslog"}
 {job="unifi-syslog", site="hawkfield"}
 {job="unifi-syslog", site="london"}
+{job="unifi-syslog", severity=~"error|critical|alert|emergency"}
+{job="unifi-syslog", app="hostapd"}
 {job="unifi-syslog"} |= "Paddock"
 ```
+
+Four labels: `job`, `site`, `app` (the syslog tag — `hostapd`, `dnsmasq`, `kernel` …) and
+`severity`. The rfc3164 parser strips both the tag and the priority off the line before it reaches
+Loki, so `app` and `severity` are the only way to get at them — grepping the message body for a
+daemon name will not work.
 
 `site` is derived from the **source IP of the packet** (10.1.2.1 → `hawkfield`, 10.2.2.1 →
 `london`), not from the hostname the console reports. Anything else is labelled `unknown`, so
