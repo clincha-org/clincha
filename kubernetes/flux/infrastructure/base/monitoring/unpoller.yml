@@ -53,8 +53,9 @@ spec:
           readinessProbe:
             tcpSocket:
               port: metrics
-          # tcpSocket, not /metrics: unpoller polls both consoles on every
-          # HTTP scrape, so an HTTP probe would double the load on the UDMs.
+          # tcpSocket, not /metrics: unpoller serves a cache it refreshes on
+          # its own timer, so an HTTP probe would spend a full serialisation
+          # of ~4200 series every 30s to learn what a connect already proves.
           livenessProbe:
             tcpSocket:
               port: metrics

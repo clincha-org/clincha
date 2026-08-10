@@ -26,11 +26,14 @@ scrape_configs:
     scrape_interval: 60s
     static_configs:
       - targets: ['truenas-api-exporter.monitoring.svc:9113']
-  # UniFi consoles at both sites via unpoller. It polls both UDMs on every
-  # scrape, so poll gently and allow for the London round trip.
+  # UniFi consoles at both sites via unpoller. It refreshes its own cache on a
+  # 60s timer and serves that cache, so a scrape costs the UDMs nothing and
+  # returns in ~50ms. Scraped at 30s rather than 60s because two independent
+  # 60s cycles drift in and out of phase, which would alias a refresh away and
+  # leave gaps of up to two minutes in what is meant to catch WiFi and WAN
+  # transients.
   - job_name: unifi
-    scrape_interval: 60s
-    scrape_timeout: 30s
+    scrape_interval: 30s
     static_configs:
       - targets: ['unpoller.monitoring.svc:9130']
     metric_relabel_configs:
