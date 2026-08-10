@@ -26,3 +26,22 @@ scrape_configs:
     scrape_interval: 60s
     static_configs:
       - targets: ['truenas-api-exporter.monitoring.svc:9113']
+  # UniFi consoles at both sites via unpoller. It polls both UDMs on every
+  # scrape, so poll gently and allow for the London round trip.
+  - job_name: unifi
+    scrape_interval: 60s
+    scrape_timeout: 30s
+    static_configs:
+      - targets: ['unpoller.monitoring.svc:9130']
+    metric_relabel_configs:
+      # Neither label unpoller emits is a usable site key: `source` is the
+      # console URL and `site_name` is the console's own description, which
+      # is still "Default (default)" at London. Derive `site` from the URL.
+      - source_labels: [source]
+        regex: 'https://10\.1\.2\.1'
+        target_label: site
+        replacement: hawkfield
+      - source_labels: [source]
+        regex: 'https://10\.2\.2\.1'
+        target_label: site
+        replacement: london
