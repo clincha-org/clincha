@@ -33,3 +33,184 @@ groups:
         annotations:
           summary: 'stuck in CrashLoopBackOff for over 15 minutes'
           runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/pod-restarts.md
+
+  # unpoller serves a 60s cache rather than polling on scrape, so every value
+  # here is up to a minute stale. Nothing below has a `for` shorter than 5m,
+  # which keeps that staleness well inside the noise.
+  #
+  # Hawkfield cannot alert on the loss of its own WAN — Prometheus, Alertmanager
+  # and Telegram's only egress all sit behind it. That alert comes from the
+  # London watchdog instead (terraform/watchdog).
+  - name: unifi-reachability
+    rules:
+      # Cannot tell "the console is down" from "the path to it is down": the
+      # poller runs at Hawkfield, so London going unreachable could equally be
+      # the site-to-site link. The runbook discriminates; the summary does not
+      # pretend to.
+      - alert: UniFiConsoleUnreachable
+        expr: unpoller_controller_up == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: 'UniFi console unreachable from the poller — console, or the path to it'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+      - alert: UniFiPollerRefreshFailing
+        expr: increase(unpoller_prometheus_refresh_failures_total[15m]) >= 3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'unpoller failed {{ $value | printf "%.0f" }} refreshes in 15m — series are going stale'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  - name: unifi-wan
+    rules:
+      # Both sites idle at 3-4 ms, so 100 ms is well clear of normal without
+      # being so high that it only fires once the line is unusable.
+      - alert: UniFiWanLatencyHigh
+        expr: unpoller_site_latency_seconds{subsystem="www"} > 0.1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'WAN latency {{ $value | humanizeDuration }} sustained over 15 minutes'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+      - alert: UniFiInternetDropping
+        expr: increase(unpoller_site_intenet_drops_total[1h]) >= 3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'WAN dropped {{ $value | printf "%.0f" }} times in the last hour'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  # The aggregation switch carries the 10G spine but uplinks to the Loft Switch
+  # over a 2x1G LAG on ports 7/8 — the USL24P's SFP ports are 1G-only. Lose a
+  # member and north-south capacity halves to 1 Gbps while every other panel and
+  # every other alert still reads healthy. Nothing else in the estate sees this.
+  #
+  # Total loss of the switch is deliberately not handled here; that surfaces as
+  # UniFiDevicesDisconnected rather than as a second copy of this alert.
+  - name: unifi-aggregation-lag
+    rules:
+      - alert: UniFiAggregationLagMemberDown
+        expr: |
+          count by (site, name) (
+            unpoller_device_port_port_speed_bps{name="USW Aggregation", port_num=~"7|8"} > 0
+          ) < 2
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'aggregation LAG down to {{ $value | printf "%.0f" }} of 2 members — uplink capacity halved'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+      - alert: UniFiAggregationLagMemberSlow
+        expr: unpoller_device_port_port_speed_bps{name="USW Aggregation", port_num=~"7|8"} > 0 < 1e9
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'LAG member negotiated {{ $value | printf "%.0f" }} bps, below the expected 1G'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  - name: unifi-devices
+    rules:
+      # Site-level rather than per-device: unpoller reports a disconnected count
+      # per subsystem, which is a fact it publishes directly, whereas naming the
+      # device depends on whether an offline device is dropped from the export
+      # or merely reported stale. The runbook has the query that names it.
+      - alert: UniFiDevicesDisconnected
+        expr: unpoller_site_disconnected > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: '{{ $value | printf "%.0f" }} {{ $labels.subsystem }} device(s) disconnected'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+      # Catches a device that re-adopts in a loop, which the disconnected count
+      # misses whenever the flap settles between two refreshes.
+      - alert: UniFiDeviceRebooting
+        expr: resets(unpoller_device_uptime_seconds[1h]) >= 3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'rebooted {{ $value | printf "%.0f" }} times in the last hour'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  # Thresholds here are deliberate guesses. #443 had run for three hours when
+  # these were written, so each one is set clear of the observed idle rather
+  # than derived from a baseline, and is meant to be revisited against real
+  # data. Gateway memory has no rule at all: the UDMs idle at 83-86% and any
+  # static threshold would either fire immediately or never fire in time.
+  - name: unifi-health
+    rules:
+      # Observed idle: Bristol 67 CPU / 71 board, London 74 CPU / 77 board.
+      - alert: UniFiDeviceTemperatureHigh
+        expr: unpoller_device_temperature_celsius > 85
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: '{{ $labels.temp_area }} at {{ $value | printf "%.1f" }}°C for 15 minutes'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+      - alert: UniFiDeviceTemperatureCritical
+        expr: unpoller_device_temperature_celsius > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: '{{ $labels.temp_area }} at {{ $value | printf "%.1f" }}°C — thermal, check airflow'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+      - alert: UniFiDeviceCpuHigh
+        expr: unpoller_device_cpu_utilization_ratio > 0.9
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'CPU at {{ $value | humanizePercentage }} for 30 minutes'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+      # max_power_total is 0 on the aggregation switch, which has no PoE at all,
+      # so filter it out rather than dividing by zero into +Inf.
+      - alert: UniFiPoeBudgetHigh
+        expr: |
+          sum by (site, name) (unpoller_device_port_poe_watts)
+            / on (site, name) (max by (site, name) (unpoller_device_max_power_total > 0))
+            > 0.8
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'PoE draw at {{ $value | humanizePercentage }} of the switch budget'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+      - alert: UniFiSwitchPortErrors
+        expr: |
+          rate(unpoller_device_port_receive_errors_total[15m]) > 1
+            or rate(unpoller_device_port_transmit_errors_total[15m]) > 1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: '{{ $value | printf "%.1f" }} errors/s on {{ $labels.port_name }} — suspect cable or SFP'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+      # 5 GHz only. 2.4 GHz is congested by neighbours and IoT and already peaks
+      # over 50% at idle here, so alerting on it would be noise you cannot act
+      # on. 5 GHz is where the 33.8 Mbps Plex remux ceiling lives.
+      - alert: UniFiWifiChannelUtilisationHigh
+        expr: unpoller_device_radio_channel_utilization_total_ratio{band="5"} > 0.75
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: '5GHz channel {{ $value | humanizePercentage }} utilised for 30 minutes'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md

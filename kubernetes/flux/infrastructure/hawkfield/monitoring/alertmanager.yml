@@ -3,7 +3,10 @@ global:
 
 route:
   receiver: telegram
-  group_by: ['alertname', 'namespace']
+  # `site` and `name` are absent on the pod alerts, which groups them exactly as
+  # before. Without them every UniFi alert of one name collapses into a single
+  # group, so seven APs dropping would arrive as one message naming none of them.
+  group_by: ['alertname', 'namespace', 'site', 'name']
   group_wait: 30s
   group_interval: 5m
   repeat_interval: 6h
@@ -55,13 +58,23 @@ receivers:
         chat_id_file: /etc/alertmanager-secrets/chat-id
         parse_mode: HTML
         send_resolved: true
+        # Pod alerts identify by namespace/pod, UniFi alerts by site/device —
+        # they share no labels, so the subject line has to branch. Without this
+        # every network alert renders as a bare "/".
         message: |-
           {{ if eq .Status "firing" }}🔴 <b>FIRING</b>
           {{- else }}✅ <b>RESOLVED</b>
           {{- end }} — {{ .CommonLabels.alertname }}
           {{ range .Alerts -}}
-          <b>{{ .Labels.namespace }}/{{ .Labels.pod }}</b>
+          {{ if .Labels.namespace }}<b>{{ .Labels.namespace }}/{{ .Labels.pod }}</b>
           {{- if .Labels.container }} ({{ .Labels.container }})
+          {{- end }}
+          {{- else if .Labels.name }}<b>{{ .Labels.site }} / {{ .Labels.name }}</b>
+          {{- if .Labels.port_name }} ({{ .Labels.port_name }})
+          {{- end }}
+          {{- else if .Labels.site }}<b>{{ .Labels.site }}</b>
+          {{- if .Labels.subsystem }} ({{ .Labels.subsystem }})
+          {{- end }}
           {{- end }}
           {{ .Annotations.summary }}
           {{- if .Annotations.runbook_url }}

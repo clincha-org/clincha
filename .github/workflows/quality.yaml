@@ -225,3 +225,32 @@ jobs:
 
       - name: Apply policies to every overlay
         run: kyverno apply kubernetes/policy/ --resource built/
+
+  alert-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      # Pinned to the version the cluster runs. promtool accepts PromQL that a
+      # different Prometheus would reject, so a floating version would validate
+      # rules the deployment cannot evaluate.
+      - name: Install promtool
+        env:
+          VERSION: 3.13.2
+        run: |
+          base=https://github.com/prometheus/prometheus/releases/download
+          curl -sSL "$base/v$VERSION/prometheus-$VERSION.linux-amd64.tar.gz" \
+            | sudo tar xz -C /usr/local/bin --strip-components=1 \
+                "prometheus-$VERSION.linux-amd64/promtool"
+
+      - name: Check rules parse
+        run: |
+          promtool check rules \
+            kubernetes/flux/infrastructure/hawkfield/monitoring/alert-rules.yml
+
+      # The tests assert that the recorded idle values fire nothing. Thresholds
+      # here were guessed off three hours of data, so this is what catches a
+      # rule that would page at baseline and get muted.
+      - name: Run rule unit tests
+        run: promtool test rules kubernetes/alert-rule-tests/*.yaml
