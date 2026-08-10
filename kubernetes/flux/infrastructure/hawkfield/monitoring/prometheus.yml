@@ -45,3 +45,28 @@ scrape_configs:
         regex: 'https://10\.2\.2\.1'
         target_label: site
         replacement: london
+      # unpoller_port_forward_* and unpoller_wan_* carry no `source` at all,
+      # so the rules above leave them site-less. The pairs below read as
+      # "site still empty AND <fallback label> says Hawkfield", because an
+      # unset label contributes nothing before the `;` separator; a series
+      # already carrying a site cannot re-match. Each fallback matches
+      # Hawkfield by name and treats any other value as London, so renaming
+      # the London site — which #443 recommends — cannot silently strand
+      # its series. A third site would need a rule of its own.
+      - source_labels: [site, site_name]
+        regex: ';Hawkfield Lodge.*'
+        target_label: site
+        replacement: hawkfield
+      - source_labels: [site, site_name]
+        regex: ';.+'
+        target_label: site
+        replacement: london
+      # WAN config series identify themselves only by ISP.
+      - source_labels: [site, wan_name]
+        regex: ';Truespeed'
+        target_label: site
+        replacement: hawkfield
+      - source_labels: [site, wan_name]
+        regex: ';.+'
+        target_label: site
+        replacement: london
