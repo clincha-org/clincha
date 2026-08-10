@@ -74,6 +74,12 @@ spec:
               name: plugins
             - mountPath: /tmp
               name: tmp
+            - mountPath: /etc/grafana/provisioning/dashboards
+              name: dashboard-provider
+              readOnly: true
+            - mountPath: /etc/grafana/dashboards
+              name: dashboards
+              readOnly: true
       volumes:
         - name: grafana-storage
           nfs:
@@ -85,6 +91,12 @@ spec:
         - name: plugins
           emptyDir:
             medium: Memory
+        - name: dashboard-provider
+          configMap:
+            name: grafana-dashboard-provider
+        - name: dashboards
+          configMap:
+            name: grafana-dashboards
 ---
 apiVersion: v1
 kind: Service

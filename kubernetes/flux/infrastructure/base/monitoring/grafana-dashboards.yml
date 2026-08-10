@@ -1,0 +1,31 @@
+---
+# Dashboards as code. Grafana reads this provider on startup and rescans the
+# mounted directory on updateIntervalSeconds, so a dashboard edit reaches the
+# UI without a pod restart. The dashboard JSON itself is a configMapGenerator
+# in the site overlay.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-provider
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/part-of: kube-prometheus
+data:
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: flux
+        orgId: 1
+        folder: ''
+        type: file
+        # Provisioned dashboards are owned by git: the UI cannot edit them and
+        # deleting the file removes the dashboard. Dashboards created by hand
+        # in the UI are untouched — this provider only manages its own folder.
+        disableDeletion: false
+        allowUiUpdates: false
+        updateIntervalSeconds: 60
+        options:
+          path: /etc/grafana/dashboards
+          foldersFromFilesStructure: false

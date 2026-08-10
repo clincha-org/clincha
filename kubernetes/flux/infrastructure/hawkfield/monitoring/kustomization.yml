@@ -56,3 +56,7 @@ configMapGenerator:
     namespace: monitoring
     files:
       - up.conf
+  - name: grafana-dashboards
+    namespace: monitoring
+    files:
+      - unifi-network.json

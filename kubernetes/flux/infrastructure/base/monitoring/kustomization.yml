@@ -14,5 +14,6 @@ resources:
   - prometheus.yml
   - alertmanager.yml
   - grafana.yml
+  - grafana-dashboards.yml
   - certificate.yml
   - ingress.yml
