@@ -55,6 +55,8 @@ exposes; the box reads 67°C CPU / 71°C board. Do not treat 83°C as Bristol's 
 ```
 UniFi consoles (10.1.2.1, 10.2.2.1) → unpoller (60s cache) → Prometheus (30s scrape)
        → alert rules → Alertmanager → Telegram (clincha_grafana_bot)
+
+                                    └→ syslog UDP 514 → 10.1.2.211 (alloy-syslog) → Loki
 ```
 
 unpoller **caches and serves; it does not poll on scrape**. Values are up to 60s stale, which is
@@ -67,9 +69,57 @@ why no rule here has a `for` shorter than 5m.
 - Console credentials: Bitwarden `unifipoller (Bristol)` / `unifipoller (London)` — read-only
   local accounts, verified as such
 - Dashboard: Grafana uid `unifi-network`
+- Logs: `kubernetes/flux/infrastructure/hawkfield/monitoring/config-syslog.alloy` and
+  `base/monitoring/alloy-syslog.yml`
 
 Metric names are prefixed **`unpoller_`, not `unifi_`** — renamed in unpoller v3. Older blog
 posts and community dashboards all use the old prefix and will silently match nothing.
+
+## The console logs
+
+Both consoles forward Network-application syslog to `10.1.2.211:514`, a UDP listener on the
+`alloy-syslog` pod that pushes straight to Loki. Start here when a rule above fires — it is the
+only console-side detail available without SSH.
+
+```logql
+{job="unifi-syslog"}
+{job="unifi-syslog", site="hawkfield"}
+{job="unifi-syslog", site="london"}
+{job="unifi-syslog"} |= "Paddock"
+```
+
+`site` is derived from the **source IP of the packet** (10.1.2.1 → `hawkfield`, 10.2.2.1 →
+`london`), not from the hostname the console reports. Anything else is labelled `unknown`, so
+`{job="unifi-syslog", site="unknown"}` returning rows means a sender nobody has accounted for —
+or, if London went quiet at the same moment, that its packets are arriving NAT'd across the
+site-to-site link and need a port-per-console instead.
+
+### Caveats worth knowing before you trust a gap
+
+- **UDP, so loss is silent.** UniFi's `ubios-udapi-server` has exactly one `transport()` literal
+  and it is `udp`; there is no TCP setting to pick. An empty window is not evidence that nothing
+  happened. Accepted deliberately — do not read absence as an all-clear.
+- **A rollout drops a few seconds.** The Service is `externalTrafficPolicy: Local` on a
+  single-replica Deployment, which is what preserves the source IP; while the pod moves, the VIP
+  is not announced.
+- **Network application only.** This is not the UDM's own UniFi OS journal — `unifi-core`, mongo
+  and kernel messages stay on the box and still need SSH.
+- **RFC3164.** UniFi emits BSD-format syslog, so the listener sets `syslog_format = "rfc3164"`.
+  Alloy's default is rfc5424 and would mangle every message.
+
+Console-side the setting is Network → Settings → System → **Remote logging**, persisted as the
+`rsyslogd` document in each console's Mongo: `enabled: true`, `this_controller: false` (true means
+"keep them here"), `ip: 10.1.2.211`, `port: 514`.
+
+If the stream stops, check the pod before the consoles:
+
+```bash
+kubectl -n monitoring logs deploy/alloy-syslog --tail=50
+kubectl -n monitoring get svc alloy-syslog-unifi
+```
+
+The TrueNAS stream (`{job="truenas-syslog"}`) is a separate TCP listener on `10.1.2.210` in the
+same pod, so it flowing while UniFi does not narrows the fault to the UDP path or the consoles.
 
 ## The one alert that cannot come from Hawkfield
 
