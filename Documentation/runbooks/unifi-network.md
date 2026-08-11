@@ -55,7 +55,7 @@ exposes; the box reads 67°C CPU / 71°C board. Do not treat 83°C as Bristol's 
 ```
 UniFi consoles (10.1.2.1, 10.2.2.1) ┬→ unpoller (60s cache) → Prometheus (30s scrape)
                                     │      → alert rules → Alertmanager → Telegram (clincha_grafana_bot)
-                                    └→ syslog UDP 514 → 10.1.2.211 (alloy-syslog) → Loki
+                                    └→ syslog UDP 514 → 10.1.2.210 (alloy-syslog) → Loki
 ```
 
 unpoller **caches and serves; it does not poll on scrape**. Values are up to 60s stale, which is
@@ -76,7 +76,7 @@ posts and community dashboards all use the old prefix and will silently match no
 
 ## The console logs
 
-Both consoles forward Network-application syslog to `10.1.2.211:514`, a UDP listener on the
+Both consoles forward Network-application syslog to `10.1.2.210:514`, a UDP listener on the
 `alloy-syslog` pod that pushes straight to Loki. Start here when a rule above fires — it is the
 only console-side detail available without SSH.
 
@@ -89,39 +89,48 @@ only console-side detail available without SSH.
 {job="unifi-syslog"} |= "Paddock"
 ```
 
-Four labels: `job`, `site`, `app` (the syslog tag — `hostapd`, `dnsmasq`, `kernel` …) and
+Five labels: `job`, `site`, `host`, `app` (the syslog tag — `hostapd`, `dnsmasq`, `kernel` …) and
 `severity`. The rfc3164 parser strips both the tag and the priority off the line before it reaches
 Loki, so `app` and `severity` are the only way to get at them — grepping the message body for a
 daemon name will not work.
 
-`site` is derived from the **source IP of the packet** (10.1.2.1 → `hawkfield`, 10.2.2.1 →
-`london`), not from the hostname the console reports. Anything else is labelled `unknown`, so
-`{job="unifi-syslog", site="unknown"}` returning rows means a sender nobody has accounted for —
-or, if London went quiet at the same moment, that its packets are arriving NAT'd across the
-site-to-site link and need a port-per-console instead.
+`site` is derived from the **hostname in the message** — `Bristol` → `hawkfield`, `London` →
+`london`, anything else → `unknown`, with the reported name kept verbatim in `host` so an unknown
+sender can be identified from the label set alone.
+
+**It is deliberately not the packet source IP.** London reaches Hawkfield over a Tailscale subnet
+route and the Bristol gateway SNATs it, so London's packets arrive with source `10.1.2.1` — the
+same address Bristol's own packets carry. Source-IP rules would have labelled the entire London
+stream `hawkfield` and nothing would have looked wrong. Verified 2026-08-10 by capturing UDP from
+both consoles on `k8s-hawk-2`.
+
+So `{job="unifi-syslog", site="unknown"}` returning rows means a console was renamed, or a sender
+nobody has accounted for; check `host` to tell which.
 
 ### Caveats worth knowing before you trust a gap
 
 - **UDP, so loss is silent.** UniFi's `ubios-udapi-server` has exactly one `transport()` literal
   and it is `udp`; there is no TCP setting to pick. An empty window is not evidence that nothing
   happened. Accepted deliberately — do not read absence as an all-clear.
-- **A rollout drops a few seconds.** The Service is `externalTrafficPolicy: Local` on a
-  single-replica Deployment, which is what preserves the source IP; while the pod moves, the VIP
-  is not announced.
+- **A rollout drops a few seconds.** Single-replica Deployment; while the pod moves, nothing is
+  listening.
 - **Network application only.** This is not the UDM's own UniFi OS journal — `unifi-core`, mongo
   and kernel messages stay on the box and still need SSH.
 - **RFC3164.** UniFi emits BSD-format syslog, so the listener sets `syslog_format = "rfc3164"`.
-  Alloy's default is rfc5424 and would mangle every message.
+  Alloy's default is rfc5424 and would mangle every message. Note the consoles set
+  `ts_format(iso)` globally in `/etc/syslog-ng/syslog-ng.conf`, which is why `/var/log/messages`
+  on the box carries ISO timestamps — it does **not** apply to the `network()` destination, whose
+  wire format is a plain BSD stamp (`<30>Aug 10 15:38:25 Bristol udapi-probe: …`, captured).
 
 Console-side the setting is Network → Settings → System → **Remote logging**, persisted as the
 `rsyslogd` document in each console's Mongo: `enabled: true`, `this_controller: false` (true means
-"keep them here"), `ip: 10.1.2.211`, `port: 514`.
+"keep them here"), `ip: 10.1.2.210`, `port: 514`.
 
 If the stream stops, check the pod before the consoles:
 
 ```bash
 kubectl -n monitoring logs deploy/alloy-syslog --tail=50
-kubectl -n monitoring get svc alloy-syslog-unifi
+kubectl -n monitoring get svc alloy-syslog
 ```
 
 The TrueNAS stream (`{job="truenas-syslog"}`) is a separate TCP listener on `10.1.2.210` in the
