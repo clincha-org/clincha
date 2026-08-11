@@ -38,6 +38,9 @@ spec:
             - name: syslog-tcp
               containerPort: 1514
               protocol: TCP
+            - name: syslog-udp
+              containerPort: 1514
+              protocol: UDP
             - name: http
               containerPort: 12345
               protocol: TCP
@@ -103,3 +106,7 @@ spec:
       port: 514
       targetPort: syslog-tcp
       protocol: TCP
+    - name: syslog-udp
+      port: 514
+      targetPort: syslog-udp
+      protocol: UDP

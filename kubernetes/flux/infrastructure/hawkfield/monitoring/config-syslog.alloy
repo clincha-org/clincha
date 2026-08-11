@@ -16,6 +16,69 @@ loki.source.syslog "truenas" {
     forward_to = [loki.write.local.receiver]
 }
 
+// Site comes from the hostname in the message, not the packet source IP:
+// London reaches Hawkfield over a Tailscale subnet route and the Bristol
+// gateway SNATs it, so both consoles arrive as 10.1.2.1 and source-IP rules
+// would label London as hawkfield. The consoles self-report distinctly
+// ("Bristol" / "London"); a rename lands on the unknown catch-all below rather
+// than silently relabelling the stream.
+loki.relabel "unifi" {
+    forward_to = []
+
+    rule {
+        source_labels = ["__syslog_message_hostname"]
+        regex         = "Bristol"
+        target_label  = "site"
+        replacement   = "hawkfield"
+    }
+    rule {
+        source_labels = ["__syslog_message_hostname"]
+        regex         = "London"
+        target_label  = "site"
+        replacement   = "london"
+    }
+    rule {
+        source_labels = ["site"]
+        regex         = "^$"
+        target_label  = "site"
+        replacement   = "unknown"
+    }
+
+    // Kept so an unknown site can be identified from the label set alone.
+    rule {
+        source_labels = ["__syslog_message_hostname"]
+        target_label  = "host"
+    }
+
+    // The rfc3164 parser strips the priority and the tag off the line, so
+    // without these the daemon and severity are unrecoverable from the message
+    // body. Both are bounded sets.
+    rule {
+        source_labels = ["__syslog_message_app_name"]
+        target_label  = "app"
+    }
+    rule {
+        source_labels = ["__syslog_message_severity"]
+        target_label  = "severity"
+    }
+}
+
+loki.source.syslog "unifi" {
+    listener {
+        // UniFi's remote syslog is UDP-only and BSD-framed: ubios-udapi-server
+        // renders transport("udp") with no flags(syslog-protocol), and exposes
+        // no setting to change either.
+        address       = "0.0.0.0:1514"
+        protocol      = "udp"
+        syslog_format = "rfc3164"
+        labels        = {
+            job = "unifi-syslog",
+        }
+    }
+    relabel_rules = loki.relabel.unifi.rules
+    forward_to    = [loki.write.local.receiver]
+}
+
 loki.write "local" {
     endpoint {
         url = "http://loki-gateway.monitoring.svc/loki/api/v1/push"
