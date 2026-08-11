@@ -25,17 +25,23 @@ loki.source.syslog "truenas" {
 loki.relabel "unifi" {
     forward_to = []
 
-    rule {
-        source_labels = ["__syslog_message_hostname"]
-        regex         = "Bristol"
-        target_label  = "site"
-        replacement   = "hawkfield"
-    }
+    // Enabling remote logging on a console enables it on everything it has
+    // adopted, so most of this stream is APs and switches rather than the
+    // consoles. Each device reports its own name with spaces stripped. London
+    // is matched first and has no adopted devices of its own; add one there and
+    // it lands on `unknown` below, because its packets are SNAT'd to Bristol's
+    // address and nothing in them says which site they came from.
     rule {
         source_labels = ["__syslog_message_hostname"]
         regex         = "London"
         target_label  = "site"
         replacement   = "london"
+    }
+    rule {
+        source_labels = ["__syslog_message_hostname"]
+        regex         = "Bristol|FirstFloorLanding|Hall|Kitchen|LivingRoom|LoftLanding|LoftSwitch|MasterBedroom|Paddock|USW-Aggregation"
+        target_label  = "site"
+        replacement   = "hawkfield"
     }
     rule {
         source_labels = ["site"]
@@ -50,17 +56,30 @@ loki.relabel "unifi" {
         target_label  = "host"
     }
 
-    // The rfc3164 parser strips the priority and the tag off the line, so
-    // without these the daemon and severity are unrecoverable from the message
-    // body. Both are bounded sets.
-    rule {
-        source_labels = ["__syslog_message_app_name"]
-        target_label  = "app"
-    }
     rule {
         source_labels = ["__syslog_message_severity"]
         target_label  = "severity"
     }
+}
+
+// The daemon is not in the rfc3164 tag: the consoles emit their hostname a
+// second time where the tag belongs, so the parser finds no tag at all, and the
+// APs put "<mac>,<model>" there instead. Either way the real daemon is the
+// first token of the message body, which is what this recovers. The optional
+// leading word absorbs the consoles' duplicated hostname; lines that open with
+// a bracket (the firewall's LAN_LOCAL rules) have no daemon and get no label.
+loki.process "unifi" {
+    stage.regex {
+        expression = "^(?:[A-Za-z0-9-]+ )?(?P<daemon>[A-Za-z0-9._@-]+)(?:\\[\\d+\\])?: "
+    }
+
+    stage.labels {
+        values = {
+            daemon = "",
+        }
+    }
+
+    forward_to = [loki.write.local.receiver]
 }
 
 loki.source.syslog "unifi" {
@@ -76,7 +95,7 @@ loki.source.syslog "unifi" {
         }
     }
     relabel_rules = loki.relabel.unifi.rules
-    forward_to    = [loki.write.local.receiver]
+    forward_to    = [loki.process.unifi.receiver]
 }
 
 loki.write "local" {
