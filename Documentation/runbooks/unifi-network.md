@@ -74,29 +74,37 @@ why no rule here has a `for` shorter than 5m.
 Metric names are prefixed **`unpoller_`, not `unifi_`** — renamed in unpoller v3. Older blog
 posts and community dashboards all use the old prefix and will silently match nothing.
 
-## The console logs
+## The UniFi logs
 
-Both consoles forward Network-application syslog to `10.1.2.210:514`, a UDP listener on the
-`alloy-syslog` pod that pushes straight to Loki. Start here when a rule above fires — it is the
-only console-side detail available without SSH.
+Every UniFi device forwards syslog to `10.1.2.210:514`, a UDP listener on the `alloy-syslog` pod
+that pushes straight to Loki. Start here when a rule above fires — it is the only device-side
+detail available without SSH.
+
+**It is not just the consoles.** Enabling remote logging on a console enables it on everything
+that console has adopted, so the stream is both gateways plus all nine Hawkfield APs and switches.
+That is the useful half: `hostapd` and `stahtd` lines are what explain a WiFi alert. It is also
+around 1.2M lines/day, most of it AP `kernel` driver chatter and the consoles' `LAN_LOCAL`
+firewall logging — kept deliberately (Angus, 2026-08-11), so do not "fix" the volume.
 
 ```logql
 {job="unifi-syslog"}
 {job="unifi-syslog", site="hawkfield"}
 {job="unifi-syslog", site="london"}
 {job="unifi-syslog", severity=~"error|critical|alert|emergency"}
-{job="unifi-syslog", app="hostapd"}
-{job="unifi-syslog"} |= "Paddock"
+{job="unifi-syslog", daemon="hostapd"}
+{job="unifi-syslog", host="Paddock"}
 ```
 
-Five labels: `job`, `site`, `host`, `app` (the syslog tag — `hostapd`, `dnsmasq`, `kernel` …) and
-`severity`. The rfc3164 parser strips both the tag and the priority off the line before it reaches
-Loki, so `app` and `severity` are the only way to get at them — grepping the message body for a
-daemon name will not work.
+Five labels: `job`, `site`, `host` (the reporting device), `daemon` and `severity`.
 
-`site` is derived from the **hostname in the message** — `Bristol` → `hawkfield`, `London` →
-`london`, anything else → `unknown`, with the reported name kept verbatim in `host` so an unknown
-sender can be identified from the label set alone.
+`daemon` is **not** the syslog tag, because on this kit the tag is useless: the consoles emit their
+hostname a second time where the tag belongs, so the parser finds no tag at all, and the APs put
+`<mac>,<model>` there. It is recovered from the first token of the message body instead. Lines that
+open with a bracket — the firewall's `LAN_LOCAL` rules — have no daemon and carry no such label.
+
+`site` is derived from the **hostname in the message**: `London` → `london`, the ten known
+Hawkfield devices → `hawkfield`, anything else → `unknown`, with the reported name kept verbatim in
+`host`.
 
 **It is deliberately not the packet source IP.** London reaches Hawkfield over a Tailscale subnet
 route and the Bristol gateway SNATs it, so London's packets arrive with source `10.1.2.1` — the
@@ -104,8 +112,15 @@ same address Bristol's own packets carry. Source-IP rules would have labelled th
 stream `hawkfield` and nothing would have looked wrong. Verified 2026-08-10 by capturing UDP from
 both consoles on `k8s-hawk-2`.
 
-So `{job="unifi-syslog", site="unknown"}` returning rows means a console was renamed, or a sender
-nobody has accounted for; check `host` to tell which.
+So `{job="unifi-syslog", site="unknown"}` returning rows means a device was renamed, a new one was
+adopted, or a sender nobody has accounted for; check `host` and add it to the alternation in
+`config-syslog.alloy`.
+
+⚠️ **A device adopted at London will land on `unknown`, and that is the best available answer.**
+Its packets are SNAT'd to Bristol's address like the London console's, and nothing inside a syslog
+message says which site it came from — so an unrecognised name genuinely cannot be attributed.
+Resist the temptation to default the catch-all to `hawkfield`: it would be right today and
+silently wrong the moment Angus puts an AP in the flat.
 
 ### Caveats worth knowing before you trust a gap
 
@@ -114,8 +129,8 @@ nobody has accounted for; check `host` to tell which.
   happened. Accepted deliberately — do not read absence as an all-clear.
 - **A rollout drops a few seconds.** Single-replica Deployment; while the pod moves, nothing is
   listening.
-- **Network application only.** This is not the UDM's own UniFi OS journal — `unifi-core`, mongo
-  and kernel messages stay on the box and still need SSH.
+- **Not the UniFi OS journal.** The gateways' own `unifi-core`, mongo and UniFi OS kernel messages
+  stay on the box and still need SSH. AP `kernel` lines do arrive; UDM ones do not.
 - **RFC3164.** UniFi emits BSD-format syslog, so the listener sets `syslog_format = "rfc3164"`.
   Alloy's default is rfc5424 and would mangle every message. Note the consoles set
   `ts_format(iso)` globally in `/etc/syslog-ng/syslog-ng.conf`, which is why `/var/log/messages`
