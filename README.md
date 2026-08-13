@@ -59,6 +59,8 @@ What the NAS backs up, what it deliberately does not, and why — [Documentation
 
 What each app on the NAS is for, and what has been removed — [Documentation/hawkstore/apps.md](Documentation/hawkstore/apps.md).
 
+How the NAS web UI gets a real Let's Encrypt certificate, and how to rotate its Cloudflare token — [Documentation/hawkstore/tls-certificate.md](Documentation/hawkstore/tls-certificate.md).
+
 ## Workflow Status
 
 ### Infrastructure
