@@ -1,4 +1,4 @@
-ansible-core==2.18.18 # locked for compatibility with Kubespray; 2.18.18 is the CVE-2026-11332 floor
+ansible-core==2.18.19 # locked for compatibility with Kubespray; 2.18.18 is the CVE-2026-11332 floor
 distlib==0.4.3 # Required to install collections
 requests==2.34.2 # Required for Proxmox dynamic inventory
 passlib # password hashing
