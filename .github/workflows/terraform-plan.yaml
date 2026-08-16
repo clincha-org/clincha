@@ -19,7 +19,6 @@ concurrency:
 
 jobs:
   plan:
-    if: github.actor != 'dependabot[bot]'
     name: "Plan (${{ matrix.site }})"
     runs-on: ubuntu-latest
     strategy:

@@ -57,16 +57,23 @@ These run when changes are pushed to `master` (i.e. a PR is merged).
 | Workflow | File | Schedule | Sites | What it does |
 |----------|------|----------|-------|-------------|
 | **Update Proxmox** | `ansible-update-proxmox.yaml` | Daily 03:00 UTC, manual | Hawkfield, London (parallel) | Runs `update-proxmox.yml` — apt upgrades on Proxmox hosts (independent per site) |
-| **Renovate** | `renovate.yaml` | Weekly Monday 06:00 UTC, manual | N/A | Proposes container image and Helm chart updates under `kubernetes/flux/` as PRs |
+| **Renovate** | `renovate.yaml` | Daily 06:00 UTC, manual | N/A | Proposes dependency updates as PRs across images, Helm charts, pip, github-actions and terraform |
 
-Renovate is configured by `/renovate.json` at the repo root. Only the `kubernetes`
-and `flux` managers are enabled, so it cannot open a `terraform/**`, `Ansible/**` or
-`.github/**` PR — which matters because `terraform-plan.yaml` guards on
-`github.actor != 'dependabot[bot]'`, a check Renovate would not match. Dependabot
-still owns pip, github-actions and terraform; the two do not overlap.
+Renovate is configured by `/renovate.json` at the repo root and owns every ecosystem
+in the repo: container images and Helm charts under `kubernetes/flux/`, plus pip
+(`Ansible/requirements.txt`), github-actions and terraform. Dependabot used to own
+the latter three and was removed once Renovate took them over.
 
-Nothing auto-merges. Merging a Renovate PR deploys it — Flux reconciles within 1–2
+Minor, patch and digest bumps auto-merge once CI is green and the release is three
+days old; majors are left for review. Terraform is excluded from auto-merge because
+CI only plans, so a provider bump that changes real infrastructure at apply time
+gets read first. Merging a Renovate PR deploys it — Flux reconciles within 1–2
 minutes.
+
+Renovate pushes with a PAT rather than `GITHUB_TOKEN`, so its PRs trigger workflows
+normally and `terraform-plan.yaml` runs a real plan on a provider bump. That PAT
+needs the **Workflows** permission to touch `.github/workflows/**`; without it,
+github-actions bumps to workflow files fail the branch push with a 403.
 
 `clincha/media` runs its own copy of this workflow against its own `renovate.json`.
 The two are separate because a fine-grained PAT has a single resource owner and
