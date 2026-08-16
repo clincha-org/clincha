@@ -18,7 +18,8 @@ metadata:
       factorio writes mods and scenarios outside the mounts
 spec:
   replicas: 1
-  # RollingUpdate deadlocks: no node can double-book the 4-CPU request
+  # Required by kubernetes/policy/nfs-deployment-requires-recreate.yaml: a
+  # surged second pod would double-mount the NFS saves.
   strategy:
     type: Recreate
   selector:
@@ -87,7 +88,9 @@ spec:
             failureThreshold: 5
           resources:
             requests:
-              cpu: "4"
+              # Steady state is about one busy core; uncapped on CPU, so this
+              # reserves capacity rather than limiting peaks.
+              cpu: "2"
               memory: "16Gi"
             limits:
               # Matches the request rather than capping lower: observed working
