@@ -22,6 +22,10 @@ spec:
     spec:
       serviceAccountName: truenas-api-exporter
       automountServiceAccountToken: false
+      # Secret files land root-owned; fsGroup is what makes them group-readable
+      # by the nobody user the exporter runs as.
+      securityContext:
+        fsGroup: 65534
       containers:
         - name: exporter
           image: python:3.12-slim
@@ -33,12 +37,11 @@ spec:
               value: "9113"
             # API key for the least-privilege `nasexporter` TrueNAS user
             # (read-only roles). REST rejects non-admin keys, so the exporter
-            # uses the JSON-RPC WebSocket API.
-            - name: TRUENAS_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: truenas-api-credentials
-                  key: api-key
+            # uses the JSON-RPC WebSocket API. Mounted as a file, not an env
+            # var: the script re-reads it per scrape, so a rotation needs no
+            # restart.
+            - name: TRUENAS_API_KEY_FILE
+              value: /secrets/truenas/api-key
           ports:
             - name: metrics
               containerPort: 9113
@@ -63,6 +66,9 @@ spec:
             - mountPath: /app
               name: script
               readOnly: true
+            - mountPath: /secrets/truenas
+              name: api-key
+              readOnly: true
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -78,6 +84,10 @@ spec:
         - name: script
           configMap:
             name: truenas-exporter-script
+        - name: api-key
+          secret:
+            secretName: truenas-api-credentials
+            defaultMode: 0440
 ---
 apiVersion: v1
 kind: Service

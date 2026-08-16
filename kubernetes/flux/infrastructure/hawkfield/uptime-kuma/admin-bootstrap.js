@@ -1,8 +1,11 @@
+const fs = require("fs");
 const { io } = require("socket.io-client");
 
+const readSecret = (path) => fs.readFileSync(path, "utf8").trim();
+
 const url = process.env.KUMA_URL;
-const username = process.env.KUMA_USERNAME;
-const password = process.env.KUMA_PASSWORD;
+const username = readSecret(process.env.KUMA_USERNAME_FILE);
+const password = readSecret(process.env.KUMA_PASSWORD_FILE);
 
 const done = (code, msg) => {
     console.log(msg);
@@ -21,7 +24,7 @@ socket.on("connect_error", (err) => done(1, `connect failed: ${err.message}`));
 
 socket.on("connect", () => {
     socket.emit("setup", username, password, (res) => {
-        // The username comes from the environment; interpolating it into the
+        // The username comes from a mounted Secret; interpolating it into the
         // log is what CodeQL flags as clear-text logging of sensitive data.
         if (res.ok) {
             return done(0, "created admin user");

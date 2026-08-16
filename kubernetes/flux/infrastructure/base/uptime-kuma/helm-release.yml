@@ -36,9 +36,14 @@ spec:
       hostname: 10.1.2.10
       port: 3306
       database: uptime_kuma
-      existingSecret: uptime-kuma-mariadb-credentials
-      existingSecretUsernameKey: username
-      existingSecretPasswordKey: password
+      # Credentials come in as files via the _FILE vars in podEnv below, not
+      # existingSecret. getEnvOrFile() throws if a var and its _FILE twin are
+      # both set, and the chart renders UPTIME_KUMA_DB_USERNAME/PASSWORD
+      # unconditionally under externalDatabase.enabled — so these two must be
+      # blanked explicitly. The chart's own username default is `uptime_kuma`,
+      # which is truthy and would trip that guard.
+      username: ""
+      password: ""
     # /app/data still holds db-config.json, uploads, screenshots and docker-tls
     # — all low-traffic. Mounted from hawkstore NFS rather than a PVC because a
     # Longhorn journal abort silently wedged two volumes with EIO for 18 days on
@@ -50,14 +55,24 @@ spec:
         nfs:
           server: 10.1.2.10
           path: /mnt/userstore/uptime-kuma
+      # 0400 is enough: the release image sets no USER, so the server runs as
+      # root. No fsGroup needed, which keeps it off the NFS mount above.
+      - name: mariadb-credentials
+        secret:
+          secretName: uptime-kuma-mariadb-credentials
+          defaultMode: 0400
     additionalVolumeMounts:
       - name: storage
         mountPath: /app/data
-    # extra/entrypoint.sh chowns /app/data and then drops to PUID:PGID with
-    # `setpriv --clear-groups`, which needs CAP_SETGID. Set root explicitly
-    # rather than by omission: helm leaves a previously-rendered
-    # securityContext in place when the key disappears from values, so the old
-    # non-root one would persist.
+      - name: mariadb-credentials
+        mountPath: /secrets/mariadb
+        readOnly: true
+    # The 2.x image sets no USER and runs `node server/server.js` under
+    # dumb-init directly, so the server is root and the PUID/PGID below are
+    # inert leftovers from the 1.x entrypoint. Set root explicitly rather than
+    # by omission: helm leaves a previously-rendered securityContext in place
+    # when the key disappears from values, so the old non-root one would
+    # persist.
     podSecurityContext:
       runAsUser: 0
       runAsGroup: 0
@@ -67,6 +82,10 @@ spec:
         value: "3019"
       - name: PGID
         value: "3019"
+      - name: UPTIME_KUMA_DB_USERNAME_FILE
+        value: /secrets/mariadb/username
+      - name: UPTIME_KUMA_DB_PASSWORD_FILE
+        value: /secrets/mariadb/password
     # Kept from the SQLite-on-NFS era. MariaDB removes the stall that used to
     # trip these, but the chart's 1s/2s defaults leave no room for a slow query
     # either, and a killed pod is a worse outcome than a slow one.

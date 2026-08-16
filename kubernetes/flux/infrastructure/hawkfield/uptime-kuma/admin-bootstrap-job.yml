@@ -36,6 +36,9 @@ spec:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
+        # Secret files land root-owned; fsGroup is what makes them readable
+        # by uid 1000.
+        fsGroup: 1000
       containers:
         # The uptime-kuma image already carries socket.io-client, so the
         # bootstrap always speaks the same protocol version as the server.
@@ -52,16 +55,10 @@ spec:
               value: /app/node_modules
             - name: KUMA_URL
               value: http://uptime-kuma-uptime-kuma:3001
-            - name: KUMA_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: uptime-kuma-admin-credentials
-                  key: username
-            - name: KUMA_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: uptime-kuma-admin-credentials
-                  key: password
+            - name: KUMA_USERNAME_FILE
+              value: /secrets/admin/username
+            - name: KUMA_PASSWORD_FILE
+              value: /secrets/admin/password
           resources:
             requests:
               cpu: 10m
@@ -77,7 +74,14 @@ spec:
           volumeMounts:
             - name: script
               mountPath: /script
+            - name: admin-credentials
+              mountPath: /secrets/admin
+              readOnly: true
       volumes:
         - name: script
           configMap:
             name: uptime-kuma-admin-bootstrap
+        - name: admin-credentials
+          secret:
+            secretName: uptime-kuma-admin-credentials
+            defaultMode: 0440

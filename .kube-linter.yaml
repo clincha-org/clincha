@@ -38,6 +38,3 @@ checks:
     - "required-annotation-email"
     - "no-node-affinity"
     - "dnsconfig-options"
-    # 3 hits (truenas-api-exporter, uptime-kuma bootstrap Job). Legitimate
-    # hardening, but it changes the runtime behaviour of three workloads.
-    - "read-secret-from-env-var"

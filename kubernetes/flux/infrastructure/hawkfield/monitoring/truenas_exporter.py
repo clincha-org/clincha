@@ -16,7 +16,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 NAS_HOST = os.environ.get("TRUENAS_HOST", "10.1.2.10")
 NAS_PORT = int(os.environ.get("TRUENAS_PORT", "443"))
-API_KEY = os.environ["TRUENAS_API_KEY"]
+API_KEY_FILE = os.environ.get("TRUENAS_API_KEY_FILE", "/secrets/truenas/api-key")
 WS_PATH = os.environ.get("TRUENAS_WS_PATH", "/api/current")
 LISTEN = int(os.environ.get("LISTEN_PORT", "9113"))
 
@@ -124,9 +124,13 @@ def rpc(ws, method, params=None):
 
 
 def collect():
+    # Read per scrape, not at import: a SOPS rotation then lands on the next
+    # scrape instead of needing a pod restart.
+    with open(API_KEY_FILE, encoding="utf-8") as f:
+        api_key = f.read().strip()
     ws = WSClient(NAS_HOST, NAS_PORT, WS_PATH)
     try:
-        if not rpc(ws, "auth.login_with_api_key", [API_KEY]):
+        if not rpc(ws, "auth.login_with_api_key", [api_key]):
             raise WSError("api key login rejected")
         pools = rpc(ws, "pool.query")
         datasets = rpc(ws, "pool.dataset.query")
