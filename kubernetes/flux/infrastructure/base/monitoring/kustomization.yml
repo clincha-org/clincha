@@ -16,3 +16,4 @@ resources:
   - grafana.yml
   - certificate.yml
   - ingress.yml
+  - network-policy.yml

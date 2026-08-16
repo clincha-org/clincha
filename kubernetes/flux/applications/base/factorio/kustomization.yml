@@ -5,3 +5,4 @@ resources:
   - serviceaccount.yml
   - deployment.yml
   - service.yml
+  - network-policy.yml
