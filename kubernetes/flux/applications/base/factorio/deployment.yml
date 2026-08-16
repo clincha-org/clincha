@@ -18,8 +18,7 @@ metadata:
       factorio writes mods and scenarios outside the mounts
 spec:
   replicas: 1
-  # Required by kubernetes/policy/nfs-deployment-requires-recreate.yaml: a
-  # surged second pod would double-mount the NFS saves.
+  # Enforced by kubernetes/policy/nfs-deployment-requires-recreate.yaml
   strategy:
     type: Recreate
   selector:
@@ -88,8 +87,7 @@ spec:
             failureThreshold: 5
           resources:
             requests:
-              # Steady state is about one busy core; uncapped on CPU, so this
-              # reserves capacity rather than limiting peaks.
+              # Steady state is about one busy core, and there is no CPU limit, so peaks are unaffected.
               cpu: "2"
               memory: "16Gi"
             limits:
