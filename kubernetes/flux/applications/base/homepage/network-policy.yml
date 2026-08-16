@@ -1,0 +1,41 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: homepage
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-http
+  namespace: homepage
+spec:
+  podSelector:
+    matchLabels:
+      name: homepage
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+        # The site is also served straight off a MetalLB VIP, and that Service
+        # is externalTrafficPolicy: Cluster, which SNATs every caller. Which
+        # address it is SNATed to depends on where the pod lands: a client
+        # reaching a pod on another node arrives from that node's Calico
+        # tunnel address, one reaching a pod on the announcing node arrives
+        # from the node's LAN address. Both ranges have to be allowed or the
+        # rule works or fails depending on scheduling.
+        - ipBlock:
+            cidr: 10.233.64.0/18
+        - ipBlock:
+            cidr: 10.1.2.0/24
+      ports:
+        - protocol: TCP
+          port: 8080

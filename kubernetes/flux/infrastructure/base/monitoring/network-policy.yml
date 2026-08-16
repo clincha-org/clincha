@@ -1,0 +1,120 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: monitoring
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+---
+# Prometheus scrapes the exporters, Alloy remote-writes to Prometheus and
+# pushes to Loki, the Loki gateway fronts Loki, and Grafana reads both. Those
+# flows are all internal to this namespace, and half of them belong to pods the
+# Loki and Alloy charts render, whose labels move on a chart bump. Pinning each
+# one would buy nothing over isolating the namespace as a whole and would break
+# quietly the next time Renovate bumps a chart.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-same-namespace
+  namespace: monitoring
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-nginx
+  namespace: monitoring
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    # The five UIs published under clinch-home.com: Grafana, Prometheus,
+    # Alertmanager, the Loki gateway and the Alloy UI. Ports rather than pod
+    # selectors, because three of the five are chart-rendered.
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 3000
+        - protocol: TCP
+          port: 8080
+        - protocol: TCP
+          port: 9090
+        - protocol: TCP
+          port: 9093
+        - protocol: TCP
+          port: 12345
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-media-log-push
+  namespace: monitoring
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: loki
+      app.kubernetes.io/component: gateway
+  policyTypes:
+    - Ingress
+  ingress:
+    # The media namespace runs an Alloy sidecar per app that tails file logs
+    # and pushes them here directly, not through the Ingress.
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: media
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-external-ingest
+  namespace: monitoring
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/name
+        operator: In
+        values:
+          - alloy-syslog
+          - graphite-exporter
+  policyTypes:
+    - Ingress
+  ingress:
+    # hawkstore and the UniFi consoles ship syslog and graphite metrics to the
+    # shared VIP. Both Services are externalTrafficPolicy: Cluster, so the
+    # sender's address is replaced by the node's — its Calico tunnel address
+    # when the pod sits elsewhere, its LAN address when the pod sits on the
+    # node announcing the VIP. Neither range identifies the sender, so this
+    # cannot be narrowed to hawkstore without moving the Services to Local.
+    - from:
+        - ipBlock:
+            cidr: 10.233.64.0/18
+        - ipBlock:
+            cidr: 10.1.2.0/24
+      ports:
+        # Service port 514 targets container port 1514; the policy matches the
+        # container port, so 514 here would silently drop every syslog line.
+        - protocol: TCP
+          port: 1514
+        - protocol: UDP
+          port: 1514
+        - protocol: TCP
+          port: 9109
+        - protocol: UDP
+          port: 9109

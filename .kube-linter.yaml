@@ -26,6 +26,11 @@ checks:
     # The alloy and loki Ingresses target Services created by HelmReleases,
     # which Flux renders at runtime and kustomize output cannot contain.
     - "dangling-ingress"
+    # Same cause: the loki-gateway and uptime-kuma NetworkPolicies select pods
+    # the Loki and uptime-kuma charts render, so no Deployment in the built
+    # output carries the labels. Both selectors were checked against the
+    # running pods; re-check there, not here, if one is suspected wrong.
+    - "dangling-networkpolicy"
 
     # --- Not a linting change --------------------------------------------
     # Org conventions; single-owner repo.
@@ -33,5 +38,3 @@ checks:
     - "required-annotation-email"
     - "no-node-affinity"
     - "dnsconfig-options"
-    # Wants a NetworkPolicy per pod. Worth doing, but it is a project.
-    - "non-isolated-pod"
