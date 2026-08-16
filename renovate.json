@@ -1,7 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
-  "enabledManagers": ["kubernetes", "flux", "custom.regex"],
+  "enabledManagers": [
+    "kubernetes",
+    "flux",
+    "github-actions",
+    "pip_requirements",
+    "terraform",
+    "custom.regex"
+  ],
   "kubernetes": {
     "managerFilePatterns": ["/^kubernetes/flux/.+\\.ya?ml$/"]
   },
@@ -44,6 +51,34 @@
       "description": "Routine bumps merge themselves once CI is green and the release is 3 days old; majors are left for review",
       "matchUpdateTypes": ["minor", "patch", "digest"],
       "automerge": true
+    },
+    {
+      "description": "Patch has to be its own branch or disabling minor below would take the patches down with it",
+      "matchPackageNames": ["ansible-core"],
+      "separateMinorPatch": true
+    },
+    {
+      "description": "ansible-core is locked for Kubespray compatibility and 2.18.18 is the CVE-2026-11332 floor, so patches only",
+      "matchPackageNames": ["ansible-core"],
+      "matchUpdateTypes": ["major", "minor"],
+      "enabled": false
+    },
+    {
+      "description": "Held below 5 for the adguard password hashing path",
+      "matchPackageNames": ["bcrypt"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "The setup-python interpreter is the same deliberate pin as the python image above, which matches on packageName and so misses this one",
+      "matchManagers": ["github-actions"],
+      "matchDepNames": ["python"],
+      "enabled": false
+    },
+    {
+      "description": "CI only plans, so a provider bump that changes real infra at apply time gets read first",
+      "matchManagers": ["terraform"],
+      "automerge": false
     }
   ]
 }
