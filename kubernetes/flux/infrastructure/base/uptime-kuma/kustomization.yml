@@ -6,3 +6,4 @@ resources:
   - helm-repository.yml
   - ingress.yml
   - namespace.yml
+  - network-policy.yml
