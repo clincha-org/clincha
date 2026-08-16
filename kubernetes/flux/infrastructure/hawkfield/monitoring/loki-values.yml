@@ -65,7 +65,7 @@ singleBinary:
     - name: storage
       nfs:
         server: 10.1.2.10
-        path: /mnt/data/loki
+        path: /mnt/userstore/loki
   extraVolumeMounts:
     - name: storage
       mountPath: /var/loki

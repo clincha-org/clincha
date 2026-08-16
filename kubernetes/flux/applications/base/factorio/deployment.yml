@@ -103,7 +103,7 @@ spec:
           emptyDir: {}
         - name: saves
           nfs:
-            path: /mnt/data/factorio/2026
+            path: /mnt/userstore/factorio/2026
             server: 10.1.2.10
         - name: server-settings
           configMap:

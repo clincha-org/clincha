@@ -21,9 +21,9 @@ almost every GID in 3003–3022 was also a *different* account's UID; that is ho
 | clincha | 3000 | clincha | 3000 | human, SMB |
 | cclinch | 3001 | cclinch | 3001 | human, SMB |
 | hawkprint | 3002 | hawkprint | 3002 | printer/scanner, SMB |
-| prometheus | 3003 | prometheus | 3003 | `/mnt/data/prometheus` |
+| prometheus | 3003 | prometheus | 3003 | `/mnt/userstore/prometheus` |
 | ansible | 3004 | ansible | 3004 | |
-| grafana | 3005 | grafana | 3005 | `/mnt/data/grafana` |
+| grafana | 3005 | grafana | 3005 | `/mnt/userstore/grafana` |
 | dave | 3006 | dave | 3006 | FULL_ADMIN, owns the API key |
 | nasexporter | 3007 | nasexporter | 3007 | bound to privilege `nas-exporter-readonly` |
 | tautulli | 3008 | media | 3011 | |
@@ -36,8 +36,8 @@ almost every GID in 3003–3022 was also a *different* account's UID; that is ho
 | asta | 3015 | asta | 3015 | human, SMB — treat as fixed |
 | immich | 3016 | media | 3011 | |
 | ombi | 3017 | media | 3011 | |
-| loki | 3018 | loki | 3018 | `/mnt/data/loki` |
-| uptimekuma | 3019 | uptimekuma | 3019 | `/mnt/data/uptime-kuma` |
+| loki | 3018 | loki | 3018 | `/mnt/userstore/loki` |
+| uptimekuma | 3019 | uptimekuma | 3019 | `/mnt/userstore/uptime-kuma` |
 | s3 | 3020 | s3 | 3020 | rustfs, `/mnt/userstore/s3` |
 
 Shared/auxiliary groups: `media(3011)`, `printing(3023)` (clincha, hawkprint — owns
