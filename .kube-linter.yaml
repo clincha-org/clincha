@@ -35,6 +35,3 @@ checks:
     - "dnsconfig-options"
     # Wants a NetworkPolicy per pod. Worth doing, but it is a project.
     - "non-isolated-pod"
-    # 3 hits (truenas-api-exporter, uptime-kuma bootstrap Job). Legitimate
-    # hardening, but it changes the runtime behaviour of three workloads.
-    - "read-secret-from-env-var"
