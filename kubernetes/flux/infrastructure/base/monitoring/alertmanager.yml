@@ -99,7 +99,7 @@ spec:
             defaultMode: 0440
         - name: data
           nfs:
-            path: /mnt/data/alertmanager
+            path: /mnt/userstore/alertmanager
             server: 10.1.2.10
 ---
 apiVersion: v1

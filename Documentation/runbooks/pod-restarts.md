@@ -93,7 +93,7 @@ the mute back to 07:00 rather than widening the alert threshold.
    ```
 
    Or use the Alertmanager UI. Silences survive restarts — they are on NFS at
-   `/mnt/data/alertmanager`.
+   `/mnt/userstore/alertmanager`.
 
 ## Worked example: Grafana, 2026-08-06
 
@@ -103,7 +103,7 @@ itself stayed up and served normally.
 Cause: two Grafana pods existed. Renovate bumped `13.1.1 → 13.1.2`, and the Deployment used the
 default `RollingUpdate` strategy. With `replicas: 1`, `maxSurge: 25%` rounds *up* to 1, so
 Kubernetes started the new pod before removing the old one. Both mount the same NFS directory
-`/mnt/data/grafana`, and Grafana's bleve unified-search index takes an exclusive lock:
+`/mnt/userstore/grafana`, and Grafana's bleve unified-search index takes an exclusive lock:
 
 ```
 level=error msg="index is locked by another process"

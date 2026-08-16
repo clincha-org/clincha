@@ -79,7 +79,7 @@ spec:
       volumes:
         - name: data
           nfs:
-            path: /mnt/data/prometheus/
+            path: /mnt/userstore/prometheus/
             server: 10.1.2.10
         - name: config
           configMap:

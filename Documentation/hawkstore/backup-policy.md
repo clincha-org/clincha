@@ -103,7 +103,7 @@ Two things on the box look stale by every automatic measure and are kept anyway.
 Angus under #408 on 2026-08-07 and both answers were *keep* — treat them as settled rather than
 re-raising them at the next audit.
 
-**Old Factorio save directories.** The live deployment mounts only `/mnt/data/factorio/2026`.
+**Old Factorio save directories.** The live deployment mounts only `/mnt/userstore/factorio/2026`.
 Alongside it sit `saves`, `spaceage`, `runsmart`, `speedrun`, `proposal` and `config` — 872 MB
 across worlds last touched between May 2025 and October 2025. Every file except `saves/space.zip`
 is an `_autosaveN.zip`, so for each of those worlds the autosaves are the only copy there is.
