@@ -7,14 +7,13 @@ claude_orchestrator_state_dir: /home/claude/.local/state/deliver-orchestrator
 claude_memory_autosave_state_dir: /home/claude/.local/state/memory-autosave
 
 claude_cron_jobs:
+  # Retired in favour of the Telegram orchestrator. Tombstones, not deletions:
+  # ansible.builtin.cron only removes an entry it is told about by name.
   - name: "email-summaries weekly"
-    minute: "0"
-    hour: "1"
-    weekday: "1"
+    state: absent
     job: /home/claude/email-summaries/weekly/run.sh
   - name: "email-summaries daily"
-    minute: "30"
-    hour: "5"
+    state: absent
     job: /home/claude/email-summaries/daily/run.sh
   - name: "email-summaries inbox-watcher"
     minute: "*/30"
