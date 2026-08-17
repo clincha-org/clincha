@@ -28,6 +28,12 @@ claude_cron_jobs:
     job: >-
       flock -n {{ claude_orchestrator_state_dir }}/scheduler.lock
       {{ claude_deliver_dir }}/orchestrator/cron.sh scheduler
+  - name: "deliver-orchestrator brief"
+    minute: "0"
+    hour: "7"
+    job: >-
+      flock -n {{ claude_orchestrator_state_dir }}/brief.lock
+      {{ claude_deliver_dir }}/orchestrator/cron.sh brief
   - name: "deliver-orchestrator receipt"
     minute: "0"
     hour: "18"
