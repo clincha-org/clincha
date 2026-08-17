@@ -522,6 +522,7 @@
     month: "{{ item.month | default('*') }}"
     weekday: "{{ item.weekday | default('*') }}"
     job: "{{ item.job }}"
+    state: "{{ item.state | default('present') }}"
   loop: "{{ claude_cron_jobs }}"
   loop_control:
     label: "{{ item.name }}"
