@@ -30,6 +30,7 @@
   "dependencyDashboard": false,
   "minimumReleaseAge": "3 days",
   "platformAutomerge": false,
+  "rebaseWhen": "conflicted",
   "automergeStrategy": "squash",
   "prConcurrentLimit": 6,
   "prHourlyLimit": 4,
