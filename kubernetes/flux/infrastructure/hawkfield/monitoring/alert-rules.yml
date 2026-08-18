@@ -235,11 +235,14 @@ groups:
   - name: unifi-gateway-memory
     rules:
       # Headroom swings +/-70 MB with page cache churn, which is wider than a
-      # day of the leak, so every rule here reads the 3h average instead. It
-      # is recorded rather than inlined to keep predict_linear off a nested
-      # subquery. `max by` drops site_name and source: renaming a site mid-leak
-      # already split this series once, and predict_linear across that split
-      # projects nonsense.
+      # day of the leak, so every rule here reads the 3h average instead.
+      # `max by` drops site_name and source: renaming a site mid-leak already
+      # split this series once, and predict_linear across that split projects
+      # nonsense.
+      #
+      # Recorded for the dashboards and for the Critical rule below, both of
+      # which only ever read its current value. The predicted rule deliberately
+      # does NOT read it — see there.
       - record: gateway:unifi_memory_available_bytes:avg3h
         expr: |
           avg_over_time(
@@ -254,8 +257,36 @@ groups:
       # 3.6 days of warning — and clears within two hours of the restart.
       # 48h of lookahead is what buys that lead; 24h of window is what stops
       # the diurnal swing from fitting a slope of its own.
+      #
+      # This fits the raw expression through a subquery rather than reading
+      # gateway:unifi_memory_available_bytes:avg3h, which would be tidier and
+      # is wrong. A recorded series only exists from the moment it is first
+      # evaluated, so on deploy predict_linear fits a handful of noisy points
+      # and extrapolates them 48h: at rollout it projected -1070 MB against
+      # 361 MB of real headroom and went pending on both consoles. The raw
+      # metrics carry full retention, so the subquery is right on its first
+      # evaluation. It costs 288 samples and ~2ms.
+      #
+      # The count guard is the same failure caught generically: below 20h of
+      # history — a rebuilt TSDB, a newly added console — the fit is noise, so
+      # say nothing rather than guess. 145 is a full [24h:10m] window.
       - alert: UniFiGatewayMemoryExhaustionPredicted
-        expr: predict_linear(gateway:unifi_memory_available_bytes:avg3h[24h], 48 * 3600) < 262144000
+        expr: |
+          predict_linear(
+            avg_over_time(
+              (
+                max by (site, name) (unpoller_device_memory_installed_bytes{type="udm"})
+                  - max by (site, name) (unpoller_device_memory_used_bytes{type="udm"})
+              )[3h:1m]
+            )[24h:10m], 48 * 3600
+          ) < 262144000
+            and
+          count_over_time(
+            (
+              max by (site, name) (unpoller_device_memory_installed_bytes{type="udm"})
+                - max by (site, name) (unpoller_device_memory_used_bytes{type="udm"})
+            )[24h:10m]
+          ) >= 120
         for: 2h
         labels:
           severity: warning

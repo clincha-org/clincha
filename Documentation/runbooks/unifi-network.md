@@ -322,6 +322,12 @@ ssh root@10.1.2.1 \
 ssh root@10.1.2.1 'journalctl -u earlyoom --since -7d | tail -40'
 ```
 
+`UniFiGatewayMemoryExhaustionPredicted` stays silent until it has **20 hours** of history for a
+console, and fits the raw metrics rather than the recorded `gateway:unifi_memory_available_bytes:avg3h`.
+Both are deliberate: a `predict_linear` with only minutes of data extrapolates noise, which is
+exactly how this rule went pending on both consoles the moment it was deployed. Silence in the
+first day after a TSDB rebuild, or on a newly adopted console, is the rule working.
+
 **To recover:** `systemctl restart unifi-core` on the affected console. It reclaims the leak
 (~160 MB in the 2026-08-17 case), routing and WAN are unaffected, and unpoller reconnects on its
 own — it does not need touching. Restarting the *Network application* instead, which is what the

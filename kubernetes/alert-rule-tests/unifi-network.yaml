@@ -349,13 +349,14 @@ tests:
       - eval_time: 6h
         alertname: UniFiGatewayMemoryExhaustionPredicted
         exp_alerts: []
-      # Still silent at 18h: the condition has been true for under two hours.
-      - eval_time: 18h
+      # Silent at 20h. The projection crossed the line around 16h, but the
+      # 20h-of-history guard only clears here, so the `for` starts now.
+      - eval_time: 20h
         alertname: UniFiGatewayMemoryExhaustionPredicted
         exp_alerts: []
-      # Fires at 20h, with ~318 MB still free and the earlyoom kill four days
+      # Fires at 22h, with ~313 MB still free and the earlyoom kill four days
       # out. The 2026-08-17 incident got no warning at all.
-      - eval_time: 20h
+      - eval_time: 22h
         alertname: UniFiGatewayMemoryExhaustionPredicted
         exp_alerts:
           - exp_labels:
@@ -363,7 +364,7 @@ tests:
               site: hawkfield
               name: Bristol
             exp_annotations:
-              summary: 'projected to reach the earlyoom line within 48h — 246.9MiB headroom projected'
+              summary: 'projected to reach the earlyoom line within 48h — 244.3MiB headroom projected'
               runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
       # Nowhere near the line itself — the whole point is that the warning
       # above fires while there is still plenty of memory left.
@@ -396,3 +397,28 @@ tests:
             exp_annotations:
               summary: 'only 190.7MiB free — earlyoom kills the Network app once swap drains'
               runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  # Regression test for the bug this rule shipped with. The predicted rule
+  # originally fit predict_linear over a recorded series, which only exists
+  # from the moment it is first evaluated: on rollout it had four samples,
+  # extrapolated them 48h, projected -1070 MB against 361 MB of real headroom
+  # and went pending on both consoles. Two hours from a false page.
+  #
+  # Ten hours of history and a steep slope is exactly that shape. It must say
+  # nothing rather than guess.
+  - interval: 1m
+    name: a short history must not be extrapolated
+    input_series:
+      - series: 'unpoller_device_memory_installed_bytes{site="hawkfield", name="Bristol", type="udm"}'
+        values: '2094592000+0x600'
+      # 340 MB falling 300 MB/day — ten times the real leak. Without the
+      # history guard this fires; the box is nowhere near trouble.
+      - series: 'unpoller_device_memory_used_bytes{site="hawkfield", name="Bristol", type="udm"}'
+        values: '1754592000+208333x600'
+    alert_rule_test:
+      - eval_time: 5h
+        alertname: UniFiGatewayMemoryExhaustionPredicted
+        exp_alerts: []
+      - eval_time: 10h
+        alertname: UniFiGatewayMemoryExhaustionPredicted
+        exp_alerts: []
