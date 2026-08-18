@@ -241,6 +241,21 @@
         KUBECONFIG: /etc/kubernetes/admin.conf
       run_once: true
 
+    - name: "Create SOPS Kubernetes secret for the media repo"
+      kubernetes.core.k8s:
+        state: present
+        namespace: flux-system
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: sops-gpg-media
+          data:
+            sops.asc: "{{ flux_gpg_key_media | b64encode }}"
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+      run_once: true
+
     - name: "Ensure .ssh directory exists for kubernetes user"
       ansible.builtin.file:
         path: /home/kubernetes/.ssh
