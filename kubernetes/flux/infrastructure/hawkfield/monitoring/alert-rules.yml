@@ -146,8 +146,8 @@ groups:
   # Thresholds here are deliberate guesses. #443 had run for three hours when
   # these were written, so each one is set clear of the observed idle rather
   # than derived from a baseline, and is meant to be revisited against real
-  # data. Gateway memory has no rule at all: the UDMs idle at 83-86% and any
-  # static threshold would either fire immediately or never fire in time.
+  # data. Gateway memory is the exception and lives in its own group below,
+  # anchored on earlyoom's own constants rather than on a guess.
   - name: unifi-health
     rules:
       # Observed idle: Bristol 67 CPU / 71 board, London 74 CPU / 77 board.
@@ -213,4 +213,63 @@ groups:
           severity: warning
         annotations:
           summary: '5GHz channel {{ $value | humanizePercentage }} utilised for 30 minutes'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  # Gateway memory, added by #480 after unifi-core leaked ~30 MB/day into an
+  # earlyoom kill loop that took the Hawkfield console down for 15 minutes.
+  #
+  # #445 shipped no rule here because the UDMs idle at 83-86% used, so any
+  # static utilisation threshold fires immediately or never fires in time.
+  # That reasoning held for utilisation; it does not hold for headroom.
+  #
+  # `installed - used` is MemAvailable. unpoller reports used as
+  # MemTotal - MemAvailable, verified against /proc/meminfo on both consoles
+  # (1676608 kB reported vs 1677908 kB measured), so the difference is the
+  # exact quantity earlyoom gates on and not a cache-inflated proxy.
+  #
+  # earlyoom on UniFi OS runs with `-M 256000 -s 10` and kills only when
+  # memory AND swap are both under, having been told to `--avoid` unifi-core
+  # itself. So the leaker is spared and the Network application is killed in
+  # its place. 256000 kB is the 262144000 below: both rules sit on earlyoom's
+  # own line rather than on a number we picked.
+  - name: unifi-gateway-memory
+    rules:
+      # Headroom swings +/-70 MB with page cache churn, which is wider than a
+      # day of the leak, so every rule here reads the 3h average instead. It
+      # is recorded rather than inlined to keep predict_linear off a nested
+      # subquery. `max by` drops site_name and source: renaming a site mid-leak
+      # already split this series once, and predict_linear across that split
+      # projects nonsense.
+      - record: gateway:unifi_memory_available_bytes:avg3h
+        expr: |
+          avg_over_time(
+            (
+              max by (site, name) (unpoller_device_memory_installed_bytes{type="udm"})
+                - max by (site, name) (unpoller_device_memory_used_bytes{type="udm"})
+            )[3h:1m]
+          )
+
+      # The rule the incident asked for. Replayed against 11-18 Aug it first
+      # fires 14 Aug 06:00 and stays firing to the 17 Aug 21:22 kill loop —
+      # 3.6 days of warning — and clears within two hours of the restart.
+      # 48h of lookahead is what buys that lead; 24h of window is what stops
+      # the diurnal swing from fitting a slope of its own.
+      - alert: UniFiGatewayMemoryExhaustionPredicted
+        expr: predict_linear(gateway:unifi_memory_available_bytes:avg3h[24h], 48 * 3600) < 262144000
+        for: 2h
+        labels:
+          severity: warning
+        annotations:
+          summary: 'projected to reach the earlyoom line within 48h — {{ $value | humanize1024 }}B headroom projected'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+      # Already at the line. earlyoom needs swap under 10% as well, so this is
+      # not yet a kill — it is the last quiet moment before one.
+      - alert: UniFiGatewayMemoryCritical
+        expr: gateway:unifi_memory_available_bytes:avg3h < 262144000
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: 'only {{ $value | humanize1024 }}B free — earlyoom kills the Network app once swap drains'
           runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md

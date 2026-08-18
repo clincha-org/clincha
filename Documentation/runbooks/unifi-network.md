@@ -21,6 +21,8 @@ Alertmanager, plus the one network alert that cannot come from Hawkfield at all.
 | `UniFiPoeBudgetHigh` | warning | PoE draw over 80% of the switch budget, for 30m |
 | `UniFiSwitchPortErrors` | warning | over 1 error/s on a port for 15m |
 | `UniFiWifiChannelUtilisationHigh` | warning | 5GHz channel over 75% utilised for 30m |
+| `UniFiGatewayMemoryExhaustionPredicted` | warning | gateway headroom projected to reach earlyoom's threshold within 48h, for 2h |
+| `UniFiGatewayMemoryCritical` | critical | gateway headroom already under earlyoom's threshold, for 15m |
 
 Alerts carry `site` (`hawkfield` or `london`) and, where the metric has one, `name` — the device
 name rather than its MAC.
@@ -290,6 +292,43 @@ unpoller_device_port_sfp_rx_power   # for the 10G SFP+ ports
 
 Falling `sfp_rx_power` on a port that is throwing errors points at the optic or the fibre.
 
+### `UniFiGatewayMemoryExhaustionPredicted` / `UniFiGatewayMemoryCritical`
+
+A UDM idles at 83–86% memory used, so these two rules deliberately ignore utilisation and watch
+**headroom** — `installed - used`, which is MemAvailable, because unpoller reports `used` as
+`MemTotal - MemAvailable`. Both thresholds are `earlyoom`'s own `-M 256000` (kB), not a guess.
+
+The failure this catches is #480: `unifi-core` leaks, `earlyoom` is configured to `--avoid`
+`unifi-core`, so when memory runs out it SIGTERMs the **UniFi Network application** instead.
+The console dies, the router does not. Expect a report of "the router is down" when routing,
+DNS and WAN are all fine.
+
+```bash
+# headroom now, both consoles
+curl -s http://unpoller.monitoring.svc:9130/metrics \
+  | grep -E '^unpoller_device_memory_(installed|used)_bytes.*udm'
+
+# what is actually holding the memory — needs the console
+ssh root@10.1.2.1 'grep -E "MemAvailable|SwapFree" /proc/meminfo'
+ssh root@10.1.2.1 'ps -eo comm,rss,vsz --sort=-rss | head'
+
+# per-process history the box keeps itself, every 5 minutes.
+# Sum VmRSS + VmSwap — a large share of the growth sits in swap.
+ssh root@10.1.2.1 \
+  "awk -F, '/^timestamp,/{ts=\$3} /^unifi-core,unifi-core,/{print ts,\$6,\$7}' \
+     /var/log/mem_trend/mem_trend_long.csv"
+
+# earlyoom's own verdict
+ssh root@10.1.2.1 'journalctl -u earlyoom --since -7d | tail -40'
+```
+
+**To recover:** `systemctl restart unifi-core` on the affected console. It reclaims the leak
+(~160 MB in the 2026-08-17 case), routing and WAN are unaffected, and unpoller reconnects on its
+own — it does not need touching. Restarting the *Network application* instead, which is what the
+console's Start button does, reclaims nothing: it kills the victim, not the leaker.
+
+This is a reset, not a fix. Confirm the slope afterwards rather than assuming it is gone.
+
 ### `UniFiWifiChannelUtilisationHigh`
 
 5GHz only. 2.4GHz is deliberately not alerted on: it already peaks over 50% at idle here from
@@ -323,7 +362,8 @@ change is live.
 
 - **Paddock AP** — outbuilding, most likely to disconnect for benign reasons.
 - **2.4GHz utilisation** — over 50% at idle. Not alerted on, and should stay that way.
-- **Gateway memory at 83–86%** — normal for a UDM. Not alerted on.
+- **Gateway memory at 83–86%** — normal for a UDM. Still not alerted on as a *utilisation*
+  threshold; #480 added a trend rule on headroom instead. See below.
 - **Firmware updates** — `unpoller_device_upgradable` exists and is 0 across the estate, but
   there is no rule. An informational alert has no severity that routes anywhere except the
   unmuted default, so it would arrive overnight. Add it as a dashboard panel instead.

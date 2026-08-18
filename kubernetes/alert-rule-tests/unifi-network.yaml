@@ -273,6 +273,15 @@ tests:
         values: '0+0x50'
       - series: 'unpoller_prometheus_refresh_failures_total{site="hawkfield"}'
         values: '0+0x50'
+      # Bristol as measured on 2026-08-18, the morning after unifi-core was
+      # restarted: 2045500 kB installed, 1676608 kB used, so ~352 MB of
+      # headroom sitting flat. This is the value the gateway rules must not
+      # fire on, and the reason #445 refused a utilisation threshold — 82%
+      # used is this box perfectly healthy.
+      - series: 'unpoller_device_memory_installed_bytes{site="hawkfield", name="Bristol", type="udm"}'
+        values: '2094592000+0x50'
+      - series: 'unpoller_device_memory_used_bytes{site="hawkfield", name="Bristol", type="udm"}'
+        values: '1716846592+0x50'
     alert_rule_test:
       - eval_time: 45m
         alertname: UniFiConsoleUnreachable
@@ -316,3 +325,74 @@ tests:
       - eval_time: 45m
         alertname: UniFiWifiChannelUtilisationHigh
         exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiGatewayMemoryExhaustionPredicted
+        exp_alerts: []
+      - eval_time: 45m
+        alertname: UniFiGatewayMemoryCritical
+        exp_alerts: []
+
+  # The #480 leak, replayed. unifi-core took ~30 MB/day out of a console that
+  # idles with ~355 MB of headroom, so nothing is wrong at any single moment
+  # and the box is still four days from an earlyoom kill when this must fire.
+  - interval: 1m
+    name: unifi-core leaks the gateway toward an earlyoom kill
+    input_series:
+      - series: 'unpoller_device_memory_installed_bytes{site="hawkfield", name="Bristol", type="udm"}'
+        values: '2094592000+0x1800'
+      # 340 MB of headroom, falling 30 MB/day = 20833 bytes/min.
+      - series: 'unpoller_device_memory_used_bytes{site="hawkfield", name="Bristol", type="udm"}'
+        values: '1754592000+20833x1800'
+    alert_rule_test:
+      # Six hours in, headroom is still ~328 MB and 48h of lookahead does not
+      # reach the threshold yet.
+      - eval_time: 6h
+        alertname: UniFiGatewayMemoryExhaustionPredicted
+        exp_alerts: []
+      # Still silent at 18h: the condition has been true for under two hours.
+      - eval_time: 18h
+        alertname: UniFiGatewayMemoryExhaustionPredicted
+        exp_alerts: []
+      # Fires at 20h, with ~318 MB still free and the earlyoom kill four days
+      # out. The 2026-08-17 incident got no warning at all.
+      - eval_time: 20h
+        alertname: UniFiGatewayMemoryExhaustionPredicted
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              site: hawkfield
+              name: Bristol
+            exp_annotations:
+              summary: 'projected to reach the earlyoom line within 48h — 246.9MiB headroom projected'
+              runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+      # Nowhere near the line itself — the whole point is that the warning
+      # above fires while there is still plenty of memory left.
+      - eval_time: 24h
+        alertname: UniFiGatewayMemoryCritical
+        exp_alerts: []
+
+  # 256000 kB is where earlyoom starts killing, and it is told to spare
+  # unifi-core, so the process that gets SIGTERM is the Network application.
+  - interval: 1m
+    name: gateway headroom reaches the earlyoom threshold
+    input_series:
+      - series: 'unpoller_device_memory_installed_bytes{site="london", name="London", type="udm"}'
+        values: '2094592000+0x60'
+      # 200 MB of headroom: under earlyoom's 250 MiB, still alive because swap
+      # has not drained past 10% yet.
+      - series: 'unpoller_device_memory_used_bytes{site="london", name="London", type="udm"}'
+        values: '1894592000+0x60'
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: UniFiGatewayMemoryCritical
+        exp_alerts: []
+      - eval_time: 20m
+        alertname: UniFiGatewayMemoryCritical
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              site: london
+              name: London
+            exp_annotations:
+              summary: 'only 190.7MiB free — earlyoom kills the Network app once swap drains'
+              runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
