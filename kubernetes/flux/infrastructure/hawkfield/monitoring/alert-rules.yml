@@ -34,6 +34,60 @@ groups:
           summary: 'stuck in CrashLoopBackOff for over 15 minutes'
           runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/pod-restarts.md
 
+  # kubelet, cAdvisor, kube-state-metrics and the node exporters all reach
+  # Prometheus by remote_write from the Alloy DaemonSet, never by scrape. When
+  # a sender cannot deliver, its series stop arriving: the targets go ABSENT,
+  # they never go up == 0. Nothing keyed on up == 0 can see that, which is how
+  # clincha#487 hid two thirds of the cluster's container telemetry for three
+  # days behind panels that merely thinned out. These key on target count.
+  #
+  # Three is the cluster's node count, hardcoded because the count itself is
+  # only knowable from kube-state-metrics, which is one of the things that
+  # goes missing. Adding a node means changing this number with it.
+  - name: telemetry-coverage
+    rules:
+      - alert: KubeletTelemetryMissing
+        expr: count(up{job="kubelet"}) < 3 or absent(up{job="kubelet"})
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'kubelet metrics arriving from fewer than 3 nodes — container telemetry has a blind spot'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/telemetry-coverage.md
+
+      - alert: CadvisorTelemetryMissing
+        expr: count(up{job="cadvisor"}) < 3 or absent(up{job="cadvisor"})
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'cAdvisor metrics arriving from fewer than 3 nodes — per-container CPU and memory has a blind spot'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/telemetry-coverage.md
+
+      # Scoped to the cluster nodes: this job also carries the VMs and bare
+      # metal outside the cluster, which reach Prometheus through the Ingress
+      # and are unaffected by anything inside it.
+      - alert: NodeExporterTelemetryMissing
+        expr: count(up{job="integrations/unix", instance=~"k8s-hawk-.+"}) < 3 or absent(up{job="integrations/unix", instance=~"k8s-hawk-.+"})
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'host metrics arriving from fewer than 3 cluster nodes — node CPU, memory and disk has a blind spot'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/telemetry-coverage.md
+
+      # One instance cluster-wide, so this is absent-or-nothing rather than a
+      # count. Every kube_* series in Grafana and the pod-restart alerts above
+      # depend on it.
+      - alert: KubeStateMetricsMissing
+        expr: absent(kube_pod_info)
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: 'no kube-state-metrics series at all — pod restart and crashloop alerts cannot fire'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/telemetry-coverage.md
+
   # unpoller serves a 60s cache rather than polling on scrape, so every value
   # here is up to a minute stale. Nothing below has a `for` shorter than 5m,
   # which keeps that staleness well inside the noise.
