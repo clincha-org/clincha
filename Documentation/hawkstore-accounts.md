@@ -39,11 +39,17 @@ almost every GID in 3003–3022 was also a *different* account's UID; that is ho
 | loki | 3018 | loki | 3018 | `/mnt/userstore/loki` |
 | uptimekuma | 3019 | uptimekuma | 3019 | `/mnt/userstore/uptime-kuma` |
 | s3 | 3020 | s3 | 3020 | rustfs, `/mnt/userstore/s3` |
+| alertmanager | 3021 | alertmanager | 3021 | `/mnt/userstore/alertmanager` |
+| deluge | 3022 | media | 3011 | |
+| prowlarr | 3025 | media | 3011 | |
+| giftlist | 3026 | giftlist | 3026 | `/mnt/userstore/giftlist` |
 
 Shared/auxiliary groups: `media(3011)`, `printing(3023)` (clincha, hawkprint — owns
 `/mnt/userstore/scans`), `family(3024)` (clincha, cclinch, asta).
 
-Free GIDs: 3008–3010, 3012–3014, 3016, 3017, 3021, 3022, 3025+.
+Free GIDs: 3008–3010, 3012–3014, 3016, 3017, 3022, 3025, 3027+.
+
+Free UIDs: 3023, 3024, 3027+.
 
 ## Renumbering, if it is ever needed again
 
