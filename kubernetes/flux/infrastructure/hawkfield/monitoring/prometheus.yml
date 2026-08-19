@@ -73,3 +73,14 @@ scrape_configs:
         regex: ';.+'
         target_label: site
         replacement: london
+  # Library composition, Plex playback decisions and Tdarr encode progress,
+  # polled from the Radarr/Sonarr/Tdarr/Tautulli APIs by media-exporter in the
+  # media namespace (clincha/media#50). It serves a cached payload built on its
+  # own 15m timer, so a scrape never reaches those APIs and costs nothing.
+  # Scraped rather than pushed: monitoring's default-deny-ingress admits no
+  # remote-write from another namespace, and media has no ingress policy of its
+  # own — see #487.
+  - job_name: media-exporter
+    scrape_interval: 60s
+    static_configs:
+      - targets: ['media-exporter.media.svc:9114']
