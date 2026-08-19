@@ -60,7 +60,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-media-log-push
+  name: allow-log-push
   namespace: monitoring
 spec:
   podSelector:
@@ -79,6 +79,51 @@ spec:
       ports:
         - protocol: TCP
           port: 8080
+    # The Alloy DaemonSet ships each node's journal and pod logs here. See
+    # allow-node-remote-write below for why this cannot be a podSelector.
+    - from:
+        - ipBlock:
+            cidr: 10.233.64.0/18
+        - ipBlock:
+            cidr: 10.1.2.0/24
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-node-remote-write
+  namespace: monitoring
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus
+  policyTypes:
+    - Ingress
+  ingress:
+    # kubelet, cAdvisor, kube-state-metrics and the node exporters reach
+    # Prometheus by remote_write from the Alloy DaemonSet, never by scrape.
+    # Those pods are hostNetwork, so they have no pod IP and podSelector --
+    # including the allow-same-namespace rule above -- never matches them. An
+    # ipBlock is the only selector that does.
+    #
+    # The address is the *sender node's Calico VXLAN tunnel address*, measured
+    # on the wire (10.233.103.0 from k8s-hawk-2, 10.233.123.128 from
+    # k8s-hawk-3), not its LAN address: cross-node traffic to a pod leaves via
+    # vxlan.calico. Those addresses come out of the pod CIDR and Calico
+    # reallocates the block on a node rebuild, so pinning them as /32s would
+    # re-break this the same silent way. Node-local traffic arrives as
+    # 10.1.2.0/24 and Calico admits it regardless; it is listed so the rule
+    # does not depend on that behaviour staying true.
+    - from:
+        - ipBlock:
+            cidr: 10.233.64.0/18
+        - ipBlock:
+            cidr: 10.1.2.0/24
+      ports:
+        - protocol: TCP
+          port: 9090
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
