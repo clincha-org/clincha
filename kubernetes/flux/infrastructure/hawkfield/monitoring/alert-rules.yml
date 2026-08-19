@@ -68,7 +68,10 @@ groups:
       # metal outside the cluster, which reach Prometheus through the Ingress
       # and are unaffected by anything inside it.
       - alert: NodeExporterTelemetryMissing
-        expr: count(up{job="integrations/unix", instance=~"k8s-hawk-.+"}) < 3 or absent(up{job="integrations/unix", instance=~"k8s-hawk-.+"})
+        expr: |
+          count(up{job="integrations/unix", instance=~"k8s-hawk-.+"}) < 3
+            or
+          absent(up{job="integrations/unix", instance=~"k8s-hawk-.+"})
         for: 15m
         labels:
           severity: warning
