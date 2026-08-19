@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: giftlist-certificate
+  namespace: giftlist
+spec:
+  secretName: giftlist-certificate-secret
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - gifts.clinch-home.com
+    - gifts.clincha.co.uk

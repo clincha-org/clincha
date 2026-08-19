@@ -1,0 +1,33 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: giftlist
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-http
+  namespace: giftlist
+spec:
+  podSelector:
+    matchLabels:
+      name: giftlist
+  policyTypes:
+    - Ingress
+  ingress:
+    # Unlike homepage this Service is ClusterIP only, with no MetalLB VIP, so
+    # ingress-nginx is the sole caller. It runs on the pod network here, not
+    # hostNetwork, so a namespaceSelector genuinely matches it.
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8080

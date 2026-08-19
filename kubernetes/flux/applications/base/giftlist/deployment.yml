@@ -1,0 +1,108 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: giftlist
+  namespace: giftlist
+  labels:
+    name: giftlist
+spec:
+  replicas: 1
+  # Enforced by kubernetes/policy/nfs-deployment-requires-recreate.yaml, and
+  # independently required: RollingUpdate surges a second pod at replicas: 1
+  # and the two deadlock on the SQLite file lock.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      name: giftlist
+  template:
+    metadata:
+      labels:
+        name: giftlist
+    spec:
+      serviceAccountName: giftlist
+      automountServiceAccountToken: false
+      imagePullSecrets:
+        - name: giftlist-ghcr
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 3026
+        runAsGroup: 3026
+        fsGroup: 3026
+      containers:
+        - name: giftlist
+          image: ghcr.io/clincha-org/giftlist:da7ba1c883a2289fd82b4d34cc107b1eb165a928
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          env:
+            - name: BASE_URL
+              value: https://gifts.clinch-home.com
+            - name: DB_PATH
+              value: /data/giftlist.db
+            - name: SMTP_HOST
+              value: smtp.gmail.com
+            - name: SMTP_PORT
+              value: "465"
+            - name: SMTP_USER
+              value: angus.clinch@gmail.com
+            - name: MAIL_FROM
+              value: angus.clinch@gmail.com
+            # A file, not the value: clincha's kube-linter runs addAllBuiltIn
+            # without the read-secret-from-env-var exclusion.
+            - name: SMTP_PASSWORD_FILE
+              value: /etc/giftlist/smtp-password
+            - name: ALLOWED_EMAILS
+              value: >-
+                angus.clinch@gmail.com,c.rueveja@gmail.com,emclinch@gmail.com,christine.clinch62@gmail.com,njlclinch@gmail.com
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /data
+              name: data
+            - mountPath: /etc/giftlist
+              name: smtp
+              readOnly: true
+            - mountPath: /tmp
+              name: tmp
+      volumes:
+        - name: data
+          nfs:
+            path: /mnt/userstore/giftlist
+            server: 10.1.2.10
+        - name: smtp
+          secret:
+            secretName: giftlist-smtp
+            # 0440, not 0400: secret files land root-owned, so a non-root
+            # container reads them through the fsGroup and needs group read.
+            defaultMode: 0440
+            items:
+              - key: password
+                path: smtp-password
+        - name: tmp
+          emptyDir: {}

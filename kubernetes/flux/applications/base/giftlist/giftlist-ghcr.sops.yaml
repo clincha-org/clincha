@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: giftlist-ghcr
+    namespace: giftlist
+type: kubernetes.io/dockerconfigjson
+stringData:
+    .dockerconfigjson: ENC[AES256_GCM,data:MBzpkt3XKntTbH1k5K7zGKGoSslH38EpPv/Mqj5HUD5ExxaDGO0/XG8vvIk9TAELMHM3BO0RUO23/WnIvQweC4V91CNXIarKUoiV+tcRCY59X59dihIZTTj+W0NvHoaLrxB9VB+wJVU/fB1biFlVcacdQmsMPhb6BtpvBh670M+tEHToA96KNW6b10gFa/Ep7CJ5aAkyks0p8TUdGmq3l7gPMPQGNpChbmN1GxvfrYJ8TT4=,iv:4CSXqxN8+HK5QiatAbI8DXiWjBPRZSlq6BNxgJViDNk=,tag:CWPW+d2+n4ORYHQYNzOjBQ==,type:str]
+sops:
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-08-19T20:26:51Z"
+    mac: ENC[AES256_GCM,data:fwJV12lLfG//i1E4jFrfTvdQZgGFesoFmDFZGfi3mQrsYy+5F7metL5jLAV1RNKICxayxskFAo6vzlY5c4B8L77w14tMIkhdYZpMpbjBXbVC5bDxDVspZPM2Mh/WfjN7U0YR2N82yDdVWCWkLYU/t1tBi3QhakEGgBuAr7L2nAA=,iv:cHhoGob19DjHJ7LSMroPHg6LI6X4lJU5j1gZF6pgyCA=,tag:XIdhqfH7Z37LsIynG0fEeQ==,type:str]
+    pgp:
+        - created_at: "2026-08-19T20:26:51Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hQIMA+iIV7UXPYO1AQ/+IslfODb2R2tgzf3aim6qpioZKI3J/xRkxanjiWd0fQ3C
+            4oRUgUvnomaxaqLjc3kcmlAC5UX/lHXLfIKjYVcDG/UxMo4CkE7j4NWbk9+KnqnY
+            HXWGHOL+45UJqnuPD7p1aU7XzQDaehP0IC8s/Lo/lcA8DbmnaE/Mwf2gIcA8OL7C
+            bY3TtCYWr1+2bAcC5o8Xh7mNEFmN3Wo5gJSrjCB/8IPU02+1UDkFasZTRY3Nth8O
+            lfdo7BqwmADNfqvCmo9uIQXxpPNn/cQI3eHT23TAm3bbiSA7lqqkH2eTSA7TU6dk
+            eFyKc71CIesPjvz8Gs0QKju0Gs8utJTassKOL1bNU83TgFp7bDKsCSO0BvkeN7CZ
+            EkNODagA1TXX4FPqPUsptFCvXsUTCHoxOMmIolxUISiwp2PleSaabZ9kGvbe1BiV
+            fa9Kqqa8M78+KwrH+iZAo3dEp0co/RzdBpmXyXJpPfHl+KcS78M6j30bfsdHr3fu
+            4WHVb2TiGHeLHBO2r9qrSSHX/50TnJG3C3y0ucXYm6N03dxeIz81M8EmKm8ePHom
+            r+3Q7e3mDMEEH0OMV+QHD+Yp4KdzKIjev7o0lyiuMBiyFtyp/0CY4q3/ZLNU6L6G
+            GQeEbxEBzEgQW7I3dXYY+vDGuUdQctS7YwfgICjcpDzVJr3I9fwqoqjrQ+IWA9PS
+            XAF24XfW5CPRX2dsnL3o86r9OFOjElwt1dXVtQTqirmXFxVQm+fI6cdQOrEXkMw1
+            HpMxfQ1x4RjMMQAR++QB95xjCMiIOxIpfRe3HdVPgxEb5mfSTnJk7tLH9vdV
+            =vShv
+            -----END PGP MESSAGE-----
+          fp: 76AF39813C2297E8F98C542D42436A07A9BA1DE0
+    version: 3.13.1

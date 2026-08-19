@@ -1,0 +1,31 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: giftlist
+  namespace: giftlist
+spec:
+  ingressClassName: nginx
+  tls:
+    - secretName: giftlist-certificate-secret
+  rules:
+    - host: gifts.clinch-home.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: giftlist
+                port:
+                  number: 80
+    - host: gifts.clincha.co.uk
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: giftlist
+                port:
+                  number: 80
