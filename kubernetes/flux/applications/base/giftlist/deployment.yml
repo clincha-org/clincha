@@ -98,7 +98,9 @@ spec:
         - name: smtp
           secret:
             secretName: giftlist-smtp
-            defaultMode: 0400
+            # 0440, not 0400: secret files land root-owned, so a non-root
+            # container reads them through the fsGroup and needs group read.
+            defaultMode: 0440
             items:
               - key: password
                 path: smtp-password
