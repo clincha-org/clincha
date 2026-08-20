@@ -4,6 +4,11 @@ kind: Ingress
 metadata:
   name: giftlist
   namespace: giftlist
+  annotations:
+    # Per-IP, now that ingress-nginx trusts Cloudflare's real client IP
+    # instead of its shared edge pool (clincha#495).
+    nginx.ingress.kubernetes.io/limit-rps: "5"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "5"
 spec:
   ingressClassName: nginx
   tls:

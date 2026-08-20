@@ -54,9 +54,6 @@ spec:
             # without the read-secret-from-env-var exclusion.
             - name: SMTP_PASSWORD_FILE
               value: /etc/giftlist/smtp-password
-            - name: ALLOWED_EMAILS
-              value: >-
-                angus.clinch@gmail.com,c.rueveja@gmail.com,emclinch@gmail.com,christine.clinch62@gmail.com,njlclinch@gmail.com
           livenessProbe:
             httpGet:
               path: /healthz
