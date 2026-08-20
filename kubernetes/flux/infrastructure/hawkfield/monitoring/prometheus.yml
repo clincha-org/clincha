@@ -84,3 +84,11 @@ scrape_configs:
     scrape_interval: 60s
     static_configs:
       - targets: ['media-exporter.media.svc:9114']
+  # Account growth, wishlist/circle/reservation counts and mail-delivery
+  # outcomes, served on a port separate from the public 8080 the Ingress
+  # proxies. Needs its own NetworkPolicy rule (giftlist's default-deny
+  # otherwise blocks this namespace too) — see #487.
+  - job_name: giftlist
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['giftlist.giftlist.svc:9090']
