@@ -31,3 +31,23 @@ spec:
       ports:
         - protocol: TCP
           port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-monitoring-scrape
+  namespace: giftlist
+spec:
+  podSelector:
+    matchLabels:
+      name: giftlist
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - protocol: TCP
+          port: 9090
