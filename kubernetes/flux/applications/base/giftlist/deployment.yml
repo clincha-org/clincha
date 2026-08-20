@@ -32,7 +32,7 @@ spec:
         fsGroup: 3026
       containers:
         - name: giftlist
-          image: ghcr.io/clincha-org/giftlist:35a09bbe92470042b132a9954ebfd7f5a1cec046
+          image: ghcr.io/clincha-org/giftlist:01c53c2ccb24a0a1d0f8a0ced6db87550b80549d
           ports:
             - containerPort: 8080
               name: http
