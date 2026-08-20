@@ -43,13 +43,13 @@ spec:
             - name: DB_PATH
               value: /data/giftlist.db
             - name: SMTP_HOST
-              value: smtp.gmail.com
+              value: smtp.resend.com
             - name: SMTP_PORT
               value: "465"
             - name: SMTP_USER
-              value: angus.clinch@gmail.com
+              value: resend
             - name: MAIL_FROM
-              value: angus.clinch@gmail.com
+              value: giftlist@clinch-home.com
             # A file, not the value: clincha's kube-linter runs addAllBuiltIn
             # without the read-secret-from-env-var exclusion.
             - name: SMTP_PASSWORD_FILE
