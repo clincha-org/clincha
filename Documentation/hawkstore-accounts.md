@@ -43,13 +43,14 @@ almost every GID in 3003–3022 was also a *different* account's UID; that is ho
 | deluge | 3022 | media | 3011 | |
 | prowlarr | 3025 | media | 3011 | |
 | giftlist | 3026 | giftlist | 3026 | `/mnt/userstore/giftlist` |
+| mealie | 3027 | media | 3011 | `/mnt/userstore/mealie` |
 
 Shared/auxiliary groups: `media(3011)`, `printing(3023)` (clincha, hawkprint — owns
 `/mnt/userstore/scans`), `family(3024)` (clincha, cclinch, asta).
 
 Free GIDs: 3008–3010, 3012–3014, 3016, 3017, 3022, 3025, 3027+.
 
-Free UIDs: 3023, 3024, 3027+.
+Free UIDs: 3023, 3024, 3028+.
 
 ## Renumbering, if it is ever needed again
 
