@@ -76,6 +76,8 @@ adguard_local_dns_entries:
     answer: "10.1.2.205"
   - domain: "gifts.clinch-home.com"
     answer: "10.1.2.205"
+  - domain: "mealie.clinch-home.com"
+    answer: "10.1.2.205"
 
   # Kubernetes ingress — clincha.co.uk
   - domain: "clincha.co.uk"
@@ -121,6 +123,8 @@ adguard_local_dns_entries:
   - domain: "prowlarr.clincha.co.uk"
     answer: "10.1.2.205"
   - domain: "gifts.clincha.co.uk"
+    answer: "10.1.2.205"
+  - domain: "mealie.clincha.co.uk"
     answer: "10.1.2.205"
 
   # Claude server (Dave)
