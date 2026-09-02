@@ -361,3 +361,40 @@ groups:
         annotations:
           summary: 'only {{ $value | humanize1024 }}B free — earlyoom kills the Network app once swap drains'
           runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  # Plex serialises writes through a small SQLite connection pool. When one
+  # client floods it — scrubbing back and forth on a TV player is the known
+  # trigger — every connection ends up held by a /:/timeline progress write and
+  # the pool deadlocks against itself. Playback and browsing hang for minutes.
+  #
+  # Nothing else can see this. The pod stays Running 2/2 with no restarts, and
+  # /identity answers in under a millisecond throughout because it takes no
+  # database connection. The only evidence is in Plex's own file log, counted
+  # into plex_db_pool_waits_total by the Alloy sidecar in the Plex pod.
+  #
+  # Fixing the cause is clincha/media#99 (the databases are on NFS).
+  - name: plex-database
+    rules:
+      # One line per waiting thread, so a real stall produces dozens. The 30d
+      # base rate on quiet days is exactly zero; the 2026-09-02 incident put 83
+      # in a single 5m bucket, and the smallest real day was 11. 10 sits below
+      # every observed incident and above a silence that never happens.
+      - alert: PlexDatabasePoolStalled
+        expr: increase(plex_db_pool_waits_total[5m]) > 10
+        labels:
+          severity: warning
+        annotations:
+          summary: '{{ $value | printf "%.0f" }} SQLite pool waits in 5m — playback and browsing are hanging'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/plex-database.md
+
+      # plex_db_pool_waits_total does not exist until the first match, so it
+      # cannot prove its own pipeline is alive. alloy_build_info comes from the
+      # same scrape of the same sidecar: if it stops, the alert above is blind.
+      - alert: PlexLogMetricsMissing
+        expr: absent(alloy_build_info{job="plex-logs-sidecar"})
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Plex log sidecar has stopped reporting — PlexDatabasePoolStalled cannot fire'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/plex-database.md
