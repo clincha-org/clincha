@@ -3,10 +3,11 @@ global:
 
 route:
   receiver: telegram
-  # `site` and `name` are absent on the pod alerts, which groups them exactly as
-  # before. Without them every UniFi alert of one name collapses into a single
-  # group, so seven APs dropping would arrive as one message naming none of them.
-  group_by: ['alertname', 'namespace', 'site', 'name']
+  # `site`/`name` are absent on the pod alerts and `reason` is absent on
+  # everything else, which groups each family exactly as before. Without
+  # `reason`, two different SonarrQueueStuck causes firing at once would
+  # collapse into one message naming only the first.
+  group_by: ['alertname', 'namespace', 'site', 'name', 'reason']
   group_wait: 30s
   group_interval: 5m
   repeat_interval: 6h
@@ -58,9 +59,10 @@ receivers:
         chat_id_file: /etc/alertmanager-secrets/chat-id
         parse_mode: HTML
         send_resolved: true
-        # Pod alerts identify by namespace/pod, UniFi alerts by site/device —
-        # they share no labels, so the subject line has to branch. Without this
-        # every network alert renders as a bare "/".
+        # Pod alerts identify by namespace/pod, UniFi alerts by site/device,
+        # Sonarr queue alerts by reason — they share no labels, so the subject
+        # line has to branch. Without this every unmatched family renders as
+        # a bare "/".
         message: |-
           {{ if eq .Status "firing" }}🔴 <b>FIRING</b>
           {{- else }}✅ <b>RESOLVED</b>
@@ -75,6 +77,7 @@ receivers:
           {{- else if .Labels.site }}<b>{{ .Labels.site }}</b>
           {{- if .Labels.subsystem }} ({{ .Labels.subsystem }})
           {{- end }}
+          {{- else if .Labels.reason }}<b>Sonarr queue — {{ .Labels.reason }}</b>
           {{- end }}
           {{ .Annotations.summary }}
           {{- if .Annotations.runbook_url }}
