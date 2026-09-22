@@ -104,7 +104,7 @@ spec:
           emptyDir: {}
         - name: saves
           nfs:
-            path: /mnt/userstore/factorio/2026
+            path: /mnt/userstore/factorio/the-wedding
             server: 10.1.2.10
         - name: server-settings
           configMap:
