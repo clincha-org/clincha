@@ -3,11 +3,11 @@ global:
 
 route:
   receiver: telegram
-  # `site`/`name` are absent on the pod alerts and `reason` is absent on
-  # everything else, which groups each family exactly as before. Without
-  # `reason`, two different SonarrQueueStuck causes firing at once would
-  # collapse into one message naming only the first.
-  group_by: ['alertname', 'namespace', 'site', 'name', 'reason']
+  # `site`/`name` are absent on the pod alerts and `app`/`reason` on everything
+  # but the media queue alerts, which groups each family exactly as before.
+  # Without them, a stuck Sonarr and a stuck Radarr item would collapse into
+  # one message naming only the first.
+  group_by: ['alertname', 'namespace', 'site', 'name', 'app', 'reason']
   group_wait: 30s
   group_interval: 5m
   repeat_interval: 6h
@@ -60,7 +60,7 @@ receivers:
         parse_mode: HTML
         send_resolved: true
         # Pod alerts identify by namespace/pod, UniFi alerts by site/device,
-        # Sonarr queue alerts by reason — they share no labels, so the subject
+        # media queue alerts by app/reason — they share no labels, so the subject
         # line has to branch. Without this every unmatched family renders as
         # a bare "/".
         message: |-
@@ -77,7 +77,7 @@ receivers:
           {{- else if .Labels.site }}<b>{{ .Labels.site }}</b>
           {{- if .Labels.subsystem }} ({{ .Labels.subsystem }})
           {{- end }}
-          {{- else if .Labels.reason }}<b>Sonarr queue — {{ .Labels.reason }}</b>
+          {{- else if .Labels.app }}<b>{{ .Labels.app }} queue — {{ .Labels.reason }}</b>
           {{- end }}
           {{ .Annotations.summary }}
           {{- if .Annotations.runbook_url }}

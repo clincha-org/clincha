@@ -362,20 +362,16 @@ groups:
           summary: 'only {{ $value | humanize1024 }}B free — earlyoom kills the Network app once swap drains'
           runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
 
-  - name: sonarr-queue
+  - name: media-queue
     rules:
-      # sonarr-queue-fixer (media repo, every 15m) auto-resolves the two
-      # known-safe failure classes — a release misnamed with an executable
-      # extension, and a usenet archive SABnzbd never actually unpacked —
-      # within one or two of its passes. 30m gives it two full passes before
-      # paging, so what's left is either the third class (a release only
-      # matched to its series by grab-history ID, which cannot be confirmed
-      # automatically and always needs a human) or something new.
-      - alert: SonarrQueueStuck
-        expr: media_sonarr_queue_warning_items > 0
-        for: 30m
+      # Sonarr and Radarr park a finished download in the queue with a warning
+      # or error status when import is blocked, and nothing retries it. An hour
+      # is well past any normal import; the exporter caches for 15m on top.
+      - alert: MediaQueueStuck
+        expr: media_queue_stuck_items > 0
+        for: 1h
         labels:
           severity: warning
         annotations:
-          summary: 'Sonarr queue item stuck ({{ $labels.reason }}) for over 30m — the auto-fixer should have cleared this already'
-          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/sonarr-queue.md
+          summary: '{{ $value | printf "%.0f" }} import(s) stuck in the queue ({{ $labels.reason }})'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/media-queue.md
