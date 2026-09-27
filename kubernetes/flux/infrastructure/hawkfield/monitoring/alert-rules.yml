@@ -361,3 +361,17 @@ groups:
         annotations:
           summary: 'only {{ $value | humanize1024 }}B free — earlyoom kills the Network app once swap drains'
           runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/unifi-network.md
+
+  - name: media-queue
+    rules:
+      # Sonarr and Radarr park a finished download in the queue with a warning
+      # or error status when import is blocked, and nothing retries it. An hour
+      # is well past any normal import; the exporter caches for 15m on top.
+      - alert: MediaQueueStuck
+        expr: media_queue_stuck_items > 0
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: '{{ $value | printf "%.0f" }} import(s) stuck in the queue ({{ $labels.reason }})'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/media-queue.md
