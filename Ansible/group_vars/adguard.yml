@@ -82,9 +82,7 @@ adguard_local_dns_entries:
     answer: "10.1.2.205"
   - domain: "audiobookshelf.clinch-home.com"
     answer: "10.1.2.205"
-  - domain: "bookshelf.clinch-home.com"
-    answer: "10.1.2.205"
-  - domain: "bookshelf-audio.clinch-home.com"
+  - domain: "shelfmark.clinch-home.com"
     answer: "10.1.2.205"
 
   # Kubernetes ingress — clincha.co.uk
@@ -138,9 +136,7 @@ adguard_local_dns_entries:
     answer: "10.1.2.205"
   - domain: "audiobookshelf.clincha.co.uk"
     answer: "10.1.2.205"
-  - domain: "bookshelf.clincha.co.uk"
-    answer: "10.1.2.205"
-  - domain: "bookshelf-audio.clincha.co.uk"
+  - domain: "shelfmark.clincha.co.uk"
     answer: "10.1.2.205"
 
   # Claude server (Dave)
