@@ -24,8 +24,7 @@ locals {
     audiobookshelf = {
       url = "https://audiobookshelf.clinch-home.com/healthcheck"
     }
-    bookshelf       = { url = "https://bookshelf.clinch-home.com/ping" }
-    bookshelf-audio = { url = "https://bookshelf-audio.clinch-home.com/ping" }
+    shelfmark = { url = "https://shelfmark.clinch-home.com/api/health" }
     tautulli = {
       # Root 303s to the login flow; /status is an unauthenticated health payload.
       url = "https://tautulli.clinch-home.com/status"
