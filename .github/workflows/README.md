@@ -57,6 +57,7 @@ These run when changes are pushed to `master` (i.e. a PR is merged).
 | Workflow | File | Schedule | Sites | What it does |
 |----------|------|----------|-------|-------------|
 | **Update Proxmox** | `ansible-update-proxmox.yaml` | Daily 03:00 UTC, manual | Hawkfield, London (parallel) | Runs `update-proxmox.yml` — apt upgrades on Proxmox hosts (independent per site) |
+| **Restart UniFi controllers** | `ansible-restart-unifi.yaml` | Weekly Sunday 04:30 UTC, manual | Bristol, then London | Runs `restart-unifi.yml` — restarts `unifi-core` on both UDMs to reset its memory leak (#480). Routing and WAN stay up |
 | **Renovate** | `renovate.yaml` | Daily 06:00 UTC, manual | N/A | Proposes dependency updates as PRs across images, Helm charts, pip, github-actions and terraform |
 
 Renovate is configured by `/renovate.json` at the repo root and owns every ecosystem
@@ -101,7 +102,7 @@ Workflows use concurrency groups to prevent dangerous parallel runs:
 | `cluster-hawkfield` | cluster-rebuild.yaml | Serialises the rebuild against Hawkfield's other cluster work |
 | `terraform-plan-{PR}` | terraform-plan.yaml | Per-PR, cancels in-progress — only latest plan matters |
 | `packer-{host}` | packer.yaml | Per-host — prevents parallel builds on the same Proxmox node |
-| `{workflow name}` | ansible-update-proxmox, ansible-proxmox, ansible-proxmox-bootstrap | Serialised per workflow |
+| `{workflow name}` | ansible-update-proxmox, ansible-proxmox, ansible-proxmox-bootstrap, ansible-restart-unifi | Serialised per workflow |
 
 ### Concurrency and the `production` gate
 
@@ -130,7 +131,7 @@ All secrets are stored in GitHub repository settings.
 |--------|---------|---------|
 | `TS_OAUTH_CLIENT_ID` | Tailscale OAuth client ID | All workflows except ansible-lint |
 | `TS_OAUTH_SECRET` | Tailscale OAuth secret | All workflows except ansible-lint |
-| `ANSIBLE_VAULT_PASSWORD` | Decrypts Ansible Vault-encrypted vars | ansible-base, ansible-update-proxmox, ansible-proxmox, cluster-rebuild |
+| `ANSIBLE_VAULT_PASSWORD` | Decrypts Ansible Vault-encrypted vars | ansible-base, ansible-update-proxmox, ansible-proxmox, ansible-restart-unifi, cluster-rebuild |
 | `ANSIBLE_PRIVATE_KEY` | SSH private key (ed25519) for Ansible | ansible-base, ansible-update-proxmox, ansible-proxmox, cluster-rebuild |
 | `RUSTFS_SECRET_KEY` | Terraform state backend (RustFS/S3) | terraform, terraform-plan, cluster-rebuild |
 | `PROXMOX_TOKEN_HAWKFIELD_ANSIBLE` | Proxmox API token for Ansible (Bristol) | ansible-base, ansible-proxmox |
