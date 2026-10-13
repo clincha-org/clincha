@@ -47,6 +47,7 @@ almost every GID in 3003–3022 was also a *different* account's UID; that is ho
 | cwa | 3030 | media | 3011 | `/mnt/userstore/cwa` (`maproot=root`) |
 | audiobookshelf | 3031 | media | 3011 | `/mnt/userstore/audiobookshelf` |
 | shelfmark | 3032 | media | 3011 | `/mnt/userstore/shelfmark` |
+| learn | 3033 | learn | 3033 | `/mnt/userstore/learn` (NFS share 50, snapshot task 38) |
 
 Shared/auxiliary groups: `media(3011)`, `printing(3023)` (clincha, hawkprint — owns
 `/mnt/userstore/scans`), `family(3024)` (clincha, cclinch, asta).
