@@ -76,6 +76,8 @@ adguard_local_dns_entries:
     answer: "10.1.2.205"
   - domain: "gifts.clinch-home.com"
     answer: "10.1.2.205"
+  - domain: "learn.clinch-home.com"
+    answer: "10.1.2.205"
   - domain: "mealie.clinch-home.com"
     answer: "10.1.2.205"
   - domain: "books.clinch-home.com"
