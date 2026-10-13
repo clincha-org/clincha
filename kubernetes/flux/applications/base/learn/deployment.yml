@@ -29,7 +29,7 @@ spec:
         fsGroup: 3033
       containers:
         - name: learn
-          image: ghcr.io/clincha-org/learn:e9809a09a830c716e0e241edb88d646fd063c1cb
+          image: ghcr.io/clincha-org/learn:af8979c4f5c01ff18143a749be620a74a1e42f3d
           ports:
             - containerPort: 8080
               name: http
