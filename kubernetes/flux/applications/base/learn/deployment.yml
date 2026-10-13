@@ -8,6 +8,8 @@ metadata:
     name: learn
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       name: learn
@@ -22,16 +24,19 @@ spec:
         - name: learn-ghcr
       securityContext:
         runAsNonRoot: true
-        runAsUser: 101
-        runAsGroup: 101
-        fsGroup: 101
+        runAsUser: 3033
+        runAsGroup: 3033
+        fsGroup: 3033
       containers:
         - name: learn
-          image: ghcr.io/clincha-org/learn:a3a0b35dde83347b422bf664e3d9ab591f1a4c31
+          image: ghcr.io/clincha-org/learn:e9809a09a830c716e0e241edb88d646fd063c1cb
           ports:
             - containerPort: 8080
               name: http
               protocol: TCP
+          env:
+            - name: DATA_DIR
+              value: /data
           livenessProbe:
             httpGet:
               path: /healthz
@@ -44,10 +49,10 @@ spec:
             periodSeconds: 10
           resources:
             requests:
-              cpu: 5m
-              memory: 16Mi
+              cpu: 10m
+              memory: 48Mi
             limits:
-              memory: 64Mi
+              memory: 128Mi
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -57,8 +62,10 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           volumeMounts:
-            - mountPath: /tmp
-              name: tmp
+            - mountPath: /data
+              name: data
       volumes:
-        - name: tmp
-          emptyDir: {}
+        - name: data
+          nfs:
+            path: /mnt/userstore/learn
+            server: 10.1.2.10
