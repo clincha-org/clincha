@@ -56,7 +56,7 @@ spec:
               mountPath: /settings
       containers:
         - name: factorio
-          image: factoriotools/factorio:2.1.21
+          image: factoriotools/factorio:2.1.22
           ports:
             - containerPort: 34197
               name: game
