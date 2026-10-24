@@ -44,13 +44,17 @@ almost every GID in 3003–3022 was also a *different* account's UID; that is ho
 | prowlarr | 3025 | media | 3011 | |
 | giftlist | 3026 | giftlist | 3026 | `/mnt/userstore/giftlist` |
 | mealie | 3027 | media | 3011 | `/mnt/userstore/mealie` |
+| cwa | 3030 | media | 3011 | `/mnt/userstore/cwa` (`maproot=root`) |
+| audiobookshelf | 3031 | media | 3011 | `/mnt/userstore/audiobookshelf` |
+| shelfmark | 3032 | media | 3011 | `/mnt/userstore/shelfmark` |
+| learn | 3033 | learn | 3033 | `/mnt/userstore/learn` (NFS share 50, snapshot task 38) |
 
 Shared/auxiliary groups: `media(3011)`, `printing(3023)` (clincha, hawkprint — owns
 `/mnt/userstore/scans`), `family(3024)` (clincha, cclinch, asta).
 
 Free GIDs: 3008–3010, 3012–3014, 3016, 3017, 3022, 3025, 3027+.
 
-Free UIDs: 3023, 3024, 3028+.
+Free UIDs: 3024, 3028, 3029, 3033+.
 
 ## Renumbering, if it is ever needed again
 

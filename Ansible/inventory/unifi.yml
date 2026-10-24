@@ -1,0 +1,11 @@
+---
+all:
+  children:
+    unifi_consoles:
+      hosts:
+        bristol:
+          ansible_host: 10.1.2.1
+          site: hawkfield
+        london:
+          ansible_host: 10.2.2.1
+          site: london

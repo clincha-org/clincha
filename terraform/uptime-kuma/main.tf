@@ -20,6 +20,11 @@ locals {
     tdarr   = { url = "https://tdarr.clinch-home.com" }
     immich  = { url = "https://immich.clinch-home.com" }
     ombi    = { url = "https://ombi.clinch-home.com" }
+    books   = { url = "https://books.clinch-home.com/health" }
+    audiobookshelf = {
+      url = "https://audiobookshelf.clinch-home.com/healthcheck"
+    }
+    shelfmark = { url = "https://shelfmark.clinch-home.com/api/health" }
     tautulli = {
       # Root 303s to the login flow; /status is an unauthenticated health payload.
       url = "https://tautulli.clinch-home.com/status"

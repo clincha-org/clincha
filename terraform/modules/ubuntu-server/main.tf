@@ -63,6 +63,7 @@ resource "proxmox_vm_qemu" "ubuntu_server" {
     type     = "disk"
     format   = "raw"
     iothread = true
+    discard  = true
     slot     = "virtio0"
   }
 
@@ -72,6 +73,7 @@ resource "proxmox_vm_qemu" "ubuntu_server" {
     type     = "disk"
     format   = "raw"
     iothread = true
+    discard  = true
     slot     = "virtio1"
   }
 }

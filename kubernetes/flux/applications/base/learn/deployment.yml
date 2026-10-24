@@ -1,0 +1,71 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learn
+  namespace: learn
+  labels:
+    name: learn
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      name: learn
+  template:
+    metadata:
+      labels:
+        name: learn
+    spec:
+      serviceAccountName: learn
+      automountServiceAccountToken: false
+      imagePullSecrets:
+        - name: learn-ghcr
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 3033
+        runAsGroup: 3033
+        fsGroup: 3033
+      containers:
+        - name: learn
+          image: ghcr.io/clincha-org/learn:af8979c4f5c01ff18143a749be620a74a1e42f3d
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          env:
+            - name: DATA_DIR
+              value: /data
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 48Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      volumes:
+        - name: data
+          nfs:
+            path: /mnt/userstore/learn
+            server: 10.1.2.10

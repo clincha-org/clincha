@@ -1,0 +1,34 @@
+name: Ansible restart UniFi controllers
+permissions:
+  contents: read
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 4 * * 0"
+concurrency:
+  group: "${{github.workflow}}"
+jobs:
+  restart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Set up Ansible
+        uses: ./.github/actions/ansible-setup
+        with:
+          vault-password: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+
+      - name: Run Ansible playbook
+        working-directory: Ansible
+        run: |
+          ansible-playbook restart-unifi.yml \
+            --inventory inventory/unifi.yml \
+            --vault-password-file vault

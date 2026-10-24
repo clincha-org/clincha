@@ -1,0 +1,21 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: learn
+  namespace: learn
+spec:
+  ingressClassName: nginx
+  tls:
+    - secretName: learn-certificate-secret
+  rules:
+    - host: learn.clinch-home.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: learn
+                port:
+                  number: 80
