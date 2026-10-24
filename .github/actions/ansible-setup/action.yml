@@ -27,7 +27,11 @@ runs:
       working-directory: Ansible
       shell: bash
       run: |
-        ansible-galaxy collection install -r galaxy-requirements.yml
+        for attempt in 1 2 3 4; do
+          ansible-galaxy collection install -r galaxy-requirements.yml && exit 0
+          sleep $((attempt * 15))
+        done
+        exit 1
 
     - name: Setup vault password
       if: inputs.vault-password != ''
