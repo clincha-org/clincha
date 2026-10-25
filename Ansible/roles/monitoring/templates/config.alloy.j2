@@ -31,7 +31,7 @@ prometheus.relabel "host" {
   forward_to = [prometheus.remote_write.central.receiver]
   rule {
     target_label = "instance"
-    replacement  = "{{ inventory_hostname }}"
+    replacement  = "{{ monitoring_instance }}"
   }
   rule {
     target_label = "site"
@@ -39,6 +39,18 @@ prometheus.relabel "host" {
   }
 }
 
+{% if monitoring_nut_exporter_address %}
+// ============ UPS (NUT) ============
+
+prometheus.scrape "nut" {
+  targets         = [{"__address__" = "{{ monitoring_nut_exporter_address }}"}]
+  metrics_path    = "/ups_metrics"
+  params          = {"ups" = ["{{ monitoring_nut_ups_name }}"]}
+  forward_to      = [prometheus.relabel.host.receiver]
+  scrape_interval = "{{ monitoring_scrape_interval }}"
+}
+
+{% endif %}
 prometheus.remote_write "central" {
   endpoint {
     url = "{{ metrics_remote_write_url }}"
@@ -55,7 +67,7 @@ discovery.relabel "journal" {
   }
   rule {
     target_label = "node"
-    replacement  = "{{ inventory_hostname }}"
+    replacement  = "{{ monitoring_instance }}"
   }
   rule {
     target_label = "site"

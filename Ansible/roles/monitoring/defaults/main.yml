@@ -1,7 +1,10 @@
 ---
+monitoring_instance: "{{ inventory_hostname }}"
 monitoring_scrape_interval: "15s"
 monitoring_disabled_collectors:
   - wifi
   - hwmon
   - btrfs
 monitoring_journal_path: /var/log/journal
+monitoring_nut_exporter_address: ""
+monitoring_nut_ups_name: apc

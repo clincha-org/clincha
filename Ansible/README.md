@@ -74,3 +74,14 @@ ansible-playbook kubernetes.yml -i inventory/hawkfield.proxmox.yml --vault-passw
 ## Troubleshooting
 
 MAKE SURE KUBERNETES VERSION IS SUPPORTED BY KUBESPRAY! CHECK THE RELEASE NOTES!
+## Workstation monitoring
+
+The desktop and laptop are off most of the time, so they are not in an inventory or CI. Run the playbook on the machine itself; it installs Alloy and ships metrics and journald logs to the same Prometheus and Loki as the servers (`site="workstation"`).
+
+```bash
+sudo apt install -y pipx git
+git clone https://github.com/clincha-org/clincha.git && cd clincha/Ansible
+pipx run --spec ansible-core ansible-playbook workstations.yml --ask-become-pass
+```
+
+Samples are dropped while the machine is off or away from the LAN.
