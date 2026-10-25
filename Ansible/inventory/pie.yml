@@ -1,0 +1,9 @@
+---
+all:
+  hosts:
+    pie:
+      ansible_host: 10.2.0.63
+      ansible_user: dave
+      site: london
+      monitoring_nut_exporter_address: "127.0.0.1:9199"
+      monitoring_journal_path: /run/log/journal

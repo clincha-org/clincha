@@ -6,3 +6,5 @@ monitoring_disabled_collectors:
   - hwmon
   - btrfs
 monitoring_journal_path: /var/log/journal
+monitoring_nut_exporter_address: ""
+monitoring_nut_ups_name: apc
