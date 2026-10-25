@@ -1,4 +1,5 @@
 ---
+monitoring_instance: "{{ inventory_hostname }}"
 monitoring_scrape_interval: "15s"
 monitoring_disabled_collectors:
   - wifi

@@ -31,7 +31,7 @@ prometheus.relabel "host" {
   forward_to = [prometheus.remote_write.central.receiver]
   rule {
     target_label = "instance"
-    replacement  = "{{ inventory_hostname }}"
+    replacement  = "{{ monitoring_instance }}"
   }
   rule {
     target_label = "site"
@@ -55,7 +55,7 @@ discovery.relabel "journal" {
   }
   rule {
     target_label = "node"
-    replacement  = "{{ inventory_hostname }}"
+    replacement  = "{{ monitoring_instance }}"
   }
   rule {
     target_label = "site"
