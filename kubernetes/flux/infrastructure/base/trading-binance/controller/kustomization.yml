@@ -1,0 +1,5 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - trading-binance-ssh-key.sops.yaml
+  - git-repository.yml
