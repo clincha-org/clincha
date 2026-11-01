@@ -1,0 +1,98 @@
+---
+# Unit tests for the Plex SQLite pool alert (clincha/media#99).
+#
+# The threshold here is not a guess: 30 days of Loki history says quiet days
+# produce exactly zero of these lines, and the six days that had any produced
+# 11, 22, 68, 83, 342 and 347. 10 sits below the smallest real incident. The
+# test that matters most is the last one — a idle counter must stay silent,
+# because an alert that pages at baseline gets muted, and a muted alert is
+# worse than none.
+rule_files:
+  - ../flux/infrastructure/hawkfield/monitoring/alert-rules.yml
+
+evaluation_interval: 1m
+
+tests:
+  # The 2026-09-02 incident: 83 lines inside one 5-minute bucket while Plex
+  # was unusable and every health check stayed green.
+  - interval: 1m
+    name: connection pool deadlocks during playback
+    input_series:
+      - series: >-
+          plex_db_pool_waits_total{app="plex", instance="k8s-hawk-2", job="plex-logs-sidecar",
+          level="debug", log_type="server", namespace="media", node="k8s-hawk-2"}
+        values: '0 0 0 0 0 83 83 83 83 83'
+    alert_rule_test:
+      - eval_time: 4m
+        alertname: PlexDatabasePoolStalled
+        exp_alerts: []
+      - eval_time: 6m
+        alertname: PlexDatabasePoolStalled
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              app: plex
+              instance: k8s-hawk-2
+              job: plex-logs-sidecar
+              level: debug
+              log_type: server
+              namespace: media
+              node: k8s-hawk-2
+            exp_annotations:
+              summary: '83 SQLite pool waits in 5m — playback and browsing are hanging'
+              runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/plex-database.md
+
+  # A handful of waits is Plex briefly queueing, not an outage. Below the line
+  # it must say nothing, or the real alert stops being believed.
+  - interval: 1m
+    name: a brief blip stays under the threshold
+    input_series:
+      - series: >-
+          plex_db_pool_waits_total{app="plex", instance="k8s-hawk-2", job="plex-logs-sidecar",
+          level="debug", log_type="server", namespace="media", node="k8s-hawk-2"}
+        values: '0 0 0 0 0 4 4 4 4 4'
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: PlexDatabasePoolStalled
+        exp_alerts: []
+
+  # The normal state of this counter: it exists and never moves.
+  - interval: 1m
+    name: an idle counter fires nothing
+    input_series:
+      - series: >-
+          plex_db_pool_waits_total{app="plex", instance="k8s-hawk-2", job="plex-logs-sidecar",
+          level="debug", log_type="server", namespace="media", node="k8s-hawk-2"}
+        values: '0+0x30'
+      - series: 'alloy_build_info{job="plex-logs-sidecar", instance="k8s-hawk-2"}'
+        values: '1+0x30'
+    alert_rule_test:
+      - eval_time: 30m
+        alertname: PlexDatabasePoolStalled
+        exp_alerts: []
+      - eval_time: 30m
+        alertname: PlexLogMetricsMissing
+        exp_alerts: []
+
+  # plex_db_pool_waits_total is absent until its first match, so it cannot
+  # prove its own pipeline is alive. If the sidecar stops, the stall alert goes
+  # quiet in exactly the way a healthy Plex does — this is what catches that.
+  - interval: 1m
+    name: sidecar stops reporting
+    input_series:
+      - series: 'alloy_build_info{job="plex-logs-sidecar", instance="k8s-hawk-2"}'
+        values: '1 1 1 1 1'
+    alert_rule_test:
+      # Gone from t=5m. Still inside the 30m grace at t=30m, so silent.
+      - eval_time: 30m
+        alertname: PlexLogMetricsMissing
+        exp_alerts: []
+      - eval_time: 40m
+        alertname: PlexLogMetricsMissing
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              job: plex-logs-sidecar
+            exp_annotations:
+              summary: 'Plex log sidecar has stopped reporting — PlexDatabasePoolStalled cannot fire'
+              runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/plex-database.md
