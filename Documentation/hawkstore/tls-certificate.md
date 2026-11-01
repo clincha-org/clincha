@@ -70,46 +70,44 @@ whole estate. No client IP filter — the home WAN address is not static, and a 
 
 ## Rebuilding it
 
-All of this is equally doable in the UI under **Credentials → Certificates**. API form, with a
-`dave` API key in `$KEY`:
+All of this is equally doable in the UI under **Credentials → Certificates**. API form, using
+`nas-rpc` (JSON-RPC 2.0 over WebSocket; the REST API is removed in TrueNAS 26.04). It reads the
+`dave-ops` key from `~/.claude/.hawkstore-ops-api`; a param written `@file` is read from that file,
+which keeps the Cloudflare token out of `ps` and shell history:
 
 ```bash
 # 1. DNS authenticator
-curl -sk -X POST -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
-  --data @auth.json https://10.1.2.10/api/v2.0/acme/dns/authenticator
+nas-rpc acme.dns.authenticator.create @auth.json
 # auth.json: {"name":"cloudflare-clinch-home",
 #             "attributes":{"authenticator":"cloudflare","api_token":"<token>"}}
 
-# 2. CSR  (returns a job id — poll core/get_jobs?id=N)
-curl -sk -X POST -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
-  --data '{"create_type":"CERTIFICATE_CREATE_CSR","name":"hawkstore_acme_csr",
-           "common":"hawkstore.clinch-home.com",
-           "san":["hawkstore.clinch-home.com","nas.clinch-home.com"],
-           "key_type":"EC","ec_curve":"SECP384R1","digest_algorithm":"SHA256",
-           "country":"GB","state":"England","city":"London","organization":"clincha",
-           "email":"angus.clinch@gmail.com"}' \
-  https://10.1.2.10/api/v2.0/certificate
+# 2. CSR  (returns a job id - poll core.get_jobs)
+nas-rpc certificate.create @csr.json
+# csr.json: {"create_type":"CERTIFICATE_CREATE_CSR","name":"hawkstore_acme_csr",
+#            "common":"hawkstore.clinch-home.com",
+#            "san":["hawkstore.clinch-home.com","nas.clinch-home.com"],
+#            "key_type":"EC","ec_curve":"SECP384R1","digest_algorithm":"SHA256",
+#            "country":"GB","state":"England","city":"London","organization":"clincha",
+#            "email":"angus.clinch@gmail.com"}
+nas-rpc core.get_jobs '[["id","=",N]]' '{"select":["id","state","error"]}'
 
 # 3. ACME certificate from that CSR (also a job; ~2.5 min for DNS propagation)
-curl -sk -X POST -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
-  --data '{"create_type":"CERTIFICATE_CREATE_ACME","name":"hawkstore_le","csr_id":2,
-           "acme_directory_uri":"https://acme-v02.api.letsencrypt.org/directory","tos":true,
-           "dns_mapping":{"hawkstore.clinch-home.com":1,
-                          "DNS:hawkstore.clinch-home.com":1,
-                          "DNS:nas.clinch-home.com":1},
-           "renew_days":10}' \
-  https://10.1.2.10/api/v2.0/certificate
+nas-rpc certificate.create @acme.json
+# acme.json: {"create_type":"CERTIFICATE_CREATE_ACME","name":"hawkstore_le","csr_id":2,
+#             "acme_directory_uri":"https://acme-v02.api.letsencrypt.org/directory","tos":true,
+#             "dns_mapping":{"hawkstore.clinch-home.com":1,
+#                            "DNS:hawkstore.clinch-home.com":1,
+#                            "DNS:nas.clinch-home.com":1},
+#             "renew_days":10}
 
 # 4. Point the GUI at it, then restart the UI
-curl -sk -X PUT -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
-  --data '{"ui_certificate":3}' https://10.1.2.10/api/v2.0/system/general
-curl -sk -X POST -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
-  -d '3' https://10.1.2.10/api/v2.0/system/general/ui_restart
+nas-rpc system.general.update '{"ui_certificate":3}'
+nas-rpc system.general.ui_restart 3
 ```
 
 ### `dns_mapping` keys must match the CSR exactly
 
-`certificate.get_domain_names <csr_id>` returns the common name **both bare and `DNS:`-prefixed**,
+`certificate.get_domain_names <csr_id>` (needs full admin, so use `ssh dave@10.1.2.10 sudo midclt call certificate.get_domain_names <csr_id>`) returns the common name **both bare and `DNS:`-prefixed**,
 but a SAN-only name **only** prefixed:
 
 ```
@@ -124,22 +122,22 @@ three forms. This matters beyond first issuance: renewal replays the stored
 
 ### `ui_restart` takes a bare integer
 
-`POST system/general/ui_restart` wants `-d '3'`, not `{"delay":3}` — the same shape quirk as
-`filesystem/stat`, which takes a bare JSON string. An object body returns
-`Input should be a valid integer`.
+`system.general.ui_restart` takes the delay in seconds as a single positional integer, not an
+object: `nas-rpc system.general.ui_restart 3`.
 
-More importantly, **setting `ui_certificate` does not reload the listener**. The PUT returns 200
+More importantly, **setting `ui_certificate` does not reload the listener**. The update succeeds
 and the box carries on serving the previous certificate until the UI is restarted. Verify what is
 actually on the wire rather than trusting the write.
 
 ### API responses contain secrets
 
-`acme/dns/authenticator` returns `api_token` in cleartext on **both create and read**, despite the
-field being typed `Secret[]` in the API model — that annotation is documentation of intent, not a
-guarantee. `system/general` embeds the GUI certificate's private key, and `certificate/id/N`
-embeds the certificate private key.
+`acme.dns.authenticator.create` and `.query` return `api_token` in cleartext, despite the field
+being typed `Secret[]` in the API model — that annotation is documentation of intent, not a
+guarantee. `system.general.config` embeds the GUI certificate's private key, and
+`certificate.query` embeds the certificate private key.
 
-Never dump a whole response object from these endpoints. Print named fields only.
+`nas-rpc` prints the whole result, so pass `select` in the query options and print named fields
+only, e.g. `nas-rpc certificate.query '[["id","=",3]]' '{"select":["id","name","until"]}'`.
 
 ## Verifying
 
@@ -177,8 +175,7 @@ The token was rolled once on 2026-08-13. Procedure:
 4. Push it into the authenticator:
 
 ```bash
-curl -sk -X PUT -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
-  --data @upd.json https://10.1.2.10/api/v2.0/acme/dns/authenticator/id/1
+nas-rpc acme.dns.authenticator.update 1 @upd.json
 # upd.json: {"attributes":{"authenticator":"cloudflare","api_token":"<new token>"}}
 ```
 
