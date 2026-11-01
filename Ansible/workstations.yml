@@ -1,0 +1,15 @@
+---
+# Run on the machine itself (they are mostly powered off, so not in CI):
+#   ansible-playbook workstations.yml --ask-become-pass
+- name: Ship workstation metrics & logs while they are on
+  hosts: localhost
+  connection: local
+  become: true
+  vars:
+    monitoring_instance: "{{ ansible_facts['hostname'] }}"
+    site: workstation
+    monitoring_disabled_collectors:
+      - wifi
+      - btrfs
+  roles:
+    - role: monitoring
