@@ -6,8 +6,7 @@
     "flux",
     "github-actions",
     "pip_requirements",
-    "terraform",
-    "custom.regex"
+    "terraform"
   ],
   "kubernetes": {
     "managerFilePatterns": ["/^kubernetes/flux/.+\\.ya?ml$/"]
@@ -15,18 +14,6 @@
   "flux": {
     "managerFilePatterns": ["/^kubernetes/flux/.+\\.ya?ml$/"]
   },
-  "customManagers": [
-    {
-      "customType": "regex",
-      "description": "Grafana Alloy apt pin in the monitoring role",
-      "managerFilePatterns": ["/^Ansible/roles/monitoring/defaults/main\\.yml$/"],
-      "matchStrings": ["monitoring_alloy_version: \"(?<currentValue>.+?)\""],
-      "depNameTemplate": "alloy",
-      "datasourceTemplate": "deb",
-      "versioningTemplate": "deb",
-      "registryUrlTemplate": "https://apt.grafana.com?suite=stable&components=main&binaryArch=amd64"
-    }
-  ],
   "dependencyDashboard": false,
   "minimumReleaseAge": "3 days",
   "platformAutomerge": false,

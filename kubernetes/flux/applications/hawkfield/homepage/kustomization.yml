@@ -4,3 +4,5 @@ metadata:
   name: homepage
 resources:
   - ../../base/homepage
+patches:
+  - path: ingress-class-patch.yml

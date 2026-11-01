@@ -1,0 +1,26 @@
+---
+# Restarts the controller, not the console: resets the unifi-core leak (#480)
+# without dropping routing or WAN.
+- name: Restart the UniFi controllers
+  hosts: unifi_consoles
+  serial: 1
+  gather_facts: false
+  tasks:
+    - name: Restart unifi-core
+      ansible.builtin.systemd_service:
+        name: unifi-core
+        state: restarted
+
+    - name: Ensure the Network application is running
+      ansible.builtin.systemd_service:
+        name: unifi
+        state: started
+
+    - name: Wait for the console to answer
+      ansible.builtin.uri:
+        url: https://127.0.0.1/api/system
+        validate_certs: false
+      register: console
+      until: console.status == 200
+      retries: 18
+      delay: 10

@@ -1,0 +1,7 @@
+---
+# ansible-playbook pie.yml --inventory inventory/pie.yml
+- name: Ship pie host, journal and UPS metrics
+  hosts: pie
+  become: true
+  roles:
+    - role: monitoring

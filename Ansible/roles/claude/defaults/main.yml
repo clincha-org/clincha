@@ -19,7 +19,7 @@ claude_cron_jobs:
     minute: "*/30"
     job: /home/claude/email-summaries/inbox-watcher/run.sh
   - name: "deliver-orchestrator autonomy"
-    minute: "15"
+    state: absent
     job: >-
       flock -n {{ claude_orchestrator_state_dir }}/autonomy.lock
       {{ claude_deliver_dir }}/orchestrator/cron.sh autonomy
@@ -29,14 +29,12 @@ claude_cron_jobs:
       flock -n {{ claude_orchestrator_state_dir }}/scheduler.lock
       {{ claude_deliver_dir }}/orchestrator/cron.sh scheduler
   - name: "deliver-orchestrator brief"
-    minute: "30"
-    hour: "5"
+    state: absent
     job: >-
       flock -n {{ claude_orchestrator_state_dir }}/brief.lock
       {{ claude_deliver_dir }}/orchestrator/cron.sh brief
   - name: "deliver-orchestrator receipt"
-    minute: "0"
-    hour: "18"
+    state: absent
     job: >-
       flock -n {{ claude_orchestrator_state_dir }}/receipt.lock
       {{ claude_deliver_dir }}/orchestrator/cron.sh receipt
