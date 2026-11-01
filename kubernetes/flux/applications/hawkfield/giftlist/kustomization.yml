@@ -4,3 +4,6 @@ metadata:
   name: giftlist
 resources:
   - ../../base/giftlist
+
+patches:
+  - path: ingress-class-patch.yml
