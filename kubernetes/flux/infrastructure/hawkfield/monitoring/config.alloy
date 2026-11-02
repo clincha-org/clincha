@@ -280,3 +280,42 @@ prometheus.scrape "ingress_nginx" {
     forward_to      = [prometheus.relabel.cluster.receiver]
     scrape_interval = "30s"
 }
+
+discovery.kubernetes "traefik" {
+    role = "pod"
+    namespaces {
+        names = ["traefik"]
+    }
+}
+
+discovery.relabel "traefik" {
+    targets = discovery.kubernetes.traefik.targets
+    rule {
+        source_labels = ["__meta_kubernetes_pod_container_port_name"]
+        regex         = "metrics"
+        action        = "keep"
+    }
+    rule {
+        source_labels = ["__meta_kubernetes_pod_node_name"]
+        regex         = sys.env("NODE_NAME")
+        action        = "keep"
+    }
+    rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+    }
+    rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+    }
+    rule {
+        target_label = "job"
+        replacement  = "traefik"
+    }
+}
+
+prometheus.scrape "traefik" {
+    targets         = discovery.relabel.traefik.output
+    forward_to      = [prometheus.relabel.cluster.receiver]
+    scrape_interval = "30s"
+}
