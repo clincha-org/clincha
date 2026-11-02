@@ -417,12 +417,11 @@ groups:
     rules:
       # Warning is capped below 95 so the two never fire together; the critical
       # takes over. Reserved ext4 blocks are excluded from avail, so this reads
-      # fuller than df's Use% and errs early. /mnt/games is a bulk desktop
-      # drive that sits above 90% by design.
+      # fuller than df's Use% and errs early.
       - alert: HostDiskUsageHigh
         expr: |
-          100 * (1 - node_filesystem_avail_bytes{job="integrations/unix", fstype!~"tmpfs|overlay|squashfs|fuse.*|vfat|ramfs|nsfs|nfs4?", mountpoint!="/mnt/games"}
-            / node_filesystem_size_bytes{job="integrations/unix", fstype!~"tmpfs|overlay|squashfs|fuse.*|vfat|ramfs|nsfs|nfs4?", mountpoint!="/mnt/games"})
+          100 * (1 - node_filesystem_avail_bytes{job="integrations/unix", fstype!~"tmpfs|overlay|squashfs|fuse.*|vfat|ramfs|nsfs|nfs4?"}
+            / node_filesystem_size_bytes{job="integrations/unix", fstype!~"tmpfs|overlay|squashfs|fuse.*|vfat|ramfs|nsfs|nfs4?"})
           > 80 < 95
         for: 15m
         labels:
@@ -433,8 +432,8 @@ groups:
 
       - alert: HostDiskUsageCritical
         expr: |
-          100 * (1 - node_filesystem_avail_bytes{job="integrations/unix", fstype!~"tmpfs|overlay|squashfs|fuse.*|vfat|ramfs|nsfs|nfs4?", mountpoint!="/mnt/games"}
-            / node_filesystem_size_bytes{job="integrations/unix", fstype!~"tmpfs|overlay|squashfs|fuse.*|vfat|ramfs|nsfs|nfs4?", mountpoint!="/mnt/games"})
+          100 * (1 - node_filesystem_avail_bytes{job="integrations/unix", fstype!~"tmpfs|overlay|squashfs|fuse.*|vfat|ramfs|nsfs|nfs4?"}
+            / node_filesystem_size_bytes{job="integrations/unix", fstype!~"tmpfs|overlay|squashfs|fuse.*|vfat|ramfs|nsfs|nfs4?"})
           >= 95
         for: 5m
         labels:

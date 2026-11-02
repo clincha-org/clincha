@@ -5,7 +5,7 @@ Covers `HostDiskUsageHigh` (warning, over 80% for 15m) and `HostDiskUsageCritica
 
 Both read `node_filesystem_*` from the `integrations/unix` job, so they cover every host Alloy
 reports for: the Proxmox hosts, k8s nodes, VMs, LXCs, the Pi and the workstation. NFS and
-pseudo-filesystems are excluded, as is the workstation's `/mnt/games`.
+pseudo-filesystems are excluded.
 
 The percentage is computed from available space, which excludes ext4's reserved blocks. It reads
 a few points higher than `df`'s `Use%`.
