@@ -4,4 +4,4 @@ metadata:
   name: homepage
   namespace: homepage
 spec:
-  ingressClassName: nginx-public
+  ingressClassName: traefik-public

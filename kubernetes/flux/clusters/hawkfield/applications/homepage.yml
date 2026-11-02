@@ -15,6 +15,7 @@ spec:
     - name: certificate-manager-configuration
     - name: metallb-configuration
     - name: ingress-nginx
+    - name: traefik
   prune: true
   wait: true
   decryption:
