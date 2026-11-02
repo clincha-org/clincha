@@ -412,3 +412,39 @@ groups:
         annotations:
           summary: '{{ $value | printf "%.0f" }} import(s) stuck in the queue ({{ $labels.reason }})'
           runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/media-queue.md
+
+  - name: host-disk
+    rules:
+      # Reserved ext4 blocks are excluded from avail, so this reads fuller than
+      # df's Use% and errs early.
+      - record: instance_mountpoint:node_filesystem_used:percent
+        expr: |
+          100 * (
+            1 - node_filesystem_avail_bytes{
+              job="integrations/unix",
+              fstype!~"tmpfs|overlay|squashfs|fuse.*|vfat|ramfs|nsfs|nfs4?"
+            }
+            / node_filesystem_size_bytes{
+              job="integrations/unix",
+              fstype!~"tmpfs|overlay|squashfs|fuse.*|vfat|ramfs|nsfs|nfs4?"
+            }
+          )
+
+      # Capped below 95 so the two never fire together; the critical takes over.
+      - alert: HostDiskUsageHigh
+        expr: instance_mountpoint:node_filesystem_used:percent > 80 < 95
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: '{{ $labels.instance }}:{{ $labels.mountpoint }} is {{ $value | printf "%.0f" }}% full'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/disk-space.md
+
+      - alert: HostDiskUsageCritical
+        expr: instance_mountpoint:node_filesystem_used:percent >= 95
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: '{{ $labels.instance }}:{{ $labels.mountpoint }} is {{ $value | printf "%.0f" }}% full'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/disk-space.md
