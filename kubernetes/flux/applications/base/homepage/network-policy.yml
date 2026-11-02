@@ -25,6 +25,9 @@ spec:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: ingress-nginx
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
         # The site is also served straight off a MetalLB VIP, and that Service
         # is externalTrafficPolicy: Cluster, which SNATs every caller. Which
         # address it is SNATed to depends on where the pod lands: a client

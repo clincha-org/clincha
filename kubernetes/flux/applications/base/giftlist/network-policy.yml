@@ -22,12 +22,15 @@ spec:
     - Ingress
   ingress:
     # Unlike homepage this Service is ClusterIP only, with no MetalLB VIP, so
-    # ingress-nginx is the sole caller. It runs on the pod network here, not
-    # hostNetwork, so a namespaceSelector genuinely matches it.
+    # the ingress controllers are the sole callers. They run on the pod network
+    # here, not hostNetwork, so a namespaceSelector genuinely matches them.
     - from:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: ingress-nginx
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
       ports:
         - protocol: TCP
           port: 8080
