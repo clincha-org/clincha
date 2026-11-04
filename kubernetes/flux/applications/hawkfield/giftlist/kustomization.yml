@@ -4,6 +4,7 @@ metadata:
   name: giftlist
 resources:
   - ../../base/giftlist
+  - middleware-ratelimit.yml
 
 patches:
   - path: ingress-class-patch.yml

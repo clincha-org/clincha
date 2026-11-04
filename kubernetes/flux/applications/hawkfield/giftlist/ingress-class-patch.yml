@@ -3,5 +3,7 @@ kind: Ingress
 metadata:
   name: giftlist
   namespace: giftlist
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: giftlist-ratelimit@kubernetescrd
 spec:
-  ingressClassName: nginx-public
+  ingressClassName: traefik-public
