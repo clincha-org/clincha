@@ -4,7 +4,6 @@ metadata:
   name: ingress-nginx
 resources:
   - ../../base/ingress-nginx
-  - helm-release-public.yml
 configurations:
   - nameref-helmrelease.yml
 configMapGenerator:
@@ -12,7 +11,3 @@ configMapGenerator:
     name: ingress-nginx-values
     files:
       - values.yml
-  - namespace: ingress-nginx
-    name: ingress-nginx-public-values
-    files:
-      - values-public.yml
