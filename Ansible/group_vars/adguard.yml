@@ -78,6 +78,8 @@ adguard_local_dns_entries:
     answer: "10.1.2.207"
   - domain: "learn.clinch-home.com"
     answer: "10.1.2.205"
+  - domain: "headlamp.clinch-home.com"
+    answer: "10.1.2.205"
   - domain: "trading.clinch-home.com"
     answer: "10.1.2.205"
   - domain: "mealie.clinch-home.com"

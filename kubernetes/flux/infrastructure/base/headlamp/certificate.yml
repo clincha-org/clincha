@@ -1,0 +1,13 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: headlamp-certificate
+  namespace: headlamp
+spec:
+  secretName: headlamp-certificate-secret
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - headlamp.clinch-home.com
