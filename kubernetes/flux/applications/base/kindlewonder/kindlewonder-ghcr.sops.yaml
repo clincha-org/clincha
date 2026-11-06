@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: kindlewonder-ghcr
+    namespace: kindlewonder
+type: kubernetes.io/dockerconfigjson
+stringData:
+    .dockerconfigjson: ENC[AES256_GCM,data:uyAwfuGPBdFcFEMhuQWyacjeN8XMT84ZBlwHG62z2WOkU1j/Z/HN8kgdcffEuWdlCxl22ZYQLJJCiRxpXEl9LhZvH9ZjDEUFwOXo/LGNfs2jm/ZskNVMuq0GTaeJftTQfbtVlbql+tVWBUNVqE/dADnpKM9oq0wd5SOTlw8Y+FFWLUZ8F0EmAQQ4iyC/2pmBthyv+IJZfNUFmWULjBBrVdwcMgbx1Kb4ksGXQIf58MFfaBovfrYUUy0=,iv:74JM6Fm+DnNPXiJheRmRjAN659o2ai1brvd2qBmofTE=,tag:TVP/686E4SwqCXPENOeKMA==,type:str]
+sops:
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-11-06T21:37:13Z"
+    mac: ENC[AES256_GCM,data:UCMQHdyi1XHWSwVnPu3gP9gG1ohbtazcoy69vAsy1jReTsW1jlYS3BA3FySbESawawUKhf5OBUlkGDTVbjIrQUW+rtMmXm3mi115oVv/XrB40hSPXmVjKuoCmpEGnF9hnvAAflu3ic6zoCCeAG4pyM1J5P3a7phgbGeIaT/xInE=,iv:tmIc0Pjj1XsLD7rIkq1Soa0At6qcnJKRl5P2gVy6JHw=,tag:S1+JdbbNKexIIPOqqomYNg==,type:str]
+    pgp:
+        - created_at: "2026-11-06T21:37:13Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hQIMA+iIV7UXPYO1AQ/+OfDZ7L0gAPO3HSt45hLFZ6Z5a2zacXszzU3Xshn6EQhG
+            2+zhL+5p1Q7aMzi7SRJBCXpk4eq7TXKaxDiLb80XlYj4/8OYrJkir1fD/61wwoPW
+            4BdpexSuGj1f5Etu1RJ/MUTYoVDpYPRRaA85UPn7vzSEkpWX+MLRpvLb87mHRaQw
+            de51TthDkAhW9l357zyCcsJ5AOev9LKUd64pyoDfLBGDQXZqMxeA1zSBaVCL1JCW
+            K5Ml/OTPJZ/0kpCsqv7WUaxy5UJskHcI6Wr8vzLYXpRdkinXdsNoAoFLz9Hae0xD
+            lV5FtgCBZIRXQOaG4+uXj4ypKbKtOp7CeOxTFsP73Xoi9r43nA1FpL+4iwpurYJg
+            nnugYQb6qGP3D5qow4FVVsCxbZDEZum4qPZRLfQZwhv4cWwKYfHyWAJDnuwMPi8f
+            oZWuFaulMMPGac4IoQyGCIFOH4w8hSSQHlsdIGWdQAoxJ95C6r1DoYD8XlZjTcvN
+            QfYsbSBrlNb440VRNOrIh4Acu1d736nbBtNwZ4V+nbbHX7BZHwxWplwb7uce/rNJ
+            pfl2W6cx9BYqBvu+lhkOMSdFQ59uRMUNTuIG9VNdXOCPkFuHFBMmOmlD/YNq/mTB
+            0okuGaz+CoySXtVjrT2l82KV6tAxLsM8jq0gK+ab83uBSlGRPyg0IuyvorvD1HrS
+            XgGgARDl7JmFUcZIZ++5Zn9V1WCizWg1okeNxBcqXtCgZnPM4vdWHTExQBk6fz3R
+            5/AMBpmcNw0Y1GUWxk0qRARaqGPdN8BabHMU2NGhm3z1sD/0qE3RriEKPEOROxY=
+            =11e1
+            -----END PGP MESSAGE-----
+          fp: 76AF39813C2297E8F98C542D42436A07A9BA1DE0
+    version: 3.13.1

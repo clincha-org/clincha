@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yml
+  - serviceaccount.yml
+  - kindlewonder-ghcr.sops.yaml
+  - kindlewonder-secrets.sops.yaml
+  - deployment.yml
+  - service.yml
+  - ingress.yml
+  - network-policy.yml

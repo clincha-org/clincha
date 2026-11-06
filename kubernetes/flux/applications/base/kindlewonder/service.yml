@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kindlewonder
+  namespace: kindlewonder
+spec:
+  selector:
+    name: kindlewonder
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
