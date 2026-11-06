@@ -29,7 +29,7 @@ spec:
         fsGroup: 3035
       containers:
         - name: kindlewonder
-          image: ghcr.io/clincha-org/kindlewonder:d587206a18b30859bb12f81624fe0f6e25b53833
+          image: ghcr.io/clincha-org/kindlewonder:9f7b163bec636f100cf825638d3c3d78d4c3cbd7
           ports:
             - containerPort: 8080
               name: http
