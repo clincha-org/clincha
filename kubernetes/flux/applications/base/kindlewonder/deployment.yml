@@ -1,0 +1,127 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kindlewonder
+  namespace: kindlewonder
+  labels:
+    name: kindlewonder
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      name: kindlewonder
+  template:
+    metadata:
+      labels:
+        name: kindlewonder
+    spec:
+      serviceAccountName: kindlewonder
+      automountServiceAccountToken: false
+      imagePullSecrets:
+        - name: kindlewonder-ghcr
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 3035
+        runAsGroup: 3035
+        fsGroup: 3035
+      containers:
+        - name: kindlewonder
+          image: ghcr.io/clincha-org/kindlewonder:319a135149dafa595d57c57c937b0445c862bdf4
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          env:
+            - name: HOME
+              value: /tmp
+            - name: WORDPRESS_DB_HOST
+              value: 10.1.2.10:3306
+            - name: WORDPRESS_DB_NAME
+              value: kindlewonder
+            - name: WORDPRESS_DB_USER
+              value: kindlewonder
+            - name: WORDPRESS_DB_PASSWORD_FILE
+              value: /secrets/db-password
+            - name: WP_HOME
+              value: http://kindlewonder.com
+            - name: WP_ADMIN_EMAIL
+              value: c.rueveja@gmail.com
+            - name: WP_ADMIN_PASSWORD_FILE
+              value: /secrets/admin-password
+            - name: WORDPRESS_CONFIG_EXTRA
+              value: |
+                define('WP_HOME', 'http://kindlewonder.com');
+                define('WP_SITEURL', 'http://kindlewonder.com');
+                define('DISALLOW_FILE_EDIT', true);
+                define('WP_AUTO_UPDATE_CORE', false);
+          startupProbe:
+            httpGet:
+              path: /wp-login.php
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: kindlewonder.com
+            periodSeconds: 5
+            failureThreshold: 60
+          livenessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 20
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /wp-login.php
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: kindlewonder.com
+            periodSeconds: 10
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 50m
+              memory: 192Mi
+            limits:
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /var/www/html
+              name: html
+            - mountPath: /var/www/html/wp-content
+              name: wp-content
+            - mountPath: /var/run/apache2
+              name: apache-run
+            - mountPath: /var/lock/apache2
+              name: apache-lock
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: /secrets
+              name: secrets
+              readOnly: true
+      volumes:
+        - name: html
+          emptyDir: {}
+        - name: apache-run
+          emptyDir: {}
+        - name: apache-lock
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+        - name: wp-content
+          nfs:
+            path: /mnt/userstore/kindlewonder
+            server: 10.1.2.10
+        - name: secrets
+          secret:
+            secretName: kindlewonder-secrets
+            defaultMode: 0440
