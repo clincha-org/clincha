@@ -1,0 +1,36 @@
+---
+rule_files:
+  - ../flux/infrastructure/hawkfield/monitoring/alert-rules.yml
+
+evaluation_interval: 1h
+
+tests:
+  - interval: 1h
+    name: laptop silent for over 10 days
+    input_series:
+      - series: 'up{job="integrations/unix", instance="clincha-laptop"}'
+        values: '1 1 1 _x300'
+    alert_rule_test:
+      - eval_time: 9d
+        alertname: LaptopNotSeen
+        exp_alerts: []
+      - eval_time: 14d
+        alertname: LaptopNotSeen
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              job: integrations/unix
+              instance: clincha-laptop
+            exp_annotations:
+              summary: 'clincha-laptop has sent no metrics for 10 days — power it on for updates'
+              runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/laptop-not-seen.md
+
+  - interval: 1h
+    name: laptop recently seen stays silent
+    input_series:
+      - series: 'up{job="integrations/unix", instance="clincha-laptop"}'
+        values: '1x100 _x100'
+    alert_rule_test:
+      - eval_time: 200h
+        alertname: LaptopNotSeen
+        exp_alerts: []
