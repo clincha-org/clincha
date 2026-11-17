@@ -28,7 +28,7 @@ spec:
         fsGroup: 473
       containers:
         - name: alloy
-          image: grafana/alloy:v1.21.3
+          image: grafana/alloy:v1.22.0
           args:
             - run
             - /etc/alloy/config-syslog.alloy
