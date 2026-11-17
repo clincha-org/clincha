@@ -448,3 +448,16 @@ groups:
         annotations:
           summary: '{{ $labels.instance }}:{{ $labels.mountpoint }} is {{ $value | printf "%.0f" }}% full'
           runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/disk-space.md
+
+  - name: workstation-presence
+    rules:
+      # The laptop is off most of the time, so up == 0 never happens: its series
+      # just stop arriving. 10d without a sample means it needs powering on to
+      # take updates.
+      - alert: LaptopNotSeen
+        expr: absent_over_time(up{job="integrations/unix", instance="clincha-laptop"}[10d])
+        labels:
+          severity: warning
+        annotations:
+          summary: 'clincha-laptop has sent no metrics for 10 days — power it on for updates'
+          runbook_url: https://github.com/clincha-org/clincha/blob/master/Documentation/runbooks/laptop-not-seen.md
