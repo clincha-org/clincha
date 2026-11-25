@@ -2,7 +2,6 @@ resource "uptimekuma_notification_telegram" "alert" {
   name       = "Watchdog Telegram"
   bot_token  = var.telegram_bot_token
   chat_id    = var.telegram_chat_id
-  is_active  = true
   is_default = true
 }
 
